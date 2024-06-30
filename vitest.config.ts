@@ -11,11 +11,6 @@ export default defineConfig({
     __DEV__: true,
   },
   test: {
-    coverage: {
-      provider: 'v8',
-      exclude: ['playground/**/*'],
-      reporter: ['text', 'json', 'html'],
-    },
     globals: true,
     watch: false,
   },
