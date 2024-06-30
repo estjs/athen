@@ -6,8 +6,8 @@ export const isProduction = () => process.env.NODE_ENV === 'production';
 export const DIRECTIVE_TYPES: string[] = ['tip', 'warning', 'danger', 'info'];
 export const MD_REGEX = /\.mdx?$/;
 
-export const queryRE = /\?.*$/s;
-export const hashRE = /#.*$/s;
+export const queryRE = /\?.*$/;
+export const hashRE = /#.*$/;
 
 export const cleanUrl = (url: string): string => url.replace(hashRE, '').replace(queryRE, '');
 

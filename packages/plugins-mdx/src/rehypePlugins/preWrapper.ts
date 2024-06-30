@@ -20,14 +20,14 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
 
         // codeNode.properties.className = "";
 
-        const clonedNode: Element = {
+        const clonedNode = {
           type: 'element',
           tagName: 'pre',
           children: node.children,
           data: {
             isVisited: true,
           },
-        };
+        } as unknown as Element;
 
         // 修改原来的 pre 标签 -> div 标签
         node.tagName = 'div';
