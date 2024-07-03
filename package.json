@@ -32,7 +32,7 @@
     "@vitest/coverage-v8": "^1.6.0",
     "bumpp": "^9.4.1",
     "dayjs": "^1.11.11",
-    "eslint": "^8.45.0",
+    "eslint": "^9.0.0",
     "nx": "19.2.1",
     "picocolors": "^1.0.1",
     "pnpm": "^9.4.0",
