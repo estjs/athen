@@ -32,7 +32,7 @@ export const remarkPluginTip: Plugin<[], Root> = () => {
 
       data.hName = 'div';
       data.hProperties = {
-        class: `island-directive ${name}`,
+        class: `at-directive ${name}`,
       };
 
       node.children = [
@@ -40,7 +40,7 @@ export const remarkPluginTip: Plugin<[], Root> = () => {
           type: 'paragraph',
           data: {
             hProperties: {
-              class: 'island-directive-title',
+              class: 'at-directive-title',
             },
           },
           children: [{ type: 'text', value: customTitle ?? name.toLocaleUpperCase() }],
@@ -48,7 +48,7 @@ export const remarkPluginTip: Plugin<[], Root> = () => {
         {
           type: 'element',
           data: {
-            hProperties: { class: 'island-directive-content' },
+            hProperties: { class: 'at-directive-content' },
           },
           children,
         },

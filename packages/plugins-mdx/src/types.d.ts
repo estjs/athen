@@ -19,5 +19,10 @@ export interface options {
   /**
    * vite plugin array
    */
-  plugins: Plugin[];
+  plugins?: Plugin[];
+  /**
+   * Whether to enable the mdx plugin.
+   * @default true
+   */
+  essor: boolean;
 }

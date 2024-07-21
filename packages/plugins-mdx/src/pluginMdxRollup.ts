@@ -8,7 +8,6 @@ import rehypePluginAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePluginSlug from 'rehype-slug';
 import rehypePluginExternalLinks from 'rehype-external-links';
 import { bundledLanguages, createHighlighter } from 'shiki';
-import { isRegExp } from 'lodash-es';
 import { remarkPluginToc } from './remarkPlugins/toc';
 import { remarkPluginTip } from './remarkPlugins/tip';
 import { rehypePluginShiki } from './rehypePlugins/shiki';
@@ -66,11 +65,8 @@ export async function pluginMdxRollup(config: options): Promise<Plugin> {
             const whiteList = [...TARGET_BLANK_WHITE_LIST];
             if (typeof href === 'string') {
               const inWhiteList = whiteList.some(item => {
-                if (isRegExp(item)) {
-                  return (item as unknown as RegExp).test(href);
-                } else {
-                  return href.startsWith(item);
-                }
+                if (item instanceof RegExp) return item.test(href);
+                else return href.startsWith(item);
               });
               return inWhiteList ? '_self' : '_blank';
             }

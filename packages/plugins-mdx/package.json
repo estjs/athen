@@ -64,13 +64,13 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "@types/hast": "^3.0.0",
-    "@types/lodash": "^4.17.5",
+    "@types/hast": "^3.0.4",
+    "@types/lodash": "^4.17.7",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.11",
     "bumpp": "^9.4.1",
     "lodash-es": "^4.17.21",
-    "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "tsup": "^8.2.1",
+    "typescript": "^5.5.3"
   }
 }
