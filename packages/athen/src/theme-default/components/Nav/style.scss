@@ -1,0 +1,32 @@
+.link:hover {
+  color: var(--at-c-brand);
+  transition: color 0.2s;
+}
+
+.link {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.social-link-icon {
+  display: flex;
+  fill: currentColor;
+  transition: color 0.2s;
+  color: var(--at-c-text-2);
+  &:hover {
+    color: var(--at-c-text-1);
+  }
+}
+
+.nav {
+  padding-left: max(
+    32px,
+    calc(32px + (100vw - var(--at-layout-max-width)) / 2)
+  );
+  padding-right: max(
+    32px,
+    calc(32px + (100vw - var(--at-layout-max-width)) / 2)
+  );
+  background-color: var(--at-c-bg);
+}

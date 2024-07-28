@@ -5,10 +5,11 @@ declare module 'athen:site-data' {
 }
 declare module 'athen:routes' {
   import type { RouteRecordRaw } from 'essor-router';
+  import type { PageModule } from '@/shared/types';
   export type ComponentType<T> = new (...args: T) => JSX.Element;
 
   type NewRoute = RouteRecordRaw & {
-    preload?: () => Promise<ComponentType<any>>;
+    preload?: () => Promise<PageModule>;
   };
   const routes: NewRoute[];
   export { routes };

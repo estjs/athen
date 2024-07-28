@@ -12,7 +12,7 @@ export function pluginMdxRawContent(): Plugin {
       const rawContent = await fs.readFile(id, 'utf-8');
       code = code.concat(`
         \n
-export const content = ${JSON.stringify(rawContent)}
+          export const content = ${JSON.stringify(rawContent)}
       `);
       return code;
     },

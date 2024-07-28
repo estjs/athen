@@ -32,8 +32,8 @@ async function resolveUserConfig(
 
   if (configResult) {
     const { config: rawConfig = {} as RawConfig } = configResult;
-    // const userConfig = isAsyncFn(rawConfig) ? await rawConfig():isFn(rawConfig) ? rawConfig():rawConfig;
 
+    // const userConfig = isAsyncFn(rawConfig) ? await rawConfig():isFn(rawConfig) ? rawConfig():rawConfig;
     const userConfig = await (typeof rawConfig === 'function' ? rawConfig() : rawConfig);
 
     return [configPath, userConfig] as const;

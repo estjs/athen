@@ -3,7 +3,7 @@ import { routes } from 'athen:routes';
 import type { PageData } from '@shared/types';
 
 export const usePageData = () => {
-  return useInject('pageData');
+  return useInject('pageData') as PageData;
 };
 
 export const getAllPages = (

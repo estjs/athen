@@ -32,3 +32,9 @@ export interface FrontMatterMeta {
   outline?: boolean;
   lineNumbers?: boolean;
 }
+export interface PageModule<T extends any> {
+  default: T;
+  frontmatter?: FrontMatterMeta;
+  content?: string;
+  [key: string]: unknown;
+}

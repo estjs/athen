@@ -1,11 +1,11 @@
-import type { FrontMatterMeta } from './fontMatter';
-import type { DefaultTheme } from './default-theme';
+import type { FrontMatterMeta, PageModule } from './frontMatter';
+import type { DefaultTheme } from './defaultTheme';
 import type { RouteOptions } from './router';
 import type { UserConfig as ViteConfiguration } from 'vite';
 
-export { DefaultTheme } from './default-theme';
+export { DefaultTheme } from './defaultTheme';
 
-export * from './fontMatter';
+export * from './frontMatter';
 
 export interface Header {
   id: string;
@@ -101,11 +101,7 @@ export interface SiteData<ThemeConfig = unknown> {
   themeConfig: ThemeConfig;
   appearance: boolean;
 }
-export interface PageModule<T extends any> {
-  default: T;
-  content?: string;
-  [key: string]: unknown;
-}
+
 export type PageType = 'home' | 'doc' | 'api' | 'custom' | '404';
 
 export interface PageData {
@@ -114,6 +110,7 @@ export interface PageData {
   relativePagePath: string;
   lastUpdatedTime?: string;
   title?: string;
+  pageType: string;
   frontmatter?: FrontMatterMeta;
   description?: string;
   toc?: Header[];

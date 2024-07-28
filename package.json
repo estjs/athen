@@ -1,7 +1,7 @@
 {
   "name": "athen-monorepo",
   "version": "0.0.0",
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@9.6.0",
   "type": "module",
   "license": "MIT",
   "homepage": "https://github.com/estjs/athen#readme",
@@ -28,18 +28,18 @@
   },
   "devDependencies": {
     "@estjs/eslint-config": "^1.2.4",
-    "@vitest/coverage-v8": "^2.0.3",
+    "@vitest/coverage-v8": "^2.0.4",
     "athen": "workspace:*",
     "bumpp": "^9.4.1",
-    "eslint": "^9.7.0",
-    "nx": "19.2.1",
+    "eslint": "^9.8.0",
+    "nx": "19.5.3",
     "picocolors": "^1.0.1",
-    "pnpm": "^9.5.0",
+    "pnpm": "^9.6.0",
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "simple-git-hooks": "^2.11.1",
     "standard-changelog": "^6.0.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged --concurrent false",
