@@ -1,3 +1,14 @@
 {
-  "extends": "../../tsconfig.base.json"
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@runtime": ["./src/runtime/index.ts"],
+      "@shared/*": ["./src/shared/*"]
+    },
+    "types": ["vite/client", "./global.d.ts"]
+  },
+  "include": ["src", "./global.d.ts"],
+  "exclude": ["node_modules"]
 }
