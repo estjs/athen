@@ -5,7 +5,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@runtime": ["./src/runtime/index.ts"],
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@theme/*":["./src/theme-default/*"]
     },
     "types": ["vite/client", "./global.d.ts"]
   },

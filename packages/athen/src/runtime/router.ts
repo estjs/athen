@@ -25,6 +25,7 @@ export async function initPageData(routerPath: string): Promise<PageData> {
     pagePath: routerPath,
     routePath: routerPath,
     relativePagePath: '',
+    frontmatter: {},
   };
 }
 export const createRouter = history => {

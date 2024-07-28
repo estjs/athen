@@ -18,7 +18,7 @@ export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<v
       return {
         root: PACKAGE_ROOT,
         optimizeDeps: {
-          include: ['essor', 'essor-router', 'lodash-es', 'copy-to-clipboard', 'nprogress'],
+          include: ['essor', 'essor-router', 'lodash-es', 'copy-to-clipboard'],
           exclude: ['@theme', '@runtime', '@shared'],
         },
         resolve: {

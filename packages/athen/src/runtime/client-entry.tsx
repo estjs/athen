@@ -1,5 +1,5 @@
 import { createMemoryHistory, createWebHistory } from 'essor-router';
-import { useProvide, useSignal } from 'essor';
+import { useProvide } from 'essor';
 import Layout from '../theme-default';
 import { createRouter, initPageData } from './router';
 import type { Router } from '../node/plugins/router';
@@ -18,15 +18,7 @@ async function ClientEntry(client = false, route?: Router) {
     const pageData = await initPageData(location.pathname);
 
     function ClientRender() {
-      const data = useSignal(pageData);
-      useProvide('pageData', data);
-
-      if (import.meta.env.DEV) {
-        router.afterEach(async () => {
-          const pageData = await initPageData(route?.path || location.pathname);
-          data.value = pageData;
-        });
-      }
+      useProvide('pageData', pageData);
       return <Layout />;
     }
     (<ClientRender></ClientRender>).mount(document.querySelector('#app')!);

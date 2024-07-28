@@ -1,5 +1,7 @@
-const Layout = () => {
-  return <>Layout</>;
-};
+import { PageContent } from "./content"
+export function Layout(){
 
-export default Layout;
+  return <>
+<PageContent></PageContent>
+  </>
+}

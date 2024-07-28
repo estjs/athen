@@ -1,8 +1,11 @@
+import type { FrontMatterMeta } from './fontMatter';
 import type { DefaultTheme } from './default-theme';
 import type { RouteOptions } from './router';
 import type { UserConfig as ViteConfiguration } from 'vite';
 
 export { DefaultTheme } from './default-theme';
+
+export * from './fontMatter';
 
 export interface Header {
   id: string;
@@ -111,6 +114,7 @@ export interface PageData {
   relativePagePath: string;
   lastUpdatedTime?: string;
   title?: string;
+  frontmatter?: FrontMatterMeta;
   description?: string;
   toc?: Header[];
   content?: string;
