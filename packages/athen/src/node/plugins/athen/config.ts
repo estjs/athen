@@ -19,7 +19,7 @@ export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<v
         root: PACKAGE_ROOT,
         optimizeDeps: {
           include: ['essor', 'essor-router', 'lodash-es', 'copy-to-clipboard', 'fs-extra', 'vite'],
-          exclude: ['@theme', '@runtime', '@shared'],
+          exclude: ['fsevents'],
         },
         resolve: {
           alias: {
