@@ -38,7 +38,7 @@
     "simple-git-hooks": "^2.11.1",
     "standard-changelog": "^6.0.0",
     "tsx": "^4.16.2",
-    "turbo": "^1.6.2",
+    "turbo": "^2.0.0",
     "typescript": "^5.5.4"
   },
   "simple-git-hooks": {
