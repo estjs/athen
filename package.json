@@ -12,8 +12,8 @@
   },
   "author": "jiangxd <jiangxd2016@gmail.com>",
   "scripts": {
-    "dev": "nx run-many -t=dev",
-    "build": "pnpm run clean && nx run-many -t=build --verbose",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
     "docs:dev": "athen dev docs",
     "docs:build": "athen build docs",
     "lint": "eslint --cache --fix \"./**/src/*.{ts,tsx,js,jsx}\"",
@@ -21,7 +21,6 @@
     "coverage": "vitest run --coverage",
     "test:watch": "vitest --watch",
     "typecheck": "nx run-many -t=typecheck",
-    "clean": "rimraf ./packages/**/dist",
     "changelog": "tsx scripts/changelog.ts",
     "prerelease": "pnpm run build && pnpm run lint && pnpm run test && pnpm run typecheck",
     "release": "pnpm run changelog && pnpm run prerelease &&  bumpp package.json packages/*/package.json --no-git-checks --commit --push --tag && pnpm -r publish --access public"
@@ -32,13 +31,14 @@
     "athen": "workspace:*",
     "bumpp": "^9.4.1",
     "eslint": "^9.8.0",
-    "nx": "19.5.3",
+    "lint-staged": "^15.2.7",
     "picocolors": "^1.0.1",
     "pnpm": "^9.6.0",
     "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
     "simple-git-hooks": "^2.11.1",
     "standard-changelog": "^6.0.0",
+    "tsx": "^4.16.2",
+    "turbo": "^1.6.2",
     "typescript": "^5.5.4"
   },
   "simple-git-hooks": {
