@@ -36,7 +36,8 @@
   "sideEffects": false,
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p ./tsconfig.json"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.0.1",
