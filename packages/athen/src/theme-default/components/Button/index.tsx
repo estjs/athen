@@ -1,13 +1,17 @@
 import PageLink from '../Link/index';
-import "./style.scss"
+import './style.scss';
 
-const PageButton = ({ type, size = 'medium', theme = 'brand', text, href, external, className= '' }) => {
+const PageButton = ({
+  type,
+  size = 'medium',
+  theme = 'brand',
+  text,
+  href,
+  external,
+  className = '',
+}) => {
   if (type === 'button') {
-    return (
-      <button class={`button ${theme} ${size} ${className}`}>
-        {text}
-      </button>
-    );
+    return <button class={`button ${theme} ${size} ${className}`}>{text}</button>;
   } else if (type === 'a' && external) {
     return (
       <a href={href} class={`button ${theme} ${size} ${className}`}>

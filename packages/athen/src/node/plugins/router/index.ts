@@ -1,21 +1,6 @@
 import { RouteService } from './routeService';
-import type { UserConfig } from '@/shared/types';
+import type { PluginOptions, UserConfig } from '@/shared/types';
 import type { Plugin } from 'vite';
-
-type Component = () => JSX.Element;
-export interface Meta {
-  name?: string;
-}
-export interface Router {
-  path: string;
-  component: Component;
-  meta?: Meta;
-  preload?: (base: string) => Promise<Component>;
-}
-
-interface PluginOptions {
-  root: string;
-}
 
 export const CONVENTIONAL_ROUTE_ID = 'athen:routes';
 

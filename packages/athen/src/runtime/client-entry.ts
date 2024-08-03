@@ -1,8 +1,8 @@
 import { createMemoryHistory, createWebHistory } from 'essor-router';
-import { useProvide } from 'essor';
+import { h, useProvide } from 'essor';
 import Layout from '../theme-default';
 import { createRouter, initPageData } from './router';
-import type { Router } from '../node/plugins/router';
+import type { Router } from '@/shared/types';
 
 async function ClientEntry(client = false, route?: Router) {
   const router = createRouter(
@@ -19,9 +19,9 @@ async function ClientEntry(client = false, route?: Router) {
 
     function ClientRender() {
       useProvide('pageData', pageData);
-      return <Layout />;
+      return h(Layout, {});
     }
-    (<ClientRender></ClientRender>).mount(document.querySelector('#app')!);
+    h(ClientRender, {}).mount(document.querySelector('#app')!);
   }
   return { router };
 }

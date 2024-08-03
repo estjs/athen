@@ -1,11 +1,8 @@
-import { useComputed } from "essor";
-import "./style.scss";
-import {
-  withBase
-} from '@/runtime';
-import { useRouter } from "essor-router";
-import { EXTERNAL_URL_RE } from "@shared/utils";
-
+import { useComputed } from 'essor';
+import './style.scss';
+import { useRouter } from 'essor-router';
+import { EXTERNAL_URL_RE } from '@shared/utils';
+import { withBase } from '@/runtime';
 
 const PageLink = ({ href, className, children }) => {
   const val = useComputed(() => {
@@ -17,18 +14,21 @@ const PageLink = ({ href, className, children }) => {
   });
   const router = useRouter();
 
-  const handleNavigate = (
-    e
-  ) => {
+  const handleNavigate = e => {
     e.preventDefault();
     const withBaseUrl = withBase(href);
     router.value.push({
       path: withBaseUrl,
-    })
+    });
   };
 
   return (
-    <a onClick={handleNavigate} target={val.value.target} rel={val.value.rel} class={`${className||""} link cursor-pointer`}>
+    <a
+      onClick={handleNavigate}
+      target={val.value.target}
+      rel={val.value.rel}
+      class={`${className || ''} link cursor-pointer`}
+    >
       {children}
     </a>
   );

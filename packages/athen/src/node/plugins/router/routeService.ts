@@ -38,7 +38,7 @@ export class RouteService {
       .sync(['**/*.{ts,tsx,jsx,md,mdx}'], {
         cwd: this.scanDir,
         absolute: true,
-        ignore: ['**/node_modules/**', '**/build/**', 'config.ts'],
+        ignore: ['**/node_modules/**', '**/build/**', 'athen.config.ts'],
         objectMode: true,
       })
       .sort();
@@ -65,7 +65,7 @@ export class RouteService {
     return `
       export const routes = [${this.routeData
         .map(route => {
-          return `{path: "${route.routePath}", component: "${route.absolutePath}", preload: () => import("${route.absolutePath}"), name: "${route.name || 'title'}", title: "${route.name || 'title'}", absolutePath: "${route.absolutePath}", meta: {name: "${siteData?.title || 'title'}", filePath: "${route.filePath}"}}`;
+          return `{path: "${route.routePath}", component:  import("${route.absolutePath})", preload: () => import("${route.absolutePath}"), name: "${route.name || 'title'}", title: "${route.name || 'title'}", absolutePath: "${route.absolutePath}", meta: {name: "${siteData?.title || 'title'}", filePath: "${route.filePath}"}}`;
         })
         .join(', ')}]
     `;

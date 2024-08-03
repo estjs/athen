@@ -8,7 +8,7 @@ import { createVitePlugins } from './plugins';
 export async function build(root: string = process.cwd()) {
   const config = await resolveConfig(root, 'build', 'production');
 
-  const plugins = await createVitePlugins(config, false);
+  const plugins = await createVitePlugins(config);
   const viteConfig: InlineConfig = {
     mode: 'production',
     root,

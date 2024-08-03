@@ -9,9 +9,9 @@ export function pluginTransform(): Plugin {
     async transform(code, id, opts) {
       if (TS_REGEX.test(id) || MD_REGEX.test(id)) {
         const result = await transformAsync(code, {
-          filename: `${id}`,
+          filename: id,
           sourceType: 'module',
-          plugins: [[BabelPluginEssor, { ...opts, ssg: true }]],
+          plugins: [[BabelPluginEssor, { ...opts }]],
         });
         return {
           code: result?.code || code,

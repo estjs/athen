@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["bumpp", "essor", "pnpm", "unplugin", "vitest", "athen","unocss"],
+  "cSpell.words": ["bumpp", "essor", "pnpm", "unplugin", "vitest", "athen", "unocss"],
   "prettier.enable": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"

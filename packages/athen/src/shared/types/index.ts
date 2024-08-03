@@ -7,6 +7,22 @@ export { DefaultTheme } from './defaultTheme';
 
 export * from './frontMatter';
 
+// router types
+type Component = () => JSX.Element;
+export interface Meta {
+  name?: string;
+}
+export interface Router {
+  path: string;
+  component: Component;
+  meta?: Meta;
+  preload?: (base: string) => Promise<Component>;
+}
+
+export interface PluginOptions {
+  root: string;
+}
+
 export interface Header {
   id: string;
   text: string;

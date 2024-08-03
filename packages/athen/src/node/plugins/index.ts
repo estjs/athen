@@ -9,6 +9,7 @@ import { RouteService } from './router/routeService';
 import { pluginMdxHMR } from './mdxHmr';
 import { pluginAthen } from './athen';
 import type { SiteConfig } from '../../shared/types';
+
 export async function createVitePlugins(
   config: SiteConfig,
   isServer = true,

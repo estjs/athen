@@ -9,19 +9,26 @@ export function pluginMdxHMR(config: SiteConfig, isServer): Plugin {
   return {
     name: 'vite-plugin-mdx-hmr',
     apply: 'serve',
-
     transform(code, id, opts) {
       if (MD_REGEX.test(id) || TS_REGEX.test(id)) {
+        if (!TS_REGEX.test(id)) {
+          id = `${id}?.jsx`;
+        }
+
         const result = babel.transformSync(code, {
-          filename: `${id}`,
+          filename: id,
           sourceType: 'module',
           plugins: [[BabelPluginEssor, { ...opts, ssg: !isServer }]],
         });
+
         const selfAcceptCode = 'import.meta.hot.accept();';
         if (typeof result === 'object' && !result!.code?.includes(selfAcceptCode)) {
           result!.code += selfAcceptCode;
         }
-        return result;
+        return {
+          code: result?.code || code,
+          map: result?.map,
+        };
       }
     },
     handleHotUpdate(ctx) {

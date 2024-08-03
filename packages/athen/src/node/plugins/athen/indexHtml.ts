@@ -60,6 +60,7 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
           const templatePath = (await fs.pathExists(indexHtmlInRoot))
             ? indexHtmlInRoot
             : DEFAULT_HTML_PATH;
+
           if (req.url?.replace(/\?.*/, '')) {
             let html = fs.readFileSync(templatePath, 'utf8');
 
