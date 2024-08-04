@@ -1,6 +1,5 @@
 import { resolve } from 'node:path';
 import process from 'node:process';
-import fs from 'node:fs/promises';
 import { createServer } from 'vite';
 import { resolveConfig } from './config';
 import { createVitePlugins } from './plugins';
@@ -22,24 +21,7 @@ export async function createDevServer(
       },
     },
     esbuild: {
-      loader: 'jsx',
-      include: /src\/.*\.jsx?$/,
-      exclude: [],
-    },
-    optimizeDeps: {
-      esbuildOptions: {
-        plugins: [
-          {
-            name: 'load-js-files-as-jsx',
-            setup(build) {
-              build.onLoad({ filter: /.*\.js$/ }, async args => ({
-                loader: 'jsx',
-                contents: await fs.readFile(args.path, 'utf8'),
-              }));
-            },
-          },
-        ],
-      },
+      jsx: 'preserve',
     },
     plugins: await createVitePlugins(config, true, restartServer),
     server: {

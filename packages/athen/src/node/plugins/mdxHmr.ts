@@ -1,32 +1,28 @@
 import babel from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
-import { MD_REGEX, TS_REGEX } from '../constants';
+import { MD_REGEX, TS_REGEX } from '@/node/constants';
 import { RouteService } from './router/routeService';
-import type { SiteConfig } from '../../shared/types';
 import type { Plugin } from 'vite';
+import type { SiteConfig } from '@/shared/types/index';
 
 export function pluginMdxHMR(config: SiteConfig, isServer): Plugin {
   return {
     name: 'vite-plugin-mdx-hmr',
     apply: 'serve',
+
     transform(code, id, opts) {
       if (MD_REGEX.test(id) || TS_REGEX.test(id)) {
-        if (!TS_REGEX.test(id)) {
-          id = `${id}?.jsx`;
-        }
-
         const result = babel.transformSync(code, {
-          filename: id,
+          filename: `${id}`,
           sourceType: 'module',
           plugins: [[BabelPluginEssor, { ...opts, ssg: !isServer }]],
         });
-
         const selfAcceptCode = 'import.meta.hot.accept();';
         if (typeof result === 'object' && !result!.code?.includes(selfAcceptCode)) {
           result!.code += selfAcceptCode;
         }
         return {
-          code: result?.code || code,
+          code: result?.code,
           map: result?.map,
         };
       }

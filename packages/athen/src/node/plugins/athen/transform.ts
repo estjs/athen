@@ -1,14 +1,19 @@
 import { transformAsync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
+import { type Plugin, transformWithEsbuild } from 'vite';
 import { MD_REGEX, TS_REGEX } from '../../constants';
-import type { Plugin } from 'vite';
 export function pluginTransform(): Plugin {
   return {
-    name: 'athen:vite-plugin-internal',
+    name: 'athen:transform',
     apply: 'build',
     async transform(code, id, opts) {
       if (TS_REGEX.test(id) || MD_REGEX.test(id)) {
-        const result = await transformAsync(code, {
+        const strippedTypes = await transformWithEsbuild(code, id, {
+          jsx: 'preserve',
+          loader: 'tsx',
+        });
+
+        const result = await transformAsync((await strippedTypes).code, {
           filename: id,
           sourceType: 'module',
           plugins: [[BabelPluginEssor, { ...opts }]],
