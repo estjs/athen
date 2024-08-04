@@ -79,3 +79,7 @@ export const defaultConfig = {
   root: '/',
   base: '/',
 };
+
+export const isReg = (val: any): val is RegExp => {
+  return typeof val === 'object' && val.constructor === RegExp;
+};

@@ -10,7 +10,7 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
         node.tagName === 'pre' &&
         node.children[0]?.type === 'element' &&
         node.children[0].tagName === 'code' &&
-        !node.data?.isVisited
+        (!node.data as any)?.isVisited
       ) {
         // console.log("tagName=====>", node);
         const codeNode = node.children[0];
@@ -18,16 +18,16 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
         // language-xxx
         const lang = codeClassName.split('-')[1];
 
-        // codeNode.properties.className = "";
+        codeNode.properties.className = '';
 
-        const clonedNode: Element = {
+        const clonedNode = {
           type: 'element',
           tagName: 'pre',
           children: node.children,
           data: {
             isVisited: true,
           },
-        };
+        } as unknown as Element;
 
         // 修改原来的 pre 标签 -> div 标签
         node.tagName = 'div';

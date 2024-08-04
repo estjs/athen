@@ -30,7 +30,8 @@
   },
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p ./tsconfig.json"
   },
   "dependencies": {
     "execa": "5",

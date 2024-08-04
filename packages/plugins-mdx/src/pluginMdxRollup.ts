@@ -13,7 +13,7 @@ import { remarkPluginTip } from './remarkPlugins/tip';
 import { rehypePluginShiki } from './rehypePlugins/shiki';
 import { remarkPluginNormalizeLink } from './remarkPlugins/link';
 import { rehypePluginPreWrapper } from './rehypePlugins/preWrapper';
-import { TARGET_BLANK_WHITE_LIST } from './utils';
+import { TARGET_BLANK_WHITE_LIST, isReg } from './utils';
 import type { options } from './types';
 import type { Plugin } from 'vite';
 
@@ -65,7 +65,7 @@ export async function pluginMdxRollup(config: options): Promise<Plugin> {
             const whiteList = [...TARGET_BLANK_WHITE_LIST];
             if (typeof href === 'string') {
               const inWhiteList = whiteList.some(item => {
-                if (item instanceof RegExp) return item.test(href);
+                if (isReg(item)) return item.test(href);
                 else return href.startsWith(item);
               });
               return inWhiteList ? '_self' : '_blank';
