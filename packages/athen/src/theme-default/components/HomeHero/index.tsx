@@ -2,7 +2,7 @@ import PageButton from '../Button';
 import type { Hero } from '@/shared/types';
 export function HomeHero({ hero }: { hero: Hero }) {
   return (
-    <div class="mx-auto px-16 pb-16 pt-20">
+    <div class="mx-auto px-10 pb-16 pt-20">
       <div class="mx-auto max-w-screen-lg flex">
         <div class="max-w-xl flex flex-col text-left">
           <h1 class="max-w-3xl text-6xl font-bold">
@@ -29,8 +29,8 @@ export function HomeHero({ hero }: { hero: Hero }) {
           </div>
         </div>
         {hero.image && (
-          <div class="mx-auto max-h-[24rem] max-w-[24rem] flex justify-center">
-            <img src={hero.image.src} alt={hero.image.alt} class="h-full w-full" />
+          <div class="mx-auto h-270px flex justify-center">
+            <img src={hero.image.src} alt={hero.image.alt} class="w-full" />
           </div>
         )}
       </div>
