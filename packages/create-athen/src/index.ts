@@ -175,7 +175,8 @@ function emptyDir(dir: string) {
     }
   }
 }
-
-init().catch(error => {
-  console.error(error);
-});
+(() => {
+  init().catch(error => {
+    console.error(error);
+  });
+})();

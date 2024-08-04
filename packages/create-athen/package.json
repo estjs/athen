@@ -29,8 +29,8 @@
     "create-athen": "./bin/index.js"
   },
   "scripts": {
-    "dev": "tsup --watch --format=cjs,esm",
-    "build": "cross-env NODE_ENV=production tsup --format=cjs,esm"
+    "dev": "tsup --watch",
+    "build": "tsup"
   },
   "dependencies": {
     "execa": "5",
