@@ -21,8 +21,6 @@ function highlightSingleLine(line: number, fragmentAst: ReturnType<typeof fromHt
 // The plugin cannot be used directly because it won't reserve the class name `language-xxx` in the code tag
 // It cause conflict with preWrapper plugin, so we should integrate it manually
 export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ highlighter }) => {
-
-
   return tree => {
     visit(tree, 'element', (node, index, parent) => {
       // <pre><code>...</code></pre>

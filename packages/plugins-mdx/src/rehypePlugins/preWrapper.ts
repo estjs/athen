@@ -12,14 +12,13 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
         node.children[0].tagName === 'code' &&
         (!node.data as any)?.isVisited
       ) {
-        // console.log("tagName=====>", node);
         const codeNode = node.children[0];
         const codeClassName = codeNode.properties?.className?.toString() || '';
-        // language-xxx
         const lang = codeClassName.split('-')[1];
-
-        codeNode.properties.className = '';
-
+        if (!codeClassName || !lang) {
+          return;
+        }
+        codeNode.properties!.className = '';
         const clonedNode = {
           type: 'element',
           tagName: 'pre',
@@ -29,12 +28,24 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
           },
         } as unknown as Element;
 
-        // 修改原来的 pre 标签 -> div 标签
         node.tagName = 'div';
         node.properties = node.properties || {};
         node.properties.className = codeClassName;
 
         node.children = [
+          {
+            type: 'element',
+            tagName: 'button',
+            properties: {
+              className: 'copy',
+            },
+            children: [
+              {
+                type: 'text',
+                value: '',
+              },
+            ],
+          },
           {
             type: 'element',
             tagName: 'span',

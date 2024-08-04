@@ -14,6 +14,7 @@ import { rehypePluginShiki } from './rehypePlugins/shiki';
 import { remarkPluginNormalizeLink } from './remarkPlugins/link';
 import { rehypePluginPreWrapper } from './rehypePlugins/preWrapper';
 import { TARGET_BLANK_WHITE_LIST, isReg } from './utils';
+import { rehypePluginLineNumbers } from './rehypePlugins/lineNumbers';
 import type { options } from './types';
 import type { Plugin } from 'vite';
 
@@ -74,6 +75,7 @@ export async function pluginMdxRollup(config: options): Promise<Plugin> {
         },
       ],
       rehypePluginPreWrapper,
+      rehypePluginLineNumbers,
       [
         rehypePluginShiki,
         {

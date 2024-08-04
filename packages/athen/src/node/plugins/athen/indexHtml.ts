@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import fs from 'fs-extra';
 import { CLIENT_ENTRY_PATH, DEFAULT_HTML_PATH } from '../../constants';
-import type { SiteConfig } from '../../../shared/types';
+import type { SiteConfig } from '@/shared/types';
 import type { Plugin } from 'vite';
 
 export function pluginIndexHtml(config: SiteConfig): Plugin {
@@ -20,6 +20,7 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
             children,
           };
         }) ?? [];
+
       return {
         html,
         tags: [

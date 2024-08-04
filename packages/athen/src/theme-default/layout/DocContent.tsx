@@ -5,7 +5,7 @@ import { SideBar } from '../components/SideBar';
 import DocFooter from '../components/DocFooter';
 import { Aside } from '../components/Aside';
 import { DocHomeLayout } from './DocHome';
-
+import './style.scss';
 export function DocContent() {
   const pageData = usePageData();
 

@@ -68,7 +68,7 @@ export class RouteService {
           return `
           {
               path: "${route.routePath}",
-              component:"${route.absolutePath}",
+              component:import("${route.absolutePath}"),
               preload: () => import("${route.absolutePath}"),
               name: "${route.name || 'title'}",
               title: "${route.name || 'title'}",

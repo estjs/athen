@@ -3,8 +3,8 @@ import type { Hero } from '@/shared/types';
 export function HomeHero({ hero }: { hero: Hero }) {
   return (
     <div class="mx-auto px-10 pb-16 pt-20">
-      <div class="mx-auto max-w-screen-lg flex">
-        <div class="max-w-xl flex flex-col text-left">
+      <div class="mx-auto max-w-screen-xl flex justify-between">
+        <div class="max-w-xl flex flex-1 flex-col text-left">
           <h1 class="max-w-3xl text-6xl font-bold">
             <span class="bg-[--at-home-hero-name-background] bg-clip-text text-transparent">
               {hero.name}
