@@ -1,0 +1,50 @@
+{
+  "name": "@athen/create-athen",
+  "version": "0.0.0",
+  "packageManager": "pnpm@7.9.2",
+  "description": "create template for athen",
+  "type": "module",
+  "keywords": [
+    "vite",
+    "cli",
+    "template"
+  ],
+  "license": "MIT",
+  "files": [
+    "bin",
+    "dist",
+    "template"
+  ],
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "create-athen": "./bin/index.js"
+  },
+  "scripts": {
+    "dev": "tsup --watch --format=cjs,esm",
+    "build": "cross-env NODE_ENV=production tsup --format=cjs,esm"
+  },
+  "dependencies": {
+    "execa": "5",
+    "kolorist": "^1.7.0",
+    "minimist": "^1.2.7",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.2",
+    "@types/prompts": "^2.4.2"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,tsx,ts,json}": [
+      "eslint --fix"
+    ]
+  }
+}

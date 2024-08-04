@@ -57,15 +57,12 @@
     "essor-router": "^v0.0.7-beta.3",
     "flexsearch": "0.6.32",
     "fs-extra": "^11.2.0",
-    "plugins-mdx": "workspace:*",
-    "unplugin-essor": "^v0.0.7-beta.6"
+    "plugins-mdx": "workspace:*"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
     "@babel/types": "^7.25.2",
     "@estjs/tools": "^0.1.28",
     "@iconify-json/carbon": "^1.1.36",
-    "@types/babel__core": "^7.20.5",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20.14.13",
