@@ -7,7 +7,7 @@ import type { Plugin } from 'vite';
 export function pluginIndexHtml(config: SiteConfig): Plugin {
   return {
     name: 'athen:index-html',
-    apply: 'serve',
+    // apply: 'serve',
     transformIndexHtml(html) {
       // Insert client entry script in development
       // And in production, we will insert it in ssr render

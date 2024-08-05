@@ -89,7 +89,7 @@ export interface UserConfig<ThemeConfig = unknown> {
   /**
    * Whether dark mode/light mode toggle button is displayed.
    */
-  appearance?: boolean;
+  colorScheme?: boolean;
   /**
    * The custom config of vite-plugin-route
    */
@@ -115,7 +115,7 @@ export interface SiteData<ThemeConfig = unknown> {
   icon: string;
   head: HeadConfig[];
   themeConfig: ThemeConfig;
-  appearance: boolean;
+  colorScheme: boolean;
 }
 
 export type PageType = 'home' | 'doc' | 'api' | 'custom' | '404';

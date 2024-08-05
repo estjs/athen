@@ -83,7 +83,7 @@
 
  .at-doc blockquote {
    margin: 16px 0;
-   border-left: 2px solid var(--island-c-divider);
+   border-left: 2px solid var(--Athen-c-divider);
    padding-left: 16px;
    transition: border-color 0.5s;
  }
@@ -91,19 +91,19 @@
  .at-doc blockquote > p {
    margin: 0;
    font-size: 16px;
-   color: var(--island-c-text-2);
+   color: var(--Athen-c-text-2);
    transition: color 0.5s;
  }
 
  .at-doc a {
    font-weight: 500;
-   color: var(--island-c-brand);
+   color: var(--Athen-c-brand);
    text-decoration-style: dotted;
    transition: color 0.25s;
  }
 
  .at-doc a:hover {
-   color: var(--island-c-brand-dark);
+   color: var(--Athen-c-brand-dark);
  }
 
  .at-doc strong {
@@ -149,28 +149,28 @@
  }
 
  .at-doc tr {
-   border-top: 1px solid var(--island-c-divider);
+   border-top: 1px solid var(--Athen-c-divider);
    transition: background-color 0.5s;
  }
 
  .at-doc tr:nth-child(2n) {
-   background-color: var(--island-c-bg-soft);
+   background-color: var(--Athen-c-bg-soft);
  }
 
  .at-doc th,
  .at-doc td {
-   border: 1px solid var(--island-c-divider);
+   border: 1px solid var(--Athen-c-divider);
    padding: 12px 16px;
  }
 
  .at-doc th {
    font-size: 16px;
    font-weight: 600;
-   background-color: var(--island-c-white-soft);
+   background-color: var(--Athen-c-white-soft);
  }
 
  .dark .at-doc th {
-   background-color: var(--island-c-black);
+   background-color: var(--Athen-c-black);
  }
 
  /**
@@ -180,7 +180,7 @@
  .at-doc hr {
    margin: 16px 0;
    border: none;
-   border-top: 1px solid var(--island-c-divider-light);
+   border-top: 1px solid var(--Athen-c-divider-light);
  }
 
  /**
@@ -212,7 +212,7 @@
  }
 
  .at-doc .custom-block code {
-   font-size: var(--island-custom-block-code-font-size);
+   font-size: var(--Athen-custom-block-code-font-size);
    font-weight: 700;
    color: inherit;
  }
@@ -232,14 +232,14 @@
 
  /* inline code */
  .at-doc :not(pre, h1, h2, h3, h4, h5, h6) > code {
-   font-size: var(--island-code-font-size);
+   font-size: var(--Athen-code-font-size);
  }
 
  .at-doc :not(pre, div) > code {
    border-radius: 4px;
    padding: 3px 6px;
-   color: var(--island-c-text-code);
-   background-color: var(--island-c-bg-mute);
+   color: var(--Athen-c-text-code);
+   background-color: var(--Athen-c-bg-mute);
    transition: color 0.5s, background-color 0.5s;
  }
 
@@ -250,18 +250,18 @@
  }
 
  .at-doc a > code {
-   color: var(--island-c-brand);
+   color: var(--Athen-c-brand);
    transition: color 0.25s;
  }
 
  .at-doc a:hover > code {
-   color: var(--island-c-brand-dark);
+   color: var(--Athen-c-brand-dark);
  }
 
  .at-doc div[class*='language-'] {
    position: relative;
    margin: 16px -24px;
-   background-color: var(--island-code-block-bg);
+   background-color: var(--Athen-code-block-bg);
    overflow-x: auto;
    transition: background-color 0.5s;
  }
@@ -281,7 +281,7 @@
 
  .at-doc div[class*='language-'] + div[class*='language-'],
  .at-doc div[class$='-api'] + div[class*='language-'],
- .island-doc
+ .Athen-doc
    div[class*='language-']
    + div[class$='-api']
    > div[class*='language-'] {
@@ -318,14 +318,14 @@
    padding: 0 24px;
    width: fit-content;
    min-width: 100%;
-   line-height: var(--island-code-line-height);
-   font-size: var(--island-code-font-size);
-   color: var(--island-code-block-color);
+   line-height: var(--Athen-code-line-height);
+   font-size: var(--Athen-code-font-size);
+   color: var(--Athen-code-block-color);
    transition: color 0.5s;
  }
 
  .at-doc [class*='language-'] code .highlighted {
-   background-color: var(--island-code-line-highlight-color);
+   background-color: var(--Athen-code-line-highlight-color);
    transition: background-color 0.5s;
    margin: 0 -24px;
    padding: 0 24px;
@@ -337,7 +337,7 @@
    padding-left: 32px;
  }
 
- .island-doc.line-number-disable div[class*='language-'].line-numbers-mode {
+ .Athen-doc.line-number-disable div[class*='language-'].line-numbers-mode {
    padding-left: 0px;
  }
 
@@ -350,16 +350,16 @@
    padding-top: 16px;
    width: 36px;
    text-align: center;
-   font-family: var(--island-font-family-mono);
-   line-height: var(--island-code-line-height);
-   font-size: var(--island-code-font-size);
-   color: var(--island-code-line-number-color);
+   font-family: var(--Athen-font-family-mono);
+   line-height: var(--Athen-code-line-height);
+   font-size: var(--Athen-code-font-size);
+   color: var(--Athen-code-line-number-color);
    transition: border-color 0.5s, color 0.5s;
    display: flex;
    flex-direction: column;
  }
 
- .island-doc.line-number-disable .line-numbers-wrapper {
+ .Athen-doc.line-number-disable .line-numbers-wrapper {
    display: none;
  }
 
@@ -374,10 +374,10 @@
    border-radius: 4px;
    width: 40px;
    height: 40px;
-   background-color: var(--island-code-block-bg);
+   background-color: var(--Athen-code-block-bg);
    opacity: 0;
    cursor: pointer;
-   background-image: var(--island-icon-copy);
+   background-image: var(--Athen-icon-copy);
    background-position: 50%;
    background-size: 20px;
    background-repeat: no-repeat;
@@ -390,14 +390,14 @@
  }
 
  .at-doc [class*='language-'] > button.copy:hover {
-   background-color: var(--island-code-copy-code-hover-bg);
+   background-color: var(--Athen-code-copy-code-hover-bg);
  }
 
  .at-doc [class*='language-'] > button.copy.copied,
  .at-doc [class*='language-'] > button.copy:hover.copied {
    border-radius: 0 4px 4px 0;
-   background-color: var(--island-code-copy-code-hover-bg);
-   background-image: var(--island-icon-copied);
+   background-color: var(--Athen-code-copy-code-hover-bg);
+   background-image: var(--Athen-icon-copied);
  }
 
  .at-doc [class*='language-'] > button.copy.copied::before,
@@ -412,8 +412,8 @@
    text-align: center;
    font-size: 12px;
    font-weight: 500;
-   color: var(--island-code-copy-code-active-text);
-   background-color: var(--island-code-copy-code-hover-bg);
+   color: var(--Athen-code-copy-code-active-text);
+   background-color: var(--Athen-code-copy-code-hover-bg);
    white-space: nowrap;
    content: 'Copied';
  }
@@ -425,7 +425,7 @@
    z-index: 2;
    font-size: 12px;
    font-weight: 500;
-   color: var(--island-c-text-dark-3);
+   color: var(--Athen-c-text-dark-3);
    transition: color 0.4s, opacity 0.4s;
  }
 
@@ -438,7 +438,7 @@
     * Custom container
     * -------------------------------------------------------------------------- */
 
- .at-doc .island-directive {
+ .at-doc .Athen-directive {
    border: 1px solid transparent;
    border-radius: 8px;
    padding: 16px 16px 8px;
@@ -447,43 +447,43 @@
    margin: 16px 0;
  }
 
- .at-doc .island-directive .island-directive-title {
+ .at-doc .Athen-directive .Athen-directive-title {
    font-weight: 700;
    margin: 0;
  }
 
- .at-doc .island-directive .island-directive-content p {
+ .at-doc .Athen-directive .Athen-directive-content p {
    margin: 8px 0;
  }
 
- .at-doc .island-directive .island-directive-icon {
+ .at-doc .Athen-directive .Athen-directive-icon {
    display: inline-block;
    width: 20px;
    height: 20px;
    margin-right: 3px;
-   background-image: var(--island-icon-tip);
+   background-image: var(--Athen-icon-tip);
  }
 
- .at-doc .island-directive.tip {
-   border-color: var(--island-custom-block-tip-border);
-   color: var(--island-custom-block-tip-text);
-   background-color: var(--island-custom-block-tip-bg);
+ .at-doc .Athen-directive.tip {
+   border-color: var(--Athen-custom-block-tip-border);
+   color: var(--Athen-custom-block-tip-text);
+   background-color: var(--Athen-custom-block-tip-bg);
  }
 
- .at-doc .island-directive.info {
-   border-color: var(--island-custom-block-info-border);
-   color: var(--island-custom-block-info-text);
-   background-color: var(--island-custom-block-info-bg);
+ .at-doc .Athen-directive.info {
+   border-color: var(--Athen-custom-block-info-border);
+   color: var(--Athen-custom-block-info-text);
+   background-color: var(--Athen-custom-block-info-bg);
  }
 
- .at-doc .island-directive.warning {
-   border-color: var(--island-custom-block-warning-border);
-   color: var(--island-custom-block-warning-text);
-   background-color: var(--island-custom-block-warning-bg);
+ .at-doc .Athen-directive.warning {
+   border-color: var(--Athen-custom-block-warning-border);
+   color: var(--Athen-custom-block-warning-text);
+   background-color: var(--Athen-custom-block-warning-bg);
  }
 
- .at-doc .island-directive.danger {
-   border-color: var(--island-custom-block-danger-border);
-   color: var(--island-custom-block-danger-text);
-   background-color: var(--island-custom-block-danger-bg);
+ .at-doc .Athen-directive.danger {
+   border-color: var(--Athen-custom-block-danger-border);
+   color: var(--Athen-custom-block-danger-text);
+   background-color: var(--Athen-custom-block-danger-bg);
  }

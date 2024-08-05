@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import fs from 'fs-extra';
 import { loadConfigFromFile } from 'vite';
-import type { SiteConfig, UserConfig } from '../shared/types';
+import type { DefaultTheme, HeadConfig, SiteConfig, SiteData, UserConfig } from '../shared/types';
 type RawConfig = UserConfig | Promise<UserConfig> | (() => UserConfig | Promise<UserConfig>);
 // import {isFn,isAsyncFn} from "@estjs/tools"
 
@@ -42,13 +42,45 @@ async function resolveUserConfig(
   return [configPath, {} as UserConfig] as const;
 }
 
+function resolveSiteDataHead(userConfig?: UserConfig): HeadConfig[] {
+  const head = userConfig?.head ?? [];
+
+  // add inline script to apply dark mode, if user enables the feature.
+  // this is required to prevent "flush" on initial page load.
+  if (userConfig?.appearance ?? true) {
+    head.push([
+      'script',
+      { id: 'check-dark-light' },
+      `
+        ;(() => {
+          const saved = localStorage.getItem('color-schema')
+          const prefereDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          if (!saved || saved === 'auto' ? prefereDark : saved === 'dark') {
+            document.documentElement.classList.add('dark')
+          }
+        })()
+      `,
+    ]);
+  }
+
+  return head;
+}
+
 // set default data
-export function resolveSiteData(userConfig: UserConfig): UserConfig {
+export function resolveSiteData(
+  root: string,
+  userConfig: UserConfig,
+): SiteData<DefaultTheme.Config> {
   return {
+    lang: userConfig.lang || 'en-US',
     title: userConfig.title || 'Athen',
-    description: userConfig.description || '',
+    description: userConfig.description || 'Athen',
     themeConfig: userConfig.themeConfig || {},
-    vite: userConfig.vite || {},
+    head: resolveSiteDataHead(userConfig),
+    base: userConfig.base || '',
+    icon: userConfig.icon || '',
+    root,
+    colorScheme: userConfig.colorScheme ?? true,
   };
 }
 export async function resolveConfig(
@@ -60,7 +92,7 @@ export async function resolveConfig(
   const siteConfig = {
     root,
     configPath,
-    siteData: resolveSiteData(userConfig as UserConfig),
+    siteData: resolveSiteData(root, userConfig as UserConfig),
   };
   return siteConfig as SiteConfig;
 }

@@ -5,6 +5,7 @@
 *.tgz
 coverage
 dist
+build
 lib-cov
 logs
 node_modules
