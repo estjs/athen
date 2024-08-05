@@ -65,7 +65,7 @@
     "@iconify-json/carbon": "^1.1.36",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.7",
-    "@types/node": "^20.14.13",
+    "@types/node": "^22.0.0",
     "cac": "^6.7.14",
     "dayjs": "^1.11.12",
     "fast-glob": "^3.3.2",
