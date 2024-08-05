@@ -23,6 +23,18 @@ export async function renderPage(root: string, clientBundle: RollupOutput, confi
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <title>title</title>
       <meta name="description" content="${version}">
+      ${
+        config.head
+          ? config.head
+              .map(([key, value]) => {
+                if (typeof value === 'object') {
+                  return `<${key} ${Object.entries(value).map(([k, v]) => `${k}="${v}"`)} />`;
+                }
+                return `<${key} />`;
+              })
+              .join('\n')
+          : ''
+      }
       <link rel="icon" href="${config.siteData!.icon}" type="image/svg+xml"></link>
             ${cssChunk
               .map(item => `<link rel="stylesheet" href="${withBase(item.fileName)}">`)

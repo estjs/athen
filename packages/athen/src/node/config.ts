@@ -47,7 +47,7 @@ function resolveSiteDataHead(userConfig?: UserConfig): HeadConfig[] {
 
   // add inline script to apply dark mode, if user enables the feature.
   // this is required to prevent "flush" on initial page load.
-  if (userConfig?.appearance ?? true) {
+  if (userConfig?.colorScheme ?? true) {
     head.push([
       'script',
       { id: 'check-dark-light' },
@@ -58,6 +58,34 @@ function resolveSiteDataHead(userConfig?: UserConfig): HeadConfig[] {
           if (!saved || saved === 'auto' ? prefereDark : saved === 'dark') {
             document.documentElement.classList.add('dark')
           }
+        })()
+      `,
+    ]);
+  }
+  if (userConfig?.langs) {
+    head.push([
+      'script',
+      { id: 'check-lang' },
+      `
+        ;(() => {
+            var base = '';
+            const withBase = p => base + p;
+            var langPrefixList = [withBase('/zh'), withBase('/en')];
+            var isIncludeLangPrefix = langPrefixList.some(function (langPrefix) {
+              return window.location.pathname.startsWith(langPrefix);
+            });
+            if (!isIncludeLangPrefix) {
+              if (typeof window !== 'undefined' && window.navigator) {
+                var langs = window.navigator.languages || [window.navigator.language]
+                if (langs.some(function (lang) { return lang.includes('zh') })) {
+                  window.location.href = withBase('/zh/');
+                } else {
+                  window.location.href = withBase('/en/');
+                }
+              } else {
+                window.location.href = withBase('/zh/');
+              }
+            }
         })()
       `,
     ]);

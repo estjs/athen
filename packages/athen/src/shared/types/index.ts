@@ -50,6 +50,11 @@ export interface UserConfig<ThemeConfig = unknown> {
    * Language of the site.
    */
   lang?: string;
+
+  /**
+   * Language of the site.
+   */
+  langs?: string[];
   /**
    * Title of the site.
    */
