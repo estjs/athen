@@ -1,7 +1,7 @@
 {
   "name": "@athen/create-athen",
   "version": "0.0.0",
-  "packageManager": "pnpm@7.9.2",
+  "packageManager": "pnpm@7.33.7",
   "description": "create template for athen",
   "type": "module",
   "keywords": [
