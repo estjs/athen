@@ -1,0 +1,363 @@
+# Theme Config
+
+import Locales from '../fragments/locales.mdx';
+
+The theme config is under the `themeConfig` in root config. For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    // ...
+  }
+});
+```
+
+## nav
+
+- Type: `Array`
+- Default: `[]`
+
+The navigation bar of the site. The `nav` config is an array of `NavItem`, which has following type:
+
+```ts
+interface NavItem {
+  // The text of the nav item
+  text: string;
+  // The link href will be entered when click the nav item
+  link: '/';
+  // The active match rule of the nav item, optional
+  activeMatch: '^/$|^/';
+}
+```
+
+The `activeMatch` is used to match the current route, and the nav item will be highlighted when the route matches the `activeMatch` rule.By default, the `activeMatch` is the `link` of the nav item.
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    nav: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+
+And you can also use the NavGroup config in `nav` array, which has following type:
+
+```ts
+interface NavGroup {
+  // The text of the nav group
+  text: string;
+  // The children of the nav group
+  items: NavItem[];
+}
+```
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    nav: [
+      {
+        text: 'Home',
+        items: [
+          {
+            text: 'Menu 1',
+            link: '/menu1'
+          },
+          {
+            text: 'Menu 2',
+            link: '/menu2'
+          }
+        ]
+      }
+    ]
+  }
+});
+```
+
+## sidebar
+
+- Type: `Object`
+
+The sidebar of the site.The config is a object, which
+
+```ts
+// The key is the path of the sidebar group
+// The value is sidebar group array
+type Sidebar = Record<string, SidebarGroup[]>;
+
+interface SidebarGroup {
+  // The text of the sidebar group
+  text: string;
+  // The child items of the sidebar group
+  items: SidebarItem[];
+  // Whether the sidebar group is collapsable, optional
+  collapsable?: boolean;
+  // The initial collapsed state of the sidebar group, optional
+  collapsed?: boolean;
+}
+
+type SidebarItem = {
+  // The text of item
+  text: string;
+  // The link href of item
+  link: string;
+};
+```
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    sidebar: {
+      '/guide/': [
+        {
+          text: 'Guide',
+          items: [
+            {
+              text: 'Getting Started',
+              link: '/guide/getting-started'
+            }
+          ]
+        }
+      ]
+    }
+  }
+});
+```
+
+## editLink
+
+- Type: `Object` | `undefined`
+- Default: `undefined`
+
+The edit link of the site.If it's undefined, the edit link feature will be disabled.
+
+The `editLink` config is an object of `EditLink`, which has following type:
+
+```ts
+export interface EditLink {
+  // Pattern for edit link.
+  pattern: string;
+  // Custom text for edit link.
+  text?: string;
+}
+```
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    editLink: {
+      pattern:
+        'https://github.com/estjs/athen/tree/master/docs/:path',
+      text: '📝 Edit this page on GitHub'
+    }
+  }
+});
+```
+
+`:path` will be replaced by the current page path.
+
+## lastUpdatedText
+
+- Type: `string`
+- Default: `"Last Updated"`
+
+The text of last updated time.
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    lastUpdatedText: 'Last Updated'
+  }
+});
+```
+
+## footer
+
+- Type: `Object`
+- Default: `{}`
+
+The footer of the home site.
+
+The `footer` config is an object of `Footer`, which has following type:
+
+```ts
+export interface Footer {
+  message?: string;
+  copyright?: string;
+}
+```
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    footer: {
+      message: 'Powered by Athen',
+      copyright: `© ${new Date().getFullYear()} estjs`
+    }
+  }
+});
+```
+
+## socialLinks
+
+- Type: `Array`
+- Default: `[]`
+
+The social links of the site.
+
+The `socialLinks` config is an array of `SocialLink`, which has following type:
+
+```ts
+export interface SocialLink {
+  icon: SocialLinkIcon;
+  link: string;
+}
+```
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    socialLinks: [
+      {
+        icon: 'github',
+        link: 'https://github.com/estjs/athen'
+      }
+    ]
+  }
+});
+```
+
+> In current version, the `icon` only supports `github`.
+
+## outlineTitle
+
+- Type: `string`
+- Default: 'ON THIS PAGE'
+
+Configure the title of the outline in the right sidebar.
+
+For example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    outlineTitle: 'ON THIS PAGE'
+  }
+});
+```
+
+## prevPageText
+
+- Type: `string`
+- Default: `Previous Page`
+
+The text of the previous page. for example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    prevPageText: 'Previous Page'
+  }
+});
+```
+
+## nextPageText
+
+- Type: `string`
+- Default: `Next Page`
+
+Text for the next page. for example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    nextPageText: 'Next Page'
+  }
+});
+```
+
+## locales
+
+- Type: `Object`
+- Default: `undefined`
+
+I18n config. This config is an object, the key is the routing prefix of the corresponding language (such as `/en`), the value is `LocaleConfig`, the type is as follows:
+
+<Locales />
+
+## search
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to enable search.You can disable it by setting it to `false`:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    search: false
+  }
+});
+```
+
+## backTop
+
+- Typs: `object | boolean`
+- Default: `true`
+
+Whether to enable back top.You can disable it by setting it to `false`:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    backTop: false
+  }
+});
+```
+
+P

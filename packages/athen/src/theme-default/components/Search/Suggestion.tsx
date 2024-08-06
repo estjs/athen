@@ -42,7 +42,7 @@ export function SuggestionContent(props: {
 
   return (
     <div
-      class={`b-b-1 b-r-none b-[var(--at-c-divider)] dark:bg-#333 p-x-3 p-y-2 hover:bg-[#f3f4f5] text-[#2c3e50] dark:text-#eee  duration-200 dark:hover:bg-black ${
+      class={`b-b-1 b-r-none b-border-default dark:bg-#333 p-x-3 p-y-2 hover:bg-[#f3f4f5] text-[#2c3e50] dark:text-#eee  duration-200 dark:hover:bg-black ${
         props.isCurrent ? 'bg-[#f3f4f5]' : 'bg-white'
       }`}
     >

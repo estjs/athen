@@ -1,4 +1,4 @@
-const APPEARANCE_KEY = 'color-schema';
+const COLOR_SCHEME_KEY = 'color-schema';
 
 export function toggle() {
   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
@@ -12,20 +12,20 @@ export function toggle() {
       }
     };
 
-    const updateAppearance = () => {
-      const userPreference = localStorage.getItem(APPEARANCE_KEY);
+    const updateColorScheme = () => {
+      const userPreference = localStorage.getItem(COLOR_SCHEME_KEY);
       setClassList(userPreference === 'dark');
     };
 
-    updateAppearance();
-    window.addEventListener('storage', updateAppearance);
+    updateColorScheme();
+    window.addEventListener('storage', updateColorScheme);
 
     if (classList && classList.contains('dark')) {
       setClassList(false);
-      localStorage.setItem(APPEARANCE_KEY, 'light');
+      localStorage.setItem(COLOR_SCHEME_KEY, 'light');
     } else {
       setClassList(true);
-      localStorage.setItem(APPEARANCE_KEY, 'dark');
+      localStorage.setItem(COLOR_SCHEME_KEY, 'dark');
     }
   }
 }

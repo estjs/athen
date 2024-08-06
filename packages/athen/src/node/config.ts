@@ -42,9 +42,8 @@ async function resolveUserConfig(
   return [configPath, {} as UserConfig] as const;
 }
 
-function resolveSiteDataHead(userConfig?: UserConfig): HeadConfig[] {
+function resolveSiteDataHead(userConfig?: UserConfig<DefaultTheme.Config>): HeadConfig[] {
   const head = userConfig?.head ?? [];
-
   // add inline script to apply dark mode, if user enables the feature.
   // this is required to prevent "flush" on initial page load.
   if (userConfig?.colorScheme ?? true) {
@@ -63,7 +62,7 @@ function resolveSiteDataHead(userConfig?: UserConfig): HeadConfig[] {
       `,
     ]);
   }
-  if (userConfig?.langs) {
+  if (userConfig?.langs || userConfig?.themeConfig?.locales) {
     head.push([
       'script',
       { id: 'check-lang' },
@@ -98,7 +97,7 @@ function resolveSiteDataHead(userConfig?: UserConfig): HeadConfig[] {
 // set default data
 export function resolveSiteData(
   root: string,
-  userConfig: UserConfig,
+  userConfig: UserConfig<DefaultTheme.Config>,
 ): SiteData<DefaultTheme.Config> {
   return {
     lang: userConfig.lang || 'en-US',
@@ -121,7 +120,7 @@ export async function resolveConfig(
   const siteConfig = {
     root,
     configPath,
-    siteData: resolveSiteData(root, userConfig as UserConfig),
+    siteData: resolveSiteData(root, userConfig as UserConfig<DefaultTheme.Config>),
   };
   return siteConfig as SiteConfig;
 }

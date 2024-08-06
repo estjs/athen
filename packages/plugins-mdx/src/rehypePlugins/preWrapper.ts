@@ -5,12 +5,11 @@ import type { Element, Root } from 'hast';
 export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
   return tree => {
     visit(tree, 'element', node => {
-      // <pre><code class="language-js">...</code></pre> => <div class="language-js"><span class="lang"></span><pre><code class="language-js">...</code></pre></div>
       if (
         node.tagName === 'pre' &&
         node.children[0]?.type === 'element' &&
         node.children[0].tagName === 'code' &&
-        (!node.data as any)?.isVisited
+        !(node.data as any)?.isVisited
       ) {
         const codeNode = node.children[0];
         const codeClassName = codeNode.properties?.className?.toString() || '';
@@ -18,7 +17,7 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
         if (!codeClassName || !lang) {
           return;
         }
-        codeNode.properties!.className = '';
+
         const clonedNode = {
           type: 'element',
           tagName: 'pre',

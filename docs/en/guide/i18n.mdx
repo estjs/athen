@@ -1,0 +1,56 @@
+# I18n
+
+import Locales from '../fragments/locales.mdx';
+
+Athen provides a set of out-of-the-box internationalization solutions. Next, we will introduce how to integrate it in your project.
+
+## Project Structure
+
+We recommend that you place documents in different languages in different subdirectories. For example:
+
+```bash
+docs
+├── en
+│   ├── guide
+│   │   ├── basic.md
+│   │   ├── sidebar.md
+│   │   └── theme.md
+│   └── index.md
+└── zh
+    ├── guide
+    │   ├── basic.md
+    │   ├── sidebar.md
+    │   └── theme.md
+    └── index.md
+```
+
+> `index.md` generally represents the Home page.
+
+## locales config
+
+In the config file, you need to add the `themeConfig.locales` field to configure various parts for different languages. for example:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    locales: {
+      '/zh/': {
+        lang: 'zh-CN',
+        title: 'Athen',
+        description: 'Athen 是一个基于 Vite & Essor 的文档生成工具'
+      },
+      '/en/': {
+        lang: 'en-US',
+        title: 'Athen',
+        description: 'Athen is a documentation generator based on Vite & Essor'
+      }
+    }
+  }
+});
+```
+
+The key of locales is the route prefix of the corresponding language, and the value is `LocaleConfig`. There is the type of `LocaleConfig`:
+
+<Locales />

@@ -1,6 +1,6 @@
 import { createMemoryHistory, createWebHistory } from 'essor-router';
 import { useProvide } from 'essor';
-import Layout from '../theme-default';
+import Layout, { setup } from '../theme-default';
 import { createRouter, initPageData } from './router';
 import type { Router } from '@/shared/types';
 
@@ -18,6 +18,7 @@ async function ClientEntry(client = false, route?: Router) {
     const pageData = await initPageData(location.pathname);
 
     function ClientRender() {
+      setup();
       useProvide('pageData', pageData);
       return <Layout />;
     }

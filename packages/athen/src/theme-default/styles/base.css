@@ -194,12 +194,12 @@ textarea::placeholder {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+  -webkit-colorScheme: none;
   margin: 0;
 }
 
 input[type='number'] {
-  -moz-appearance: textfield;
+  -moz-colorScheme: textfield;
 }
 
 textarea {
@@ -207,7 +207,7 @@ textarea {
 }
 
 select {
-  -webkit-appearance: none;
+  -webkit-colorScheme: none;
 }
 
 fieldset {

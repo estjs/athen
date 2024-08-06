@@ -1,5 +1,5 @@
 import { useSignal } from 'essor';
-import { toggle } from './toggleAppearance';
+import { toggle } from './toggleColorScheme';
 export function Switch() {
   const isDark = useSignal(false);
 

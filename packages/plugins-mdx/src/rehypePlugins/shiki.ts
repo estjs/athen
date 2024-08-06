@@ -30,7 +30,9 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ high
         node.children[0].tagName === 'code'
       ) {
         const codeNode = node.children[0];
+
         const codeContent = (node.children[0].children[0] as Text).value;
+
         const codeClassName = codeNode.properties?.className?.toString() || '';
 
         const highlightLinesReg = /language-([a-z]*)\s*({[\d,-]*})?/i;
@@ -68,6 +70,7 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ high
           lang,
           theme: 'dark-plus',
         });
+
         const fragmentAst = fromHtml(highlightedCode, { fragment: true });
 
         // @ts-expect-error

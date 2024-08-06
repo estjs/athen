@@ -9,13 +9,13 @@ const NavHeader = () => {
 
   return (
     <header class="fixed left-0 top-0 z-10 w-full">
-      <div class="nav h-14 flex items-center justify-between border-b b-[var(--at-c-divider)]">
+      <div class="nav h-14 flex items-center justify-between border-b b-border-default b-b-solid">
         <div>
           <a
             href={localeData.langRoutePrefix || '/'}
             class="h-full w-full flex items-center text-xl font-semibold hover:opacity-60"
           >
-            Athen
+            {localeData.title}
           </a>
         </div>
 

@@ -1,7 +1,7 @@
 {
-  "name": "@athen/create-athen",
+  "name": "create-athen",
   "version": "0.0.0",
-  "packageManager": "pnpm@7.9.2",
+  "packageManager": "pnpm@9.6.0",
   "description": "create template for athen",
   "type": "module",
   "keywords": [
@@ -35,13 +35,13 @@
   },
   "dependencies": {
     "execa": "5",
-    "kolorist": "^1.7.0",
-    "minimist": "^1.2.7",
+    "kolorist": "^1.8.0",
+    "minimist": "^1.2.8",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@types/minimist": "^1.2.2",
-    "@types/prompts": "^2.4.2"
+    "@types/minimist": "^1.2.5",
+    "@types/prompts": "^2.4.9"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,json}": [

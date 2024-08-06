@@ -108,14 +108,12 @@ export function Search(props: { langRoutePrefix: string }) {
         }}
         ref={searchInputRef}
       />
-      <div
-        class={`mr-3 w-10 h-6 px-1.5 rounded-md border border-gray-light-3 text-xs text-gray-light-3 flex items-center justify-around searchCommand`}
-      >
+      <div class="searchCommand mr-3 h-6 w-10 flex items-center justify-around border border-gray-light-3 rounded-md b-solid px-1.5 text-xs text-gray-light-3">
         <span>⌘</span>
         <span>K</span>
       </div>
       {focused.value && (
-        <ul class="fixed left-0 top-8 z-60 w-100% list-none of-hidden border-1 b-[var(--at-c-divider)] rounded-md bg-white shadow-sm sm:absolute sm:max-w-700px sm:min-w-500px dark:bg-#1e1e1e">
+        <ul class="fixed left-0 top-8 z-60 w-100% list-none of-hidden border-1 b-border-default rounded-md b-solid bg-white shadow-sm sm:absolute sm:max-w-700px sm:min-w-500px dark:bg-#1e1e1e">
           {/* Show the suggestions */}
           {suggestions.value.map((item, index) => (
             <li key={item.title} class="w-100% border-collapse cursor-pointer rounded-sm">

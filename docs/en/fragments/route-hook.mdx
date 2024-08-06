@@ -1,0 +1,10 @@
+Athen uses [essor-router](https://github.com/estjs/essor-router) internally to implement routing, so you can use `essor-ruter` Hook directly, for example:
+
+```ts
+import { useLocation } from 'athen/runtime';
+
+function Layout() {
+  const location = useLocation();
+  return <div>Current location: {location.pathname}</div>;
+}
+```

@@ -1,0 +1,224 @@
+# Using MDX
+
+Athen supports [MDX](https://mdxjs.com/), which is a powerful way to write content. You can write, import and use Essor components in Markdown file.
+
+## Markdown
+
+MDX is the super set of Markdown, which means you can write Markdown file as usual. For example:
+
+```md
+# Hello World
+```
+
+## Use Components
+
+When you want to use Essor components in Markdown file, you should name your file with `.mdx` extension. For example:
+
+```mdx
+// docs/index.mdx
+import { CustomComponent } from './custom';
+
+# Hello World
+
+<CustomComponent />
+```
+
+## Front Matter
+
+You can use [Front Matter](https://jekyllrb.com/docs/front-matter/) to add metadata to your Markdown file. For example:
+
+```mdx
+---
+title: Hello World
+---
+```
+
+> Note: by default, Athen use h1 title as the title of html.
+
+You can also access the property defined in front matter, for example:
+
+```mdx
+---
+title: Hello World
+---
+
+# {frontmatter.title}
+```
+
+The properties defined in front matter will be passed to the component as `meta` property. So the final output will be:
+
+```html
+<h1>Hello World</h1>
+```
+
+You can see more front matter config detail in [config-front-matter](/en/api/config-front-matter).
+
+## Custom Containers
+
+**Input:**
+
+```markdown
+:::tip
+This is a `tip`.
+:::
+
+:::info
+This ia an `info` box.
+:::
+
+:::warning
+This is a warning.
+:::
+
+:::danger
+This is a dangerous warning.
+:::
+
+:::other
+`tip` as a custom container of the bottom-line type
+:::
+
+:::tip{title='Custom title'}
+`tip` for customizing the title
+:::
+```
+
+**Output:**
+
+:::tip
+This is a `tip`.
+:::
+
+:::info
+This ia an `info` box.
+:::
+
+:::warning
+This is a warning.
+:::
+
+:::danger
+This is a dangerous warning.
+:::
+
+:::other
+`tip` as a custom container of the bottom-line type.
+:::
+
+:::tip{title='Custom title'}
+`tip` for customizing the title
+:::
+
+## Emoji
+
+**Input:**
+
+```bash
+:tada: :100: :laughing:
+```
+
+**Output:**
+
+:tada: :100: :laughing:
+
+The complete emoji list cound be found in the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/).
+
+## Code Line Highlighting
+
+Athen supports highlighting of specified code lines. You can specify line highlighting in any of the following ways.
+
+**Input:**
+
+````bash
+```js{1}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+````
+
+**Output:**
+
+```js{1}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+
+In addition to highlight the single line, you can also specify multiple lines to highlight at a time.
+
+- A Line Range: `{1-10}`
+- Multiple single lines: `{1,3,5}`
+- Combine Line Range and Single Lines：`{3,5-13,20}`
+
+**Input:**
+
+````bash
+```js{1,4-7,10}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+````
+
+**Output:**
+
+```js{1,4-7,10}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+
+## Codeblock Line Numbers
+
+If you hold that codeblock shows the line numbers, you can open it through this config.
+
+```js{5}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  markdown: {
+    lineNumbers: true
+  }
+});
+```

@@ -15,7 +15,7 @@ export function SideBar() {
     <aside class="sidebar">
       <nav>
         {sidebarData.map((item, index) => (
-          <section  class="mt-4 border-t b-[var(--at-c-divider)] first:mt-4">
+          <section  class="mt-4 border-t b-border-default first:mt-4">
             <div class="flex items-center justify-between">
               <h2 class="mb-2 mt-3 text-16px font-bold">
                 {item.link ? (

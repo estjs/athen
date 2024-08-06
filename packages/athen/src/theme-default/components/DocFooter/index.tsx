@@ -20,7 +20,7 @@ const DocFooter = () => {
       <div class="xs:flex flex items-center justify-between p-b-5">
         {editLink ? (
           <a
-            class="text-brand hover:text-brand-dark flex items-center text-sm font-medium leading-8 transition-colors duration-300"
+            class="flex items-center text-sm text-brand font-medium leading-8 transition-colors duration-300 hover:text-brand-dark"
             href={editLink.link}
           >
             {editLink.text}
@@ -35,15 +35,15 @@ const DocFooter = () => {
         </div>
       </div>
 
-      <div class="flex gap-2 border-t b-[var(--at-c-divider)] pt-6">
+      <div class="flex gap-2 border-t b-border-default pt-6">
         <div class="prev w-1/2 flex flex-col">
           {prevPage && (
             <a
               href={prevPage.link}
-              class="hover:border-brand block h-full w-full border b-[var(--at-c-divider)] rounded-lg border-solid p-2 transition-colors"
+              class="block h-full w-full border b-border-default rounded-lg border-solid p-2 transition-colors hover:border-brand"
             >
               <span class="block text-sm text-gray-500 font-medium">{prevPageText}</span>
-              <span class="text-brand hover:text-brand-dark block text-base font-medium transition-colors">
+              <span class="block text-base text-brand font-medium transition-colors hover:text-brand-dark">
                 {prevPage.text}
               </span>
             </a>
@@ -53,10 +53,10 @@ const DocFooter = () => {
           {nextPage && (
             <a
               href={nextPage.link}
-              class="hover:border-brand ml-auto block h-full w-full border b-[var(--at-c-divider)] rounded-lg border-solid p-2 text-right transition-colors"
+              class="ml-auto block h-full w-full border b-border-default rounded-lg border-solid p-2 text-right transition-colors hover:border-brand"
             >
               <span class="block text-sm text-gray-500 font-medium">{nextPageText}</span>
-              <span class="text-brand hover:text-brand-dark block text-base font-medium transition-colors">
+              <span class="block text-base text-brand font-medium transition-colors hover:text-brand-dark">
                 {nextPage.text}
               </span>
             </a>

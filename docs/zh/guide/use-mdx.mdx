@@ -1,0 +1,214 @@
+---
+title: '使用 MDX'
+---
+
+# 使用 MDX
+
+Athen 支持 [Mdx](https://mdxjs.com/)，这是一种功能强大的内容开发方式，你可以在 Markdown 文件中导入和使用 Essor 组件。
+
+## Markdown
+
+MDX 是 Markdown 的超集，这意味着可以像往常一样编写 Markdown 文件。例如：
+
+```md
+# Hello World
+```
+
+## 使用组件
+
+当你想在 Markdown 文件中使用 Essor 组件时，你应该使用 `.mdx` 扩展名来命名你的文件。例如：
+
+```mdx
+// docs/index.mdx
+import { CustomComponent } from './custom';
+
+# Hello World
+
+<CustomComponent />
+```
+
+## Front Matter
+
+你可以在 Markdown 文件的开头添加 Front Matter，它是一个 YAML 格式的对象，用于定义一些元数据。例如：
+
+```mdx
+---
+title: Hello World
+---
+```
+
+> 注意：默认情况下，Athen 使用 h1 标题作为 html 的标题。
+
+你还可以在正文中访问 Front Mattter 中定义的属性，例如：
+
+```mdx
+---
+title: Hello World
+---
+
+# {frontmatter.title}
+```
+
+前面定义的属性将作为 `meta` 属性传递给组件。所以最终输出将是：
+
+```html
+<h1>Hello World</h1>
+```
+
+更多的配置详情请参考 [config-front-matter](/zh/api/config-front-matter)。
+
+## 自定义容器
+
+**输入：**
+
+```markdown
+:::tip
+这是一个`tip`类型的`block`
+:::
+
+:::info
+这是一个`info`类型的`block`
+:::
+
+:::warning
+这是一个`warning`类型的`block`
+:::
+
+:::danger
+这是一个`danger`类型的`block`
+:::
+
+:::other
+`tip`作为兜底类型的`block`
+:::
+
+:::tip{title=自定义标题}
+自定义标题的 `block`
+:::
+```
+
+**输出：**
+
+:::tip
+这是一个 `tip` 类型的 `block`
+:::
+
+:::info
+这是一个 `info` 类型的 `block`
+:::
+
+:::warning
+这是一个 `warning` 类型的 `block`
+:::
+
+:::danger
+这是一个 `danger` 类型的 `block`
+:::
+
+:::other
+`tip` 作为兜底类型的 `block`
+:::
+
+:::tip{title=自定义标题}
+自定义标题的 `block`
+:::
+
+## Emoji
+
+**输入：**
+
+```bash
+:tada: :100: :laughing:
+```
+
+**输出：**
+
+:tada: :100: :laughing:
+
+完整的表情列表可以在 [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) 中查看。
+
+## 指定代码行高亮
+
+Athen 支持指定代码行的高亮显示。你可以用以下任意方式指定代码行高亮。
+
+**输入：**
+
+````bash
+```js{1}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+````
+
+**输出：**
+
+```js{1}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+
+除了单行之外，你还可以同时指定多行代码高亮。
+
+- 指定一个范围：`{1-10}`
+- 指定多个单行：`{1,3,5}`
+- 多行和单行结合：`{3,5-13,20}`
+
+**输入：**
+
+````bash
+```js{1,4-7,10}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```
+````
+
+**输出：**
+
+```js{1,4-7,10}
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+        activeMatch: '^/$|^/'
+      }
+    ]
+  }
+});
+```

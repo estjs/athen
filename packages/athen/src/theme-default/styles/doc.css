@@ -83,7 +83,7 @@
 
  .at-doc blockquote {
    margin: 16px 0;
-   border-left: 2px solid var(--Athen-c-divider);
+   border-left: 2px solid var(--at-c-divider);
    padding-left: 16px;
    transition: border-color 0.5s;
  }
@@ -91,19 +91,19 @@
  .at-doc blockquote > p {
    margin: 0;
    font-size: 16px;
-   color: var(--Athen-c-text-2);
+   color: var(--at-c-text-2);
    transition: color 0.5s;
  }
 
  .at-doc a {
    font-weight: 500;
-   color: var(--Athen-c-brand);
+   color: var(--at-c-brand);
    text-decoration-style: dotted;
    transition: color 0.25s;
  }
 
  .at-doc a:hover {
-   color: var(--Athen-c-brand-dark);
+   color: var(--at-c-brand-dark);
  }
 
  .at-doc strong {
@@ -149,28 +149,28 @@
  }
 
  .at-doc tr {
-   border-top: 1px solid var(--Athen-c-divider);
+   border-top: 1px solid var(--at-c-divider);
    transition: background-color 0.5s;
  }
 
  .at-doc tr:nth-child(2n) {
-   background-color: var(--Athen-c-bg-soft);
+   background-color: var(--at-c-bg-soft);
  }
 
  .at-doc th,
  .at-doc td {
-   border: 1px solid var(--Athen-c-divider);
+   border: 1px solid var(--at-c-divider);
    padding: 12px 16px;
  }
 
  .at-doc th {
    font-size: 16px;
    font-weight: 600;
-   background-color: var(--Athen-c-white-soft);
+   background-color: var(--at-c-white-soft);
  }
 
  .dark .at-doc th {
-   background-color: var(--Athen-c-black);
+   background-color: var(--at-c-black);
  }
 
  /**
@@ -180,7 +180,7 @@
  .at-doc hr {
    margin: 16px 0;
    border: none;
-   border-top: 1px solid var(--Athen-c-divider-light);
+   border-top: 1px solid var(--at-c-divider-light);
  }
 
  /**
@@ -212,7 +212,7 @@
  }
 
  .at-doc .custom-block code {
-   font-size: var(--Athen-custom-block-code-font-size);
+   font-size: var(--at-custom-block-code-font-size);
    font-weight: 700;
    color: inherit;
  }
@@ -232,14 +232,14 @@
 
  /* inline code */
  .at-doc :not(pre, h1, h2, h3, h4, h5, h6) > code {
-   font-size: var(--Athen-code-font-size);
+   font-size: var(--at-code-font-size);
  }
 
  .at-doc :not(pre, div) > code {
    border-radius: 4px;
    padding: 3px 6px;
-   color: var(--Athen-c-text-code);
-   background-color: var(--Athen-c-bg-mute);
+   color: var(--at-c-text-code);
+   background-color: var(--at-c-bg-mute);
    transition: color 0.5s, background-color 0.5s;
  }
 
@@ -250,18 +250,18 @@
  }
 
  .at-doc a > code {
-   color: var(--Athen-c-brand);
+   color: var(--at-c-brand);
    transition: color 0.25s;
  }
 
  .at-doc a:hover > code {
-   color: var(--Athen-c-brand-dark);
+   color: var(--at-c-brand-dark);
  }
 
  .at-doc div[class*='language-'] {
    position: relative;
    margin: 16px -24px;
-   background-color: var(--Athen-code-block-bg);
+   background-color: var(--at-code-block-bg);
    overflow-x: auto;
    transition: background-color 0.5s;
  }
@@ -318,14 +318,14 @@
    padding: 0 24px;
    width: fit-content;
    min-width: 100%;
-   line-height: var(--Athen-code-line-height);
-   font-size: var(--Athen-code-font-size);
-   color: var(--Athen-code-block-color);
+   line-height: var(--at-code-line-height);
+   font-size: var(--at-code-font-size);
+   color: var(--at-code-block-color);
    transition: color 0.5s;
  }
 
  .at-doc [class*='language-'] code .highlighted {
-   background-color: var(--Athen-code-line-highlight-color);
+   background-color: var(--at-code-line-highlight-color);
    transition: background-color 0.5s;
    margin: 0 -24px;
    padding: 0 24px;
@@ -350,10 +350,10 @@
    padding-top: 16px;
    width: 36px;
    text-align: center;
-   font-family: var(--Athen-font-family-mono);
-   line-height: var(--Athen-code-line-height);
-   font-size: var(--Athen-code-font-size);
-   color: var(--Athen-code-line-number-color);
+   font-family: var(--at-font-family-mono);
+   line-height: var(--at-code-line-height);
+   font-size: var(--at-code-font-size);
+   color: var(--at-code-line-number-color);
    transition: border-color 0.5s, color 0.5s;
    display: flex;
    flex-direction: column;
@@ -374,10 +374,10 @@
    border-radius: 4px;
    width: 40px;
    height: 40px;
-   background-color: var(--Athen-code-block-bg);
+   background-color: var(--at-code-block-bg);
    opacity: 0;
    cursor: pointer;
-   background-image: var(--Athen-icon-copy);
+   background-image: var(--at-icon-copy);
    background-position: 50%;
    background-size: 20px;
    background-repeat: no-repeat;
@@ -390,14 +390,14 @@
  }
 
  .at-doc [class*='language-'] > button.copy:hover {
-   background-color: var(--Athen-code-copy-code-hover-bg);
+   background-color: var(--at-code-copy-code-hover-bg);
  }
 
  .at-doc [class*='language-'] > button.copy.copied,
  .at-doc [class*='language-'] > button.copy:hover.copied {
    border-radius: 0 4px 4px 0;
-   background-color: var(--Athen-code-copy-code-hover-bg);
-   background-image: var(--Athen-icon-copied);
+   background-color: var(--at-code-copy-code-hover-bg);
+   background-image: var(--at-icon-copied);
  }
 
  .at-doc [class*='language-'] > button.copy.copied::before,
@@ -412,8 +412,8 @@
    text-align: center;
    font-size: 12px;
    font-weight: 500;
-   color: var(--Athen-code-copy-code-active-text);
-   background-color: var(--Athen-code-copy-code-hover-bg);
+   color: var(--at-code-copy-code-active-text);
+   background-color: var(--at-code-copy-code-hover-bg);
    white-space: nowrap;
    content: 'Copied';
  }
@@ -425,7 +425,7 @@
    z-index: 2;
    font-size: 12px;
    font-weight: 500;
-   color: var(--Athen-c-text-dark-3);
+   color: var(--at-c-text-dark-3);
    transition: color 0.4s, opacity 0.4s;
  }
 
@@ -461,29 +461,29 @@
    width: 20px;
    height: 20px;
    margin-right: 3px;
-   background-image: var(--Athen-icon-tip);
+   background-image: var(--at-icon-tip);
  }
 
  .at-doc .Athen-directive.tip {
-   border-color: var(--Athen-custom-block-tip-border);
-   color: var(--Athen-custom-block-tip-text);
-   background-color: var(--Athen-custom-block-tip-bg);
+   border-color: var(--at-custom-block-tip-border);
+   color: var(--at-custom-block-tip-text);
+   background-color: var(--at-custom-block-tip-bg);
  }
 
  .at-doc .Athen-directive.info {
-   border-color: var(--Athen-custom-block-info-border);
-   color: var(--Athen-custom-block-info-text);
-   background-color: var(--Athen-custom-block-info-bg);
+   border-color: var(--at-custom-block-info-border);
+   color: var(--at-custom-block-info-text);
+   background-color: var(--at-custom-block-info-bg);
  }
 
  .at-doc .Athen-directive.warning {
-   border-color: var(--Athen-custom-block-warning-border);
-   color: var(--Athen-custom-block-warning-text);
-   background-color: var(--Athen-custom-block-warning-bg);
+   border-color: var(--at-custom-block-warning-border);
+   color: var(--at-custom-block-warning-text);
+   background-color: var(--at-custom-block-warning-bg);
  }
 
  .at-doc .Athen-directive.danger {
-   border-color: var(--Athen-custom-block-danger-border);
-   color: var(--Athen-custom-block-danger-text);
-   background-color: var(--Athen-custom-block-danger-bg);
+   border-color: var(--at-custom-block-danger-border);
+   color: var(--at-custom-block-danger-text);
+   background-color: var(--at-custom-block-danger-bg);
  }

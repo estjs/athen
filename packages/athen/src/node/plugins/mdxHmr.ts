@@ -1,6 +1,6 @@
 import babel from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
-import { MD_REGEX, TS_REGEX } from '@/node/constants';
+import { MD_REGEX, SX_REGEX } from '@/node/constants';
 import { RouteService } from './router/routeService';
 import type { Plugin } from 'vite';
 import type { SiteConfig } from '@/shared/types/index';
@@ -11,7 +11,7 @@ export function pluginMdxHMR(config: SiteConfig, isServer): Plugin {
     apply: 'serve',
 
     transform(code, id, opts) {
-      if (MD_REGEX.test(id) || TS_REGEX.test(id)) {
+      if (MD_REGEX.test(id) || SX_REGEX.test(id)) {
         const result = babel.transformSync(code, {
           filename: `${id}`,
           sourceType: 'module',
