@@ -15,27 +15,30 @@ export async function renderPage(root: string, clientBundle: RollupOutput, confi
   const cssChunk = clientBundle.output.filter(
     chunk => chunk.type === 'asset' && chunk.fileName.endsWith('.css'),
   );
+
   const html = `
   <!DOCTYPE html>
   <html>
     <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>title</title>
+      <meta charset=utf-8>
+      <meta http-equiv=X-UA-Compatible content="IE=edge">
+      <meta name=viewport content="width=device-width,initial-scale=1">
+      <title>${config.siteData!.title || 'Athen'}</title>
       <meta name="description" content="${version}">
       ${
-        config.head
-          ? config.head
-              .map(([key, value]) => {
+        config.siteData!.head
+          ? config
+              .siteData!.head.map(([key, value, content]) => {
                 if (typeof value === 'object') {
-                  return `<${key} ${Object.entries(value).map(([k, v]) => `${k}="${v}"`)} />`;
+                  return `<${key} ${Object.entries(value).map(([k, v]) => `${k}="${v}"`)}>${content}</${key}>`;
+                } else {
+                  return `<${key}>${content}</${key}>`;
                 }
-                return `<${key} />`;
               })
               .join('\n')
           : ''
       }
-      <link rel="icon" href="${config.siteData!.icon}" type="image/svg+xml"></link>
+      <link rel="icon" href="${config.siteData!.icon}" type="image/svg+xml">
             ${cssChunk
               .map(item => `<link rel="stylesheet" href="${withBase(item.fileName)}">`)
               .join('\n')}

@@ -52,13 +52,14 @@ function resolveSiteDataHead(userConfig?: UserConfig): HeadConfig[] {
       'script',
       { id: 'check-dark-light' },
       `
-        ;(() => {
-          const saved = localStorage.getItem('color-schema')
-          const prefereDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-          if (!saved || saved === 'auto' ? prefereDark : saved === 'dark') {
-            document.documentElement.classList.add('dark')
-          }
-        })()
+     ;(function () {
+      const prefersDark =
+        window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const setting = localStorage.getItem('color-schema') || 'auto';
+      if (setting === 'dark' || (prefersDark && setting !== 'light')) {
+        document.documentElement.classList.toggle('dark', true);
+      }
+    })();
       `,
     ]);
   }
