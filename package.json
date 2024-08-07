@@ -1,7 +1,7 @@
 {
   "name": "athen-monorepo",
   "version": "0.0.0",
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@9.7.0",
   "type": "module",
   "license": "MIT",
   "homepage": "https://github.com/estjs/athen#readme",
