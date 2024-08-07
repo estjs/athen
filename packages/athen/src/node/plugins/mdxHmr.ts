@@ -1,4 +1,4 @@
-import babel from '@babel/core';
+import { transformSync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
 import { MD_REGEX, SX_REGEX } from '@/node/constants';
 import { RouteService } from './router/routeService';
@@ -12,7 +12,7 @@ export function pluginMdxHMR(config: SiteConfig, isServer): Plugin {
 
     transform(code, id, opts) {
       if (MD_REGEX.test(id) || SX_REGEX.test(id)) {
-        const result = babel.transformSync(code, {
+        const result = transformSync(code, {
           filename: `${id}`,
           sourceType: 'module',
           plugins: [[BabelPluginEssor, { ...opts, ssg: !isServer }]],

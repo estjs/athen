@@ -8,6 +8,7 @@ import unocssOptions from './unocss';
 import { RouteService } from './router/routeService';
 import { pluginMdxHMR } from './mdxHmr';
 import { pluginAthen } from './athen';
+import { pluginSvgr } from './svgr';
 import type { SiteConfig } from '../../shared/types';
 
 export async function createVitePlugins(
@@ -25,7 +26,7 @@ export async function createVitePlugins(
     EnvironmentPlugin([]),
     pluginAthen(config, restartServer),
     pluginRoute({ root: config.root }, config.siteData),
-
+    pluginSvgr(),
     Inspect(),
   ];
 }

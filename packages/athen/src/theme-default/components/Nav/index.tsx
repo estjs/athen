@@ -1,11 +1,37 @@
 import './style.scss';
 
 import { useLocaleSiteData } from '@theme-default/hooks';
+import { usePageData } from '@/runtime';
 import { Switch } from '../Switch';
 import Search from '../Search';
+import { NavMenuGroup, type NavMenuGroupItem } from './NavMenuGroup';
+
+const NavTranslations = ({ translationMenuData }: { translationMenuData?: NavMenuGroupItem }) => {
+  return (
+    <div className="translation before:menu-item-before flex items-center text-sm font-bold">
+      <div m="x-1.5">
+        <NavMenuGroup {...translationMenuData!} />
+      </div>
+    </div>
+  );
+};
 
 const NavHeader = () => {
   const localeData = useLocaleSiteData();
+  const { siteData, pageType } = usePageData();
+  const localeLanguages = Object.values(siteData.themeConfig.locales || {});
+  const hasMultiLanguage = localeLanguages.length > 1;
+
+  const translationMenuData = hasMultiLanguage
+    ? {
+        items: localeLanguages.map(item => ({
+          text: item.label,
+          link: `/${item.lang}`,
+        })),
+        isTranslation: true,
+        activeIndex: localeLanguages.findIndex(item => item.lang === localeData.lang),
+      }
+    : null;
 
   return (
     <header class="fixed left-0 top-0 z-10 w-full">
@@ -23,7 +49,7 @@ const NavHeader = () => {
           <Search langRoutePrefix={localeData.langRoutePrefix || ''} />
         </div>
 
-        <div class="flex items-center">
+        <div class="flex items-center gap-8px">
           <div class="flex items-center">
             {(localeData?.nav || []).map(item => (
               <div class="mx-3 text-sm font-medium">
@@ -33,6 +59,7 @@ const NavHeader = () => {
               </div>
             ))}
           </div>
+          {hasMultiLanguage && <NavTranslations translationMenuData={translationMenuData} />}
           <Switch />
           <div class="social-link-icon ml-2">
             <a href="/">
