@@ -50,7 +50,7 @@
     "typecheck": "tsc --noEmit -p ./tsconfig.json"
   },
   "dependencies": {
-    "@svgr/core": "6.3.1",
+    "@svgr/core": "8.1.0",
     "b-tween": "^0.3.3",
     "babel-plugin-essor": "^v0.0.7-beta.6",
     "copy-to-clipboard": "3.3.3",
