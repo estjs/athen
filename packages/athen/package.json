@@ -54,7 +54,7 @@
     "b-tween": "^0.3.3",
     "babel-plugin-essor": "^v0.0.7-beta.6",
     "copy-to-clipboard": "3.3.3",
-    "essor": "^v0.0.7-beta.6",
+    "essor": "^0.0.8",
     "essor-router": "^v0.0.7-beta.3",
     "flexsearch": "0.6.32",
     "fs-extra": "^11.2.0",
