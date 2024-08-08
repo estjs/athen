@@ -60,8 +60,8 @@ importers:
         specifier: ^0.3.3
         version: 0.3.3
       babel-plugin-essor:
-        specifier: ^v0.0.7-beta.6
-        version: 0.0.7-beta.6
+        specifier: ^0.0.8
+        version: 0.0.8
       copy-to-clipboard:
         specifier: 3.3.3
         version: 3.3.3
@@ -70,7 +70,7 @@ importers:
         version: 0.0.7-beta.6
       essor-router:
         specifier: ^v0.0.7-beta.3
-        version: 0.0.7-beta.3(essor-shared@0.0.7-beta.6)(essor@0.0.7-beta.6)
+        version: 0.0.7-beta.3(essor-shared@0.0.8)(essor@0.0.7-beta.6)
       flexsearch:
         specifier: 0.6.32
         version: 0.6.32
@@ -1383,8 +1383,8 @@ packages:
   b-tween@0.3.3:
     resolution: {integrity: sha512-oEHegcRpA7fAuc9KC4nktucuZn2aS8htymCPcP3qkEGPqiBH+GfqtqoG2l7LxHngg6O0HFM7hOeOYExl1Oz4ZA==}
 
-  babel-plugin-essor@0.0.7-beta.6:
-    resolution: {integrity: sha512-IREGT96fxsvQSCiG5UqqoUWNDfsWepmuX26AT4K/ebDvpZhzK18KZdYxRbht6DVkd6bbYOY26wN6Uj/KQM/uFA==}
+  babel-plugin-essor@0.0.8:
+    resolution: {integrity: sha512-4iXzZJz343xIlDnDfJ/exLonmrYuJdRHKiZcPLFHsm9nZndRJkowZMMngDJfgErW14oGqre2w9/keymUACRiVw==}
 
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
@@ -2026,6 +2026,9 @@ packages:
 
   essor-shared@0.0.7-beta.6:
     resolution: {integrity: sha512-C1N9mweNPlkXqeN1x48BZGatHG5u0ZATqHGymSAhS+IWAiUUwoejXlkpikY9UwjmX8wozvRQJqxm+dupbgTUGg==}
+
+  essor-shared@0.0.8:
+    resolution: {integrity: sha512-1G5+j1V+Mp8HdPjcvs2AJek+YxVdECDTmP8Nv9QPhNLkHQiuGp6j+MouNeBufSphcfq+ZkloqJyGnp9dENf6kA==}
 
   essor@0.0.7-beta.6:
     resolution: {integrity: sha512-6ZH9RpSgeSPvolr1IYCWKrvnJWxl2zpJm3H0Hm2nRlfQDfXrjbyM6Nz8PRIKIMDRPOnXlquWNdWoK2t0SAPPIg==}
@@ -5388,11 +5391,11 @@ snapshots:
 
   b-tween@0.3.3: {}
 
-  babel-plugin-essor@0.0.7-beta.6:
+  babel-plugin-essor@0.0.8:
     dependencies:
       '@babel/core': 7.25.2
       '@babel/types': 7.25.2
-      essor-shared: 0.0.7-beta.6
+      essor-shared: 0.0.8
     transitivePeerDependencies:
       - supports-color
 
@@ -6237,12 +6240,14 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  essor-router@0.0.7-beta.3(essor-shared@0.0.7-beta.6)(essor@0.0.7-beta.6):
+  essor-router@0.0.7-beta.3(essor-shared@0.0.8)(essor@0.0.7-beta.6):
     dependencies:
       essor: 0.0.7-beta.6
-      essor-shared: 0.0.7-beta.6
+      essor-shared: 0.0.8
 
   essor-shared@0.0.7-beta.6: {}
+
+  essor-shared@0.0.8: {}
 
   essor@0.0.7-beta.6:
     dependencies:

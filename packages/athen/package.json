@@ -52,7 +52,7 @@
   "dependencies": {
     "@svgr/core": "6.3.1",
     "b-tween": "^0.3.3",
-    "babel-plugin-essor": "^v0.0.7-beta.6",
+    "babel-plugin-essor": "^0.0.8",
     "copy-to-clipboard": "3.3.3",
     "essor": "^v0.0.7-beta.6",
     "essor-router": "^v0.0.7-beta.3",
