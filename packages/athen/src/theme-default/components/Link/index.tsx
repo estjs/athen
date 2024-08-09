@@ -1,10 +1,9 @@
 import { useComputed } from 'essor';
 import './style.scss';
+import { EXTERNAL_URL_RE, withBase } from '@shared/utils';
 import { useRouter } from 'essor-router';
-import { EXTERNAL_URL_RE } from '@shared/utils';
-import { withBase } from '@/runtime';
 
-const PageLink = ({ href, className, children }) => {
+const PageLink = ({ href, className, children, link }) => {
   const val = useComputed(() => {
     const isExternal = EXTERNAL_URL_RE.test(href);
     return {
@@ -12,11 +11,17 @@ const PageLink = ({ href, className, children }) => {
       rel: isExternal ? 'noopener noreferrer' : undefined,
     };
   });
+
+  const withBaseUrl = withBase(href) + (link ? '/' : '');
+
   const router = useRouter();
 
   const handleNavigate = e => {
+    // TODO: need fix router match
+    if (link) {
+      return;
+    }
     e.preventDefault();
-    const withBaseUrl = withBase(href);
     router.value.push({
       path: withBaseUrl,
     });
@@ -24,6 +29,7 @@ const PageLink = ({ href, className, children }) => {
 
   return (
     <a
+      href={withBaseUrl}
       onClick={handleNavigate}
       target={val.value.target}
       rel={val.value.rel}

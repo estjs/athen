@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import cac from 'cac';
 import { build } from './build';
 import { createDevServer } from './dev';
+import { serve } from './preview';
 const cli = cac('athen').version('0.0.0').help();
 
 cli.command('dev [root]', 'start dev server').action(async (root: string) => {
@@ -25,4 +26,12 @@ cli.command('build [root]', 'build in production').action(async (root: string) =
   }
 });
 
+cli.command('preview [root]', 'preview in production').action(async root => {
+  try {
+    root = resolve(root);
+    await serve(root);
+  } catch (error) {
+    console.log(error);
+  }
+});
 cli.parse();

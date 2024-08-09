@@ -8,7 +8,9 @@ export function Aside(props: { headers: Header[]; pagePath: string; outlineTitle
   const markerRef = useSignal<HTMLDivElement | null>(null);
 
   onMount(() => {
-    useActiveToc();
+    setTimeout(() => {
+      useActiveToc();
+    }, 200);
   });
 
   const renderHeader = (header: Header) => {
@@ -16,7 +18,7 @@ export function Aside(props: { headers: Header[]; pagePath: string; outlineTitle
       <li key={header.id}>
         <a
           href={`#${header.id}`}
-          class="toc-item avoid-text-overflow text-text-2 hover:text-text-1 block text-14px leading-7 transition-color duration-300"
+          class="toc-item avoid-text-overflow block text-14px text-text-2 leading-7 transition-color duration-300 hover:text-text-1"
           style={{
             'padding-left': `${(header.depth - 2) * 12}px`,
           }}
@@ -38,7 +40,7 @@ export function Aside(props: { headers: Header[]; pagePath: string; outlineTitle
       <div class={hasOutline.value ? 'lg:block' : 'none'}>
         <div class="divider-left relative pl-4 text-[13px] font-medium" id="aside-container">
           <div
-            class="bg-brand absolute top-[33px] h-18px w-1px opacity-0"
+            class="absolute top-[33px] h-18px w-1px bg-brand opacity-0"
             ref={markerRef}
             style={{
               left: '-1px',

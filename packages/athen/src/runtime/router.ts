@@ -12,6 +12,7 @@ export async function initPageData(routerPath: string): Promise<PageData> {
 
     const pagePath = cleanUrl((matched[0].meta as Record<string, any>).filePath!);
     const relativePagePath = getRelativePagePath(routerPath, pagePath, siteData.base);
+
     return {
       pageType: moduleInfo.frontmatter?.pageType ?? 'doc',
       siteData,

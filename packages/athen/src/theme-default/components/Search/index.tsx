@@ -113,7 +113,7 @@ export function Search(props: { langRoutePrefix: string }) {
         <span>K</span>
       </div>
       {focused.value && (
-        <ul class="fixed left-0 top-8 z-60 w-100% list-none of-hidden border-1 b-border-default rounded-md b-solid bg-white shadow-sm sm:absolute sm:max-w-700px sm:min-w-500px dark:bg-#1e1e1e">
+        <ul class="fixed left-0 top-10 z-60 w-100% list-none of-hidden border-1 b-border-default rounded-md b-solid bg-white shadow-sm sm:absolute sm:max-w-700px sm:min-w-500px dark:bg-#1e1e1e">
           {/* Show the suggestions */}
           {suggestions.value.map((item, index) => (
             <li key={item.title} class="w-100% border-collapse cursor-pointer rounded-sm">

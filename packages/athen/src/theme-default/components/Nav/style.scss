@@ -30,3 +30,21 @@
   );
   background-color: var(--at-c-bg);
 }
+
+
+.menu-item-before::before {
+  margin-right: 12px;
+  margin-left: 12px;
+  width: 2px;
+  height: 24px;
+  background-color: var(--at-c-divider);
+  content: " ";
+}
+.menu-item-after::after {
+  margin-right: 12px;
+  margin-left: 12px;
+  width: 2px;
+  height: 24px;
+  background-color: var(--at-c-divider);
+  content: " ";
+}

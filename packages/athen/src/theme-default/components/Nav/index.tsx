@@ -8,17 +8,15 @@ import { NavMenuGroup, type NavMenuGroupItem } from './NavMenuGroup';
 
 const NavTranslations = ({ translationMenuData }: { translationMenuData?: NavMenuGroupItem }) => {
   return (
-    <div className="translation before:menu-item-before flex items-center text-sm font-bold">
-      <div m="x-1.5">
-        <NavMenuGroup {...translationMenuData!} />
-      </div>
+    <div class="menu-item-before menu-item-after flex items-center text-sm font-bold">
+      <NavMenuGroup {...translationMenuData!} />
     </div>
   );
 };
 
 const NavHeader = () => {
   const localeData = useLocaleSiteData();
-  const { siteData, pageType } = usePageData();
+  const { siteData } = usePageData();
   const localeLanguages = Object.values(siteData.themeConfig.locales || {});
   const hasMultiLanguage = localeLanguages.length > 1;
 
@@ -49,13 +47,17 @@ const NavHeader = () => {
           <Search langRoutePrefix={localeData.langRoutePrefix || ''} />
         </div>
 
-        <div class="flex items-center gap-8px">
+        <div class="flex items-center">
           <div class="flex items-center">
             {(localeData?.nav || []).map(item => (
               <div class="mx-3 text-sm font-medium">
-                <a href={item.link} class="link">
-                  {item.text}
-                </a>
+                {item.items ? (
+                  <NavMenuGroup {...item} />
+                ) : (
+                  <a href={item.link} class="link">
+                    {item.text}
+                  </a>
+                )}
               </div>
             ))}
           </div>

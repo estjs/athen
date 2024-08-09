@@ -1,13 +1,13 @@
 import { transformAsync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
 import { type Plugin, transformWithEsbuild } from 'vite';
-import { MD_REGEX, TS_REGEX } from '../../constants';
+import { MD_REGEX, SX_REGEX } from '../../constants';
 export function pluginTransform(): Plugin {
   return {
     name: 'athen:transform',
     apply: 'build',
     async transform(code, id, opts) {
-      if (TS_REGEX.test(id) || MD_REGEX.test(id)) {
+      if (SX_REGEX.test(id) || MD_REGEX.test(id)) {
         const strippedTypes = await transformWithEsbuild(code, id, {
           jsx: 'preserve',
           loader: 'tsx',

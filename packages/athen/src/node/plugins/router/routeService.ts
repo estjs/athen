@@ -70,7 +70,6 @@ export class RouteService {
               path: "${route.routePath}",
               component:import("${route.absolutePath}"),
               preload: () => import("${route.absolutePath}"),
-              name: "${route.name || 'title'}",
               title: "${route.name || 'title'}",
               absolutePath: "${route.absolutePath}",
               meta: {name: "${siteData?.title || 'title'}", filePath: "${route.filePath}"}

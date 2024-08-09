@@ -16,6 +16,7 @@
     "dev": "turbo run dev",
     "docs:dev": "athen dev docs",
     "docs:build": "athen build docs",
+    "docs:preview": "athen preview docs",
     "lint": "eslint --cache --fix \"./**/src/*.{ts,tsx,js,jsx}\"",
     "test": "vitest",
     "coverage": "vitest run --coverage",
@@ -37,7 +38,7 @@
     "prettier": "^3.3.3",
     "simple-git-hooks": "^2.11.1",
     "standard-changelog": "^6.0.0",
-    "tsx": "^4.16.5",
+    "tsx": "^4.17.0",
     "turbo": "^2.0.12",
     "typescript": "^5.5.4"
   },

@@ -15,7 +15,6 @@ export function DocContent() {
   const themeConfig = siteData?.themeConfig || {};
   const hasAside =
     headers.value.length > 0 && (frontmatter?.outline ?? themeConfig?.outline ?? true);
-
   let content;
   switch (pageType) {
     case 'home':
@@ -32,7 +31,11 @@ export function DocContent() {
             <DocFooter />
           </div>
           {hasAside ? (
-            <Aside headers={headers.value} outlineTitle={'目录'} pagePath={pagePath} />
+            <Aside
+              headers={headers.value}
+              outlineTitle={siteData?.themeConfig?.outlineTitle || '目录'}
+              pagePath={pagePath}
+            />
           ) : null}
         </>
       );
