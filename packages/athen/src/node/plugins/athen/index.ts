@@ -7,13 +7,13 @@ import type { Plugin } from 'vite';
 
 export function pluginAthen(
   config: SiteConfig,
-  // isServer = false,
+  isServer = false,
   restartServer?: () => Promise<void>,
 ): Plugin[] {
   return [
     pluginSiteData(config),
     pluginConfig(config, restartServer),
     pluginIndexHtml(config),
-    pluginTransform(),
+    pluginTransform(isServer),
   ];
 }

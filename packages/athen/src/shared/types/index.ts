@@ -16,7 +16,7 @@ export interface Router {
   path: string;
   component: Component;
   meta?: Meta;
-  preload?: (base: string) => Promise<Component>;
+  preload?: (base?: string) => Promise<Component>;
 }
 
 export interface PluginOptions {

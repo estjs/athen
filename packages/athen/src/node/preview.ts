@@ -19,7 +19,7 @@ export async function serve(root: string) {
     distPath = join(config.root, DIST_DIR);
   }
   const notFoundPage = fs.readFileSync(path.resolve(distPath, './404.html'));
-  const onNoMatch: polka.Options['onNoMatch'] = (req, res) => {
+  const onNoMatch: polka.IOptions['onNoMatch'] = (req, res) => {
     res.statusCode = 404;
     if (notAnAsset(req.path)) {
       res.end(notFoundPage);

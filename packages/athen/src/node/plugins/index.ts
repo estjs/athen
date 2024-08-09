@@ -24,7 +24,7 @@ export async function createVitePlugins(
     }),
     pluginUnocss(unocssOptions),
     EnvironmentPlugin([]),
-    pluginAthen(config, restartServer),
+    pluginAthen(config, isServer, restartServer),
     pluginRoute({ root: config.root }, config.siteData),
     pluginSvgr(),
     Inspect(),

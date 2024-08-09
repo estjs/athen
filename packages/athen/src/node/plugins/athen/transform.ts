@@ -2,7 +2,7 @@ import { transformAsync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
 import { type Plugin, transformWithEsbuild } from 'vite';
 import { MD_REGEX, SX_REGEX } from '../../constants';
-export function pluginTransform(): Plugin {
+export function pluginTransform(isServer): Plugin {
   return {
     name: 'athen:transform',
     apply: 'build',
@@ -16,7 +16,7 @@ export function pluginTransform(): Plugin {
         const result = await transformAsync((await strippedTypes).code, {
           filename: id,
           sourceType: 'module',
-          plugins: [[BabelPluginEssor, { ...opts }]],
+          plugins: [[BabelPluginEssor, { ...opts, ssg: !isServer }]],
         });
         return {
           code: result?.code || code,
