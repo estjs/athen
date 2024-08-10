@@ -49,12 +49,13 @@ export class RouteService {
       .sort();
 
     const files2 = globSync('**/*.{ts,tsx,jsx,md,mdx}', { ignore: 'node_modules/**' });
-    const file3 = tinyGlob('**/*.{ts,tsx,jsx,md,mdx}', {
+    tinyGlob('**/*.{ts,tsx,jsx,md,mdx}', {
       cwd: this.scanDir,
       absolute: true,
+    }).then(f => {
+      console.log(f);
     });
     console.log('file2', files2);
-    console.log('file3', file3);
 
     readdir(this.scanDir, (err, files) => {
       if (err) return;
