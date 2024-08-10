@@ -2,6 +2,7 @@ import path from 'node:path';
 import fastGlob from 'fast-glob';
 import { normalizePath } from 'vite';
 import { addLeadingSlash, withBase } from '@shared/utils';
+import { readdir } from 'fs-extra';
 import type { UserConfig } from '@shared/types';
 
 interface RouteMeta {
@@ -44,6 +45,10 @@ export class RouteService {
         objectMode: true,
       })
       .sort();
+    readdir(this.scanDir, (err, files) => {
+      if (err) return;
+      console.log('node read files', files);
+    });
 
     console.log(files);
 
