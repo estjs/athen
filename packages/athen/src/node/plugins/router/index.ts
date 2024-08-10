@@ -7,8 +7,6 @@ export const CONVENTIONAL_ROUTE_ID = 'athen:routes';
 
 export default function pluginRoute(options: PluginOptions, siteData?: UserConfig): Plugin {
   const rootPath = join(options.root);
-  console.log({ rootPath });
-
   const routeService = new RouteService(rootPath);
   return {
     name: 'athen:routes',

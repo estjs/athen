@@ -76,7 +76,6 @@ export function renderPage(
       };
       const fileName = normalizeHtmlFilePath(routePath);
       const distPath = join(root, 'build');
-      console.log('dist path', distPath);
 
       await fs.ensureDir(join(distPath, dirname(fileName)));
       writeFileSync(join(distPath, fileName), html);
@@ -130,14 +129,10 @@ export async function build(root: string = process.cwd()) {
   const config = await resolveConfig(root, 'build', 'production');
   const [client, server] = (await bundle(root, config)) as [RollupOutput, RollupOutput];
 
-  console.log(tempPath);
-  console.log(distPath);
-
   const serverEntryPath = join(tempPath, 'ssg-entry.js');
   const fileUrl = pathToFileURL(serverEntryPath).href;
 
   const { render, routes } = await import(fileUrl);
-  console.log({ render, routes });
 
   await renderPage(render, root, server, config, routes);
   const publicDirInRoot = join(root, 'public');

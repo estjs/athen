@@ -1,10 +1,7 @@
-import path from 'node:path';
-import { readdir } from 'node:fs';
-import fastGlob from 'fast-glob';
+import path, { basename, extname } from 'node:path';
 import { normalizePath } from 'vite';
 import { addLeadingSlash, withBase } from '@shared/utils';
 import { globSync } from 'glob';
-import tinyGlob from 'tiny-glob';
 import type { UserConfig } from '@shared/types';
 interface RouteMeta {
   routePath: string;
@@ -36,51 +33,26 @@ export class RouteService {
 
   // Initialize the route service by scanning the directory for files
   init() {
-    console.log('scanPath', this.scanDir);
-
-    const files = fastGlob
-      .sync(['**/*.{ts,tsx,jsx,md,mdx}'], {
-        cwd: this.scanDir,
-        absolute: true,
-        ignore: ['**/node_modules/**', '**/build/**', 'athen.config.ts'],
-        objectMode: true,
-        throwErrorOnBrokenSymbolicLink: true,
-      })
-      .sort();
-
-    const files2 = globSync('**/*.{ts,tsx,jsx,md,mdx}', {
+    const filePaths = globSync('**/*.{ts,tsx,jsx,md,mdx}', {
       cwd: this.scanDir,
       absolute: true,
       ignore: ['**/node_modules/**', '**/build/**', 'athen.config.ts'],
     });
-    tinyGlob('**/*.{ts,tsx,jsx,md,mdx}', {
-      cwd: this.scanDir,
-      absolute: true,
-    }).then(f => {
-      console.log('file3', f);
-    });
-    console.log('file2', files2);
 
-    readdir(this.scanDir, (err, files) => {
-      if (err) return;
-      console.log('node read files', files);
-    });
-
-    console.log(files);
-
-    files.forEach(file => {
+    filePaths.forEach(filePath => {
       // Convert Windows file paths from \ to /
-      const fileRelativePath = normalizePath(path.relative(this.scanDir, file.path));
+      const fileRelativePath = normalizePath(path.relative(this.scanDir, filePath));
 
       // 1. Route path
       const routePath = this.normalizeRoutePath(fileRelativePath);
 
+      const filename = basename(filePath, extname(filePath));
       // 2. Absolute file path
       this.routeData.push({
         routePath,
-        absolutePath: file.path,
+        absolutePath: filePath,
         filePath: fileRelativePath,
-        name: file.name.split('.')[0],
+        name: filename,
       });
     });
   }
