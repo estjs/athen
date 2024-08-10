@@ -37,7 +37,17 @@ export class RouteService {
   init() {
     console.log('scanPath', this.scanDir);
 
-    const files = fastGlob.sync(['**/*.{ts,tsx,jsx,md,mdx}'], {}).sort();
+    const files = fastGlob
+      .sync(['**/*.{ts,tsx,jsx,md,mdx}'], {
+        cwd: this.scanDir,
+        absolute: true,
+        ignore: ['**/node_modules/**', '**/build/**', 'athen.config.ts'],
+        objectMode: true,
+        fs: {
+          readdir,
+        },
+      })
+      .sort();
     readdir(this.scanDir, (err, files) => {
       if (err) return;
       console.log('node read files', files);
