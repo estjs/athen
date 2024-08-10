@@ -1,8 +1,8 @@
 import path from 'node:path';
+import { readdir } from 'node:fs';
 import fastGlob from 'fast-glob';
 import { normalizePath } from 'vite';
 import { addLeadingSlash, withBase } from '@shared/utils';
-import { readdir } from 'fs-extra';
 import type { UserConfig } from '@shared/types';
 
 interface RouteMeta {
