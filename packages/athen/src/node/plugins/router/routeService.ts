@@ -3,8 +3,9 @@ import { readdir } from 'node:fs';
 import fastGlob from 'fast-glob';
 import { normalizePath } from 'vite';
 import { addLeadingSlash, withBase } from '@shared/utils';
+import { globSync } from 'glob';
+import tinyGlob from 'tiny-glob';
 import type { UserConfig } from '@shared/types';
-
 interface RouteMeta {
   routePath: string;
   absolutePath: string;
@@ -46,6 +47,15 @@ export class RouteService {
         throwErrorOnBrokenSymbolicLink: true,
       })
       .sort();
+
+    const files2 = globSync('**/*.{ts,tsx,jsx,md,mdx}', { ignore: 'node_modules/**' });
+    const file3 = tinyGlob('**/*.{ts,tsx,jsx,md,mdx}', {
+      cwd: this.scanDir,
+      absolute: true,
+    });
+    console.log('file2', files2);
+    console.log('file3', file3);
+
     readdir(this.scanDir, (err, files) => {
       if (err) return;
       console.log('node read files', files);

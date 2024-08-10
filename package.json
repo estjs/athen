@@ -38,6 +38,7 @@
     "prettier": "^3.3.3",
     "simple-git-hooks": "^2.11.1",
     "standard-changelog": "^6.0.0",
+    "tiny-glob": "^0.2.9",
     "tsx": "^4.17.0",
     "turbo": "^2.0.12",
     "typescript": "^5.5.4"
@@ -48,5 +49,8 @@
   },
   "lint-staged": {
     "package/src/*.{ts,tsx,js}": "eslint --cache --fix"
+  },
+  "dependencies": {
+    "glob": "^11.0.0"
   }
 }
