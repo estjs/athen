@@ -43,7 +43,7 @@ export class RouteService {
         absolute: true,
         ignore: ['**/node_modules/**', '**/build/**', 'athen.config.ts'],
         objectMode: true,
-        followSymbolicLinks: false,
+        throwErrorOnBrokenSymbolicLink: true,
       })
       .sort();
     readdir(this.scanDir, (err, files) => {
