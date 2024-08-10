@@ -34,6 +34,8 @@ export class RouteService {
 
   // Initialize the route service by scanning the directory for files
   init() {
+    console.log('scanPath', this.scanDir);
+
     const files = fastGlob
       .sync(['**/*.{ts,tsx,jsx,md,mdx}'], {
         cwd: this.scanDir,
