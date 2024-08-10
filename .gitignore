@@ -15,3 +15,4 @@ server/dist
 public/dist
 .turbo
 .temp
+.gitlogmap
