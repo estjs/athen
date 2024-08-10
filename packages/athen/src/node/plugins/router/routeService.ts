@@ -48,7 +48,11 @@ export class RouteService {
       })
       .sort();
 
-    const files2 = globSync('**/*.{ts,tsx,jsx,md,mdx}', { ignore: 'node_modules/**' });
+    const files2 = globSync('**/*.{ts,tsx,jsx,md,mdx}', {
+      cwd: this.scanDir,
+      absolute: true,
+      ignore: ['**/node_modules/**', '**/build/**', 'athen.config.ts'],
+    });
     tinyGlob('**/*.{ts,tsx,jsx,md,mdx}', {
       cwd: this.scanDir,
       absolute: true,
