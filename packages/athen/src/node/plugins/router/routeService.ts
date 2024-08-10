@@ -57,7 +57,7 @@ export class RouteService {
       cwd: this.scanDir,
       absolute: true,
     }).then(f => {
-      console.log(f);
+      console.log('file3', f);
     });
     console.log('file2', files2);
 
