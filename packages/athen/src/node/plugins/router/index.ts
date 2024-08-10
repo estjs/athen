@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { RouteService } from './routeService';
 import type { PluginOptions, UserConfig } from '@/shared/types';
 import type { Plugin } from 'vite';
@@ -5,7 +6,8 @@ import type { Plugin } from 'vite';
 export const CONVENTIONAL_ROUTE_ID = 'athen:routes';
 
 export default function pluginRoute(options: PluginOptions, siteData?: UserConfig): Plugin {
-  const routeService = new RouteService(options.root);
+  const rootPath = join(options.root);
+  const routeService = new RouteService(rootPath);
   return {
     name: 'athen:routes',
     async configResolved() {

@@ -77,7 +77,6 @@ export function renderPage(
       const fileName = normalizeHtmlFilePath(routePath);
       const distPath = join(root, 'build');
       console.log('dist path', distPath);
-      console.log(html);
 
       await fs.ensureDir(join(distPath, dirname(fileName)));
       writeFileSync(join(distPath, fileName), html);
@@ -136,7 +135,6 @@ export async function build(root: string = process.cwd()) {
 
   const serverEntryPath = join(tempPath, 'ssg-entry.js');
   const fileUrl = pathToFileURL(serverEntryPath).href;
-  console.log(fileUrl);
 
   const { render, routes } = await import(fileUrl);
   console.log({ render, routes });
