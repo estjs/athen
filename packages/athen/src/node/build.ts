@@ -103,6 +103,7 @@ export async function bundle(root: string, options) {
         jsx: 'preserve',
       },
       build: {
+        emptyOutDir: true,
         ssr: !isServer,
         outDir: isServer ? join(root, 'build') : join(root, '.temp'),
         rollupOptions: {
