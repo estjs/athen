@@ -22,6 +22,7 @@ async function ClientEntry(client = false, route?: Router) {
       useProvide('pageData', pageData);
       return <Layout />;
     }
+    document.querySelector('#app')!.innerHTML = '';
     (<ClientRender></ClientRender>).mount(document.querySelector('#app')!);
   }
   return { router };

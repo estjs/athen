@@ -53,12 +53,12 @@ export function renderPage(
               : ''
           }
           <link rel="icon" href="${config.siteData!.icon}" type="image/svg+xml">
-                ${cssChunk
-                  .map(item => `<link rel="stylesheet" href="${withBase(item.fileName)}">`)
-                  .join('\n')}
+          ${cssChunk
+            .map(item => `<link rel="stylesheet" href="${withBase(item.fileName)}">`)
+            .join('\n')}
         </head>
         <body>
-          <div id="root">${appHtml}</div>
+          <div id="app">${appHtml}</div>
           <script type="module" src="/${clientChunk?.fileName}"></script>
         </body>
       </html>`.trim();
@@ -129,4 +129,6 @@ export async function build(root: string = process.cwd()) {
   const distPath = join(root, 'build');
   const publicDirInRoot = join(root, 'public');
   await copy(publicDirInRoot, distPath);
+  const indexHtml = await fs.readFile(`${root}/index.html`);
+  await fs.writeFile(`${distPath}/index.html`, indexHtml);
 }

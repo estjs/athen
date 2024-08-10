@@ -1,6 +1,5 @@
 import path, { join } from 'node:path';
 import compression from '@polka/compression';
-import fs from 'fs-extra';
 import polka from 'polka';
 import sirv from 'sirv';
 import { DIST_DIR } from './constants';
@@ -18,11 +17,10 @@ export async function serve(root: string) {
   } else {
     distPath = join(config.root, DIST_DIR);
   }
-  const notFoundPage = fs.readFileSync(path.resolve(distPath, './404.html'));
   const onNoMatch: polka.IOptions['onNoMatch'] = (req, res) => {
     res.statusCode = 404;
     if (notAnAsset(req.path)) {
-      res.end(notFoundPage);
+      res.end('404');
     }
   };
 
