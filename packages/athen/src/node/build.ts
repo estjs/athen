@@ -76,6 +76,9 @@ export function renderPage(
       };
       const fileName = normalizeHtmlFilePath(routePath);
       const distPath = join(root, 'build');
+      console.log('dist path', distPath);
+      console.log(html);
+
       await fs.ensureDir(join(distPath, dirname(fileName)));
       writeFileSync(join(distPath, fileName), html);
     }),
@@ -94,6 +97,7 @@ export async function bundle(root: string, options) {
           '@': resolve(PACKAGE_ROOT, 'src'),
         },
       },
+
       plugins,
       esbuild: {
         jsx: 'preserve',
@@ -118,15 +122,22 @@ export async function bundle(root: string, options) {
   }
 }
 export async function build(root: string = process.cwd()) {
+  const tempPath = join(root, '.temp');
+  const distPath = join(root, 'build');
+  fs.remove(tempPath);
+  fs.remove(distPath);
+
   const config = await resolveConfig(root, 'build', 'production');
   const [client, server] = (await bundle(root, config)) as [RollupOutput, RollupOutput];
 
-  const serverEntryPath = join(root, '.temp', 'ssg-entry.js');
+  console.log(JSON.stringify(client, null, 2));
+  console.log(JSON.stringify(server, null, 2));
+
+  const serverEntryPath = join(tempPath, 'ssg-entry.js');
   const fileUrl = pathToFileURL(serverEntryPath).href;
 
   const { render, routes } = await import(fileUrl);
   await renderPage(render, root, server, config, routes);
-  const distPath = join(root, 'build');
   const publicDirInRoot = join(root, 'public');
   await copy(publicDirInRoot, distPath);
   const indexHtml = await fs.readFile(`${root}/index.html`);
