@@ -45,6 +45,8 @@ export class RouteService {
       })
       .sort();
 
+    console.log(files);
+
     files.forEach(file => {
       // Convert Windows file paths from \ to /
       const fileRelativePath = normalizePath(path.relative(this.scanDir, file.path));
