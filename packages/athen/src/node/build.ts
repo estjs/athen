@@ -131,13 +131,16 @@ export async function build(root: string = process.cwd()) {
   const config = await resolveConfig(root, 'build', 'production');
   const [client, server] = (await bundle(root, config)) as [RollupOutput, RollupOutput];
 
-  console.log(JSON.stringify(client, null, 2));
-  console.log(JSON.stringify(server, null, 2));
+  console.log(tempPath);
+  console.log(distPath);
 
   const serverEntryPath = join(tempPath, 'ssg-entry.js');
   const fileUrl = pathToFileURL(serverEntryPath).href;
+  console.log(fileUrl);
 
   const { render, routes } = await import(fileUrl);
+  console.log({ render, routes });
+
   await renderPage(render, root, server, config, routes);
   const publicDirInRoot = join(root, 'public');
   await copy(publicDirInRoot, distPath);
