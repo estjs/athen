@@ -281,7 +281,7 @@
 
  .at-doc div[class*='language-'] + div[class*='language-'],
  .at-doc div[class$='-api'] + div[class*='language-'],
- .Athen-doc
+ .at-doc
    div[class*='language-']
    + div[class$='-api']
    > div[class*='language-'] {
@@ -337,7 +337,7 @@
    padding-left: 32px;
  }
 
- .Athen-doc.line-number-disable div[class*='language-'].line-numbers-mode {
+ .at-doc.line-number-disable div[class*='language-'].line-numbers-mode {
    padding-left: 0px;
  }
 
@@ -359,7 +359,7 @@
    flex-direction: column;
  }
 
- .Athen-doc.line-number-disable .line-numbers-wrapper {
+ .at-doc.line-number-disable .line-numbers-wrapper {
    display: none;
  }
 
@@ -438,7 +438,7 @@
     * Custom container
     * -------------------------------------------------------------------------- */
 
- .at-doc .Athen-directive {
+ .at-doc .at-directive {
    border: 1px solid transparent;
    border-radius: 8px;
    padding: 16px 16px 8px;
@@ -447,16 +447,16 @@
    margin: 16px 0;
  }
 
- .at-doc .Athen-directive .Athen-directive-title {
+ .at-doc .at-directive .at-directive-title {
    font-weight: 700;
    margin: 0;
  }
 
- .at-doc .Athen-directive .Athen-directive-content p {
+ .at-doc .at-directive .at-directive-content p {
    margin: 8px 0;
  }
 
- .at-doc .Athen-directive .Athen-directive-icon {
+ .at-doc .at-directive .at-directive-icon {
    display: inline-block;
    width: 20px;
    height: 20px;
@@ -464,25 +464,25 @@
    background-image: var(--at-icon-tip);
  }
 
- .at-doc .Athen-directive.tip {
+ .at-doc .at-directive.tip {
    border-color: var(--at-custom-block-tip-border);
    color: var(--at-custom-block-tip-text);
    background-color: var(--at-custom-block-tip-bg);
  }
 
- .at-doc .Athen-directive.info {
+ .at-doc .at-directive.info {
    border-color: var(--at-custom-block-info-border);
    color: var(--at-custom-block-info-text);
    background-color: var(--at-custom-block-info-bg);
  }
 
- .at-doc .Athen-directive.warning {
+ .at-doc .at-directive.warning {
    border-color: var(--at-custom-block-warning-border);
    color: var(--at-custom-block-warning-text);
    background-color: var(--at-custom-block-warning-bg);
  }
 
- .at-doc .Athen-directive.danger {
+ .at-doc .at-directive.danger {
    border-color: var(--at-custom-block-danger-border);
    color: var(--at-custom-block-danger-text);
    background-color: var(--at-custom-block-danger-bg);

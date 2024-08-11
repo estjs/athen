@@ -4,6 +4,7 @@ import { useLocaleSiteData } from '@theme-default/hooks';
 import { usePageData } from '@/runtime';
 import { Switch } from '../Switch';
 import Search from '../Search';
+import Link from '../Link';
 import { NavMenuGroup, type NavMenuGroupItem } from './NavMenuGroup';
 
 const NavTranslations = ({ translationMenuData }: { translationMenuData?: NavMenuGroupItem }) => {
@@ -54,9 +55,7 @@ const NavHeader = () => {
                 {item.items ? (
                   <NavMenuGroup {...item} />
                 ) : (
-                  <a href={item.link} class="link">
-                    {item.text}
-                  </a>
+                  <Link href={item.link}>{item.text}</Link>
                 )}
               </div>
             ))}

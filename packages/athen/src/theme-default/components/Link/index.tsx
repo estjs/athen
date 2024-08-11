@@ -15,10 +15,8 @@ const PageLink = ({ href, className, children, link }) => {
   const withBaseUrl = withBase(href) + (link ? '/' : '');
 
   const router = useRouter();
-
   const handleNavigate = e => {
-    // TODO: need fix router match
-    if (link) {
+    if (EXTERNAL_URL_RE.test(href)) {
       return;
     }
     e.preventDefault();
