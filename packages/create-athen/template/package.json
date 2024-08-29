@@ -1,6 +1,6 @@
 {
   "name": "athen-demo",
-  "version": "0.0.4",
+  "version": "0.0.0",
   "description": "",
   "keywords": [],
   "license": "ISC",
@@ -11,6 +11,6 @@
     "build": "athen build docs"
   },
   "dependencies": {
-    "athen": "workspace:*"
+    "athen": "^0.0.7-beta.2"
   }
 }
