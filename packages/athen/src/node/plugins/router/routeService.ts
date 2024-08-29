@@ -43,6 +43,7 @@ export class RouteService {
       // Convert Windows file paths from \ to /
       const fileRelativePath = normalizePath(path.relative(this.scanDir, filePath));
 
+      const absolutePath = normalizePath(filePath);
       // 1. Route path
       const routePath = this.normalizeRoutePath(fileRelativePath);
 
@@ -50,7 +51,7 @@ export class RouteService {
       // 2. Absolute file path
       this.routeData.push({
         routePath,
-        absolutePath: filePath,
+        absolutePath,
         filePath: fileRelativePath,
         name: filename,
       });

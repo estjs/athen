@@ -1,14 +1,15 @@
-import { presetIcons, presetWind } from 'unocss';
+import { presetUno } from 'unocss';
+import presetIcons from '@unocss/preset-icons/browser';
 import type { VitePluginConfig } from 'unocss/vite';
 
 const options: VitePluginConfig = {
   presets: [
-    presetWind({}),
+    presetUno(),
     presetIcons({
-      customizations: {
-        transform(svg) {
-          return svg;
-        },
+      scale: 1.2,
+      warn: true,
+      collections: {
+        carbon: () => import('@iconify-json/carbon/icons.json').then(i => i.default),
       },
     }),
   ],
