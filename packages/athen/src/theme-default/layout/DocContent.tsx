@@ -1,4 +1,4 @@
-import { RouterView } from 'essor-router';
+import { useRouter } from 'essor-router';
 import { usePageData } from '@/runtime';
 import { useHeaders } from '../hooks';
 import { SideBar } from '../components/SideBar';
@@ -8,7 +8,10 @@ import { DocHomeLayout } from './DocHome';
 import './style.scss';
 export function DocContent() {
   const pageData = usePageData();
+  const router = useRouter();
+  console.log(router.value.getRoutes());
 
+  const RouterComponent = router.value.currentRoute.value.matched[0]?.components!.default || '';
   const { siteData, pageType, toc = [], pagePath, frontmatter } = pageData || {};
 
   const [headers] = useHeaders(toc, pagePath);
@@ -25,9 +28,7 @@ export function DocContent() {
         <>
           <SideBar />
           <div class="content">
-            <div class="at-doc">
-              <RouterView />
-            </div>
+            <div class="at-doc">{/* <RouterComponent /> */}</div>
             <DocFooter />
           </div>
           {hasAside ? (

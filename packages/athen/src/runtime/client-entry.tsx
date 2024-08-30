@@ -1,6 +1,6 @@
-import { createWebHistory } from 'essor-router';
+import { RouterView, createWebHistory } from 'essor-router';
 import { useProvide } from 'essor';
-import Layout, { setup } from '../theme-default';
+import { setup } from '../theme-default';
 import { createRouter, initPageData } from './router';
 
 async function ClientEntry() {
@@ -11,7 +11,7 @@ async function ClientEntry() {
 
   function ClientRender() {
     useProvide('pageData', pageData);
-    return <Layout />;
+    return <RouterView />;
   }
   (<ClientRender></ClientRender>).mount(document.querySelector('#app')!);
   return { router };

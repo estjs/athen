@@ -61,19 +61,23 @@ export class RouteService {
   // Generate the routes code based on the route data and site config
   generateRoutesCode(siteData?: UserConfig) {
     return `
-      export const routes = [${this.routeData
-        .map(route => {
-          return `
-          {
-              path: "${route.routePath}",
-              component:import("${route.absolutePath}"),
-              preload: () => import("${route.absolutePath}"),
-              title: "${route.name || 'title'}",
-              absolutePath: "${route.absolutePath}",
-              meta: {name: "${siteData?.title || 'title'}", filePath: "${route.filePath}"}
-          }`;
-        })
-        .join(', ')}]
+      export const routes = [{
+        path: '/',
+        component: import('E:/www/athen/packages/athen/src/theme-default/layout/index.tsx'),
+        children: [${this.routeData
+          .map(route => {
+            return `
+            {
+                path: "${route.routePath.slice(1)}",
+                component:import("${route.absolutePath}"),
+                preload: () => import("${route.absolutePath}"),
+                title: "${route.name || 'title'}",
+                absolutePath: "${route.absolutePath}",
+                meta: {name: "${siteData?.title || 'title'}", filePath: "${route.filePath}"}
+            }`;
+          })
+          .join(', ')}],
+      }]
     `;
   }
 

@@ -1,7 +1,7 @@
 import { BackTop } from '../components/Backtop';
 import NavHeader from '../components/Nav';
 import { DocContent } from './DocContent';
-export function Layout() {
+export default function Layout() {
   return (
     <>
       <NavHeader />

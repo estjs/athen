@@ -1,7 +1,7 @@
 {
   "name": "athen-monorepo",
   "version": "0.0.7-beta.3",
-  "packageManager": "pnpm@9.7.0",
+  "packageManager": "pnpm@9.9.0",
   "type": "module",
   "license": "MIT",
   "homepage": "https://github.com/estjs/athen#readme",
@@ -27,24 +27,20 @@
     "prerelease": " pnpm run build && pnpm run lint && pnpm run test",
     "release": "pnpm run tempversion && pnpm run changelog && pnpm run prerelease &&  bumpp package.json packages/*/package.json --no-git-checks --commit --push --tag && pnpm -r publish --access public"
   },
-  "dependencies": {
-    "glob": "^11.0.0"
-  },
   "devDependencies": {
-    "@estjs/eslint-config": "^1.2.4",
+    "@estjs/eslint-config": "^1.2.5",
     "@vitest/coverage-v8": "^2.0.5",
     "athen": "workspace:*",
-    "bumpp": "^9.4.2",
-    "eslint": "^9.8.0",
-    "lint-staged": "^15.2.8",
+    "bumpp": "^9.5.2",
+    "eslint": "^9.9.1",
+    "lint-staged": "^15.2.9",
     "picocolors": "^1.0.1",
-    "pnpm": "^9.7.0",
+    "pnpm": "^9.9.0",
     "prettier": "^3.3.3",
     "simple-git-hooks": "^2.11.1",
     "standard-changelog": "^6.0.0",
-    "tiny-glob": "^0.2.9",
-    "tsx": "^4.17.0",
-    "turbo": "^2.0.12",
+    "tsx": "^4.19.0",
+    "turbo": "^2.1.0",
     "typescript": "^5.5.4"
   },
   "simple-git-hooks": {
