@@ -31,8 +31,6 @@ export async function initPageData(routerPath: string): Promise<PageData> {
   } as PageData;
 }
 export const createRouter = history => {
-  console.log({ routes });
-
   return createEssorRouter({
     history,
     routes,

@@ -9,9 +9,8 @@ import './style.scss';
 export function DocContent() {
   const pageData = usePageData();
   const router = useRouter();
-  console.log(router.value.getRoutes());
+  console.log(router.getRoutes());
 
-  const RouterComponent = router.value.currentRoute.value.matched[0]?.components!.default || '';
   const { siteData, pageType, toc = [], pagePath, frontmatter } = pageData || {};
 
   const [headers] = useHeaders(toc, pagePath);
@@ -28,7 +27,7 @@ export function DocContent() {
         <>
           <SideBar />
           <div class="content">
-            <div class="at-doc">{/* <RouterComponent /> */}</div>
+            <div class="at-doc"></div>
             <DocFooter />
           </div>
           {hasAside ? (

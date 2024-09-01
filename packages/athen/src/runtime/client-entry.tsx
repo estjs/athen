@@ -11,7 +11,7 @@ async function ClientEntry() {
 
   function ClientRender() {
     useProvide('pageData', pageData);
-    return <RouterView />;
+    return <RouterView></RouterView>;
   }
   (<ClientRender></ClientRender>).mount(document.querySelector('#app')!);
   return { router };
