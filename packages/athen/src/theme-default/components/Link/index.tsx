@@ -20,7 +20,7 @@ const PageLink = ({ href, className, children, link }) => {
       return;
     }
     e.preventDefault();
-    router.value.push({
+    router.push({
       path: withBaseUrl,
     });
   };

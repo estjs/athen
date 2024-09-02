@@ -5,7 +5,7 @@ import type { DefaultTheme } from '@shared/types';
 export function usePrevNextPage() {
   // TODO:
   const route = useRoute();
-  const pathname = typeof window !== 'undefined' ? location.pathname : route.value.path;
+  const pathname = typeof window !== 'undefined' ? location.pathname : route.path;
   const localesData = useLocaleSiteData();
   const sidebar = localesData.sidebar || {};
   const flattenTitles: DefaultTheme.SidebarItem[] = [];

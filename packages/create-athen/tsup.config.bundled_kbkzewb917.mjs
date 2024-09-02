@@ -1,0 +1,22 @@
+// tsup.config.ts
+import process from "node:process";
+import { defineConfig } from "tsup";
+var tsup_config_default = defineConfig([
+  {
+    entry: ["src/index.ts"],
+    minifyIdentifiers: false,
+    bundle: true,
+    dts: true,
+    sourcemap: true,
+    splitting: true,
+    format: ["cjs", "esm"],
+    minify: process.env.NODE_ENV === "production",
+    skipNodeModulesBundle: true,
+    outDir: "dist",
+    clean: true
+  }
+]);
+export {
+  tsup_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidHN1cC5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9faW5qZWN0ZWRfZmlsZW5hbWVfXyA9IFwiRTpcXFxcd3d3XFxcXGF0aGVuXFxcXHBhY2thZ2VzXFxcXGNyZWF0ZS1hdGhlblxcXFx0c3VwLmNvbmZpZy50c1wiO2NvbnN0IF9faW5qZWN0ZWRfZGlybmFtZV9fID0gXCJFOlxcXFx3d3dcXFxcYXRoZW5cXFxccGFja2FnZXNcXFxcY3JlYXRlLWF0aGVuXCI7Y29uc3QgX19pbmplY3RlZF9pbXBvcnRfbWV0YV91cmxfXyA9IFwiZmlsZTovLy9FOi93d3cvYXRoZW4vcGFja2FnZXMvY3JlYXRlLWF0aGVuL3RzdXAuY29uZmlnLnRzXCI7aW1wb3J0IHByb2Nlc3MgZnJvbSAnbm9kZTpwcm9jZXNzJztcclxuaW1wb3J0IHsgZGVmaW5lQ29uZmlnIH0gZnJvbSAndHN1cCc7XHJcbmV4cG9ydCBkZWZhdWx0IGRlZmluZUNvbmZpZyhbXHJcbiAge1xyXG4gICAgZW50cnk6IFsnc3JjL2luZGV4LnRzJ10sXHJcbiAgICBtaW5pZnlJZGVudGlmaWVyczogZmFsc2UsXHJcbiAgICBidW5kbGU6IHRydWUsXHJcbiAgICBkdHM6IHRydWUsXHJcbiAgICBzb3VyY2VtYXA6IHRydWUsXHJcbiAgICBzcGxpdHRpbmc6IHRydWUsXHJcbiAgICBmb3JtYXQ6IFsnY2pzJywgJ2VzbSddLFxyXG4gICAgbWluaWZ5OiBwcm9jZXNzLmVudi5OT0RFX0VOViA9PT0gJ3Byb2R1Y3Rpb24nLFxyXG4gICAgc2tpcE5vZGVNb2R1bGVzQnVuZGxlOiB0cnVlLFxyXG4gICAgb3V0RGlyOiAnZGlzdCcsXHJcbiAgICBjbGVhbjogdHJ1ZSxcclxuICB9LFxyXG5dKTtcclxuIl0sCiAgIm1hcHBpbmdzIjogIjtBQUE4UCxPQUFPLGFBQWE7QUFDbFIsU0FBUyxvQkFBb0I7QUFDN0IsSUFBTyxzQkFBUSxhQUFhO0FBQUEsRUFDMUI7QUFBQSxJQUNFLE9BQU8sQ0FBQyxjQUFjO0FBQUEsSUFDdEIsbUJBQW1CO0FBQUEsSUFDbkIsUUFBUTtBQUFBLElBQ1IsS0FBSztBQUFBLElBQ0wsV0FBVztBQUFBLElBQ1gsV0FBVztBQUFBLElBQ1gsUUFBUSxDQUFDLE9BQU8sS0FBSztBQUFBLElBQ3JCLFFBQVEsUUFBUSxJQUFJLGFBQWE7QUFBQSxJQUNqQyx1QkFBdUI7QUFBQSxJQUN2QixRQUFRO0FBQUEsSUFDUixPQUFPO0FBQUEsRUFDVDtBQUNGLENBQUM7IiwKICAibmFtZXMiOiBbXQp9Cg==

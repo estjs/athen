@@ -1,4 +1,4 @@
-import { onDestroy, onMount, useComputed, useRef, useSignal } from 'essor';
+import { onDestroy, onMount, shallowSignal, useComputed, useSignal } from 'essor';
 import './index.scss';
 import { type MatchResultItem, PageSearcher } from './logic/search';
 import { SuggestionContent } from './Suggestion';
@@ -17,26 +17,26 @@ export function Search(props: { langRoutePrefix: string }) {
   const searching = useSignal(false);
   const focused = useSignal(false);
   const currentSuggestionIndex = useSignal(-1);
-  const psRef = useRef<PageSearcher>();
-  let initPageSearcherPromise: Promise<void>;
-  const searchInputRef = useSignal<HTMLInputElement | null>();
+  const psRef = shallowSignal<PageSearcher>();
+  const searchInputRef = shallowSignal<HTMLInputElement | null>();
   const showLoading = useComputed(() => !initialized.value || searching.value);
-
   const initPageSearcher = async () => {
-    if (!psRef.current) {
-      psRef.current = new PageSearcher(props.langRoutePrefix);
-      await psRef.current.init();
+    if (!psRef.value) {
+      psRef.value = new PageSearcher(props.langRoutePrefix);
+      await psRef.value.init();
       initialized.value = true;
     } else {
       initialized.value = true;
-      return Promise.resolve();
     }
   };
 
   const onQueryChanged = async value => {
+    if (!initialized.value) {
+      await initPageSearcher();
+    }
     query.value = value;
     searching.value = true;
-    const matched = await psRef.current!.match(value);
+    const matched = await psRef.value!.match(value);
     suggestions.value = matched;
     searching.value = false;
   };
@@ -78,8 +78,6 @@ export function Search(props: { langRoutePrefix: string }) {
 
   onMount(() => {
     document.addEventListener('keydown', onKeyDown);
-    initPageSearcherPromise = initPageSearcherPromise || initPageSearcher();
-    initPageSearcherPromise;
   });
   onDestroy(() => {
     document.removeEventListener('keydown', onKeyDown);

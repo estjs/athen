@@ -1,5 +1,4 @@
 import { normalizeHref, withBase } from '@/runtime';
-import { useLocaleSiteData } from './useLocaleSiteData';
 import type { DefaultTheme } from '@shared/types';
 export function isEqualPath(a: string, b: string) {
   return normalizeHref(a) === normalizeHref(b);
@@ -11,11 +10,12 @@ interface SidebarData {
   items: DefaultTheme.SidebarGroup[];
 }
 
-export function useSidebarData(currentPathname: string): SidebarData {
+export function useSidebarData(
+  currentPathname: string,
+  sidebar: DefaultTheme.Sidebar,
+): SidebarData {
   currentPathname = decodeURIComponent(currentPathname);
 
-  const localeData = useLocaleSiteData();
-  const sidebar = localeData.sidebar ?? {};
   for (const name of Object.keys(sidebar)) {
     // Such as `/api/`，it will return all the sidebar group
     if (isEqualPath(withBase(name), currentPathname)) {

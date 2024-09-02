@@ -68,7 +68,7 @@ export class RouteService {
           .map(route => {
             return `
             {
-                path: "${route.routePath.slice(1)}",
+                path: "${route.routePath}",
                 component:import("${route.absolutePath}"),
                 preload: () => import("${route.absolutePath}"),
                 title: "${route.name || 'title'}",

@@ -4,8 +4,15 @@ import siteData from 'athen:site-data';
 import { cleanUrl, getRelativePagePath } from '@shared/utils';
 import type { FrontMatterMeta, PageData } from '@shared/types';
 
+/**
+ * Get the page data of the given route path.
+ *
+ * @param routerPath The route path.
+ * @returns The page data.
+ */
 export async function initPageData(routerPath: string): Promise<PageData> {
-  const matched = routes.filter(route => route.path === routerPath);
+  const router = routes[0];
+  const matched = router.children.filter(route => route.path === routerPath);
 
   if (matched.length > 0 && matched[0].preload) {
     const moduleInfo = await matched[0].preload();

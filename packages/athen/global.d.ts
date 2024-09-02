@@ -10,7 +10,8 @@ declare module 'athen:routes' {
 
   type NewRoute = RouteRecordRaw & {
     preload?: () => Promise<PageModule>;
-  } & { children: NewRoute[] };
+    children: NewRoute[];
+  };
   const routes: NewRoute[];
   export { routes };
 }

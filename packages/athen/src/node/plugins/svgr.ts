@@ -1,6 +1,6 @@
-import * as fs from 'node:fs';
 import { transformSync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
+import fs from 'fs-extra';
 import type { Plugin } from 'vite';
 interface SvgrOptions {
   defaultExport?: 'url' | 'component';
