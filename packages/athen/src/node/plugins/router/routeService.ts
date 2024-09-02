@@ -3,6 +3,7 @@ import { normalizePath } from 'vite';
 import { addLeadingSlash, withBase } from '@shared/utils';
 import { globSync } from 'glob';
 import type { UserConfig } from '@shared/types';
+
 interface RouteMeta {
   routePath: string;
   absolutePath: string;
@@ -10,6 +11,7 @@ interface RouteMeta {
   name?: string;
 }
 
+// const Layout = import('@theme-default/layout/index.tsx?url');
 // Normalize the route path by removing extensions and 'index' filenames
 export const normalizeRoutePath = (routePath: string) => {
   routePath = routePath.replace(/\.(.*)$/, '').replace(/index$/, '');
@@ -63,7 +65,7 @@ export class RouteService {
     return `
       export const routes = [{
         path: '/',
-        component: import('E:/www/athen/packages/athen/src/theme-default/layout/index.tsx'),
+        component: import('@theme-default/layout/index.tsx'),
         children: [${this.routeData
           .map(route => {
             return `

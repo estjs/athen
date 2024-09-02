@@ -1,3 +1,4 @@
+import { useReactive } from 'essor';
 import { normalizeHref, withBase } from '@/runtime';
 import type { DefaultTheme } from '@shared/types';
 export function isEqualPath(a: string, b: string) {
@@ -16,12 +17,15 @@ export function useSidebarData(
 ): SidebarData {
   currentPathname = decodeURIComponent(currentPathname);
 
+  const items = useReactive([] as SidebarData['items']);
+
   for (const name of Object.keys(sidebar)) {
     // Such as `/api/`，it will return all the sidebar group
     if (isEqualPath(withBase(name), currentPathname)) {
+      Object.assign(items, sidebar[name]);
       return {
         group: '',
-        items: sidebar[name],
+        items,
       };
     }
     // Such as `/guide/getting-started`, it will return the guide groups and the group name `Introduction`
@@ -29,10 +33,10 @@ export function useSidebarData(
       group.items.some(item => item.link && isEqualPath(withBase(item.link), currentPathname)),
     );
     if (result) {
-      const sidebarGroup = sidebar[name];
+      Object.assign(items, sidebar[name]);
       return {
         group: result.text || '',
-        items: sidebarGroup,
+        items,
       };
     }
   }

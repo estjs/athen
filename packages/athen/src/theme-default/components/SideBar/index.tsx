@@ -1,18 +1,23 @@
-import { useRoute } from 'essor-router';
-import { useComputed } from 'essor';
-import { useLocaleSiteData } from '@/theme-default/hooks';
+import { useComputed, useWatch } from 'essor';
+import { useLocaleSiteData, usePathname } from '@/theme-default/hooks';
 import PageLink from '../Link';
 import './style.scss';
 import { useSidebarData } from '../../hooks/useSidebarData';
 
 export function SideBar() {
-  const route = useRoute();
-  const pathname = location.pathname || route.path;
+  const pathname = usePathname();
   const localeData = useLocaleSiteData();
 
   const items = useComputed(() => {
-    return useSidebarData(route.path, localeData.sidebar!).items;
+    return useSidebarData(pathname.value, localeData.sidebar!).items;
   });
+
+  useWatch(
+    () => items.value[0].items,
+    n => {
+      console.log(n);
+    },
+  );
 
   return (
     <aside class="sidebar">
@@ -26,10 +31,11 @@ export function SideBar() {
             </div>
             <div class="mb-1">
               {item.items.map(i => (
-                <div key={i.link} class="ml-5">
+                <div class="ml-5">
                   <div
-                    class={`p-1 font-medium ${i.link === pathname ? 'text-brand' : 'text-gray-500'}`}
+                    class={`p-1 font-medium ${i.link === pathname.value ? 'text-brand' : 'text-gray-500'}`}
                   >
+                    {i.link}
                     <PageLink href={i.link}>{i.text}</PageLink>
                   </div>
                 </div>
