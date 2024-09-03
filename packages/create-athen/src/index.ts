@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import process from 'node:process';
 import minimist from 'minimist';
 import prompts from 'prompts';
-import execa from 'execa';
+import { execa } from 'execa';
 import { blue, bold, cyan, dim, green, yellow } from 'kolorist';
 const { version } = await import('../package.json');
 
