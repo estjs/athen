@@ -5,13 +5,13 @@ import { HomeFooter } from '../components/HomeFooter';
 export function DocHomeLayout() {
   const pageData = usePageData();
 
-  const { frontmatter, siteData } = pageData;
-
   return (
     <>
-      <HomeHero hero={frontmatter!.hero!} />
-      <HomeFeature features={frontmatter!.features!} />
-      {siteData?.themeConfig?.footer && <HomeFooter footer={siteData?.themeConfig?.footer} />}
+      <HomeHero hero={pageData.value.frontmatter?.hero || {}} />
+      <HomeFeature features={pageData.value.frontmatter?.features || {}} />
+      {pageData.value.siteData?.themeConfig?.footer && (
+        <HomeFooter footer={pageData.value.siteData?.themeConfig?.footer} />
+      )}
     </>
   );
 }

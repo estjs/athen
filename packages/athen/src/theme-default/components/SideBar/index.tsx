@@ -1,4 +1,4 @@
-import { useComputed, useWatch } from 'essor';
+import { useComputed } from 'essor';
 import { useLocaleSiteData, usePathname } from '@/theme-default/hooks';
 import PageLink from '../Link';
 import './style.scss';
@@ -11,13 +11,6 @@ export function SideBar() {
   const items = useComputed(() => {
     return useSidebarData(pathname.value, localeData.sidebar!).items;
   });
-
-  useWatch(
-    () => items.value[0].items,
-    n => {
-      console.log(n);
-    },
-  );
 
   return (
     <aside class="sidebar">
@@ -35,7 +28,6 @@ export function SideBar() {
                   <div
                     class={`p-1 font-medium ${i.link === pathname.value ? 'text-brand' : 'text-gray-500'}`}
                   >
-                    {i.link}
                     <PageLink href={i.link}>{i.text}</PageLink>
                   </div>
                 </div>

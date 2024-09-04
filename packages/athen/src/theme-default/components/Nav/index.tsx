@@ -1,26 +1,19 @@
 import './style.scss';
-
 import { useLocaleSiteData } from '@theme-default/hooks';
 import { usePageData } from '@/runtime';
 import { Switch } from '../Switch';
 import Search from '../Search';
 import Link from '../Link';
-import { NavMenuGroup, type NavMenuGroupItem } from './NavMenuGroup';
-
-const NavTranslations = ({ translationMenuData }: { translationMenuData?: NavMenuGroupItem }) => {
-  return (
-    <div class="menu-item-before menu-item-after flex items-center text-sm font-bold">
-      <NavMenuGroup {...translationMenuData!} />
-    </div>
-  );
-};
+import NavTranslations from './NavTranslations';
+import NavMenuGroup from './NavMenuGroup';
 
 const NavHeader = () => {
   const localeData = useLocaleSiteData();
-  const { siteData } = usePageData();
+  const { siteData } = usePageData().value;
   const localeLanguages = Object.values(siteData.themeConfig.locales || {});
   const hasMultiLanguage = localeLanguages.length > 1;
 
+  // 构建翻译菜单数据
   const translationMenuData = hasMultiLanguage
     ? {
         items: localeLanguages.map(item => ({
@@ -51,7 +44,7 @@ const NavHeader = () => {
         <div class="flex items-center">
           <div class="flex items-center">
             {(localeData?.nav || []).map(item => (
-              <div class="mx-3 text-sm font-medium">
+              <div key={item.link} class="mx-3 text-sm font-medium">
                 {item.items ? (
                   <NavMenuGroup {...item} />
                 ) : (
@@ -60,6 +53,7 @@ const NavHeader = () => {
               </div>
             ))}
           </div>
+          {/* 如果支持多语言，显示翻译菜单 */}
           {hasMultiLanguage && <NavTranslations translationMenuData={translationMenuData} />}
           <Switch />
           <div class="social-link-icon ml-2">

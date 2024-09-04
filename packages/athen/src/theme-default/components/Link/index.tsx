@@ -19,6 +19,7 @@ const PageLink = ({ href, className, children, link }) => {
     if (EXTERNAL_URL_RE.test(href)) {
       return;
     }
+    console.log('handleNavigate', withBaseUrl);
     e.preventDefault();
     router.push({
       path: withBaseUrl,
@@ -31,7 +32,7 @@ const PageLink = ({ href, className, children, link }) => {
       onClick={handleNavigate}
       target={val.value.target}
       rel={val.value.rel}
-      class={`${className || ''} link cursor-pointer`}
+      class={`at-link cursor-pointer ${className || ''}`}
     >
       {children}
     </a>

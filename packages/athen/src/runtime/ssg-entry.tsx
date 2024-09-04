@@ -1,5 +1,23 @@
 import { renderToString } from 'essor';
-export function render(Compt: any) {
-  return renderToString(Compt, {});
+import { routes } from 'athen:routes';
+import { RouterView, createMemoryHistory } from 'essor-router';
+import Layout from '@/theme-default';
+import { createRouter } from './router';
+import { pageData } from '.';
+const router = createRouter(createMemoryHistory(import.meta.env.BASE_URL));
+
+export function render(props) {
+  pageData.value = props;
+  return (
+    <RouterView>
+      {renderToString(props.default, {
+        components: {
+          wrapper: Layout,
+        },
+      })}
+    </RouterView>
+  );
 }
-export { routes } from 'athen:routes';
+
+const route = routes[0].children;
+export { route as routes };

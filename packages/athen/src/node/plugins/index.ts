@@ -26,7 +26,7 @@ export async function createVitePlugins(
     EnvironmentPlugin([]),
     pluginAthen(config, isServer, restartServer),
     pluginRoute({ root: config.root }, config.siteData),
-    pluginSvgr(),
+    pluginSvgr({}, isServer),
     Inspect(),
   ];
 }

@@ -1,8 +1,7 @@
 import { useSignal } from 'essor';
 import Down from '../../assets/down.svg';
-import Link from '../Link/index';
-import Right from '../../assets/right.svg';
 import Translator from '../../assets/translator.svg';
+import NavMenuItem from './NavMenuItem';
 import type { DefaultTheme } from '@/shared/types';
 
 export interface NavMenuGroupItem {
@@ -12,6 +11,20 @@ export interface NavMenuGroupItem {
   isTranslation?: boolean;
 }
 
+export interface NavMenuGroupItem {
+  text?: string | JSX.Element;
+  items: DefaultTheme.NavItemWithLink[];
+  activeIndex?: number;
+  isTranslation?: boolean;
+}
+
+/**
+ * 导航菜单组组件
+ * @param activeIndex 当前激活的菜单项索引
+ * @param isTranslation 是否为翻译菜单
+ * @param items 菜单项数组
+ * @param text 菜单组显示的文本
+ */
 export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMenuGroupItem) {
   const isOpen = useSignal(false);
 
@@ -28,7 +41,7 @@ export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMen
         }}
         class="flex items-center gap-4px b-x-2 text-1 text-sm font-medium transition-color duration-200 hover:text-text-2"
       >
-        {isTranslation ? <Translator height="18" width="18"></Translator> : text}
+        {isTranslation ? <Translator height="18" width="18" /> : text}
         <Down height="18" width="18" />
       </button>
       <div
@@ -39,32 +52,13 @@ export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMen
         }}
       >
         <div class="z-100 mr-[1.5rem] h-full max-h-100vh min-w-100px w-full overflow-y-auto b-1 b-border-default rounded-xl b-solid bg-bg-default p-3 shadow-[var(--at-shadow-3)]">
-          {items.map((child, index) => {
-            if (index === activeIndex) {
-              return (
-                <div key={child.link} class="rounded-md py-1.6 pl-3">
-                  <span class="mr-1 text-brand">{child.text}</span>
-                </div>
-              );
-            } else {
-              return (
-                <div key={child.link} class="font-medium">
-                  <Link href={child.link} link={true}>
-                    <div class="rounded-md py-1.6 pl-3 hover:bg-bg-mute">
-                      <div class="flex items-center">
-                        <span class="mr-1">{child.text}</span>
-                        <div class="ml-1 text-text-3">
-                          <Right height="18" width="18" />
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              );
-            }
-          })}
+          {items.map((child, index) => (
+            <NavMenuItem item={child} isActive={index === activeIndex} />
+          ))}
         </div>
       </div>
     </div>
   );
 }
+
+export default NavMenuGroup;

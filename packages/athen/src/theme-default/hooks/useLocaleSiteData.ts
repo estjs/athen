@@ -4,9 +4,9 @@ import { usePageData, withBase } from '@/runtime';
 import type { DefaultTheme } from '@shared/types';
 
 export function useLocaleSiteData(): DefaultTheme.LocaleConfig {
-  const pageData = usePageData();
+  const pageData = usePageData().value;
   const route = useRoute();
-  const pathname = import.meta.env.ssg ? route.path : location.pathname;
+  const pathname = import.meta.env.SSR ? route.path : location.pathname;
   const themeConfig = pageData?.siteData?.themeConfig ?? {};
   const locales = themeConfig?.locales;
   if (!locales || Object.keys(locales).length === 0) {

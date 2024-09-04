@@ -6,7 +6,7 @@ interface SvgrOptions {
   defaultExport?: 'url' | 'component';
 }
 
-export function pluginSvgr(options: SvgrOptions = {}): Plugin {
+export function pluginSvgr(options: SvgrOptions = {}, isServer): Plugin {
   const { defaultExport = 'component' } = options;
 
   return {
@@ -34,7 +34,7 @@ export function pluginSvgr(options: SvgrOptions = {}): Plugin {
       const result = transformSync(componentCode, {
         filename: `${id}`,
         sourceType: 'module',
-        plugins: [[BabelPluginEssor]],
+        plugins: [[BabelPluginEssor, { ssg: !isServer }]],
       });
       return {
         code: result?.code,

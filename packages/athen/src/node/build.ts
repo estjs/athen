@@ -26,9 +26,12 @@ export function renderPage(
   return Promise.all(
     routers.map(async route => {
       const routePath = route.path;
+      if (!route.preload) {
+        console.log(route);
+      }
 
       const routeLoad = (await route.preload()) as any;
-      const appHtml = render(routeLoad.default);
+      const appHtml = render(routeLoad);
 
       const html = `
       <!DOCTYPE html>
@@ -95,7 +98,9 @@ export async function bundle(root: string, options) {
           '@': resolve(PACKAGE_ROOT, 'src'),
         },
       },
-
+      define: {
+        'import.meta.env.SSR': `${isServer}`,
+      },
       plugins,
       esbuild: {
         jsx: 'preserve',

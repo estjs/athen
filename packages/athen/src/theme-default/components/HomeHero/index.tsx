@@ -1,4 +1,4 @@
-import PageButton from '../Button';
+import PageLink from '../Link';
 import type { Hero } from '@/shared/types';
 export function HomeHero({ hero }: { hero: Hero }) {
   return (
@@ -17,13 +17,9 @@ export function HomeHero({ hero }: { hero: Hero }) {
           <div class="flex flex-wrap justify-start pt-8">
             {hero.actions?.map(action => (
               <div class="p-1" key={action.link}>
-                <PageButton
-                  type="a"
-                  text={action.text}
-                  href={action.link}
-                  theme={action.theme}
-                  external={true}
-                />
+                <PageLink className={'at-button medium brand'} href={action.link}>
+                  <span>{action.text}</span>
+                </PageLink>
               </div>
             ))}
           </div>

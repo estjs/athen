@@ -4,7 +4,7 @@ Hook for the user to get all the data of the page, such as:
 import { usePageData } from 'athen/runtime';
 
 function Layout() {
-  const pageData = usePageData();
+  const pageData = usePageData().value;
   return <div>{pageData.title}</div>;
 }
 ```

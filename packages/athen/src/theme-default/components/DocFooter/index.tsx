@@ -2,7 +2,7 @@ import { useEditLink, useLocaleSiteData, usePrevNextPage } from '@theme-default/
 import './index.scss';
 import { usePageData } from '@/runtime';
 const DocFooter = () => {
-  const pageData = usePageData();
+  const pageData = usePageData().value;
   const { siteData, relativePagePath, lastUpdatedTime } = pageData;
   const themeConfig = siteData?.themeConfig || {};
   const {

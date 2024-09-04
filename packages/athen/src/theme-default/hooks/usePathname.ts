@@ -33,5 +33,5 @@ function useRoutePath() {
 }
 
 export function usePathname() {
-  return import.meta.env.ssg ? useLocation() : useRoutePath();
+  return import.meta.env.SSR ? useLocation() : useRoutePath();
 }
