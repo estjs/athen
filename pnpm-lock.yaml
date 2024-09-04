@@ -60,8 +60,8 @@ importers:
         specifier: ^1.0.0-next.25
         version: 1.0.0-next.25
       '@svgr/core':
-        specifier: 6.3.1
-        version: 6.3.1
+        specifier: 6.5.1
+        version: 6.5.1
       b-tween:
         specifier: ^0.3.3
         version: 0.3.3
@@ -1026,8 +1026,8 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
-  '@svgr/core@6.3.1':
-    resolution: {integrity: sha512-Sm3/7OdXbQreemf9aO25keerZSbnKMpGEfmH90EyYpj1e8wMD4TuwJIb3THDSgRMWk1kYJfSRulELBy4gVgZUA==}
+  '@svgr/core@6.5.1':
+    resolution: {integrity: sha512-/xdLSWxK5QkqG524ONSjvg3V/FkNyCv538OIBdQqPNaAta3AsXj/Bd2FbvR87yMbXO2hFSWiAe/Q6IkVPDw+mw==}
     engines: {node: '>=10'}
 
   '@svgr/hast-util-to-babel-ast@6.5.1':
@@ -1604,7 +1604,7 @@ packages:
     resolution: {integrity: sha512-zHig5N+tPWARooBnb0Zx1MFcdfpyJrfTJ3Y5L+IFvUm8rM74hHz66z0gw0x4tijh5CorKkKUCnW82R2vmpeCRA==}
 
   concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   confbox@0.1.7:
     resolution: {integrity: sha512-uJcB/FKZtBMCJpK8MQji6bJHgu1tixKPxRLeGkNzBoOZzpnZUJm0jm2/sBDWcuBx1dYgxV4JU+g5hmNxCyAmdA==}
@@ -4996,9 +4996,11 @@ snapshots:
       '@svgr/babel-plugin-transform-react-native-svg': 6.5.1(@babel/core@7.25.2)
       '@svgr/babel-plugin-transform-svg-component': 6.5.1(@babel/core@7.25.2)
 
-  '@svgr/core@6.3.1':
+  '@svgr/core@6.5.1':
     dependencies:
-      '@svgr/plugin-jsx': 6.5.1(@svgr/core@6.3.1)
+      '@babel/core': 7.25.2
+      '@svgr/babel-preset': 6.5.1(@babel/core@7.25.2)
+      '@svgr/plugin-jsx': 6.5.1(@svgr/core@6.5.1)
       camelcase: 6.3.0
       cosmiconfig: 7.1.0
     transitivePeerDependencies:
@@ -5009,11 +5011,11 @@ snapshots:
       '@babel/types': 7.25.6
       entities: 4.5.0
 
-  '@svgr/plugin-jsx@6.5.1(@svgr/core@6.3.1)':
+  '@svgr/plugin-jsx@6.5.1(@svgr/core@6.5.1)':
     dependencies:
       '@babel/core': 7.25.2
       '@svgr/babel-preset': 6.5.1(@babel/core@7.25.2)
-      '@svgr/core': 6.3.1
+      '@svgr/core': 6.5.1
       '@svgr/hast-util-to-babel-ast': 6.5.1
       svg-parser: 2.0.4
     transitivePeerDependencies:
