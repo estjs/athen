@@ -10,10 +10,10 @@ importers:
     devDependencies:
       '@estjs/eslint-config':
         specifier: ^1.2.5
-        version: 1.2.5(eslint@9.9.1(jiti@1.21.6))(prettier@3.3.3)(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.77.8))
+        version: 1.2.5(eslint@9.9.1(jiti@1.21.6))(prettier@3.3.3)(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.78.0))
       '@vitest/coverage-v8':
         specifier: ^2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@22.5.2)(sass@1.77.8))
+        version: 2.0.5(vitest@2.0.5(@types/node@22.5.2)(sass@1.78.0))
       athen:
         specifier: workspace:*
         version: link:packages/athen
@@ -106,13 +106,13 @@ importers:
         version: 2.0.4
       unocss:
         specifier: ^0.62.3
-        version: 0.62.3(postcss@8.4.41)(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))
+        version: 0.62.3(postcss@8.4.41)(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))
       vite:
         specifier: ^5.4.2
-        version: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
+        version: 5.4.2(@types/node@22.5.2)(sass@1.78.0)
       vite-plugin-inspect:
         specifier: ^0.8.7
-        version: 0.8.7(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))
+        version: 0.8.7(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))
     devDependencies:
       '@babel/types':
         specifier: ^7.25.6
@@ -131,7 +131,7 @@ importers:
         version: 22.5.2
       sass:
         specifier: ^1.77.8
-        version: 1.77.8
+        version: 1.78.0
       tsup:
         specifier: ^8.2.4
         version: 8.2.4(jiti@1.21.6)(postcss@8.4.41)(tsx@4.19.0)(typescript@5.5.4)(yaml@2.5.0)
@@ -140,7 +140,7 @@ importers:
         version: 5.5.4
       vite-plugin-environment:
         specifier: ^1.1.3
-        version: 1.1.3(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))
+        version: 1.1.3(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))
 
   packages/create-athen:
     dependencies:
@@ -259,7 +259,7 @@ importers:
         version: 4.17.21
       tsup:
         specifier: ^8.2.4
-        version: 8.2.4(jiti@1.21.6)(postcss@8.4.41)(tsx@4.19.0)(typescript@5.5.4)(yaml@2.5.0)
+        version: 8.2.4(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(typescript@5.5.4)(yaml@2.5.0)
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
@@ -2412,8 +2412,8 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
-  immutable@4.3.6:
-    resolution: {integrity: sha512-Ju0+lEMyzMVZarkTn/gqRpdqd5dOPaz1mCZ0SH3JV6iFw81PldE/PEB1hWVEA288HPt4WXW8O7AWxB10M+03QQ==}
+  immutable@4.3.7:
+    resolution: {integrity: sha512-1hqclzwYwjRDFLjcFxOM5AYkkG0rpFPpr1RLPMEuGczoS7YA8gLhy8SWXYRAA/XwfEHpfo3cw5JGioS32fnMRw==}
 
   import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -3391,6 +3391,10 @@ packages:
     resolution: {integrity: sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.4.44:
+    resolution: {integrity: sha512-Aweb9unOEpQ3ezu4Q00DPvvM2ZTUitJdNKeP/+uQgr1IBIqu574IaZoURId7BKtWMREwzKa9OgzPzezWGPWFQw==}
+    engines: {node: ^10 || ^12 || >=14}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -3571,8 +3575,8 @@ packages:
     resolution: {integrity: sha512-CdASjNJPvRa7roO6Ra/gLYBTzYzzPyyBXxIMdGW3USQLyjWEls2RgW5UBTXaQVp+OrpeCK3bLem8smtmheoRuw==}
     engines: {node: '>= 0.4'}
 
-  sass@1.77.8:
-    resolution: {integrity: sha512-4UHg6prsrycW20fqLGPShtEvo/WyHRVRHwOP4DzkUrObWoWI05QBSfzU71TVB7PFaL104TwNaHpjlWXAZbQiNQ==}
+  sass@1.78.0:
+    resolution: {integrity: sha512-AaIqGSrjo5lA2Yg7RvFZrlXDBCp3nV4XP73GrLGvdRWWwk+8H3l0SDvq/5bA4eF+0RFPLuWUk3E+P1U/YqnpsQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -4151,6 +4155,37 @@ packages:
       terser:
         optional: true
 
+  vite@5.4.3:
+    resolution: {integrity: sha512-IH+nl64eq9lJjFqU+/yrRnrHPVTlgy42/+IzbOdaFDVlyLgI/wDlf+FCobXLX1cT0X5+7LMyH1mIy2xJdLfo8Q==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+
   vitest@2.0.5:
     resolution: {integrity: sha512-8GUxONfauuIdeSl5f9GTgVEpg5BTOlplET4WEDaeY2QBiN8wSm68vxN/tb5z405OwppfoCavnwXafiaYBC/xOA==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -4689,7 +4724,7 @@ snapshots:
 
   '@eslint/object-schema@2.1.4': {}
 
-  '@estjs/eslint-config@1.2.5(eslint@9.9.1(jiti@1.21.6))(prettier@3.3.3)(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.77.8))':
+  '@estjs/eslint-config@1.2.5(eslint@9.9.1(jiti@1.21.6))(prettier@3.3.3)(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.78.0))':
     dependencies:
       '@eslint-types/jsdoc': 48.2.2
       '@eslint-types/typescript-eslint': 7.5.0
@@ -4714,7 +4749,7 @@ snapshots:
       eslint-plugin-toml: 0.11.1(eslint@9.9.1(jiti@1.21.6))
       eslint-plugin-unicorn: 55.0.0(eslint@9.9.1(jiti@1.21.6))
       eslint-plugin-unused-imports: 4.1.3(@typescript-eslint/eslint-plugin@8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))
-      eslint-plugin-vitest: 0.5.4(@typescript-eslint/eslint-plugin@8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.77.8))
+      eslint-plugin-vitest: 0.5.4(@typescript-eslint/eslint-plugin@8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.78.0))
       eslint-plugin-vue: 9.27.0(eslint@9.9.1(jiti@1.21.6))
       eslint-plugin-yml: 1.14.0(eslint@9.9.1(jiti@1.21.6))
       globals: 15.9.0
@@ -5189,13 +5224,13 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@unocss/astro@0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))':
+  '@unocss/astro@0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))':
     dependencies:
       '@unocss/core': 0.62.3
       '@unocss/reset': 0.62.3
-      '@unocss/vite': 0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))
+      '@unocss/vite': 0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))
     optionalDependencies:
-      vite: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
+      vite: 5.4.2(@types/node@22.5.2)(sass@1.78.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -5353,7 +5388,7 @@ snapshots:
     dependencies:
       '@unocss/core': 0.62.3
 
-  '@unocss/vite@0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))':
+  '@unocss/vite@0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@rollup/pluginutils': 5.1.0(rollup@4.21.2)
@@ -5365,12 +5400,12 @@ snapshots:
       chokidar: 3.6.0
       magic-string: 0.30.11
       tinyglobby: 0.2.5
-      vite: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
+      vite: 5.4.2(@types/node@22.5.2)(sass@1.78.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
 
-  '@vitest/coverage-v8@2.0.5(vitest@2.0.5(@types/node@22.5.2)(sass@1.77.8))':
+  '@vitest/coverage-v8@2.0.5(vitest@2.0.5(@types/node@22.5.2)(sass@1.78.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -5384,7 +5419,7 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.0.5(@types/node@22.5.2)(sass@1.77.8)
+      vitest: 2.0.5(@types/node@22.5.2)(sass@1.78.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -6280,13 +6315,13 @@ snapshots:
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
 
-  eslint-plugin-vitest@0.5.4(@typescript-eslint/eslint-plugin@8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.77.8)):
+  eslint-plugin-vitest@0.5.4(@typescript-eslint/eslint-plugin@8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)(vitest@2.0.5(@types/node@22.5.2)(sass@1.78.0)):
     dependencies:
       '@typescript-eslint/utils': 7.18.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       eslint: 9.9.1(jiti@1.21.6)
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 8.2.0(@typescript-eslint/parser@8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4))(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
-      vitest: 2.0.5(@types/node@22.5.2)(sass@1.77.8)
+      vitest: 2.0.5(@types/node@22.5.2)(sass@1.78.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -6883,7 +6918,7 @@ snapshots:
 
   ignore@5.3.2: {}
 
-  immutable@4.3.6: {}
+  immutable@4.3.7: {}
 
   import-fresh@3.3.0:
     dependencies:
@@ -8112,6 +8147,15 @@ snapshots:
       tsx: 4.19.0
       yaml: 2.5.0
 
+  postcss-load-config@6.0.1(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(yaml@2.5.0):
+    dependencies:
+      lilconfig: 3.1.2
+    optionalDependencies:
+      jiti: 1.21.6
+      postcss: 8.4.44
+      tsx: 4.19.0
+      yaml: 2.5.0
+
   postcss-safe-parser@6.0.0(postcss@8.4.41):
     dependencies:
       postcss: 8.4.41
@@ -8126,6 +8170,12 @@ snapshots:
       util-deprecate: 1.0.2
 
   postcss@8.4.41:
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.1.0
+      source-map-js: 1.2.0
+
+  postcss@8.4.44:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.1.0
@@ -8412,10 +8462,10 @@ snapshots:
       es-errors: 1.3.0
       is-regex: 1.1.4
 
-  sass@1.77.8:
+  sass@1.78.0:
     dependencies:
       chokidar: 3.6.0
-      immutable: 4.3.6
+      immutable: 4.3.7
       source-map-js: 1.2.0
 
   scslre@0.3.0:
@@ -8790,6 +8840,33 @@ snapshots:
       - tsx
       - yaml
 
+  tsup@8.2.4(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(typescript@5.5.4)(yaml@2.5.0):
+    dependencies:
+      bundle-require: 5.0.0(esbuild@0.23.1)
+      cac: 6.7.14
+      chokidar: 3.6.0
+      consola: 3.2.3
+      debug: 4.3.6
+      esbuild: 0.23.1
+      execa: 5.1.1
+      globby: 11.1.0
+      joycon: 3.1.1
+      picocolors: 1.1.0
+      postcss-load-config: 6.0.1(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(yaml@2.5.0)
+      resolve-from: 5.0.0
+      rollup: 4.21.2
+      source-map: 0.8.0-beta.0
+      sucrase: 3.35.0
+      tree-kill: 1.2.2
+    optionalDependencies:
+      postcss: 8.4.44
+      typescript: 5.5.4
+    transitivePeerDependencies:
+      - jiti
+      - supports-color
+      - tsx
+      - yaml
+
   tsx@4.19.0:
     dependencies:
       esbuild: 0.23.1
@@ -8948,9 +9025,9 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unocss@0.62.3(postcss@8.4.41)(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8)):
+  unocss@0.62.3(postcss@8.4.41)(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0)):
     dependencies:
-      '@unocss/astro': 0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))
+      '@unocss/astro': 0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))
       '@unocss/cli': 0.62.3(rollup@4.21.2)
       '@unocss/core': 0.62.3
       '@unocss/extractor-arbitrary-variants': 0.62.3
@@ -8969,9 +9046,9 @@ snapshots:
       '@unocss/transformer-compile-class': 0.62.3
       '@unocss/transformer-directives': 0.62.3
       '@unocss/transformer-variant-group': 0.62.3
-      '@unocss/vite': 0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8))
+      '@unocss/vite': 0.62.3(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0))
     optionalDependencies:
-      vite: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
+      vite: 5.4.2(@types/node@22.5.2)(sass@1.78.0)
     transitivePeerDependencies:
       - postcss
       - rollup
@@ -9010,13 +9087,13 @@ snapshots:
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
 
-  vite-node@2.0.5(@types/node@22.5.2)(sass@1.77.8):
+  vite-node@2.0.5(@types/node@22.5.2)(sass@1.78.0):
     dependencies:
       cac: 6.7.14
       debug: 4.3.6
       pathe: 1.1.2
       tinyrainbow: 1.2.0
-      vite: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
+      vite: 5.4.3(@types/node@22.5.2)(sass@1.78.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -9028,11 +9105,11 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-environment@1.1.3(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8)):
+  vite-plugin-environment@1.1.3(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0)):
     dependencies:
-      vite: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
+      vite: 5.4.2(@types/node@22.5.2)(sass@1.78.0)
 
-  vite-plugin-inspect@0.8.7(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.77.8)):
+  vite-plugin-inspect@0.8.7(rollup@4.21.2)(vite@5.4.2(@types/node@22.5.2)(sass@1.78.0)):
     dependencies:
       '@antfu/utils': 0.7.10
       '@rollup/pluginutils': 5.1.0(rollup@4.21.2)
@@ -9043,12 +9120,12 @@ snapshots:
       perfect-debounce: 1.0.0
       picocolors: 1.1.0
       sirv: 2.0.4
-      vite: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
+      vite: 5.4.2(@types/node@22.5.2)(sass@1.78.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
 
-  vite@5.4.2(@types/node@22.5.2)(sass@1.77.8):
+  vite@5.4.2(@types/node@22.5.2)(sass@1.78.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.41
@@ -9056,9 +9133,19 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.5.2
       fsevents: 2.3.3
-      sass: 1.77.8
+      sass: 1.78.0
 
-  vitest@2.0.5(@types/node@22.5.2)(sass@1.77.8):
+  vite@5.4.3(@types/node@22.5.2)(sass@1.78.0):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.4.44
+      rollup: 4.21.2
+    optionalDependencies:
+      '@types/node': 22.5.2
+      fsevents: 2.3.3
+      sass: 1.78.0
+
+  vitest@2.0.5(@types/node@22.5.2)(sass@1.78.0):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.5
@@ -9076,8 +9163,8 @@ snapshots:
       tinybench: 2.9.0
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.2(@types/node@22.5.2)(sass@1.77.8)
-      vite-node: 2.0.5(@types/node@22.5.2)(sass@1.77.8)
+      vite: 5.4.3(@types/node@22.5.2)(sass@1.78.0)
+      vite-node: 2.0.5(@types/node@22.5.2)(sass@1.78.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.5.2
