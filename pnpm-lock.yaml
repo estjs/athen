@@ -81,8 +81,8 @@ importers:
         specifier: ^0.0.11
         version: 0.0.11
       essor-router:
-        specifier: ^0.0.9
-        version: 0.0.9(essor@0.0.11)
+        specifier: ^0.0.10
+        version: 0.0.10(essor@0.0.11)
       flexsearch:
         specifier: 0.6.32
         version: 0.6.32
@@ -2050,10 +2050,10 @@ packages:
     resolution: {integrity: sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==}
     engines: {node: '>=4.0'}
 
-  essor-router@0.0.9:
-    resolution: {integrity: sha512-EmGPp97C6QOHHfNvOltEDuOaXfkQLTWNI8oLTFXvpYPM8mn/8h05HOqTNKKh4n0srh/BoL6IHEDCwOa0Z1LjUQ==}
+  essor-router@0.0.10:
+    resolution: {integrity: sha512-Z3pI42wqYCZrsUSyOZ1b4aI6PpvppK5KuXF1zbZi/ceNaxyoEXztrJ/1pM23kbRiOEYqLJTiOFxB6lXrQpae/Q==}
     peerDependencies:
-      essor: ^0.0.10
+      essor: '>0.0.10'
 
   essor@0.0.11:
     resolution: {integrity: sha512-BTfeyUuwGBXTTZLlUU+rAd1NuFVD5ypmybuCs6UZyu+len4wy9FNx4d6rqqQ+UHnvTpEgw5pTJ1RHrdj1iyHBw==}
@@ -6398,7 +6398,7 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  essor-router@0.0.9(essor@0.0.11):
+  essor-router@0.0.10(essor@0.0.11):
     dependencies:
       essor: 0.0.11
 
