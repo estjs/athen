@@ -52,7 +52,7 @@
   "dependencies": {
     "@iconify-json/carbon": "^1.2.1",
     "@polka/compression": "^1.0.0-next.25",
-    "@svgr/core": "6.3.1",
+    "@svgr/core": "6.5.1",
     "b-tween": "^0.3.3",
     "babel-plugin-essor": "^0.0.11",
     "cac": "^6.7.14",
