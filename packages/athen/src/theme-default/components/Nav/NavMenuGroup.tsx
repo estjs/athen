@@ -1,6 +1,4 @@
 import { useSignal } from 'essor';
-import Down from '../../assets/down.svg';
-import Translator from '../../assets/translator.svg';
 import NavMenuItem from './NavMenuItem';
 import type { DefaultTheme } from '@/shared/types';
 
@@ -41,8 +39,8 @@ export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMen
         }}
         class="flex items-center gap-4px b-x-2 text-1 text-sm font-medium transition-color duration-200 hover:text-text-2"
       >
-        {isTranslation ? <Translator height="18" width="18" /> : text}
-        <Down height="18" width="18" />
+        {isTranslation ? <span class="i-carbon-translate" height="18" width="18" /> : text}
+        <span class="i-carbon-chevron-down" height="18" width="18" />
       </button>
       <div
         class="absolute left-[-60px] top-14 mx-0.8 transition-opacity duration-300"

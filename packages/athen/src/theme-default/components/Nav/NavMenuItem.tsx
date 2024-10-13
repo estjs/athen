@@ -1,4 +1,3 @@
-import Right from '../../assets/right.svg';
 import Link from '../Link';
 import type { DefaultTheme } from '@/shared/types';
 
@@ -24,7 +23,7 @@ const NavMenuItem = ({ item, isActive }: NavMenuItemProps) => {
           <div class="flex items-center">
             <span class="mr-1">{item.text}</span>
             <div class="ml-1 text-text-3">
-              <Right height="18" width="18" />
+              <span class="i-carbon-arrow-up-right h-18 w-18" />
             </div>
           </div>
         </div>

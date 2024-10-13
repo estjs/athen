@@ -37,6 +37,8 @@ export async function initPageData(routerPath: string): Promise<PageData> {
     frontmatter: {} as FrontMatterMeta,
   } as PageData;
 }
+console.log(routes);
+
 export const createRouter = history => {
   return createEssorRouter({
     history,

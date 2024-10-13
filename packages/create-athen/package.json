@@ -1,7 +1,7 @@
 {
   "name": "create-athen",
   "version": "0.0.7-beta.3",
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@9.12.1",
   "description": "create template for athen",
   "type": "module",
   "keywords": [
@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit -p ./tsconfig.json"
   },
   "dependencies": {
-    "execa": "9.3.1",
+    "execa": "9.4.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
     "prompts": "^2.4.2"

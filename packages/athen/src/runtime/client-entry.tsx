@@ -16,7 +16,7 @@ async function ClientEntry() {
     pageData.value = _pageData;
     next();
   });
-
+  console.log(router);
   function ClientRender() {
     useProvide(PageDataKey, pageData);
     return <RouterView></RouterView>;
