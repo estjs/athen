@@ -3,11 +3,9 @@ import { routes } from 'athen:routes';
 import { RouterView, createMemoryHistory } from 'essor-router';
 import Layout from '@/theme-default';
 import { createRouter } from './router';
-import { pageData } from '.';
 const router = createRouter(createMemoryHistory(import.meta.env.BASE_URL));
 
 export function render(props) {
-  pageData.value = props;
   return (
     <RouterView>
       {renderToString(props.default, {

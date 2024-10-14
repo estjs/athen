@@ -4,7 +4,7 @@
 import { usePageData } from 'athen/runtime';
 
 function Layout() {
-  const pageData = usePageData().value;
+  const pageData = usePageData();
   return <div>{pageData.title}</div>;
 }
 ```

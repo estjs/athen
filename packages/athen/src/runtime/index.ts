@@ -1,12 +1,11 @@
-import { type InjectionKey, type Signal, useInject, useSignal } from 'essor';
+import { type InjectionKey, useInject } from 'essor';
 import { routes } from 'athen:routes';
 import type { PageData } from '@shared/types';
 
-export const PageDataKey = Symbol() as InjectionKey<Signal<PageData>>;
+export const PageDataKey = Symbol() as InjectionKey<PageData>;
 
-export const pageData = useSignal<PageData>({} as PageData);
 export const usePageData = () => {
-  return import.meta.env.SSR ? pageData : useInject(PageDataKey)!;
+  return useInject(PageDataKey)!;
 };
 
 export const getAllPages = (

@@ -7,10 +7,10 @@ export function DocHomeLayout() {
 
   return (
     <>
-      <HomeHero hero={pageData.value.frontmatter?.hero || {}} />
-      <HomeFeature features={pageData.value.frontmatter?.features || {}} />
-      {pageData.value.siteData?.themeConfig?.footer && (
-        <HomeFooter footer={pageData.value.siteData?.themeConfig?.footer} />
+      <HomeHero hero={pageData.frontmatter?.hero || {}} />
+      <HomeFeature features={pageData.frontmatter?.features || {}} />
+      {pageData.siteData?.themeConfig?.footer && (
+        <HomeFooter footer={pageData.siteData?.themeConfig?.footer} />
       )}
     </>
   );

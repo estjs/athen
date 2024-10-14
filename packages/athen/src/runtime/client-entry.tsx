@@ -1,5 +1,5 @@
 import { RouterView, createWebHistory } from 'essor-router';
-import { useProvide, useSignal } from 'essor';
+import { useProvide, useReactive } from 'essor';
 import { setup } from '../theme-default';
 import { createRouter, initPageData } from './router';
 import { PageDataKey } from '.';
@@ -10,13 +10,12 @@ async function ClientEntry() {
   const router = createRouter(createWebHistory(import.meta.env.BASE_URL));
 
   const pageDataInitValue = await initPageData(import.meta.env.BASE_URL);
-  const pageData = useSignal(pageDataInitValue);
+  const pageData = useReactive(pageDataInitValue);
   router.beforeEach(async (to, from, next) => {
-    const _pageData = await initPageData(to.path);
-    pageData.value = _pageData;
+    Object.assign(pageData, await initPageData(to.path));
     next();
   });
-  console.log(router);
+
   function ClientRender() {
     useProvide(PageDataKey, pageData);
     return <RouterView></RouterView>;
