@@ -1,6 +1,7 @@
 import { useEditLink, useLocaleSiteData, usePrevNextPage } from '@theme-default/hooks';
 import './index.scss';
 import { usePageData } from '@/runtime';
+import PageLink from '../Link';
 const DocFooter = () => {
   const pageData = usePageData();
   const { siteData, relativePagePath, lastUpdatedTime } = pageData;
@@ -38,28 +39,28 @@ const DocFooter = () => {
       <div class="flex gap-2 border-t b-border-default pt-6">
         <div class="prev w-1/2 flex flex-col">
           {prevPage && (
-            <a
+            <PageLink
               href={prevPage.link}
-              class="block h-full w-full border b-border-default rounded-lg border-solid p-2 transition-colors hover:border-brand"
+              className="block h-full w-full border b-border-default rounded-lg border-solid p-2 transition-colors hover:border-brand"
             >
               <span class="block text-sm text-gray-500 font-medium">{prevPageText}</span>
               <span class="block text-base text-brand font-medium transition-colors hover:text-brand-dark">
                 {prevPage.text}
               </span>
-            </a>
+            </PageLink>
           )}
         </div>
         <div class="next w-1/2 flex flex-col">
           {nextPage && (
-            <a
+            <PageLink
               href={nextPage.link}
-              class="ml-auto block h-full w-full border b-border-default rounded-lg border-solid p-2 text-right transition-colors hover:border-brand"
+              className="ml-auto block h-full w-full border b-border-default rounded-lg border-solid p-2 text-right transition-colors hover:border-brand"
             >
               <span class="block text-sm text-gray-500 font-medium">{nextPageText}</span>
               <span class="block text-base text-brand font-medium transition-colors hover:text-brand-dark">
                 {nextPage.text}
               </span>
-            </a>
+            </PageLink>
           )}
         </div>
       </div>

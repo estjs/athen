@@ -1,5 +1,5 @@
 import { useRoute } from 'essor-router';
-import { Fragment, useComputed } from 'essor';
+import { useComputed } from 'essor';
 import { usePageData } from '@/runtime';
 import { useHeaders } from '../hooks';
 import { SideBar } from '../components/SideBar';
@@ -30,7 +30,7 @@ export function DocContent() {
         return <DocHomeLayout />;
       case 'doc':
         return (
-          <Fragment>
+          <div>
             <SideBar />
             <div class="content">
               <div class="at-doc">
@@ -45,7 +45,7 @@ export function DocContent() {
                 pagePath={pagePath!}
               />
             )}
-          </Fragment>
+          </div>
         );
       default:
         return <NotFound />;

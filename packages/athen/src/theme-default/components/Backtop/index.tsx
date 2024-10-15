@@ -1,4 +1,4 @@
-import { onDestroy, onMount, useSignal } from 'essor';
+import { Fragment, onDestroy, onMount, useSignal } from 'essor';
 import BTween from 'b-tween';
 import { throttle } from 'lodash-es';
 
@@ -45,7 +45,7 @@ export function BackTop() {
   });
 
   return (
-    <>
+    <Fragment>
       {visible.value && (
         <div class="fixed bottom-10 right-20 z-10 hidden md:block" onClick={scrollToTop}>
           <button
@@ -58,6 +58,6 @@ export function BackTop() {
           </button>
         </div>
       )}
-    </>
+    </Fragment>
   );
 }

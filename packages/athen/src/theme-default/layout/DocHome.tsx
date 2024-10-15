@@ -1,3 +1,4 @@
+import { Fragment } from 'essor';
 import { usePageData } from '@/runtime';
 import { HomeHero } from '../components/HomeHero';
 import { HomeFeature } from '../components/HomeFeature';
@@ -6,12 +7,12 @@ export function DocHomeLayout() {
   const pageData = usePageData();
 
   return (
-    <>
+    <Fragment>
       <HomeHero hero={pageData.frontmatter?.hero || {}} />
       <HomeFeature features={pageData.frontmatter?.features || {}} />
       {pageData.siteData?.themeConfig?.footer && (
         <HomeFooter footer={pageData.siteData?.themeConfig?.footer} />
       )}
-    </>
+    </Fragment>
   );
 }

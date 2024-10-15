@@ -19,7 +19,6 @@ const PageLink = ({ href, className, children, link }) => {
     if (EXTERNAL_URL_RE.test(href)) {
       return;
     }
-    console.log('handleNavigate', withBaseUrl);
     e.preventDefault();
     router.push({
       path: withBaseUrl,
@@ -29,6 +28,7 @@ const PageLink = ({ href, className, children, link }) => {
   return (
     <a
       href={withBaseUrl}
+      key={href}
       onClick={handleNavigate}
       target={val.value.target}
       rel={val.value.rel}
