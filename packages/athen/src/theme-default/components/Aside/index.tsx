@@ -1,4 +1,4 @@
-import { onMount, useComputed, useSignal } from 'essor';
+import { useComputed, useSignal } from 'essor';
 import { scrollToTarget, useActiveToc, useHeaders } from '@theme-default/hooks';
 import type { Header } from '@shared/types/index';
 import './style.scss';
@@ -7,11 +7,7 @@ export function Aside(props: { headers: Header[]; pagePath: string; outlineTitle
   const hasOutline = useComputed(() => headers.value.length > 0);
   const markerRef = useSignal<HTMLDivElement | null>(null);
 
-  onMount(() => {
-    setTimeout(() => {
-      useActiveToc();
-    }, 200);
-  });
+  useActiveToc();
 
   const renderHeader = (header: Header) => {
     return (

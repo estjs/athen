@@ -7,7 +7,6 @@ export function useHeaders(initHeaders: Header[], pagePath: string) {
   const setHeaders = (newHeaders: Header[]) => {
     headers.value = newHeaders;
   };
-
   onMount(() => {
     // Handle aside hmr:
     // When mdx file changed, server will send a custom event to client.

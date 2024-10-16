@@ -1,5 +1,7 @@
 import { debounce } from 'lodash-es';
-function hightLight(id) {
+import { onDestroy, onMount, useSignal } from 'essor';
+
+function highlight(id: string) {
   document.querySelectorAll('.toc-item').forEach(item => {
     item.classList.remove('highlight');
   });
@@ -11,42 +13,54 @@ function hightLight(id) {
 }
 
 export function useActiveToc() {
-  const links = Array.from(document.querySelectorAll(`.toc-item`)) as HTMLLinkElement[];
-  const headers: Element[] = [];
-  const topRange = 500;
+  const activeId = useSignal('');
 
-  for (const link of links) {
-    link.addEventListener('click', () => {
-      hightLight(link.getAttribute('href'));
-    });
+  onMount(() => {
+    const links = Array.from(document.querySelectorAll(`.toc-item`)) as HTMLLinkElement[];
+    const headers: Element[] = [];
+    const topRange = 500;
 
-    const url = new URL(link.href);
-    const hash = decodeURIComponent(url.hash);
+    for (const link of links) {
+      link.addEventListener('click', () => {
+        activeId.value = link.getAttribute('href') || '';
+        highlight(activeId.value);
+      });
 
-    const item = document.querySelector(`.header-anchor[href="${hash}"]`);
+      const url = new URL(link.href);
+      const hash = decodeURIComponent(url.hash);
 
-    item && headers.push(item);
-  }
+      const item = document.querySelector(`.header-anchor[href="${hash}"]`);
 
-  const scrollHandler = debounce(() => {
-    const rects = headers.map(header => header.getBoundingClientRect());
-
-    for (const [i, title] of headers.entries()) {
-      const rect = rects[i];
-      if (rect.top >= 0 && rect.bottom <= topRange) {
-        hightLight(title.getAttribute('href'));
-        break;
-      } else if (
-        rect.top < 0 &&
-        rect[i + 1] &&
-        rect[i + 1].top >= document.documentElement.clientHeight
-      ) {
-        hightLight(title.getAttribute('href'));
-        break;
-      }
+      item && headers.push(item);
     }
-  }, 100);
 
-  // 监听滚动事件
-  window.addEventListener('scroll', scrollHandler);
+    const scrollHandler = debounce(() => {
+      const rects = headers.map(header => header.getBoundingClientRect());
+
+      for (const [i, title] of headers.entries()) {
+        const rect = rects[i];
+        if (rect.top >= 0 && rect.bottom <= topRange) {
+          activeId.value = title.getAttribute('href') || '';
+          highlight(activeId.value);
+          break;
+        } else if (
+          rect.top < 0 &&
+          rects[i + 1] &&
+          rects[i + 1].top >= document.documentElement.clientHeight
+        ) {
+          activeId.value = title.getAttribute('href') || '';
+          highlight(activeId.value);
+          break;
+        }
+      }
+    }, 100);
+
+    window.addEventListener('scroll', scrollHandler);
+
+    onDestroy(() => {
+      window.removeEventListener('scroll', scrollHandler);
+    });
+  });
+
+  return activeId;
 }

@@ -66,8 +66,8 @@ importers:
         specifier: ^0.3.3
         version: 0.3.3
       babel-plugin-essor:
-        specifier: ^0.0.13-beta.7
-        version: 0.0.13-beta.7
+        specifier: ^0.0.13
+        version: 0.0.13
       cac:
         specifier: ^6.7.14
         version: 6.7.14
@@ -78,11 +78,11 @@ importers:
         specifier: ^1.11.13
         version: 1.11.13
       essor:
-        specifier: ^0.0.13-beta.7
-        version: 0.0.13-beta.7
+        specifier: ^0.0.13
+        version: 0.0.13
       essor-router:
         specifier: ^0.0.13
-        version: 0.0.13(essor@0.0.13-beta.7)
+        version: 0.0.13(essor@0.0.13)
       flexsearch:
         specifier: 0.6.32
         version: 0.6.32
@@ -176,8 +176,8 @@ importers:
         specifier: ^1.22.0
         version: 1.22.0
       acorn:
-        specifier: ^8.12.1
-        version: 8.12.1
+        specifier: ^8.13.0
+        version: 8.13.0
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -969,21 +969,21 @@ packages:
       - vitest
     dev: true
 
-  /@estjs/shared@0.0.13-beta.7:
-    resolution: {integrity: sha512-ACz/KcFByz9K20npm+st193YwjgLnXyFiqigse7SGHx1xSRCJXIKRniIsgZJeF4f6KlWOj+HmUyx2EEQCBwrBA==}
+  /@estjs/shared@0.0.13:
+    resolution: {integrity: sha512-TiLindKpzxsNUxK07+ko1LHj80B1GgJ+GN518hm+0YvOaBVxvPXGOv+m8142G/HvD7fXcVUr1hjThBY/4yZpRw==}
     dev: false
 
-  /@estjs/signal@0.0.13-beta.7:
-    resolution: {integrity: sha512-b7QEQqy5n9pszuVOO+u0wwTCRxVAiBaTCNsxA0euZjnOMN46JwQGKHB2cZIxCLij2BKFQk9vWlnr99qISC008Q==}
+  /@estjs/signal@0.0.13:
+    resolution: {integrity: sha512-geJ13INFMcrX8aoqFowB4m9onX4u5KUPD5TzNy/wvJTl70nv5aME/W0JJnYOkHHSOf8uf0hpBgh0KZC87/ZYhQ==}
     dependencies:
-      '@estjs/shared': 0.0.13-beta.7
+      '@estjs/shared': 0.0.13
     dev: false
 
-  /@estjs/template@0.0.13-beta.7:
-    resolution: {integrity: sha512-jN44ACj20igq31j2tIkUfgvdixrlHzCFmXrxhsl9RAYT768dLQpDRtv1ya4NLNH2wswn3fjFz65bl7h3KF46lA==}
+  /@estjs/template@0.0.13:
+    resolution: {integrity: sha512-iqUbteIj3RDTl9T2kUflNPNwhUikB/baqWAeD2hygl8nGc3PePrUEv0bFaxeu2K/QxKNn+VdbCIv7PJvknvxqQ==}
     dependencies:
-      '@estjs/shared': 0.0.13-beta.7
-      '@estjs/signal': 0.0.13-beta.7
+      '@estjs/shared': 0.0.13
+      '@estjs/signal': 0.0.13
       csstype: 3.1.3
     dev: false
 
@@ -1630,7 +1630,7 @@ packages:
   /@types/hast@3.0.4:
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
     dependencies:
-      '@types/unist': 3.0.3
+      '@types/unist': 2.0.11
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -1655,7 +1655,7 @@ packages:
   /@types/mdast@4.0.4:
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
     dependencies:
-      '@types/unist': 3.0.3
+      '@types/unist': 2.0.11
 
   /@types/mdx@2.0.13:
     resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
@@ -1694,6 +1694,7 @@ packages:
 
   /@types/unist@3.0.3:
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
+    dev: false
 
   /@typescript-eslint/eslint-plugin@8.8.1(@typescript-eslint/parser@8.8.1)(eslint@9.12.0)(typescript@5.6.3):
     resolution: {integrity: sha512-xfvdgA8AP/vxHgtgU310+WBnLB4uJQ9XdyP17RebG26rLtDrQJV3ZYrcopX91GrHmMoH8bdSwMRh2a//TiJ1jQ==}
@@ -2204,15 +2205,15 @@ packages:
       tinyrainbow: 1.2.0
     dev: true
 
-  /acorn-jsx@5.3.2(acorn@8.12.1):
+  /acorn-jsx@5.3.2(acorn@8.13.0):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.12.1
+      acorn: 8.13.0
 
-  /acorn@8.12.1:
-    resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
+  /acorn@8.13.0:
+    resolution: {integrity: sha512-8zSiw54Oxrdym50NlZ9sUusyO1Z1ZchgRLWRaK6c86XJFClyCgFKetdowBg5bKxyp/u+CDBJG4Mpp0m3HLZl9w==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -2391,12 +2392,12 @@ packages:
     resolution: {integrity: sha512-oEHegcRpA7fAuc9KC4nktucuZn2aS8htymCPcP3qkEGPqiBH+GfqtqoG2l7LxHngg6O0HFM7hOeOYExl1Oz4ZA==}
     dev: false
 
-  /babel-plugin-essor@0.0.13-beta.7:
-    resolution: {integrity: sha512-PHUfQPayLb93U72MEC844E0Tw5nw0S7zdakeynRzGMLjRVff00zXmZdESXuQ1pP2PLJPPDfhrtCIqDYcMQFAYg==}
+  /babel-plugin-essor@0.0.13:
+    resolution: {integrity: sha512-JAGLuGKNQ1+D8HrRj1apCh/k5T3arQXssz1wJywfHV77j7DGGglczL4IWN3P1VUNHb9jzylIW5FXJXcogQYo8w==}
     dependencies:
       '@babel/core': 7.25.8
       '@babel/types': 7.25.8
-      '@estjs/shared': 0.0.13-beta.7
+      '@estjs/shared': 0.0.13
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -3686,8 +3687,8 @@ packages:
     resolution: {integrity: sha512-upbkBJbckcCNBDBDXEbuhjbP68n+scUd3k/U2EkyM9nw+I/jPiL4cLF/Al06CF96wRltFda16sxDFrxsI1v0/g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     dependencies:
-      acorn: 8.12.1
-      acorn-jsx: 5.3.2(acorn@8.12.1)
+      acorn: 8.13.0
+      acorn-jsx: 5.3.2(acorn@8.13.0)
       eslint-visitor-keys: 4.1.0
     dev: true
 
@@ -3695,8 +3696,8 @@ packages:
     resolution: {integrity: sha512-oruZaFkjorTpF32kDSI5/75ViwGeZginGGy2NoOSg3Q9bnwlnmDm4HLnkl0RE3n+njDXR037aY1+x58Z/zFdwQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      acorn: 8.12.1
-      acorn-jsx: 5.3.2(acorn@8.12.1)
+      acorn: 8.13.0
+      acorn-jsx: 5.3.2(acorn@8.13.0)
       eslint-visitor-keys: 3.4.3
     dev: true
 
@@ -3714,20 +3715,20 @@ packages:
       estraverse: 5.3.0
     dev: true
 
-  /essor-router@0.0.13(essor@0.0.13-beta.7):
+  /essor-router@0.0.13(essor@0.0.13):
     resolution: {integrity: sha512-rYbjA/YI7vRaRzGEKid73OkLxw69kh96VmBJWqS9FJdDwLml1qPrnu3ErXEzkXux6m6NMIGzdRXh+6bBaZDQmw==}
     peerDependencies:
       essor: '>=0.0.13-beta.6'
     dependencies:
-      essor: 0.0.13-beta.7
+      essor: 0.0.13
     dev: false
 
-  /essor@0.0.13-beta.7:
-    resolution: {integrity: sha512-+ceZi/EPKs+Tm1l4RgwN7qcCj5D3W6SBjT/3XM1yGCfax9Yh4F3bzlNsncTZOClk4EoG9sTDz+hBxh+zT217vA==}
+  /essor@0.0.13:
+    resolution: {integrity: sha512-eoDQQ/BAMSPS+tBrsPvQDKl5A+qmXnZzKUoDn/EfUnQESPogJXUKrCRmoA4knovXxRqFPjdJkJOn6cosklxSQQ==}
     dependencies:
-      '@estjs/shared': 0.0.13-beta.7
-      '@estjs/signal': 0.0.13-beta.7
-      '@estjs/template': 0.0.13-beta.7
+      '@estjs/shared': 0.0.13
+      '@estjs/signal': 0.0.13
+      '@estjs/template': 0.0.13
     dev: false
 
   /estraverse@5.3.0:
@@ -4903,7 +4904,7 @@ packages:
     resolution: {integrity: sha512-WYDyuc/uFcGp6YtM2H0uKmUwieOuzeE/5YocFJLnLfclZ4inf3mRn8ZVy1s7Hxji7Jxm6Ss8gqpexD/GlKoGgg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      acorn: 8.12.1
+      acorn: 8.13.0
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
       semver: 7.6.3
@@ -5539,8 +5540,8 @@ packages:
   /micromark-extension-mdxjs@3.0.0:
     resolution: {integrity: sha512-A873fJfhnJ2siZyUrJ31l34Uqwy4xIFmvPY1oj+Ean5PHcPBYzEsvqvWGaWcfEIr11O5Dlw3p2y0tZWpKHDejQ==}
     dependencies:
-      acorn: 8.12.1
-      acorn-jsx: 5.3.2(acorn@8.12.1)
+      acorn: 8.13.0
+      acorn-jsx: 5.3.2(acorn@8.13.0)
       micromark-extension-mdx-expression: 3.0.0
       micromark-extension-mdx-jsx: 3.0.0
       micromark-extension-mdx-md: 2.0.0
@@ -5821,7 +5822,7 @@ packages:
   /mlly@1.7.2:
     resolution: {integrity: sha512-tN3dvVHYVz4DhSXinXIk7u9syPYaJvio118uomkovAtWBT+RdbP6Lfh/5Lvo519YMmwBafwlh20IPTXIStscpA==}
     dependencies:
-      acorn: 8.12.1
+      acorn: 8.13.0
       pathe: 1.1.2
       pkg-types: 1.2.1
       ufo: 1.5.4

@@ -8,7 +8,7 @@ import NavTranslations from './NavTranslations';
 import NavMenuGroup from './NavMenuGroup';
 
 const NavHeader = () => {
-  const localeData = useLocaleSiteData();
+  const localeData = useLocaleSiteData().value;
   const { siteData } = usePageData();
   const localeLanguages = Object.values(siteData.themeConfig.locales || {});
   const hasMultiLanguage = localeLanguages.length > 1;

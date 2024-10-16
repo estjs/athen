@@ -5,4 +5,4 @@ export { useLocaleSiteData } from './useLocaleSiteData';
 export { useEditLink } from './useEditLink';
 export { useActiveToc } from './useTocActive';
 export { usePrevNextPage } from './usePrevNextPage';
-export { usePathname } from './usePathname';
+export { pathname } from './usePathname';
