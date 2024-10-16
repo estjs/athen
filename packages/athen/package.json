@@ -60,7 +60,7 @@
     "dayjs": "^1.11.13",
     "essor": "^0.0.13",
     "essor-router": "^0.0.13",
-    "flexsearch": "0.6.32",
+    "flexsearch": "0.7.43",
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",
     "lodash-es": "^4.17.21",
