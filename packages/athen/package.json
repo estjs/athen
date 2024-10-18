@@ -59,7 +59,7 @@
     "copy-to-clipboard": "3.3.3",
     "dayjs": "^1.11.13",
     "essor": "^0.0.13",
-    "essor-router": "^0.0.13",
+    "essor-router": "^0.0.14",
     "flexsearch": "0.6.32",
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",

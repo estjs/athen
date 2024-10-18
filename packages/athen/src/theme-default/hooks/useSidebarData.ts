@@ -1,4 +1,4 @@
-import { type Computed, useComputed } from 'essor';
+import { type Computed, type Signal, useComputed } from 'essor';
 import { normalizeHref, withBase } from '@/runtime';
 import type { DefaultTheme } from '@shared/types';
 
@@ -12,11 +12,11 @@ interface SidebarData {
 }
 
 export function useSidebarData(
-  currentPathname: string,
+  currentPathname: Signal<string>,
   sidebar: DefaultTheme.Sidebar,
 ): Computed<SidebarData> {
   return useComputed(() => {
-    const decodedPathname = decodeURIComponent(currentPathname);
+    const decodedPathname = decodeURIComponent(currentPathname.value);
     const items: SidebarData['items'] = [];
     for (const name of Object.keys(sidebar)) {
       if (isEqualPath(withBase(name), decodedPathname)) {

@@ -30,7 +30,7 @@ export function DocContent() {
         return <DocHomeLayout />;
       case 'doc':
         return (
-          <>
+          <div>
             <SideBar />
             <div class="content">
               <div class="at-doc">
@@ -45,7 +45,7 @@ export function DocContent() {
                 pagePath={pagePath!}
               />
             )}
-          </>
+          </div>
         );
       default:
         return <NotFound />;

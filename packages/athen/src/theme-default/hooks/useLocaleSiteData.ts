@@ -1,13 +1,14 @@
 import { useComputed } from 'essor';
 import { normalizeSlash } from '@/shared/utils/index';
 import { usePageData, withBase } from '@/runtime';
-import { pathname } from './usePathname';
+import { usePathname } from './usePathname';
 import type { DefaultTheme } from '@shared/types';
 
 export function useLocaleSiteData() {
   const pageData = usePageData();
 
   return useComputed(() => {
+    const pathname = usePathname();
     const themeConfig = pageData?.siteData?.themeConfig ?? {};
     const locales = themeConfig?.locales;
     if (!locales || Object.keys(locales).length === 0) {

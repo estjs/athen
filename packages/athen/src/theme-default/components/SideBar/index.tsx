@@ -1,12 +1,17 @@
-import { pathname, useLocaleSiteData } from '@/theme-default/hooks';
+import { useLocaleSiteData, usePathname } from '@/theme-default/hooks';
 import PageLink from '../Link';
 import './style.scss';
 import { useSidebarData } from '../../hooks/useSidebarData';
+import { useEffect } from 'essor';
 
 export function SideBar() {
   const localeData = useLocaleSiteData();
-  const sidebarData = useSidebarData(pathname.value, localeData.value.sidebar!);
+  const pathname = usePathname();
+  const sidebarData = useSidebarData(pathname, localeData.value.sidebar!);
 
+  useEffect(() => {
+    console.log(pathname.value);
+  });
   return (
     <aside class="sidebar">
       <nav>
