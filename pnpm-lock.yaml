@@ -145,8 +145,8 @@ importers:
   packages/create-athen:
     dependencies:
       execa:
-        specifier: 9.4.0
-        version: 9.4.0
+        specifier: 9.4.1
+        version: 9.4.1
       kolorist:
         specifier: ^1.8.0
         version: 1.8.0
@@ -1632,7 +1632,7 @@ packages:
     resolution: {integrity: sha512-zHig5N+tPWARooBnb0Zx1MFcdfpyJrfTJ3Y5L+IFvUm8rM74hHz66z0gw0x4tijh5CorKkKUCnW82R2vmpeCRA==}
 
   concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
@@ -2142,8 +2142,8 @@ packages:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
 
-  execa@9.4.0:
-    resolution: {integrity: sha512-yKHlle2YGxZE842MERVIplWwNH5VYmqqcPFgtnlU//K8gxuFFXu0pwd/CrfXTumFpeEiufsP7+opT/bPJa1yVw==}
+  execa@9.4.1:
+    resolution: {integrity: sha512-5eo/BRqZm3GYce+1jqX/tJ7duA2AnE39i88fuedNFUV8XxGxUpF3aWkBRfbUcjV49gCkvS/pzc0YrCPhaIewdg==}
     engines: {node: ^18.19.0 || >=20.5.0}
 
   extend@3.0.2:
@@ -6507,7 +6507,7 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
 
-  execa@9.4.0:
+  execa@9.4.1:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
       cross-spawn: 7.0.3
