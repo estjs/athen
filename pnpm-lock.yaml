@@ -81,8 +81,8 @@ importers:
         specifier: ^0.0.13
         version: 0.0.13
       essor-router:
-        specifier: ^0.0.14
-        version: 0.0.14(essor@0.0.13)
+        specifier: ^0.0.15
+        version: 0.0.15(essor@0.0.13)
       flexsearch:
         specifier: 0.6.32
         version: 0.6.32
@@ -1632,7 +1632,7 @@ packages:
     resolution: {integrity: sha512-zHig5N+tPWARooBnb0Zx1MFcdfpyJrfTJ3Y5L+IFvUm8rM74hHz66z0gw0x4tijh5CorKkKUCnW82R2vmpeCRA==}
 
   concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
@@ -2091,8 +2091,8 @@ packages:
     resolution: {integrity: sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==}
     engines: {node: '>=4.0'}
 
-  essor-router@0.0.14:
-    resolution: {integrity: sha512-rFDC1/f59hzwzY6uLCBN+TXl23WNTtjnkkZatUe60F5Sv3/CQAZge3DM3S7nydCNgU35ZQq1i8frWWDg0sHhFA==}
+  essor-router@0.0.15:
+    resolution: {integrity: sha512-43M7uUe9DuRqXu9nCdVhcsTzQqTVh6+OLHrn2iXYvvdwm3bpUVf5tKaI3kjt5wLl5k3Ivu8SkuizCc8jFbrExg==}
     peerDependencies:
       essor: ^0.0.13
 
@@ -6433,7 +6433,7 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  essor-router@0.0.14(essor@0.0.13):
+  essor-router@0.0.15(essor@0.0.13):
     dependencies:
       essor: 0.0.13
 
