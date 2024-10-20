@@ -36,7 +36,7 @@ interface ContentMatch extends CommonMatchResult {
 export type MatchResultItem = HeaderMatch | ContentMatch;
 
 const cjkRegex =
-  /[\u3131-\u314E|\u314F-\u3163|\uAC00-\uD7A3]|[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]|[\u3041-\u3096]|[\u30A1-\u30FA]/giu;
+  /[\u3131-\u314E|\u314F-\u3163\uAC00-\uD7A3\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29\u3041-\u3096\u30A1-\u30FA]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]/gu;
 
 const WHITE_PAGE_TYPES = ['home', 'api', '404', 'custom'];
 
@@ -110,6 +110,8 @@ export class PageSearcher {
   }
 
   async match(query: string, limit: number = SEARCH_MAX_SUGGESTIONS) {
+    console.log(query);
+
     const searchResult = await Promise.all([
       this.#index?.search({
         query,

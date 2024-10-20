@@ -18,8 +18,8 @@ export function DocContent() {
     return matched?.components?.default || NotFound;
   });
 
-  const { siteData, toc = [], pagePath, frontmatter } = pageData;
-  const [headers] = useHeaders(toc, pagePath!);
+  const { siteData, frontmatter } = pageData;
+  const [headers] = useHeaders(pageData.toc || []);
   const themeConfig = siteData?.themeConfig || {};
   const hasAside =
     headers.value.length > 0 && (frontmatter?.outline ?? themeConfig.outline ?? true);
@@ -40,9 +40,8 @@ export function DocContent() {
             </div>
             {hasAside && (
               <Aside
-                headers={headers.value}
                 outlineTitle={themeConfig.outlineTitle || '目录'}
-                pagePath={pagePath!}
+                pagePath={pageData.pagePath!}
               />
             )}
           </div>

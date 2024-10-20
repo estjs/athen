@@ -1,13 +1,29 @@
-import { useComputed, useSignal } from 'essor';
+import { onDestroy, onMount, useComputed, useSignal } from 'essor';
 import { scrollToTarget, useActiveToc, useHeaders } from '@theme-default/hooks';
+import { usePageData } from '@/runtime';
 import type { Header } from '@shared/types/index';
 import './style.scss';
-export function Aside(props: { headers: Header[]; pagePath: string; outlineTitle: string }) {
-  const [headers] = useHeaders(props.headers || [], props.pagePath);
+export function Aside(props: { pagePath: string; outlineTitle: string }) {
+  const pageData = usePageData()!;
+
+  const headers = useComputed(() => {
+    return useHeaders(pageData.toc || [])[0].value;
+  });
+
   const hasOutline = useComputed(() => headers.value.length > 0);
   const markerRef = useSignal<HTMLDivElement | null>(null);
 
-  useActiveToc();
+  let scrollHandler;
+  onMount(() => {
+    setTimeout(() => {
+      scrollHandler = useActiveToc();
+      window.addEventListener('scroll', scrollHandler);
+    }, 100);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('scroll', scrollHandler);
+  });
 
   const renderHeader = (header: Header) => {
     return (
@@ -47,7 +63,7 @@ export function Aside(props: { headers: Header[]; pagePath: string; outlineTitle
           ></div>
           <div class="mt-2 block text-[16px] font-semibold leading-7">{props.outlineTitle}</div>
           <nav>
-            <ul class="relative">{props.headers.map(renderHeader)}</ul>
+            <ul class="relative">{headers.value.map(renderHeader)}</ul>
           </nav>
         </div>
       </div>

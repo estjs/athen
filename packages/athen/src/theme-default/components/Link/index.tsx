@@ -12,7 +12,9 @@ const PageLink = ({ href, className, children, link }) => {
     };
   });
 
-  const withBaseUrl = withBase(href) + (link ? '/' : '');
+  const withBaseUrl = useComputed(() => {
+    return withBase(href) + (link ? '/' : '');
+  });
 
   const router = useRouter();
   const handleNavigate = e => {
@@ -21,14 +23,12 @@ const PageLink = ({ href, className, children, link }) => {
     }
     e.preventDefault();
     router.push({
-      path: withBaseUrl,
+      path: withBaseUrl.value,
     });
   };
-
   return (
     <a
-      href={withBaseUrl}
-      key={href}
+      href={withBaseUrl.value}
       onClick={handleNavigate}
       target={val.value.target}
       rel={val.value.rel}

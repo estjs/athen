@@ -4,5 +4,5 @@
     "baseUrl": "src",
     "rootDir": "."
   },
-  "include": ["src"]
+  "include": ["src", "node_modules"]
 }

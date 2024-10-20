@@ -11,14 +11,14 @@ const DocFooter = () => {
     lastUpdatedText,
     prevPageText = 'Previous Page',
     nextPageText = 'Next page',
-  } = useLocaleSiteData();
+  } = useLocaleSiteData().value;
   const editLink = useEditLink(rawEditLink ?? themeConfig?.editLink, relativePagePath);
 
-  const { prevPage, nextPage } = usePrevNextPage();
+  const page = usePrevNextPage();
 
   return (
     <footer class="pager mt-8">
-      <div class="xs:flex flex items-center justify-between p-b-5">
+      <div class="flex flex items-center justify-between p-b-5">
         {editLink ? (
           <a
             class="flex items-center text-sm text-brand font-medium leading-8 transition-colors duration-300 hover:text-brand-dark"
@@ -38,27 +38,27 @@ const DocFooter = () => {
 
       <div class="flex gap-2 border-t b-border-default pt-6">
         <div class="prev w-1/2 flex flex-col">
-          {prevPage && (
+          {page.value.prevPage && (
             <PageLink
-              href={prevPage.link}
+              href={page.value.prevPage?.link}
               className="block h-full w-full border b-border-default rounded-lg border-solid p-2 transition-colors hover:border-brand"
             >
               <span class="block text-sm text-gray-500 font-medium">{prevPageText}</span>
               <span class="block text-base text-brand font-medium transition-colors hover:text-brand-dark">
-                {prevPage.text}
+                {page.value.prevPage?.text}
               </span>
             </PageLink>
           )}
         </div>
         <div class="next w-1/2 flex flex-col">
-          {nextPage && (
+          {page.value.nextPage && (
             <PageLink
-              href={nextPage.link}
+              href={page.value.nextPage?.link}
               className="ml-auto block h-full w-full border b-border-default rounded-lg border-solid p-2 text-right transition-colors hover:border-brand"
             >
               <span class="block text-sm text-gray-500 font-medium">{nextPageText}</span>
               <span class="block text-base text-brand font-medium transition-colors hover:text-brand-dark">
-                {nextPage.text}
+                {page.value.nextPage?.text}
               </span>
             </PageLink>
           )}

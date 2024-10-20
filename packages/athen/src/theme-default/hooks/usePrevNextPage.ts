@@ -1,11 +1,10 @@
-import { useRoute } from 'essor-router';
-import { useComputed, useSignal } from 'essor';
+import { useComputed } from 'essor';
 import { useLocaleSiteData } from './useLocaleSiteData';
+import { usePathname } from './usePathname';
 import type { DefaultTheme } from '@shared/types';
 
 export function usePrevNextPage() {
-  const route = useRoute();
-  const pathname = useSignal(import.meta.env.SSR ? location.pathname : route.path);
+  const pathname = usePathname();
   const localesData = useLocaleSiteData();
 
   return useComputed(() => {
