@@ -12,7 +12,7 @@ export const getAllPages = (
   filter: (route: (typeof routes)[number]) => boolean = () => true,
 ): Promise<PageData[]> => {
   return Promise.all(
-    routes
+    routes[0].children
       .filter(filter)
       .filter(Boolean)
       .map(async route => {

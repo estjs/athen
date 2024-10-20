@@ -75,9 +75,9 @@
     "@babel/types": "^7.25.8",
     "@estjs/tools": "^0.1.33",
     "@types/fs-extra": "^11.0.4",
-    "@types/lodash": "^4.17.11",
-    "@types/node": "^22.7.6",
-    "sass": "^1.80.2",
+    "@types/lodash": "^4.17.12",
+    "@types/node": "^22.7.7",
+    "sass": "^1.80.3",
     "tsup": "^8.3.0",
     "typescript": "^5.6.3",
     "vite-plugin-environment": "^1.1.3"
