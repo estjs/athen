@@ -1,4 +1,4 @@
-import { onDestroy, onMount, shallowSignal, useComputed, useSignal } from 'essor';
+import { onDestroy, onMount, useComputed, useRef, useSignal } from 'essor';
 import './index.scss';
 import { type MatchResultItem, PageSearcher } from './logic/search';
 import { SuggestionContent } from './Suggestion';
@@ -17,13 +17,14 @@ export function Search(props: { langRoutePrefix: string }) {
   const searching = useSignal(false);
   const focused = useSignal(false);
   const currentSuggestionIndex = useSignal(-1);
-  const psRef = shallowSignal<PageSearcher>();
-  const searchInputRef = shallowSignal<HTMLInputElement | null>();
+  const psRef = useRef<PageSearcher>();
+  const searchInputRef = useRef<HTMLInputElement | null>();
   const showLoading = useComputed(() => !initialized.value || searching.value);
+
   const initPageSearcher = async () => {
-    if (!psRef.value) {
-      psRef.value = new PageSearcher(props.langRoutePrefix);
-      await psRef.value.init();
+    if (!psRef.current) {
+      psRef.current = new PageSearcher(props.langRoutePrefix);
+      await psRef.current.init();
       initialized.value = true;
     } else {
       initialized.value = true;
@@ -36,7 +37,7 @@ export function Search(props: { langRoutePrefix: string }) {
     }
     query.value = value;
     searching.value = true;
-    const matched = await psRef.value!.match(value);
+    const matched = await psRef.current!.match(value);
     suggestions.value = matched;
     searching.value = false;
   };
@@ -44,14 +45,14 @@ export function Search(props: { langRoutePrefix: string }) {
   const onKeyDown = (e: KeyboardEvent) => {
     switch (e.code) {
       case KEY_CODE.SEARCH:
-        if ((e.ctrlKey || e.metaKey) && searchInputRef.value) {
+        if ((e.ctrlKey || e.metaKey) && searchInputRef.current) {
           e.preventDefault();
           if (!focused.value) {
             focused.value = true;
-            searchInputRef.value.focus();
+            searchInputRef.current.focus();
           } else {
             focused.value = false;
-            searchInputRef.value.blur();
+            searchInputRef.current.blur();
           }
         }
         break;
@@ -89,7 +90,7 @@ export function Search(props: { langRoutePrefix: string }) {
         class="i-carbon-search h-5 w-5 fill-current"
         onClick={() => {
           focused.value = true;
-          searchInputRef.value?.focus();
+          searchInputRef.current?.focus();
         }}
       />
       <input
