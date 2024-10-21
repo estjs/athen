@@ -7,7 +7,7 @@ function useRoutePath() {
   route ||= useRoute();
 
   useWatch(
-    () => route.path,
+    () => route?.path,
     () => {
       pathname.value = route.path;
     },
