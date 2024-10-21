@@ -31,7 +31,9 @@ export function renderPage(
       }
 
       const routeLoad = (await route.preload()) as any;
-      const appHtml = render(routeLoad);
+      console.log('routeLoad', routeLoad);
+
+      const appHtml = await render(routeLoad);
 
       const html = `
       <!DOCTYPE html>

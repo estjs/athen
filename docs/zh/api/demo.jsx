@@ -1,10 +1,10 @@
 export default function Demo(){
 
-  let $value = "demo value";
+  let $value = "example custom essor component";
 
   return (
     <div>
-      <p>value: {$value}</p>
+      <p class="text-red">value: {$value}</p>
     </div>
   );
 

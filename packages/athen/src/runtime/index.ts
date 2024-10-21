@@ -2,7 +2,9 @@ import { type InjectionKey, useInject } from 'essor';
 import { routes } from 'athen:routes';
 import type { PageData } from '@shared/types';
 
-export const PageDataKey = Symbol() as InjectionKey<PageData>;
+export const PageDataKey = Symbol(
+  import.meta.env.DEV ? 'page date key' : '',
+) as InjectionKey<PageData>;
 
 export const usePageData = () => {
   return useInject(PageDataKey)!;
