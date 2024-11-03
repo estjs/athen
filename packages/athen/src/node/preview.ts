@@ -9,6 +9,7 @@ export async function serve(root: string) {
   const host = 'localhost';
   const config = await resolveConfig(root, 'serve', 'production');
   const base = config.base?.replace(/^\//, '').replace(/\/$/, '') || '';
+
   const notAnAsset = (pathname: string) => !pathname.includes('/assets/');
 
   let distPath = '';
