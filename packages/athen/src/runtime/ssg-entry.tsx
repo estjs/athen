@@ -1,12 +1,12 @@
-import { renderToString } from 'essor';
+import { renderToString, useProvide } from 'essor';
 import { routes } from 'athen:routes';
 import { createMemoryHistory } from 'essor-router';
 import { createRouter } from './router';
-import { setPageData } from '.';
+import { PageDataKey } from '.';
 createRouter(createMemoryHistory(import.meta.env.BASE_URL));
 
 export function render(props) {
-  setPageData(props);
+  useProvide(PageDataKey, props);
   return renderToString(props.default);
 }
 

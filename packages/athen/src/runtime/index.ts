@@ -6,12 +6,7 @@ export const PageDataKey = Symbol(
   import.meta.env.DEV ? 'page date key' : '',
 ) as InjectionKey<PageData>;
 
-let data;
-export function setPageData(pageData: PageData) {
-  data = pageData;
-}
 export const usePageData = () => {
-  if (!import.meta.env.DEV) return data;
   return useInject(PageDataKey)!;
 };
 
