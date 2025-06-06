@@ -84,8 +84,8 @@ importers:
         specifier: ^0.0.15
         version: 0.0.15(essor@0.0.14-beta.11)
       flexsearch:
-        specifier: 0.6.32
-        version: 0.6.32
+        specifier: 0.8.205
+        version: 0.8.205
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -859,9 +859,11 @@ packages:
 
   '@eslint-types/jsdoc@48.2.2':
     resolution: {integrity: sha512-HpyW7wipVZGkCMOMMzjZ/wieIoinafxg1M617s8UPEchEGH/Xgs7pLZMaNR3Kdyx3Rz8STHYzCmKJfV2orjFJg==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@eslint-types/typescript-eslint@7.5.0':
     resolution: {integrity: sha512-zKvsPBDq6o0L4p2sRtq8fxOtGc+mm37aZSXLsiD4DIRl2kYUxKNO9CKDTAgmuMYUzih9J7lbLxAomreLrdAiVQ==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@eslint/config-array@0.18.0':
     resolution: {integrity: sha512-fTxvnS1sRMu3+JjXwJG0j/i4RT9u4qJ+lqS/yCGap4lH4zZGzQ7tu+xZqQmcMZq5OBZDL4QRxQzRjkWcGt8IVw==}
@@ -2453,8 +2455,8 @@ packages:
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
 
-  flexsearch@0.6.32:
-    resolution: {integrity: sha512-EF1BWkhwoeLtbIlDbY/vDSLBen/E5l/f1Vg7iX5CDymQCamcx1vhlc3tIZxIDplPjgi0jhG37c67idFbjg+v+Q==}
+  flexsearch@0.8.205:
+    resolution: {integrity: sha512-REFjMqy86DKkCTJ4gIE42c9MVm9t1vUWfEub/8taixYuhvyu4jd4XmFALk5VuKW4GH4VLav8A4BJboTsslHF1w==}
 
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -7069,7 +7071,7 @@ snapshots:
 
   flatted@3.3.1: {}
 
-  flexsearch@0.6.32: {}
+  flexsearch@0.8.205: {}
 
   for-each@0.3.3:
     dependencies:
