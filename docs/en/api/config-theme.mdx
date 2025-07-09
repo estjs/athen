@@ -326,23 +326,6 @@ I18n config. This config is an object, the key is the routing prefix of the corr
 
 <Locales />
 
-## search
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to enable search.You can disable it by setting it to `false`:
-
-```js
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  themeConfig: {
-    search: false
-  }
-});
-```
-
 ## backTop
 
 - Typs: `object | boolean`
@@ -359,5 +342,64 @@ export default defineConfig({
   }
 });
 ```
+
+## slots
+
+- Type: `object`
+- Default: `undefined`
+
+Provide custom layout components without replacing the whole theme. Available slot keys:
+
+| Key | Render Position |
+|-----|-----------------|
+| `banner` | Immediately under the top navigation bar |
+| `sidebarExtra` | Bottom of the sidebar navigation |
+| `footerExtra` | Bottom of each page (after main content) |
+
+Example:
+
+```js
+import { defineConfig } from 'athen';
+import Banner from './components/Banner';
+
+export default defineConfig({
+  themeConfig: {
+    slots: {
+      banner: Banner,
+      sidebarExtra: () => <AdWidget />, // inline component
+      footerExtra: () => <p style={{ textAlign: 'center' }}>© 2024 MyProject</p>
+    }
+  }
+});
+```
+
+If `slots` is not defined, default blank areas are rendered.
+
+## analytics
+
+- Type: `object | false`
+- Default: `false`
+
+Configure analytics integrations. Passing `false` disables built-in analytics. Passing an object enables one or more providers.
+
+```ts
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  analytics: {
+    google: { id: 'G-XXXX' },
+    baidu: { id: 'xxxx' },
+    tencent: { sid: 'site_id', cid: 'app_id' },
+    ali: { id: 'cnzz_id' },
+    plausible: { domain: 'athen.dev' },
+    umami: { id: 'uuid', src: 'https://umami.example.com/script.js' },
+    ackee: { server: 'https://ackee.example.com', domainId: 'uuid' },
+    vercel: { id: 'vercel-id' },
+    custom: { snippet: "console.log('custom analytics')" }
+  }
+});
+```
+
+If multiple providers are configured, scripts will be injected for each.
 
 P

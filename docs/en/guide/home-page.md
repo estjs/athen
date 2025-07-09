@@ -4,15 +4,16 @@ Athen default theme has a built-in Home page, you can configure it by writing ma
 
 ```md
 ---
-pageType: home
+layout: home
 
 hero:
-  name: athen
-  text: Vite & Essor document framework
+  name: Athen
+  text: Vite & Essor documentation framework
 ---
 ```
 
-First you need to set `pageType` to `home` so that Athen will automatically generate the Home page for you. In addition to `pageType`, you can also configure the `hero` and `features` sections.
+Simply set **`layout: home`** (or legacy `pageType: home`) in Front Matter and Athen will render the built-in Home layout.
+The Home layout now offers **four** configurable blocks: `hero`, `features`, `cta`, and `sponsors`.
 
 ## hero
 
@@ -104,6 +105,53 @@ features:
   details: Designed to be athens architecture, means less javascript bundle, partial hydration and better performance about FCP, TTI.
   icon:
     src: /athens-arch-feature-icon.svg
+```
+
+## cta (Call to Action)
+
+The CTA block helps you drive visitors to an important next step.
+
+```ts
+export interface CTA {
+  title: string;
+  text?: string;
+  link?: string;      // Destination page
+  buttonText?: string; // Button label (default: "Get Started")
+}
+```
+
+Example:
+
+```md
+cta:
+  title: "Ready to explore?"
+  text: "Kick-start your journey in 5 minutes."
+  link: /en/guide/getting-started
+  buttonText: "Get Started"
+```
+
+## sponsors
+
+Display a set of sponsors or partners.
+
+```ts
+export interface Sponsor {
+  name: string;
+  logo: string; // Image url
+  link: string; // External link
+}
+```
+
+Example:
+
+```md
+sponsors:
+  - name: Vite
+    logo: /logos/vite.svg
+    link: https://vitejs.dev
+  - name: Essor
+    logo: /logos/essor.svg
+    link: https://essorjs.org
 ```
 
 ## Footer

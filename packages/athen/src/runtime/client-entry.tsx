@@ -16,6 +16,12 @@ async function ClientEntry() {
     next();
   });
 
+  router.afterEach(to => {
+    if (window.__athenAnalytics?.pageview) {
+      window.__athenAnalytics.pageview(to.path);
+    }
+  });
+
   function ClientRender() {
     useProvide(PageDataKey, pageData);
     return <RouterView></RouterView>;

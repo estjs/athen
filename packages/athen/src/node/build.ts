@@ -7,7 +7,7 @@ import fs, { copy } from 'fs-extra';
 import { normalizeSlash, withBase } from '@/runtime';
 import { version } from '../../package.json';
 import { resolveConfig } from './config';
-import { CLIENT_ENTRY_PATH, PACKAGE_ROOT, SERVER_ENTRY_PATH } from './constants';
+import { CLIENT_ENTRY_PATH, DIST_DIR, PACKAGE_ROOT, SERVER_ENTRY_PATH } from './constants';
 import { createVitePlugins } from './plugins/';
 import type { Router, SiteConfig } from '@/shared/types';
 import type { RollupOutput } from 'rollup';
@@ -80,7 +80,7 @@ export function renderPage(
         return `${path}.html`.replace(normalizedBase, '');
       };
       const fileName = normalizeHtmlFilePath(routePath);
-      const distPath = join(root, 'build');
+      const distPath = join(root, DIST_DIR);
 
       await fs.ensureDir(join(distPath, dirname(fileName)));
       writeFileSync(join(distPath, fileName), html);
@@ -110,10 +110,12 @@ export async function bundle(root: string, options) {
       build: {
         emptyOutDir: true,
         ssr: !isServer,
-        outDir: isServer ? join(root, 'build') : join(root, '.temp'),
+        outDir: isServer ? join(root, DIST_DIR) : join(root, '.temp'),
         rollupOptions: {
           input: isServer ? CLIENT_ENTRY_PATH : SERVER_ENTRY_PATH,
         },
+        // 更新到 Vite 7 的浏览器目标
+        target: 'baseline-widely-available',
       },
     };
   };
@@ -128,8 +130,17 @@ export async function bundle(root: string, options) {
   }
 }
 export async function build(root: string = process.cwd()) {
+  // First, resolve config to check for instances
+  const preConfig = await resolveConfig(root, 'build', 'production');
+  if (Array.isArray(preConfig.instances) && preConfig.instances.length > 0) {
+    for (const inst of preConfig.instances) {
+      const instRoot = join(root, inst.root);
+      await build(instRoot);
+    }
+    return;
+  }
   const tempPath = join(root, '.temp');
-  const distPath = join(root, 'build');
+  const distPath = join(root, DIST_DIR);
   fs.remove(tempPath);
   fs.remove(distPath);
 

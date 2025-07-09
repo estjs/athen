@@ -2,11 +2,15 @@ import { useLocaleSiteData, usePathname } from '@/theme-default/hooks';
 import PageLink from '../Link';
 import './style.scss';
 import { useSidebarData } from '../../hooks/useSidebarData';
+import { usePageData } from '@/runtime';
 
 export function SideBar() {
   const localeData = useLocaleSiteData();
   const pathname = usePathname();
   const sidebarData = useSidebarData(pathname, localeData.value.sidebar!);
+  const { siteData } = usePageData();
+  const slots = siteData?.themeConfig?.slots || {};
+  const SidebarExtra = slots.sidebarExtra as any;
 
   return (
     <aside class="sidebar">
@@ -31,6 +35,7 @@ export function SideBar() {
             </div>
           </section>
         ))}
+        {SidebarExtra && <SidebarExtra />}
       </nav>
     </aside>
   );

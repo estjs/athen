@@ -1,0 +1,29 @@
+{
+  "name": "@athen/plugin-analytics",
+  "version": "0.1.0",
+  "description": "Privacy-friendly analytics plugin for Athen docs",
+  "keywords": [
+    "athen",
+    "plugin",
+    "analytics"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "athen": "workspace:*"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tsup": "^6.6.3",
+    "typescript": "^5.0.0"
+  }
+}

@@ -84,6 +84,18 @@ export namespace DefaultTheme {
      * Whether to use back top
      */
     backTop?: BackTopOptions;
+
+    /**
+     * Custom layout slots. Provide React components to replace default blanks.
+     */
+    slots?: {
+      /** Element rendered right below nav header on every page */
+      banner?: any;
+      /** Element rendered at bottom of sidebar */
+      sidebarExtra?: any;
+      /** Element rendered above site footer */
+      footerExtra?: any;
+    };
   }
 
   /**

@@ -77,7 +77,20 @@ export default defineConfig({
   colorScheme: false
 });
 ```
+## search
 
+- Type: `boolean`
+- Default: `true`
+
+是否开启全文搜索功能。默认情况下开启，你也通过如下的配置禁用:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+    search: false
+});
+```
 ## outDir
 
 - Type: `string`

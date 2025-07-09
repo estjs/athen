@@ -7,7 +7,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "types": ["vitest/globals", "vite/client"],
+    "types": ["node", "vitest/globals", "vite/client"],
     "strict": true,
     "strictPropertyInitialization": false,
     "noImplicitAny": false,

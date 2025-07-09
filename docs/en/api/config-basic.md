@@ -79,6 +79,23 @@ export default defineConfig({
 });
 ```
 
+## search
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to enable search.You can disable it by setting it to `false`:
+
+```js
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  themeConfig: {
+    search: false
+  }
+});
+```
+
 ## outDir
 
 - Type: `string`

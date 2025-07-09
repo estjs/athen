@@ -1,7 +1,7 @@
 import type { FrontMatterMeta, PageModule } from './frontMatter';
 import type { DefaultTheme } from './defaultTheme';
 import type { RouteOptions } from './router';
-import type { UserConfig as ViteConfiguration } from 'vite';
+import type { PluginOption, UserConfig as ViteConfiguration } from 'vite';
 
 export { DefaultTheme } from './defaultTheme';
 
@@ -99,6 +99,30 @@ export interface UserConfig<ThemeConfig = unknown> {
    * The custom config of vite-plugin-route
    */
   route?: RouteOptions;
+  /**
+   * Analytics configuration. If set to false, built-in analytics plugin is disabled.
+   */
+  analytics?: Record<string, any> | false;
+  /**
+   * Multiple site instances in a single repo.
+   */
+  instances?: Array<{
+    root: string; // sub directory relative to workspace root
+    base?: string;
+    outDir?: string;
+  }>;
+  /**
+   * Custom theme package name or relative/absolute path. If not provided, built-in default theme will be used.
+   */
+  theme?: string;
+  /**
+   * Whether to enable search.
+   */
+  search?: boolean;
+  /**
+   * Custom Vite / Athen plugins. If a plugin shares the same `name` with a built-in one, it will override it.
+   */
+  plugins?: PluginOption[];
 }
 
 export interface SiteConfig<ThemeConfig = unknown> extends Omit<UserConfig, 'themeConfig'> {

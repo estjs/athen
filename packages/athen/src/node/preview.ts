@@ -40,16 +40,23 @@ export async function serve(root: string) {
   });
 
   if (base) {
-    polka({ onNoMatch })
-      .use(base, serve, compression)
-      .listen(port, host, (err: Error) => {
-        if (err) throw err;
-        console.log(`Built site served at http://${host}:${port}/${base}/\n`);
-      });
+    // 修复 polka 中间件调用
+    const app = polka({ onNoMatch });
+    // 先应用 base 路由路径
+    app.use(`/${base}`, compress);
+    app.use(`/${base}`, serve);
+    // 修复端口类型问题，确保是数字
+    app.listen(port, (err: Error) => {
+      if (err) throw err;
+      console.log(`Built site served at http://${host}:${port}/${base}/\n`);
+    });
   } else {
+    // 修复 polka 中间件调用
     polka({ onNoMatch })
-      .use(compress, serve)
-      .listen(port, host, (err: Error) => {
+      .use(compress)
+      .use(serve)
+      // 修复端口类型问题，确保是数字
+      .listen(port, (err: Error) => {
         if (err) throw err;
         console.log(`Built site served at http://${host}:${port}/\n`);
       });

@@ -8,42 +8,45 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
   return {
     name: 'athen:index-html',
     // apply: 'serve',
-    transformIndexHtml(html) {
-      // Insert client entry script in development
-      // And in production, we will insert it in ssg render
-      const head =
-        config.siteData?.head?.map(item => {
-          const [tag, attrs, children] = item;
-          return {
-            tag,
-            attrs,
-            children,
-          };
-        }) ?? [];
+    transformIndexHtml: {
+      // 使用 handler 替代 transform，符合 Vite 7 要求
+      handler(html) {
+        // Insert client entry script in development
+        // And in production, we will insert it in ssg render
+        const head =
+          config.siteData?.head?.map(item => {
+            const [tag, attrs, children] = item;
+            return {
+              tag,
+              attrs,
+              children,
+            };
+          }) ?? [];
 
-      return {
-        html,
-        tags: [
-          ...head,
-          {
-            tag: 'link',
-            attrs: {
-              rel: 'icon',
-              href: `${config.siteData?.icon}`,
-              type: 'image/image/svg+xml',
+        return {
+          html,
+          tags: [
+            ...head,
+            {
+              tag: 'link',
+              attrs: {
+                rel: 'icon',
+                href: `${config.siteData?.icon}`,
+                type: 'image/image/svg+xml',
+              },
+              injectTo: 'head',
             },
-            injectTo: 'head',
-          },
-          {
-            tag: 'script',
-            attrs: {
-              type: 'module',
-              src: `/@fs/${CLIENT_ENTRY_PATH}`,
+            {
+              tag: 'script',
+              attrs: {
+                type: 'module',
+                src: `/@fs/${CLIENT_ENTRY_PATH}`,
+              },
+              injectTo: 'body',
             },
-            injectTo: 'body',
-          },
-        ],
-      };
+          ],
+        };
+      },
     },
     configureServer(server) {
       if (config.configPath) {

@@ -1,0 +1,36 @@
+{
+  "name": "@athen/plugin-search",
+  "version": "0.1.0",
+  "description": "Search plugin for Athen documentation framework",
+  "keywords": [
+    "athen",
+    "plugin",
+    "search",
+    "flexsearch"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "athen": "workspace:*"
+  },
+  "dependencies": {
+    "flexsearch": "^0.8.2",
+    "glob-to-regexp": "^0.4.1",
+    "markdown-it": "^13.0.1"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^12.2.3",
+    "@types/node": "^18.14.0",
+    "tsup": "^6.6.3",
+    "typescript": "^5.0.0"
+  }
+}

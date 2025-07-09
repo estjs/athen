@@ -90,4 +90,4 @@ Build the production output with the following command:
 pnpm run build
 ```
 
-By default, Athen will package the output into the `build` directory.
+By default, Athen will package the production files into the `dist` directory.

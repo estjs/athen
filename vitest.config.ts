@@ -4,6 +4,9 @@ export default defineConfig({
     __DEV__: true,
   },
   test: {
+    exclude: [
+      '**/e2e/**', // exclude Playwright tests
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -13,10 +16,11 @@ export default defineConfig({
         '**/playground/**',
         '**/examples/**',
         '**/*.d.ts',
-        '**/index.ts',
-        '**/test/**',
-        '**/warning.ts',
+        '**/dist/**',
       ],
+      lines: 80,
+      functions: 80,
+      branches: 80,
     },
     globals: true,
     watch: false,

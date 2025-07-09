@@ -318,22 +318,7 @@ export default defineConfig({
 
 <Locales />
 
-## search
 
-- Type: `boolean`
-- Default: `true`
-
-是否开启全文搜索功能。默认情况下开启，你也通过如下的配置禁用:
-
-```js
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  themeConfig: {
-    search: false
-  }
-});
-```
 
 ## backTop
 
@@ -351,3 +336,35 @@ export default defineConfig({
   }
 });
 ```
+
+## slots
+
+- 类型: `object`
+- 默认: `undefined`
+
+无需完全替换主题，即可在指定位置插入自定义组件。可用插槽键：
+
+| 键 | 渲染位置 |
+|----|----------|
+| `banner` | 顶部导航栏下方 |
+| `sidebarExtra` | 侧边栏底部 |
+| `footerExtra` | 页面底部（主内容之后） |
+
+示例：
+
+```js
+import { defineConfig } from 'athen';
+import Banner from './components/Banner';
+
+export default defineConfig({
+  themeConfig: {
+    slots: {
+      banner: Banner,
+      sidebarExtra: () => <AdWidget />, // 行内组件
+      footerExtra: () => <p style={{ textAlign: 'center' }}>© 2024 我的项目</p>
+    }
+  }
+});
+```
+
+如果未设置 `slots`，则渲染默认占位区域。

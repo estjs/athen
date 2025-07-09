@@ -1,6 +1,8 @@
-import { resolve } from 'node:path';
+import { dirname, isAbsolute, resolve } from 'node:path';
+import { createRequire } from 'node:module';
 import fs from 'fs-extra';
 import { loadConfigFromFile } from 'vite';
+import { DEFAULT_THEME_PATH } from './constants';
 import type { DefaultTheme, HeadConfig, SiteConfig, SiteData, UserConfig } from '../shared/types';
 type RawConfig = UserConfig | Promise<UserConfig> | (() => UserConfig | Promise<UserConfig>);
 // import {isFn,isAsyncFn} from "@estjs/tools"
@@ -28,7 +30,14 @@ async function resolveUserConfig(
 ) {
   const configPath = (await getUserConfigForPath(root)) as string;
 
-  const configResult = await loadConfigFromFile({ command, mode }, configPath, root);
+  // 更新 loadConfigFromFile 调用以适应 Vite 7
+  const configResult = await loadConfigFromFile({
+    command,
+    mode,
+    // Vite 7 中的配置加载需要明确指定 configFile
+    configFile: configPath,
+    root,
+  });
 
   if (configResult) {
     const { config: rawConfig = {} as RawConfig } = configResult;
@@ -117,10 +126,35 @@ export async function resolveConfig(
   mode: 'development' | 'production',
 ): Promise<SiteConfig> {
   const [configPath, userConfig] = await resolveUserConfig(root, command, mode);
+
+  // ------------------------------------------
+  // Resolve theme directory
+  // ------------------------------------------
+  const require = createRequire(import.meta.url);
+  let themeDir: string;
+  if (userConfig && (userConfig as UserConfig).theme) {
+    const theme = (userConfig as UserConfig).theme as string;
+    if (isAbsolute(theme)) {
+      themeDir = theme;
+    } else {
+      // Try to resolve as a Node.js package first. Fall back to path relative to project root.
+      try {
+        // `require.resolve` returns the entry file. We need its directory.
+        // This works for packages that export their theme entry via package.json main/module.
+        themeDir = dirname(require.resolve(theme, { paths: [root] }));
+      } catch {
+        themeDir = resolve(root, theme);
+      }
+    }
+  } else {
+    themeDir = DEFAULT_THEME_PATH;
+  }
+
   const siteConfig = {
     root,
     configPath,
     siteData: resolveSiteData(root, userConfig as UserConfig<DefaultTheme.Config>),
+    themeDir,
   };
   return siteConfig as SiteConfig;
 }

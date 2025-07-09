@@ -92,5 +92,5 @@ pnpm run dev
 pnpm run build
 ```
 
-默认情况下，Athen 将会把产物打包到 `build` 目录。
+默认情况下，Athen 将会把产物打包到 `dist` 目录。
 

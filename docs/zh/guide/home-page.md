@@ -4,15 +4,16 @@ Athen 默认主题内置了主页，你可以通过书写 markdown 的 Front Mat
 
 ```md
 ---
-pageType: home
+layout: home
 
 hero:
-  name: athen
-  text: Vite & Essor document framework
+  name: Athen
+  text: Vite & Essor 文档框架
 ---
 ```
 
-首先你需要将 `pageType` 设为 `home`，这样 Athen 会自动为你生成主页。除了 `pageType`，你还可以配置 `hero` 和 `features` 两个部分。
+只需在 Front Matter 中设置 **`layout: home`**（或兼容的 `pageType: home`）即可启用内置主页布局。
+主页目前包含 **四** 个可配置区块：`hero`、`features`、`cta`、`sponsors`。
 
 ## 开屏
 
@@ -104,6 +105,53 @@ features:
   details: Designed to be athens architecture, means less javascript bundle, partial hydration and better performance about FCP, TTI.
   icon:
     src: /athens-arch-feature-icon.svg
+```
+
+## CTA（行动号召）
+
+CTA 区块用于引导访客进行下一步操作，例如「开始使用」。
+
+```ts
+export interface CTA {
+  title: string;
+  text?: string;
+  link?: string;      // 跳转地址
+  buttonText?: string; // 按钮文案（默认：Get Started）
+}
+```
+
+示例：
+
+```md
+cta:
+  title: "准备好开始了吗？"
+  text: "5 分钟上手体验。"
+  link: /zh/guide/getting-started
+  buttonText: "快速上手"
+```
+
+## 赞助商（sponsors）
+
+展示赞助商或合作伙伴徽标。
+
+```ts
+export interface Sponsor {
+  name: string;
+  logo: string; // 图片地址
+  link: string; // 外部链接
+}
+```
+
+示例：
+
+```md
+sponsors:
+  - name: Vite
+    logo: /logos/vite.svg
+    link: https://vitejs.dev
+  - name: Essor
+    logo: /logos/essor.svg
+    link: https://essorjs.org
 ```
 
 ## 页脚

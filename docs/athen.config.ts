@@ -58,10 +58,17 @@ export default defineConfig({
                   text: '使用 MDX 语法',
                   link: '/zh/guide/use-mdx',
                 },
-
                 {
                   text: '静态资源',
                   link: '/zh/guide/static-assets',
+                },
+                {
+                  text: '多实例站点',
+                  link: '/zh/guide/multi-instance',
+                },
+                {
+                  text: '插件系统',
+                  link: '/zh/guide/plugin-system',
                 },
               ],
             },
@@ -87,6 +94,14 @@ export default defineConfig({
                 {
                   text: '全文搜索',
                   link: '/zh/guide/search',
+                },
+                {
+                  text: '分析统计',
+                  link: '/zh/guide/analytics',
+                },
+                {
+                  text: '主题包系统',
+                  link: '/zh/guide/theme-package',
                 },
               ],
             },
@@ -185,6 +200,14 @@ export default defineConfig({
                   text: 'Static Assets',
                   link: '/en/guide/static-assets',
                 },
+                {
+                  text: 'Multi-Instance Sites',
+                  link: '/en/guide/multi-instance',
+                },
+                {
+                  text: 'Plugin System',
+                  link: '/en/guide/plugin-system',
+                },
               ],
             },
             {
@@ -209,6 +232,14 @@ export default defineConfig({
                 {
                   text: 'Search',
                   link: '/en/guide/search',
+                },
+                {
+                  text: 'Analytics',
+                  link: '/en/guide/analytics',
+                },
+                {
+                  text: 'Theme Package',
+                  link: '/en/guide/theme-package',
                 },
               ],
             },

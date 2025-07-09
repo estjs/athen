@@ -11,7 +11,14 @@ const { version } = await import('../package.json');
 const argv = minimist<{
   t?: string;
   template?: string;
-}>(process.argv.slice(2), { string: ['_'] });
+  y?: boolean;
+  yes?: boolean;
+  i?: boolean;
+  install?: boolean;
+}>(process.argv.slice(2), {
+  string: ['_'],
+  boolean: ['y', 'yes', 'i', 'install'],
+});
 
 const cwd = process.cwd();
 
@@ -20,12 +27,15 @@ const renameFiles: Record<string, string | undefined> = {
   _npmrc: '.npmrc',
 };
 
+const skipPrompts = argv.y || argv.yes;
+const autoInstall = argv.i || argv.install;
+
 async function init() {
   console.log(`  ${cyan('●') + blue('■') + yellow('▲')}`);
   console.log(`${bold('  athen') + dim(' Creator')}  ${blue(`v${version}`)}`);
   console.log();
   let targetDir = argv._[0];
-  if (!targetDir) {
+  if (!targetDir && !skipPrompts) {
     const { projectName } = await prompts({
       type: 'text',
       name: 'projectName',
@@ -34,7 +44,12 @@ async function init() {
     });
     targetDir = projectName.trim();
   }
-  const packageName = await getValidPackageName(targetDir);
+  if (!targetDir) {
+    targetDir = 'athen';
+  }
+  const packageName = skipPrompts
+    ? targetDir.replaceAll(/\s+/g, '-')
+    : await getValidPackageName(targetDir);
   const root = path.join(cwd, targetDir);
 
   if (!fs.existsSync(root)) {
@@ -43,17 +58,21 @@ async function init() {
     const existing = fs.readdirSync(root);
     if (existing.length > 0) {
       console.log(yellow(`  Target directory "${targetDir}" is not empty.`));
-      /**
-       * @type {{ yes: boolean }}
-       */
-      const { yes } = await prompts({
-        type: 'confirm',
-        name: 'yes',
-        initial: 'Y',
-        message: 'Remove existing files and continue?',
-      });
-      if (yes) emptyDir(root);
-      else return;
+      if (skipPrompts) {
+        emptyDir(root);
+      } else {
+        /**
+         * @type {{ yes: boolean }}
+         */
+        const { yes } = await prompts({
+          type: 'confirm',
+          name: 'yes',
+          initial: 'Y',
+          message: 'Remove existing files and continue?',
+        });
+        if (yes) emptyDir(root);
+        else return;
+      }
     }
   }
 
@@ -88,25 +107,34 @@ async function init() {
 
   console.log(green('  Done.\n'));
 
-  const { yes } = await prompts({
-    type: 'confirm',
-    name: 'yes',
-    initial: 'Y',
-    message: 'Install and start it now?',
-  });
-
-  if (yes) {
-    const { agent } = await prompts({
-      name: 'agent',
-      type: 'select',
-      message: 'Choose the agent',
-      choices: ['npm', 'yarn', 'pnpm'].map(i => ({ value: i, title: i })),
+  let installNow = autoInstall;
+  if (!skipPrompts && !autoInstall) {
+    const { yes } = await prompts({
+      type: 'confirm',
+      name: 'yes',
+      initial: 'Y',
+      message: 'Install and start it now?',
     });
+    installNow = yes;
+  }
 
-    if (!agent) return;
+  if (installNow) {
+    const agent =
+      /pnpm/.test(process.env.npm_execpath as string) ||
+      /pnpm/.test(process.env.npm_config_user_agent as string)
+        ? 'pnpm'
+        : /yarn/.test(process.env.npm_execpath as string)
+          ? 'yarn'
+          : 'npm';
 
     await execa(agent, ['install'], { stdio: 'inherit', cwd: root });
-    await execa(agent, ['run', 'dev'], { stdio: 'inherit', cwd: root });
+    // do not auto run dev in CI mode
+    if (!skipPrompts) {
+      await execa(agent, agent === 'yarn' ? ['dev'] : ['run', 'dev'], {
+        stdio: 'inherit',
+        cwd: root,
+      });
+    }
   } else {
     console.log(dim('\n  start it later by:\n'));
     if (root !== cwd) console.log(blue(`  cd ${bold(related)}`));

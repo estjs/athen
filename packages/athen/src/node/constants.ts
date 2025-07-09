@@ -23,4 +23,4 @@ export const DEFAULT_THEME_PATH = resolvePath('src/theme-default');
 
 export const DEFAULT_EXTERNALS = ['essor'];
 
-export const DIST_DIR = 'build';
+export const DIST_DIR = 'dist';
