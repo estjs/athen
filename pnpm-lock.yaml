@@ -59,12 +59,12 @@ importers:
       '@athen/plugin-analytics':
         specifier: workspace:*
         version: link:../plugin-analytics
+      '@athen/plugin-mdx':
+        specifier: workspace:*
+        version: link:../plugin-mdx
       '@athen/plugin-search':
         specifier: workspace:*
         version: link:../plugin-search
-      '@athen/plugins-mdx':
-        specifier: workspace:*
-        version: link:../plugin-mdx
       '@iconify-json/carbon':
         specifier: ^1.2.4
         version: 1.2.4
@@ -95,9 +95,6 @@ importers:
       essor-router:
         specifier: ^0.0.15
         version: 0.0.15(essor@0.0.14-beta.11)
-      flexsearch:
-        specifier: 0.6.32
-        version: 0.6.32
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -292,8 +289,8 @@ importers:
         specifier: workspace:*
         version: link:../athen
       flexsearch:
-        specifier: ^0.7.31
-        version: 0.7.43
+        specifier: ^0.8.2
+        version: 0.8.212
       glob-to-regexp:
         specifier: ^0.4.1
         version: 0.4.1
@@ -2409,6 +2406,7 @@ packages:
   eslint-plugin-markdown@5.1.0:
     resolution: {integrity: sha512-SJeyKko1K6GwI0AN6xeCDToXDkfKZfXcexA6B+O2Wr2btUS9GrC+YgwSyVli5DJnctUHjFXcQ2cqTaAmVoLi2A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: Please use @eslint/markdown instead
     peerDependencies:
       eslint: '>=8'
 
@@ -2673,11 +2671,8 @@ packages:
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
 
-  flexsearch@0.6.32:
-    resolution: {integrity: sha512-EF1BWkhwoeLtbIlDbY/vDSLBen/E5l/f1Vg7iX5CDymQCamcx1vhlc3tIZxIDplPjgi0jhG37c67idFbjg+v+Q==}
-
-  flexsearch@0.7.43:
-    resolution: {integrity: sha512-c5o/+Um8aqCSOXGcZoqZOm+NqtVwNsvVpWv6lfmSclU954O3wvQKxxK8zj74fPaSJbXpSLTs4PRhh+wnoCXnKg==}
+  flexsearch@0.8.212:
+    resolution: {integrity: sha512-wSyJr1GUWoOOIISRu+X2IXiOcVfg9qqBRyCPRUdLMIGJqPzMo+jMRlvE83t14v1j0dRMEaBbER/adQjp6Du2pw==}
 
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -3714,6 +3709,7 @@ packages:
 
   oniguruma-to-js@0.4.3:
     resolution: {integrity: sha512-X0jWUcAlxORhOqqBREgPMgnshB7ZGYszBNspP+tS9hPD3l13CdaXcHbgImoHUHlrvGx/7AvFEkTRhAGYh+jzjQ==}
+    deprecated: use oniguruma-to-es instead
 
   open@10.1.0:
     resolution: {integrity: sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==}
@@ -4228,6 +4224,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
@@ -7511,9 +7508,7 @@ snapshots:
 
   flatted@3.3.1: {}
 
-  flexsearch@0.6.32: {}
-
-  flexsearch@0.7.43: {}
+  flexsearch@0.8.212: {}
 
   for-each@0.3.3:
     dependencies:
