@@ -1,4 +1,4 @@
-import { type InjectionKey, useInject } from 'essor';
+import { type InjectionKey, inject } from 'essor';
 import { routes } from 'athen:routes';
 import type { PageData } from '@shared/types';
 
@@ -7,7 +7,7 @@ export const PageDataKey = Symbol(
 ) as InjectionKey<PageData>;
 
 export const usePageData = () => {
-  return useInject(PageDataKey)!;
+  return inject(PageDataKey)!;
 };
 
 export const getAllPages = (

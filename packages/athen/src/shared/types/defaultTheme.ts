@@ -86,7 +86,7 @@ export namespace DefaultTheme {
     backTop?: BackTopOptions;
 
     /**
-     * Custom layout slots. Provide React components to replace default blanks.
+     * Custom layout slots. Provide Essor components to replace default blanks.
      */
     slots?: {
       /** Element rendered right below nav header on every page */
@@ -246,10 +246,10 @@ export namespace DefaultTheme {
   export type BackTopOptions =
     | boolean
     | {
-        visibleHeight?: number;
-        duration?: number;
-        animation?: BackTopAnimation;
-      };
+      visibleHeight?: number;
+      duration?: number;
+      animation?: BackTopAnimation;
+    };
 
   export type BackTopAnimation =
     | 'linear'

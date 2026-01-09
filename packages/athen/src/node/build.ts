@@ -114,7 +114,6 @@ export async function bundle(root: string, options) {
         rollupOptions: {
           input: isServer ? CLIENT_ENTRY_PATH : SERVER_ENTRY_PATH,
         },
-        // 更新到 Vite 7 的浏览器目标
         target: 'baseline-widely-available',
       },
     };

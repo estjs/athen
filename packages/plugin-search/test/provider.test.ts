@@ -8,7 +8,10 @@ describe('search plugin provider switch', () => {
   });
 
   it('creates plugin even when provider algolia', () => {
-    const plugin = searchPlugin({ provider: 'algolia', algolia: { appId: 'id', apiKey: 'key', indexName: 'docs' } });
+    const plugin = searchPlugin({
+      provider: 'algolia',
+      algolia: { appId: 'id', apiKey: 'key', indexName: 'docs' },
+    });
     expect(plugin.name).toBe('athen-plugin-search');
   });
 });

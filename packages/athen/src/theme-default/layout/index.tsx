@@ -1,13 +1,13 @@
-import { BackTop } from '../components/Backtop';
+import { usePageData } from '@/runtime';
+import { BackTop } from '../components/BackTop';
 import NavHeader from '../components/Nav';
 import { DocContent } from './DocContent';
-import { usePageData } from '@/runtime';
 
 export default function Layout() {
   const { siteData } = usePageData();
   const slots = siteData?.themeConfig?.slots || {};
-  const Banner = slots.banner as any;
-  const FooterExtra = slots.footerExtra as any;
+  const Banner = slots.banner;
+  const FooterExtra = slots.footerExtra;
 
   return (
     <>

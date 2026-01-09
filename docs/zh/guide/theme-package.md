@@ -1,7 +1,7 @@
 # 主题包系统
 
 Athen 允许通过 **主题包** 来扩展或完全替换默认主题。
-主题包本质上就是一个 npm 包（或本地文件夹），它导出一组 React 组件及可选的静态资源，Athen 在开发/构建时会自动加载它们。
+主题包本质上就是一个 npm 包（或本地文件夹），它导出一组 Essor 组件及可选的静态资源，Athen 在开发/构建时会自动加载它们。
 
 ## 1. 快速上手
 
@@ -19,7 +19,7 @@ export default defineConfig({
 
 ```text
 my-theme/
-  ├─ components/      # 覆盖默认组件的 React 组件
+  ├─ components/      # 覆盖默认组件的 Essor 组件
   ├─ styles/          # CSS / SCSS / Uno 资源
   └─ index.ts         # 主题入口，导出 Vite/Rollup 模块
 ```

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import MarkdownIt from 'markdown-it';
 // FlexSearch v0.8 提供了基于文档的索引构造器
-import { create } from 'flexsearch';
+import FlexSearch from 'flexsearch';
 import globToRegExp from 'glob-to-regexp';
 import type { SearchOptions, SearchResult } from './types';
 
@@ -43,10 +43,13 @@ export class SearchIndexBuilder {
 
     // 使用 flexsearch 文档模式
     // @ts-ignore - flexsearch 类型定义目前对 document 选项支持不完整
-    this.index = (create as any)({
+    this.index = FlexSearch({
+      preset: 'score',
+      tokenize: 'forward',
+      resolution: 9,
       document: {
         id: 'id',
-        index: ['title', 'content', 'headings'],
+        field: ['title', 'content', 'headings'],
         store: ['path', 'title'],
       },
     });

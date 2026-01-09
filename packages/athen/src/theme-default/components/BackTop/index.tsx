@@ -1,4 +1,4 @@
-import { Fragment, onDestroy, onMount, useSignal } from 'essor';
+import { Fragment, onDestroy, onMount, signal } from 'essor';
 import BTween from 'b-tween';
 import { throttle } from 'lodash-es';
 
@@ -28,7 +28,7 @@ export function BackTop() {
     btween.start();
   };
 
-  const visible = useSignal(false);
+  const visible = signal(false);
 
   onMount(() => {
     scrollHandler = throttle(() => {
@@ -46,7 +46,7 @@ export function BackTop() {
 
   return (
     <Fragment>
-      {visible.value && (
+      {visible.value ? (
         <div class="fixed bottom-10 right-20 z-10 hidden md:block" onClick={scrollToTop}>
           <button
             class="h-10 w-10 b-1 b-#eee rounded-full b-solid bg-gray-200 text-gray shadow-md duration-300 hover:bg-gray-300 hover:text-gray-500 hover:shadow-lg"
@@ -57,7 +57,7 @@ export function BackTop() {
             </div>
           </button>
         </div>
-      )}
+      ) : undefined}
     </Fragment>
   );
 }

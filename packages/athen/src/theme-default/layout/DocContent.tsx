@@ -1,5 +1,5 @@
 import { useRoute } from 'essor-router';
-import { useComputed } from 'essor';
+import { computed, createComponent } from 'essor';
 import { usePageData } from '@/runtime';
 import { useHeaders } from '../hooks';
 import { SideBar } from '../components/SideBar';
@@ -13,18 +13,17 @@ export function DocContent() {
   const pageData = usePageData()!;
   const route = useRoute();
 
-  const Component = useComputed(() => {
+  const Component = computed(() => {
     const matched = route.matched?.at(-1);
-    return matched?.components?.default || NotFound;
+    return createComponent(matched?.components?.default || NotFound);
   });
 
   const { siteData, frontmatter } = pageData;
-  const [headers] = useHeaders(pageData.toc || []);
+  const headers = useHeaders(pageData.toc || []);
   const themeConfig = siteData?.themeConfig || {};
   const hasAside =
     headers.value.length > 0 && (frontmatter?.outline ?? themeConfig.outline ?? true);
-
-  const content = useComputed(() => {
+  const content = computed(() => {
     switch (pageData.pageType) {
       case 'home':
         return <DocHomeLayout />;
@@ -33,9 +32,7 @@ export function DocContent() {
           <div>
             <SideBar />
             <div class="content">
-              <div class="at-doc">
-                <Component.value />
-              </div>
+              <div class="at-doc">{Component.value}</div>
               <DocFooter />
             </div>
             {hasAside && (

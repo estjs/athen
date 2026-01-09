@@ -1,7 +1,7 @@
 # Theme Package System
 
 Athen supports extending or completely replacing the default look & feel through **theme packages**.
-A theme package is just an npm package (or local folder) that exports a set of React components and optional assets which the documentation runtime will load at build / dev time.
+A theme package is just an npm package (or local folder) that exports a set of Essor components and optional assets which the documentation runtime will load at build / dev time.
 
 ## 1. Quick Start
 
@@ -19,7 +19,7 @@ Create the folder:
 
 ```text
 my-theme/
-  ├─ components/      # React components that override defaults
+  ├─ components/      # Essor components that override defaults
   ├─ styles/          # Your css / scss / uno files
   └─ index.ts         # Theme entry, exports Vite/Rollup compatible modules
 ```

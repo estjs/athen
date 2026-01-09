@@ -122,7 +122,10 @@ export function useSearch() {
       // Create FlexSearch index with stored documents
       const { index, documents } = await import('flexsearch');
       const searchIndex = FlexSearch.create({
-        doc: {
+        preset: 'score',
+        tokenize: 'forward',
+        resolution: 9,
+        document: {
           id: 'id',
           field: ['title', 'content', 'headings'],
           store: ['path', 'title']

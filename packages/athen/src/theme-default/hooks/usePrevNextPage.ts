@@ -1,4 +1,4 @@
-import { useComputed } from 'essor';
+import { computed } from 'essor';
 import { useLocaleSiteData } from './useLocaleSiteData';
 import { usePathname } from './usePathname';
 import type { DefaultTheme } from '@shared/types';
@@ -7,7 +7,7 @@ export function usePrevNextPage() {
   const pathname = usePathname();
   const localesData = useLocaleSiteData();
 
-  return useComputed(() => {
+  return computed(() => {
     const sidebar = localesData.value.sidebar || {};
     const flattenTitles: DefaultTheme.SidebarItem[] = [];
 

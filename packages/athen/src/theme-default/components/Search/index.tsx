@@ -1,4 +1,4 @@
-import { onDestroy, onMount, useComputed, useRef, useSignal } from 'essor';
+import { computed, onDestroy, onMount, ref, signal } from 'essor';
 import './index.scss';
 import { type MatchResultItem, PageSearcher } from './logic/search';
 import { SuggestionContent } from './Suggestion';
@@ -11,20 +11,20 @@ const KEY_CODE = {
 };
 
 export function Search(props: { langRoutePrefix: string }) {
-  const query = useSignal('');
-  const suggestions = useSignal<MatchResultItem[]>([]);
-  const initialized = useSignal(false);
-  const searching = useSignal(false);
-  const focused = useSignal(false);
-  const currentSuggestionIndex = useSignal(-1);
-  const psRef = useRef<PageSearcher>();
-  const searchInputRef = useRef<HTMLInputElement | null>();
-  const showLoading = useComputed(() => !initialized.value || searching.value);
+  const query = signal('');
+  const suggestions = signal<MatchResultItem[]>([]);
+  const initialized = signal(false);
+  const searching = signal(false);
+  const focused = signal(false);
+  const currentSuggestionIndex = signal(-1);
+  const psRef = ref<PageSearcher>();
+  const searchInputRef = ref<HTMLInputElement | null>();
+  const showLoading = computed(() => !initialized.value || searching.value);
 
   const initPageSearcher = async () => {
-    if (!psRef.current) {
-      psRef.current = new PageSearcher(props.langRoutePrefix);
-      await psRef.current.init();
+    if (!psRef.value) {
+      psRef.value = new PageSearcher(props.langRoutePrefix);
+      await psRef.value.init();
       initialized.value = true;
     } else {
       initialized.value = true;
@@ -37,7 +37,7 @@ export function Search(props: { langRoutePrefix: string }) {
     }
     query.value = value;
     searching.value = true;
-    const matched = await psRef.current!.match(value);
+    const matched = await psRef.value!.match(value);
     suggestions.value = matched;
     searching.value = false;
   };
@@ -45,14 +45,14 @@ export function Search(props: { langRoutePrefix: string }) {
   const onKeyDown = (e: KeyboardEvent) => {
     switch (e.code) {
       case KEY_CODE.SEARCH:
-        if ((e.ctrlKey || e.metaKey) && searchInputRef.current) {
+        if ((e.ctrlKey || e.metaKey) && searchInputRef.value) {
           e.preventDefault();
           if (!focused.value) {
             focused.value = true;
-            searchInputRef.current.focus();
+            searchInputRef.value.focus();
           } else {
             focused.value = false;
-            searchInputRef.current.blur();
+            searchInputRef.value.blur();
           }
         }
         break;
@@ -90,15 +90,15 @@ export function Search(props: { langRoutePrefix: string }) {
         class="i-carbon-search h-5 w-5 fill-current"
         onClick={() => {
           focused.value = true;
-          searchInputRef.current?.focus();
+          searchInputRef.value?.focus();
         }}
       />
       <input
-        class={`cursor-text h-8 border-none  text-sm p-t-0 p-r-2 p-b-0 p-l-2 transition-all duration-200 ease rounded-sm searchInput `}
+        class={`searchInput h-8 cursor-text rounded-sm border-none p-b-0 p-l-2 p-r-2 p-t-0 text-sm transition-all duration-200 ease `}
         placeholder="Search"
         aria-label="Search"
         autocomplete="off"
-        bind:value={query}
+        bind:value={query.value}
         autofocus={true}
         updateValue={onQueryChanged}
         onBlur={() => setTimeout(() => (focused.value = false), 200)}

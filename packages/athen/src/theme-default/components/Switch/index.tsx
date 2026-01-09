@@ -1,7 +1,7 @@
-import { useSignal } from 'essor';
+import { signal } from 'essor';
 import { toggle } from './toggleColorScheme';
 export function Switch() {
-  const isDark = useSignal(false);
+  const isDark = signal(false);
 
   const handleClick = () => {
     toggle();

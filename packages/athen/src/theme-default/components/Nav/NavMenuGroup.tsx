@@ -1,4 +1,4 @@
-import { useSignal } from 'essor';
+import { signal } from 'essor';
 import NavMenuItem from './NavMenuItem';
 import type { DefaultTheme } from '@/shared/types';
 
@@ -24,7 +24,7 @@ export interface NavMenuGroupItem {
  * @param text 菜单组显示的文本
  */
 export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMenuGroupItem) {
-  const isOpen = useSignal(false);
+  const isOpen = signal(false);
 
   return (
     <div

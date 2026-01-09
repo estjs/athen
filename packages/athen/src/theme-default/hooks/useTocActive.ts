@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es';
-import { useSignal } from 'essor';
+import { signal } from 'essor';
 
 function highlight(id: string) {
   document.querySelectorAll('.toc-item').forEach(item => {
@@ -13,7 +13,7 @@ function highlight(id: string) {
 }
 
 export function useActiveToc() {
-  const activeId = useSignal('');
+  const activeId = signal('');
 
   const links = Array.from(document.querySelectorAll(`.toc-item`)) as HTMLLinkElement[];
   const headers: Element[] = [];

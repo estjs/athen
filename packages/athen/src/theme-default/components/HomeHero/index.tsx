@@ -1,6 +1,6 @@
 import PageLink from '../Link';
 import type { Hero } from '@/shared/types';
-export function HomeHero({ hero }: { hero: Hero }) {
+export function HomeHero({ hero }: { hero: Partial<Hero> }) {
   return (
     <div class="mx-auto px-10 pb-16 pt-20">
       <div class="mx-auto max-w-screen-xl flex justify-between">

@@ -1,8 +1,7 @@
 import EnvironmentPlugin from 'vite-plugin-environment';
 import pluginUnocss from 'unocss/vite';
 import Inspect from 'vite-plugin-inspect';
-// 修复导入路径，使用 @athen/plugins-mdx 替代 plugins-mdx
-import { pluginMdx } from '@athen/plugins-mdx';
+import { pluginMdx } from '@athen/plugin-mdx';
 import { pick } from 'lodash-es';
 import pluginRoute from './router';
 import unocssOptions from './unocss';

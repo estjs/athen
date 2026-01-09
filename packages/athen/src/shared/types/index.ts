@@ -2,13 +2,13 @@ import type { FrontMatterMeta, PageModule } from './frontMatter';
 import type { DefaultTheme } from './defaultTheme';
 import type { RouteOptions } from './router';
 import type { PluginOption, UserConfig as ViteConfiguration } from 'vite';
-
 export { DefaultTheme } from './defaultTheme';
 
 export * from './frontMatter';
 
+// TODO:
 // router types
-type Component = () => JSX.Element;
+type Component = any;
 export interface Meta {
   name?: string;
 }

@@ -1,12 +1,12 @@
 import { useRoute } from 'essor-router';
-import { useSignal, useWatch } from 'essor';
-const pathname = useSignal<string>();
+import { signal, watch } from 'essor';
+const pathname = signal<string>();
 
 let route;
 function useRoutePath() {
   route ||= useRoute();
 
-  useWatch(
+  watch(
     () => route?.path,
     () => {
       pathname.value = route.path;

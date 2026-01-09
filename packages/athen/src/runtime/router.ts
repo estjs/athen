@@ -21,7 +21,9 @@ export async function initPageData(routerPath: string): Promise<PageData> {
     const relativePagePath = getRelativePagePath(routerPath, pagePath, siteData.base);
 
     return {
-      pageType: moduleInfo.frontmatter?.pageType ?? (moduleInfo.frontmatter?.layout === 'home' ? 'home' : 'doc'),
+      pageType:
+        moduleInfo.frontmatter?.pageType ??
+        (moduleInfo.frontmatter?.layout === 'home' ? 'home' : 'doc'),
       siteData,
       pagePath: routerPath,
       routePath: routerPath,

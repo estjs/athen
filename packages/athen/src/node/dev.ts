@@ -30,7 +30,6 @@ export async function createDevServer(
         allow: [PACKAGE_ROOT],
       },
     },
-    // 适配 Vite 7 的浏览器目标设置
     build: {
       target: 'baseline-widely-available',
     },

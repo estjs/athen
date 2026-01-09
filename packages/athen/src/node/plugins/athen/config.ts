@@ -18,7 +18,6 @@ export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<v
       return {
         root: PACKAGE_ROOT,
         optimizeDeps: {
-          // Vite 7 中 optimizeDeps.entries 总是作为 glob 模式处理
           // 使用 include 代替显式列出的条目
           include: ['essor', 'essor-router', 'lodash-es', 'copy-to-clipboard', 'fs-extra', 'vite'],
           exclude: ['fsevents'],
@@ -31,7 +30,6 @@ export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<v
             '@theme-default': DEFAULT_THEME_PATH,
           },
         },
-        // 适配 Vite 7 的浏览器目标设置
         build: {
           target: 'baseline-widely-available',
         },

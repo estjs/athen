@@ -1,6 +1,6 @@
 # Athen – Modern Documentation Framework
 
-Athen is a **Vite-powered**, **React/MDX-based** static-site generator designed for modern product documentation.  Inspired by VitePress (Vue) and Rspress (React), Athen focuses on developer-experience, performance, and extensibility while providing first-class TypeScript support.
+Athen is a **Vite-powered**, **MDX-based** static-site generator designed for modern product documentation.   Athen focuses on developer-experience, performance, and extensibility while providing first-class TypeScript support.
 
 ---
 
@@ -8,7 +8,7 @@ Athen is a **Vite-powered**, **React/MDX-based** static-site generator designed 
 
 - **Instant Dev Server** – Powered by Vite with lightning-fast HMR.
 - **MDX Pipeline** – Built-in remark/rehype plugins (Shiki, TOC, Tip, Link, Raw Content, Last-Updated).
-- **Component-First** – Write pages in React or plain Markdown; import React components anywhere.
+- **Component-First** – Write pages in Essor or plain Markdown; import Essor components anywhere.
 - **Theme System** – Default theme included; extend or create your own with a clean API.
 - **Plugin Ecosystem 2.0** – Built-in plugins for MDX, UnoCSS, search, analytics, etc.; add your own via `plugins:` field and override any built-in by name.
 - **i18n & Live Switching** – Serve multiple locales with real-time language toggle.
@@ -91,7 +91,7 @@ export default defineConfig({
 
 ### Layout Slots API
 
-You can inject custom React components into predefined locations without fully replacing the default theme.
+You can inject custom Essor components into predefined locations without fully replacing the default theme.
 Add a `slots` field under `themeConfig` in `athen.config.ts`:
 
 ```tsx
@@ -165,7 +165,7 @@ Want to publish? Name it with the `athen-plugin-*` prefix and ship it to npm.
 
 ## 🔥 Hot Module Replacement
 
-- Content edits (Markdown, MDX, React) update instantly without losing state.
+- Content edits (Markdown, MDX, Essor) update instantly without losing state.
 - Plugin & theme changes hot-reload as well.
 
 ---

@@ -1,8 +1,7 @@
-import FlexSearch from 'flexsearch';
+import { Document } from 'flexsearch';
 import { uniqBy } from 'lodash-es';
 import { getAllPages, normalizeHref, withBase } from '@/runtime';
 import { backTrackHeaders } from './util';
-import type { CreateOptions, Index as SearchIndex } from 'flexsearch';
 
 const SEARCH_MAX_SUGGESTIONS = 7;
 const THRESHOLD_CONTENT_LENGTH = 100;
@@ -41,8 +40,8 @@ const cjkRegex =
 const WHITE_PAGE_TYPES = ['home', 'api', '404', 'custom'];
 
 export class PageSearcher {
-  #index?: SearchIndex<PageDataForSearch[]>;
-  #cjkIndex?: SearchIndex<PageDataForSearch[]>;
+  #index?: any;
+  #cjkIndex?: any;
   #headerToIdMap: Record<string, string> = {};
   #langRoutePrefix: string;
 
@@ -50,7 +49,7 @@ export class PageSearcher {
     this.#langRoutePrefix = langRoutePrefix;
   }
 
-  async init(options: CreateOptions = {}) {
+  async init(options: any = {}) {
     const pages = await getAllPages(route =>
       route.path.startsWith(withBase(this.#langRoutePrefix)),
     );
@@ -75,12 +74,14 @@ export class PageSearcher {
       {} as Record<string, string>,
     );
 
-    const createOptions: CreateOptions = {
+    const createOptions: any = {
+      preset: 'score',
       encode: 'simple',
       tokenize: 'forward',
+      resolution: 9,
       split: /\W+/,
       async: true,
-      doc: {
+      document: {
         id: 'path',
         field: ['title', 'headers', 'content'],
       },
@@ -88,9 +89,9 @@ export class PageSearcher {
     };
     // Init Search Indexes
     // English Index
-    this.#index = FlexSearch.create(createOptions);
+    this.#index = new Document(createOptions);
     // CJK: Chinese, Japanese, Korean
-    this.#cjkIndex = FlexSearch.create({
+    this.#cjkIndex = new Document({
       ...createOptions,
       encode: false,
       tokenize(str: string) {
@@ -105,8 +106,11 @@ export class PageSearcher {
         return cjkWords;
       },
     });
-    this.#index!.add(pagesForSearch);
-    this.#cjkIndex!.add(pagesForSearch);
+
+    for (const page of pagesForSearch) {
+      this.#index!.add(page);
+      this.#cjkIndex!.add(page);
+    }
   }
 
   async match(query: string, limit: number = SEARCH_MAX_SUGGESTIONS) {

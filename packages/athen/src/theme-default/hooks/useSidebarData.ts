@@ -1,4 +1,4 @@
-import { type Computed, type Signal, useComputed } from 'essor';
+import { type Computed, type Signal, computed } from 'essor';
 import { normalizeHref, withBase } from '@/runtime';
 import type { DefaultTheme } from '@shared/types';
 
@@ -15,7 +15,7 @@ export function useSidebarData(
   currentPathname: Signal<string>,
   sidebar: DefaultTheme.Sidebar,
 ): Computed<SidebarData> {
-  return useComputed(() => {
+  return computed(() => {
     const decodedPathname = decodeURIComponent(currentPathname.value);
     const items: SidebarData['items'] = [];
     for (const name of Object.keys(sidebar)) {

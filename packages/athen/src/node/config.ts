@@ -30,19 +30,18 @@ async function resolveUserConfig(
 ) {
   const configPath = (await getUserConfigForPath(root)) as string;
 
-  // 更新 loadConfigFromFile 调用以适应 Vite 7
-  const configResult = await loadConfigFromFile({
-    command,
-    mode,
-    // Vite 7 中的配置加载需要明确指定 configFile
-    configFile: configPath,
+  const configResult = await loadConfigFromFile(
+    {
+      command,
+      mode,
+    },
+    configPath,
     root,
-  });
+  );
 
   if (configResult) {
     const { config: rawConfig = {} as RawConfig } = configResult;
 
-    // const userConfig = isAsyncFn(rawConfig) ? await rawConfig():isFn(rawConfig) ? rawConfig():rawConfig;
     const userConfig = await (typeof rawConfig === 'function' ? rawConfig() : rawConfig);
 
     return [configPath, userConfig] as const;

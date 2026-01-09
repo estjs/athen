@@ -22,7 +22,7 @@ The core package registers several plugins automatically when you start or build
 | `athen:transform`         | MDX → JSX transforms, front-matter injection |
 | `plugin-mdx`              | MDX compilation with Shiki, GFM, TOC, Tip, etc. |
 | `unocss`                  | Utility-first atomic CSS engine |
-| `plugin-svgr`             | Import SVG files as React components |
+| `plugin-svgr`             | Import SVG files as Essor components |
 | `inspect`                 | [`vite-plugin-inspect`](https://github.com/antfu/vite-plugin-inspect) – development helper |
 | `plugin-search` (optional) | Client-side full-text search (FlexSearch) |
 | `plugin-analytics` (optional) | Inject analytics snippet of your choice |

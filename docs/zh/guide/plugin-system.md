@@ -18,7 +18,7 @@ Athen 基于 Vite 插件机制构建，并针对文档站点场景做了少量�
 | `athen:transform` | MDX → JSX 转换，注入 front-matter |
 | `plugin-mdx` | MDX 语法高亮 / TOC / Tip 等 |
 | `unocss` | 原子化 CSS 引擎 |
-| `plugin-svgr` | SVG → React 组件 |
+| `plugin-svgr` | SVG → Essor 组件 |
 | `inspect` | [`vite-plugin-inspect`](https://github.com/antfu/vite-plugin-inspect) 调试工具 |
 | `plugin-search`（可选） | 基于 FlexSearch 的全文搜索 |
 | `plugin-analytics`（可选） | 注入第三方统计脚本 |

@@ -1,4 +1,4 @@
-import { onDestroy, onMount, useComputed, useSignal } from 'essor';
+import { computed, onDestroy, onMount, signal } from 'essor';
 import { scrollToTarget, useActiveToc, useHeaders } from '@theme-default/hooks';
 import { usePageData } from '@/runtime';
 import type { Header } from '@shared/types/index';
@@ -6,12 +6,12 @@ import './style.scss';
 export function Aside(props: { pagePath: string; outlineTitle: string }) {
   const pageData = usePageData()!;
 
-  const headers = useComputed(() => {
-    return useHeaders(pageData.toc || [])[0].value;
+  const headers = computed(() => {
+    return useHeaders(pageData.toc || []).value;
   });
 
-  const hasOutline = useComputed(() => headers.value.length > 0);
-  const markerRef = useSignal<HTMLDivElement | null>(null);
+  const hasOutline = computed(() => headers.value.length > 0);
+  const markerRef = signal<HTMLDivElement | null>(null);
 
   let scrollHandler;
   onMount(() => {
