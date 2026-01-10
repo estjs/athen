@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      essor-router:
-        specifier: link:../essor-router
-        version: link:../essor-router
     devDependencies:
       '@estjs/eslint-config':
         specifier: ^2.1.5
