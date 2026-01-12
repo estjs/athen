@@ -1,0 +1,310 @@
+# Basic Example
+
+This example demonstrates the basic setup and usage of Athen for creating a documentation site.
+
+## Project Structure
+
+```
+my-docs/
+├── docs/
+│   ├── guide/
+│   │   ├── getting-started.md
+│   │   └── configuration.md
+│   ├── api/
+│   │   └── reference.md
+│   ├── public/
+│   │   └── logo.svg
+│   ├── athen.config.ts
+│   └── index.md
+├── package.json
+└── README.md
+```
+
+## Configuration
+
+### Basic Site Config
+
+```typescript
+// docs/athen.config.ts
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  title: 'My Documentation',
+  description: 'A comprehensive guide to my project',
+  base: '/',
+  
+  // Enable search
+  search: {
+    provider: 'flex'
+  },
+  
+  themeConfig: {
+    // Navigation
+    nav: [
+      { text: 'Home', link: '/' },
+      { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'API', link: '/api/reference' }
+    ],
+    
+    // Sidebar
+    sidebar: {
+      '/guide/': [
+        {
+          text: 'Getting Started',
+          items: [
+            { text: 'Introduction', link: '/guide/getting-started' },
+            { text: 'Configuration', link: '/guide/configuration' }
+          ]
+        }
+      ]
+    },
+    
+    // Social links
+    socialLinks: [
+      { icon: 'github', mode: 'link', content: 'https://github.com/your-repo' }
+    ],
+    
+    // Footer
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2024 Your Name'
+    }
+  }
+});
+```
+
+## Content Examples
+
+### Home Page
+
+```markdown
+---
+layout: home
+---
+
+# Welcome to My Documentation
+
+This is the home page of my documentation site built with Athen.
+
+## Features
+
+- Fast and lightweight
+- Built-in search
+- Mobile responsive
+- Dark mode support
+
+## Quick Start
+
+\`\`\`bash
+npm install my-package
+\`\`\`
+
+## Learn More
+
+- [Getting Started](/guide/getting-started)
+- [API Reference](/api/reference)
+```
+
+### Guide Page
+
+```markdown
+---
+title: Getting Started
+description: Learn how to get started with our project
+---
+
+# Getting Started
+
+Welcome! This guide will help you get up and running quickly.
+
+## Installation
+
+Install the package using npm:
+
+\`\`\`bash
+npm install my-package
+\`\`\`
+
+## Basic Usage
+
+Here's a simple example:
+
+\`\`\`javascript
+import { myFunction } from 'my-package';
+
+const result = myFunction('hello');
+console.log(result); // Output: Hello, World!
+\`\`\`
+
+## Next Steps
+
+- [Configuration](/guide/configuration)
+- [API Reference](/api/reference)
+```
+
+### API Reference
+
+```markdown
+---
+title: API Reference
+description: Complete API documentation
+---
+
+# API Reference
+
+## Functions
+
+### myFunction(input)
+
+Description of the function.
+
+**Parameters:**
+- `input` (string): The input parameter
+
+**Returns:**
+- `string`: The processed result
+
+**Example:**
+\`\`\`javascript
+const result = myFunction('test');
+\`\`\`
+
+## Classes
+
+### MyClass
+
+Description of the class.
+
+#### Constructor
+
+\`\`\`javascript
+new MyClass(options)
+\`\`\`
+
+#### Methods
+
+##### doSomething()
+
+Description of the method.
+```
+
+## Package.json
+
+```json
+{
+  "name": "my-docs",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "athen dev docs",
+    "build": "athen build docs",
+    "preview": "athen preview docs"
+  },
+  "devDependencies": {
+    "athen": "^0.1.0"
+  }
+}
+```
+
+## Development Workflow
+
+1. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+2. **Write content** in Markdown files
+
+3. **Preview changes** at `http://localhost:5173`
+
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+5. **Preview production build:**
+   ```bash
+   npm run preview
+   ```
+
+## Customization
+
+### Adding Custom Styles
+
+Create a custom CSS file:
+
+```css
+/* docs/.athen/theme/custom.css */
+:root {
+  --vp-c-brand-1: #646cff;
+  --vp-c-brand-2: #747bff;
+}
+
+.custom-block {
+  padding: 1rem;
+  border-left: 4px solid var(--vp-c-brand-1);
+  background-color: var(--vp-c-bg-soft);
+}
+```
+
+import App from "./demo.jsx"
+
+## 使用Essor组件
+
+:::tip
+`App` is an Essor component used to demonstrate the usage of key APIs during theme development.
+:::
+
+<App />
+
+## Deployment
+
+### Static Hosting
+
+Deploy to any static hosting service:
+
+```bash
+# Build the site
+npm run build
+
+# Deploy the dist/ folder to your hosting service
+```
+
+### GitHub Pages
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm run build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+```
+
+## Tips
+
+1. **Use descriptive titles** for better navigation
+2. **Organize content logically** with clear hierarchy
+3. **Add search keywords** in your content
+4. **Test on mobile devices** for responsive design
+5. **Use code examples** to illustrate concepts
+
+## Next Steps
+
+- [Advanced Configuration](/examples/advanced)
+- [Custom Theme Development](/examples/custom-theme)
+- [Plugin Development](/guide/plugin-development)

@@ -1,0 +1,14 @@
+{
+  "name": "athen-search-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "athen dev",
+    "build": "athen build",
+    "preview": "athen preview"
+  },
+  "dependencies": {
+    "@athen/plugin-search": "workspace:*",
+    "athen": "workspace:*"
+  }
+}

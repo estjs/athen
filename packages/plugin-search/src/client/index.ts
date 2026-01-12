@@ -1,0 +1,12 @@
+export { SearchBox } from './SearchBox';
+export type { SearchBoxProps } from './SearchBox';
+export { Suggestion } from './Suggestion';
+export type { SuggestionProps } from './Suggestion';
+export { FlexSearcher } from './FlexSearcher';
+export type { FlexSearcherOptions, SearchIndexData } from './FlexSearcher';
+export { AlgoliaSearcher } from './AlgoliaSearcher';
+export type { AlgoliaConfig } from './AlgoliaSearcher';
+export { SearchIndexCache } from './SearchIndexCache';
+export type { CacheOptions, CacheEntry } from './SearchIndexCache';
+export { backTrackHeaders, highlightText, debounce } from './utils';
+export type { Header } from './utils';

@@ -1,0 +1,311 @@
+# 基础示例
+
+此示例演示了使用 Athen 创建文档站点的基本设置和用法。
+
+## 项目结构
+
+```
+my-docs/
+├── docs/
+│   ├── guide/
+│   │   ├── getting-started.md
+│   │   └── configuration.md
+│   ├── api/
+│   │   └── reference.md
+│   ├── public/
+│   │   └── logo.svg
+│   ├── athen.config.ts
+│   └── index.md
+├── package.json
+└── README.md
+```
+
+## 配置
+
+### 基础站点配置
+
+```typescript
+// docs/athen.config.ts
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  title: '我的文档',
+  description: '我的项目的综合指南',
+  base: '/',
+  
+  // 启用搜索
+  search: {
+    provider: 'flex'
+  },
+  
+  themeConfig: {
+    // 导航
+    nav: [
+      { text: '首页', link: '/zh/' },
+      { text: '指南', link: '/zh/guide/getting-started' },
+      { text: 'API', link: '/zh/api/reference' }
+    ],
+    
+    // 侧边栏
+    sidebar: {
+      '/zh/guide/': [
+        {
+          text: '开始使用',
+          items: [
+            { text: '介绍', link: '/zh/guide/getting-started' },
+            { text: '配置', link: '/zh/guide/configuration' }
+          ]
+        }
+      ]
+    },
+    
+    // 社交链接
+    socialLinks: [
+      { icon: 'github', mode: 'link', content: 'https://github.com/your-repo' }
+    ],
+    
+    // 页脚
+    footer: {
+      message: '基于 MIT 许可证发布',
+      copyright: 'Copyright © 2024 您的名字'
+    }
+  }
+});
+```
+
+## 内容示例
+
+### 主页
+
+```markdown
+---
+layout: home
+---
+
+# 欢迎来到我的文档
+
+这是使用 Athen 构建的文档站点主页。
+
+## 特性
+
+- 快速轻量
+- 内置搜索
+- 移动响应式
+- 深色模式支持
+
+## 快速开始
+
+\`\`\`bash
+npm install my-package
+\`\`\`
+
+## 了解更多
+
+- [快速开始](/zh/guide/getting-started)
+- [API 参考](/zh/api/reference)
+```
+
+### 指南页面
+
+```markdown
+---
+title: 快速开始
+description: 学习如何开始使用我们的项目
+---
+
+# 快速开始
+
+欢迎！本指南将帮助您快速上手。
+
+## 安装
+
+使用 npm 安装包：
+
+\`\`\`bash
+npm install my-package
+\`\`\`
+
+## 基本用法
+
+这是一个简单的示例：
+
+\`\`\`javascript
+import { myFunction } from 'my-package';
+
+const result = myFunction('hello');
+console.log(result); // 输出: Hello, World!
+\`\`\`
+
+## 下一步
+
+- [配置](/zh/guide/configuration)
+- [API 参考](/zh/api/reference)
+```
+
+### API 参考
+
+```markdown
+---
+title: API 参考
+description: 完整的 API 文档
+---
+
+# API 参考
+
+## 函数
+
+### myFunction(input)
+
+函数的描述。
+
+**参数：**
+- `input` (string): 输入参数
+
+**返回值：**
+- `string`: 处理后的结果
+
+**示例：**
+\`\`\`javascript
+const result = myFunction('test');
+\`\`\`
+
+## 类
+
+### MyClass
+
+类的描述。
+
+#### 构造函数
+
+\`\`\`javascript
+new MyClass(options)
+\`\`\`
+
+#### 方法
+
+##### doSomething()
+
+方法的描述。
+```
+
+## Package.json
+
+```json
+{
+  "name": "my-docs",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "athen dev docs",
+    "build": "athen build docs",
+    "preview": "athen preview docs"
+  },
+  "devDependencies": {
+    "athen": "^0.1.0"
+  }
+}
+```
+
+## 开发工作流
+
+1. **启动开发服务器：**
+   ```bash
+   npm run dev
+   ```
+
+2. **编写内容** 在 Markdown 文件中
+
+3. **预览更改** 在 `http://localhost:5173`
+
+4. **生产构建：**
+   ```bash
+   npm run build
+   ```
+
+5. **预览生产构建：**
+   ```bash
+   npm run preview
+   ```
+
+## 自定义
+
+### 添加自定义样式
+
+创建自定义 CSS 文件：
+
+```css
+/* docs/.athen/theme/custom.css */
+:root {
+  --vp-c-brand-1: #646cff;
+  --vp-c-brand-2: #747bff;
+}
+
+.custom-block {
+  padding: 1rem;
+  border-left: 4px solid var(--vp-c-brand-1);
+  background-color: var(--vp-c-bg-soft);
+}
+```
+
+import App from "./demo.jsx"
+
+## 使用Essor组件
+
+:::tip
+`App` 是一个 Essor 组件，用于展示主题开发过程中的关键 API 的使用示例。
+:::
+支持直接使用unocss（兼容taildwindcss、windcss）
+
+<App />
+
+## 部署
+
+### 静态托管
+
+部署到任何静态托管服务：
+
+```bash
+# 构建站点
+npm run build
+
+# 将 dist/ 文件夹部署到您的托管服务
+```
+
+### GitHub Pages
+
+```yaml
+# .github/workflows/deploy.yml
+name: 部署到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm run build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+```
+
+## 提示
+
+1. **使用描述性标题** 以便更好地导航
+2. **逻辑性地组织内容** 具有清晰的层次结构
+3. **在内容中添加搜索关键词**
+4. **在移动设备上测试** 响应式设计
+5. **使用代码示例** 来说明概念
+
+## 下一步
+
+- [高级配置](/zh/examples/advanced)
+- [自定义主题开发](/zh/examples/custom-theme)
+- [插件开发](/zh/guide/plugin-development)
