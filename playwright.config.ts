@@ -5,6 +5,17 @@ export default defineConfig({
   timeout: 30 * 1000,
   retries: process.env.CI ? 2 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],
+  // Base URL for all tests
+  use: {
+    baseURL: 'http://localhost:8730',
+  },
+  // Start dev server before running tests
+  webServer: {
+    command: 'pnpm docs:dev',
+    url: 'http://localhost:8730',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
   projects: [
     {
       name: 'chromium',
@@ -23,10 +34,5 @@ export default defineConfig({
       use: { ...devices['Pixel 5'] },
     },
   ],
-  webServer: {
-    command: 'pnpm docs:build && pnpm docs:preview',
-    port: 4173,
-    timeout: 120 * 1000,
-    reuseExistingServer: !process.env.CI,
-  },
+
 });

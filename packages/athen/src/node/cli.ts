@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import process from 'node:process';
 import cac from 'cac';
 import { build } from './build';
 import { createDevServer } from './dev';
@@ -6,9 +7,10 @@ import { serve } from './preview';
 const cli = cac('athen').version('0.0.0').help();
 
 cli.command('dev [root]', 'start dev server').action(async (root: string) => {
-  console.log('start dev with', root);
+  const resolvedRoot = root ? resolve(root) : process.cwd();
+  console.log('start dev with', root, 'resolved to', resolvedRoot);
   const createServer = async () => {
-    const server = await createDevServer(root, async () => {
+    const server = await createDevServer(resolvedRoot, async () => {
       await server.close();
       await createServer();
     });

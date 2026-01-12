@@ -4,78 +4,80 @@ import { SearchIndexBuilder } from './index-builder';
 import type { SearchOptions } from './types';
 import type { Plugin } from 'vite';
 
-export { SearchOptions, SearchResult } from './types';
+export type {
+  SearchOptions,
+  SearchResult,
+  AlgoliaOptions,
+  CacheOptions,
+  FlexSearchOptions,
+  SearchDocument,
+  SearchIndexData,
+} from './types';
+export { SearchIndexBuilder } from './index-builder';
 
-// Virtual module id for the search index
-const SEARCH_INDEX_ID = 'virtual:athen-search-index';
-const RESOLVED_SEARCH_INDEX_ID = `\0${SEARCH_INDEX_ID}`;
+const DEFAULT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
 
 /**
- * Athen search plugin
+ * Athen 搜索插件
+ * 搜索索引内联到 HTML，客户端使用 IndexedDB 缓存
  */
 export default function searchPlugin(options: SearchOptions = {}): Plugin {
   const provider = options.provider || 'flex';
   let indexBuilder: SearchIndexBuilder | undefined;
   let rootDir: string;
+  let searchIndexJson = '';
 
   return {
     name: 'athen-plugin-search',
 
     configResolved(config) {
-      rootDir = config.root;
+      // Use options.root if provided (from athen), otherwise fall back to Vite's config.root
+      rootDir = options.root || config.root;
+      console.log('[plugin-search] rootDir:', rootDir);
+      console.log('[plugin-search] provider:', provider);
+
       if (provider === 'flex') {
         indexBuilder = new SearchIndexBuilder(options);
-      }
-    },
+        // rootDir is already the docs directory (e.g., when running `athen dev docs`)
+        // Check if rootDir itself contains markdown files, otherwise try rootDir/docs
+        let hasMarkdownFiles = false;
+        if (fs.existsSync(rootDir)) {
+          const files = fs.readdirSync(rootDir, { recursive: true });
+          console.log('[plugin-search] files count:', files.length);
+          hasMarkdownFiles = files.some((f: any) => {
+            const fileName = typeof f === 'string' ? f : f.toString();
+            return fileName.endsWith('.md') || fileName.endsWith('.mdx');
+          });
+          console.log('[plugin-search] hasMarkdownFiles:', hasMarkdownFiles);
+        }
 
-    configureServer(server) {
-      if (provider !== 'flex' || !indexBuilder) return;
-      const docsDir = path.resolve(rootDir, 'docs');
-      if (fs.existsSync(docsDir)) {
-        server.watcher.add(path.join(docsDir, '**/*.md'));
-        server.watcher.add(path.join(docsDir, '**/*.mdx'));
-        indexBuilder.addDocumentsFromDirectory(docsDir, docsDir);
-      }
-    },
+        let docsDir = rootDir;
+        if (!hasMarkdownFiles) {
+          // Fallback: check if there's a docs subdirectory
+          const subDocsDir = path.resolve(rootDir, 'docs');
+          console.log('[plugin-search] checking subDocsDir:', subDocsDir);
+          if (fs.existsSync(subDocsDir)) {
+            docsDir = subDocsDir;
+          }
+        }
 
-    resolveId(id) {
-      if (id === SEARCH_INDEX_ID) {
-        return provider === 'flex' ? RESOLVED_SEARCH_INDEX_ID : null;
-      }
-      return null;
-    },
-
-    load(id) {
-      if (provider === 'flex' && id === RESOLVED_SEARCH_INDEX_ID && indexBuilder) {
-        // Return the serialized index data
-        return `export default ${indexBuilder.generateSearchIndex()}`;
-      }
-      return null;
-    },
-
-    // For production build, generate the index file or inject Algolia script
-    async closeBundle() {
-      if (provider === 'flex') {
-        if (!indexBuilder) return;
-        const docsDir = path.resolve(rootDir, 'docs');
+        console.log('[plugin-search] docsDir:', docsDir);
         if (fs.existsSync(docsDir)) {
           indexBuilder.addDocumentsFromDirectory(docsDir, docsDir);
-          const outDir = path.resolve(rootDir, 'dist');
-          const indexPath = options.searchIndexPath || '/search-index';
-          const indexFile = path.join(outDir, `${indexPath}.json`);
-          const indexDir = path.dirname(indexFile);
-          if (!fs.existsSync(indexDir)) {
-            fs.mkdirSync(indexDir, { recursive: true });
-          }
-          fs.writeFileSync(indexFile, indexBuilder.generateSearchIndex(), 'utf-8');
+          searchIndexJson = indexBuilder.generateSearchIndex();
+          console.log('[plugin-search] searchIndexJson length:', searchIndexJson.length);
+          console.log('[plugin-search] documents count:', indexBuilder.getDocumentsCount());
+        } else {
+          console.log('[plugin-search] docsDir does not exist');
         }
       }
     },
 
-    transformIndexHtml(html) {
+    transformIndexHtml() {
+      const cacheConfig = options.cache || {};
+
       if (provider === 'algolia' && options.algolia) {
         const { appId, apiKey, indexName, algoliaOptions } = options.algolia;
-        const opts = algoliaOptions ? JSON.stringify(algoliaOptions) : '{}';
         return [
           {
             tag: 'link',
@@ -89,70 +91,19 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
           },
           {
             tag: 'script',
-            children: `docsearch({appId:'${appId}',apiKey:'${apiKey}',indexName:'${indexName}',container:'#docsearch',${opts.slice(1, -1)}});`,
-            injectTo: 'body',
+            children: `window.__ATHEN_SEARCH_CONFIG__=${JSON.stringify({ provider: 'algolia', algolia: { appId, apiKey, indexName, ...algoliaOptions } })};`,
+            injectTo: 'head',
           },
         ];
       }
-      return undefined;
+
+      return [
+        {
+          tag: 'script',
+          children: `window.__ATHEN_SEARCH_CONFIG__=${JSON.stringify({ provider: 'flex', cache: { enabled: cacheConfig.enabled !== false, maxAge: cacheConfig.maxAge || DEFAULT_CACHE_MAX_AGE } })};window.__ATHEN_SEARCH_INDEX__=${searchIndexJson};`,
+          injectTo: 'head',
+        },
+      ];
     },
   };
 }
-
-// Client API for searching
-export const useSearch = `
-import { ref } from 'essor';
-import searchIndex from '${SEARCH_INDEX_ID}';
-
-export function useSearch() {
-  const results = ref([]);
-  const loading = ref(false);
-  const query = ref('');
-
-  const search = async (searchQuery) => {
-    if (!searchQuery.trim()) {
-      results.value = [];
-      return;
-    }
-
-    query.value = searchQuery;
-    loading.value = true;
-
-    try {
-      // Create FlexSearch index with stored documents
-      const { index, documents } = await import('flexsearch');
-      const searchIndex = FlexSearch.create({
-        preset: 'score',
-        tokenize: 'forward',
-        resolution: 9,
-        document: {
-          id: 'id',
-          field: ['title', 'content', 'headings'],
-          store: ['path', 'title']
-        }
-      });
-
-      // Load documents
-      for (const doc of documents) {
-        searchIndex.add(doc);
-      }
-
-      // Perform search
-      const rawResults = searchIndex.search(searchQuery, searchOptions);
-      results.value = transformResults(rawResults);
-    } catch (err) {
-      console.error('Search error:', err);
-      results.value = [];
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  return {
-    search,
-    results,
-    loading,
-    query
-  };
-}
-`;

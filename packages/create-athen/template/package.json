@@ -1,16 +1,22 @@
 {
-  "name": "athen-demo",
-  "version": "0.0.0",
-  "description": "",
-  "keywords": [],
-  "license": "ISC",
-  "author": "",
-  "main": "index.js",
+  "name": "my-athen-site",
+  "version": "1.0.0",
+  "description": "A documentation site built with Athen",
+  "type": "module",
+  "keywords": [
+    "documentation",
+    "athen",
+    "static-site-generator"
+  ],
+  "license": "MIT",
+  "author": "Your Name",
   "scripts": {
     "dev": "athen dev docs",
-    "build": "athen build docs"
+    "build": "athen build docs",
+    "preview": "athen preview docs",
+    "serve": "athen preview docs"
   },
-  "dependencies": {
-    "athen": "^0.0.7-beta.3"
+  "devDependencies": {
+    "athen": "^0.1.0"
   }
 }

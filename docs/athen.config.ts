@@ -5,6 +5,18 @@ export default defineConfig({
   title: 'Athen',
   icon: '/logo.png',
 
+  // 启用本地搜索
+  search: {
+    provider: 'flex',
+    include: ['**/*.md', '**/*.mdx'],
+    exclude: ['**/node_modules/**', '**/dist/**'],
+    searchOptions: {
+      limit: 10,
+      enrich: true,
+      suggest: true,
+    },
+  },
+
   themeConfig: {
     locales: {
       '/zh/': {

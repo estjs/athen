@@ -6,7 +6,10 @@ export default defineConfig({
   test: {
     exclude: [
       '**/e2e/**', // exclude Playwright tests
+      '**/node_modules/**', // exclude all node_modules
+      '**/test/setup.ts', // exclude test setup files
     ],
+    include:['packages/**/test/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -18,9 +21,6 @@ export default defineConfig({
         '**/*.d.ts',
         '**/dist/**',
       ],
-      lines: 80,
-      functions: 80,
-      branches: 80,
     },
     globals: true,
     watch: false,

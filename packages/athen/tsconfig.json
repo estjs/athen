@@ -6,7 +6,8 @@
       "@/*": ["./src/*"],
       "@runtime": ["./src/runtime/index.ts"],
       "@shared/*": ["./src/shared/*"],
-      "@theme-default/*": ["./src/theme-default/*"]
+      "@theme-default/*": ["./src/theme-default/*"],
+      "@athen/plugin-search/client": ["../plugin-search/src/client/index.ts"]
     },
     "types": ["vite/client", "./global.d.ts"]
   },

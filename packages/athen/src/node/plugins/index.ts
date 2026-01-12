@@ -35,8 +35,12 @@ export async function createVitePlugins(
   if (config?.search) {
     try {
       // Plugin may be missing if package removed
-      const plugin = (await import('@athen/plugin-search')).default;
-      builtIn.push(plugin());
+      const searchPlugin = (await import('@athen/plugin-search')).default;
+      const searchOptions =
+        typeof config.search === 'boolean'
+          ? { root: config.root }
+          : { ...config.search, root: config.root };
+      builtIn.push(searchPlugin(searchOptions));
     } catch (error) {
       console.warn('[athen] search plugin not found, skip.', error);
     }

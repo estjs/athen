@@ -6,6 +6,26 @@ export { DefaultTheme } from './defaultTheme';
 
 export * from './frontMatter';
 
+// Search configuration types
+export interface SearchConfig {
+  provider?: 'flex' | 'algolia';
+  include?: string[];
+  exclude?: string[];
+  searchIndexPath?: string;
+  searchOptions?: {
+    limit?: number;
+    enrich?: boolean;
+    suggest?: boolean;
+  };
+  algolia?: {
+    appId: string;
+    apiKey: string;
+    indexName: string;
+    algoliaOptions?: Record<string, any>;
+  };
+  transformResult?: (results: any[]) => any[];
+}
+
 // TODO:
 // router types
 type Component = any;
@@ -116,9 +136,9 @@ export interface UserConfig<ThemeConfig = unknown> {
    */
   theme?: string;
   /**
-   * Whether to enable search.
+   * Search configuration. If set to false, built-in search plugin is disabled.
    */
-  search?: boolean;
+  search?: SearchConfig | boolean;
   /**
    * Custom Vite / Athen plugins. If a plugin shares the same `name` with a built-in one, it will override it.
    */
@@ -145,6 +165,7 @@ export interface SiteData<ThemeConfig = unknown> {
   head: HeadConfig[];
   themeConfig: ThemeConfig;
   colorScheme: boolean;
+  search?: SearchConfig;
 }
 
 export type PageType = 'home' | 'doc' | 'api' | 'custom' | '404';

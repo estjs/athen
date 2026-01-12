@@ -14,7 +14,11 @@ function getUserConfigForPath(root: string) {
 
     const files = fs.readdirSync(root);
 
-    const configFile = files.find(file => configFilePattern.test(file))!;
+    const configFile = files.find(file => configFilePattern.test(file));
+    
+    if (!configFile) {
+      throw new Error(`No athen config file found in ${root}`);
+    }
 
     return resolve(root, configFile);
   } catch (error) {
@@ -117,6 +121,7 @@ export function resolveSiteData(
     icon: userConfig.icon || '',
     root,
     colorScheme: userConfig.colorScheme ?? true,
+    search: typeof userConfig.search === 'object' ? userConfig.search : undefined,
   };
 }
 export async function resolveConfig(
@@ -154,6 +159,9 @@ export async function resolveConfig(
     configPath,
     siteData: resolveSiteData(root, userConfig as UserConfig<DefaultTheme.Config>),
     themeDir,
+    search: (userConfig as UserConfig<DefaultTheme.Config>)?.search,
+    analytics: (userConfig as UserConfig<DefaultTheme.Config>)?.analytics,
+    plugins: (userConfig as UserConfig<DefaultTheme.Config>)?.plugins,
   };
   return siteConfig as SiteConfig;
 }

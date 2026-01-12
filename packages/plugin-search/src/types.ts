@@ -1,6 +1,4 @@
-/**
- * Options for the Athen search plugin
- */
+/** Algolia 搜索配置 */
 export interface AlgoliaOptions {
   appId: string;
   apiKey: string;
@@ -8,80 +6,64 @@ export interface AlgoliaOptions {
   algoliaOptions?: Record<string, any>;
 }
 
+/** IndexedDB 缓存配置 */
+export interface CacheOptions {
+  enabled?: boolean;
+  maxAge?: number;
+}
+
+/** FlexSearch 索引选项 */
+export interface FlexSearchOptions {
+  limit?: number;
+  suggest?: boolean;
+  enrich?: boolean;
+}
+
+/** 搜索插件配置 */
 export interface SearchOptions {
   provider?: 'flex' | 'algolia';
   algolia?: AlgoliaOptions;
-  /**
-   * Function used to transform search results
-   */
-  transformResult?: (result: SearchResult[]) => SearchResult[];
-
-  /**
-   * Custom path for loading search index
-   * @default "/search-index"
-   */
   searchIndexPath?: string;
-
-  /**
-   * Glob patterns of file paths to include in search index
-   * @default ["**\/*.md"]
-   */
   include?: string[];
-
-  /**
-   * Glob patterns of file paths to exclude from search index
-   * @default []
-   */
   exclude?: string[];
-
-  /**
-   * Search options to pass to FlexSearch
-   */
-  searchOptions?: {
-    limit?: number;
-    enrich?: boolean;
-    suggest?: boolean;
-  };
-
-  /**
-   * Additional FlexSearch document fields to index
-   */
-  customFields?: {
-    [key: string]: {
-      /**
-       * Path to the property from the document
-       */
+  searchOptions?: FlexSearchOptions;
+  cache?: CacheOptions;
+  transformResult?: (results: SearchResult[]) => SearchResult[];
+  customFields?: Record<
+    string,
+    {
       getter: (page: any) => string;
-      /**
-       * FlexSearch index configuration
-       */
       index?: {
         encode?: string | ((str: string) => string);
         tokenize?: string | ((str: string) => string[]);
         resolution?: number;
       };
-    };
-  };
+    }
+  >;
+  /** Root directory for docs (passed by athen) */
+  root?: string;
 }
 
-/**
- * Search result item
- */
+/** 搜索结果 */
 export interface SearchResult {
-  /**
-   * Page path
-   */
   path: string;
-  /**
-   * Page title
-   */
   title: string;
-  /**
-   * Heading where match was found
-   */
   heading?: string;
-  /**
-   * Content excerpt where match was found
-   */
   content?: string;
+}
+
+/** 搜索文档 */
+export interface SearchDocument {
+  id: number;
+  path: string;
+  title: string;
+  headings: string[];
+  content: string;
+  rawHeaders?: Array<{ id: string; text: string; depth: number }>;
+}
+
+/** 搜索索引数据 */
+export interface SearchIndexData {
+  documents: SearchDocument[];
+  options: SearchOptions;
 }

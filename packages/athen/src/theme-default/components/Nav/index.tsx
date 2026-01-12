@@ -1,8 +1,8 @@
 import './style.scss';
 import { useLocaleSiteData } from '@theme-default/hooks';
+import { SearchBox } from '@athen/plugin-search/client';
 import { usePageData } from '@/runtime';
 import { Switch } from '../Switch';
-import Search from '../Search';
 import Link from '../Link';
 import NavTranslations from './NavTranslations';
 import NavMenuGroup from './NavMenuGroup';
@@ -38,7 +38,7 @@ const NavHeader = () => {
         </div>
 
         <div class="search flex-1 pl-8">
-          <Search langRoutePrefix={localeData.langRoutePrefix || ''} />
+          <SearchBox langRoutePrefix={localeData.langRoutePrefix || ''} />
         </div>
 
         <div class="flex items-center">

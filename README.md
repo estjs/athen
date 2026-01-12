@@ -1,20 +1,40 @@
 # Athen – Modern Documentation Framework
 
-Athen is a **Vite-powered**, **MDX-based** static-site generator designed for modern product documentation.   Athen focuses on developer-experience, performance, and extensibility while providing first-class TypeScript support.
+**English** | [简体中文](./README.zh-CN.md)
+
+Athen is a **Vite-powered**, **MDX-based** static-site generator built on the **Essor** framework ecosystem. Designed for modern product documentation, Athen focuses on developer-experience, performance, and extensibility while providing first-class TypeScript support.
+
+> **Built with Essor**: Athen leverages the [Essor](https://github.com/estjs/essor) reactive framework and [Essor-Router](https://github.com/estjs/essor-router) for a modern, component-driven development experience.
 
 ---
 
 ## ✨ Features
 
 - **Instant Dev Server** – Powered by Vite with lightning-fast HMR.
+- **Essor Framework** – Built on the modern Essor reactive framework with JSX support.
 - **MDX Pipeline** – Built-in remark/rehype plugins (Shiki, TOC, Tip, Link, Raw Content, Last-Updated).
-- **Component-First** – Write pages in Essor or plain Markdown; import Essor components anywhere.
+- **Component-First** – Write pages in Essor JSX or plain Markdown; import Essor components anywhere.
+- **Convention-based Routing** – Automatic file-system routing with dynamic imports and preloading.
 - **Theme System** – Default theme included; extend or create your own with a clean API.
-- **Plugin Ecosystem 2.0** – Built-in plugins for MDX, UnoCSS, search, analytics, etc.; add your own via `plugins:` field and override any built-in by name.
+- **Plugin Ecosystem** – Built-in plugins for MDX, UnoCSS, search, analytics, etc.; add your own via `plugins:` field.
 - **i18n & Live Switching** – Serve multiple locales with real-time language toggle.
-- **Static-Site Generation & Pre-Rendering** – SEO-ready out of the box.
-- **Testing First** – 100 % unit + e2e coverage target, Vitest + Playwright presets included.
+- **Static-Site Generation** – SEO-ready SSG with pre-rendering support.
+- **Testing First** – Comprehensive unit + e2e coverage with Vitest + Playwright.
 - **One-Command Scaffold** – `npx create-athen` to bootstrap a new project in seconds.
+
+---
+
+## 📦 Packages
+
+This monorepo contains the following packages:
+
+| Package | Description | Version |
+|---------|-------------|---------|
+| [`athen`](./packages/athen) | Core framework and CLI | ![npm](https://img.shields.io/npm/v/athen) |
+| [`@athen/plugin-mdx`](./packages/plugin-mdx) | MDX processing plugin | ![npm](https://img.shields.io/npm/v/@athen/plugin-mdx) |
+| [`@athen/plugin-search`](./packages/plugin-search) | Full-text search plugin | ![npm](https://img.shields.io/npm/v/@athen/plugin-search) |
+| [`@athen/plugin-analytics`](./packages/plugin-analytics) | Analytics integration | ![npm](https://img.shields.io/npm/v/@athen/plugin-analytics) |
+| [`create-athen`](./packages/create-athen) | Project scaffolding tool | ![npm](https://img.shields.io/npm/v/create-athen) |
 
 ---
 
@@ -25,14 +45,17 @@ Athen is a **Vite-powered**, **MDX-based** static-site generator designed for mo
 npx create-athen my-docs
 cd my-docs
 
-# 2. Start local dev server
+# 2. Install dependencies
+pnpm install
+
+# 3. Start local dev server
 pnpm dev
 
-# 3. Build for production
+# 4. Build for production
 pnpm build
 
-# 4. Preview the static output
-pnpm serve
+# 5. Preview the static output
+pnpm preview
 ```
 
 ---
@@ -67,17 +90,41 @@ export default defineConfig({
       { text: "Guide", link: "/guide/getting-started" },
       { text: "API", link: "/api/" }
     ],
+    sidebar: {
+      "/guide/": [
+        {
+          text: "Getting Started",
+          items: [
+            { text: "Introduction", link: "/guide/" },
+            { text: "Installation", link: "/guide/installation" }
+          ]
+        }
+      ]
+    },
     socialLinks: [
       { icon: "github", link: "https://github.com/your/repo" }
     ]
   },
+  // Multi-language support
   locales: {
-    zh: { lang: "zh-CN", title: "中文文档" }
+    "/zh/": { 
+      lang: "zh-CN", 
+      title: "中文文档",
+      themeConfig: {
+        nav: [
+          { text: "指南", link: "/zh/guide/getting-started" }
+        ]
+      }
+    }
   },
-  plugins: [
-    // Example: add analytics plugin
-    import("@athen/plugin-analytics").then(m => m.default({ id: "UA-XXXXX" }))
-  ]
+  // Search configuration
+  search: {
+    provider: "flex" // or "algolia"
+  },
+  // Analytics configuration
+  analytics: {
+    google: "G-XXXXXXXXXX"
+  }
 });
 ```
 
@@ -85,9 +132,10 @@ export default defineConfig({
 
 ## 🎨 Theming & Styling
 
-- Leverages UnoCSS by default; switch to Tailwind or vanilla CSS easily.
+- Leverages **UnoCSS** by default for atomic CSS; easily switch to Tailwind or vanilla CSS.
 - Override SCSS variables or shadow any component via the file-system.
 - Provide your own `Layout.tsx` to create a fully custom look.
+- Built on **Essor** components for maximum flexibility.
 
 ### Layout Slots API
 
@@ -98,7 +146,7 @@ Add a `slots` field under `themeConfig` in `athen.config.ts`:
 export default defineConfig({
   themeConfig: {
     slots: {
-      banner: () => <div className="my-banner">✨ Promo ✨</div>,
+      banner: () => <div class="my-banner">✨ New Release Available! ✨</div>,
       sidebarExtra: () => <AdWidget />,
       footerExtra: CustomFooterNote,
     },
@@ -126,30 +174,30 @@ Athen’s plugin layer builds on Vite’s API and adds a few doc-focused conveni
 
 | Name | Purpose |
 | ---- | ------- |
-| `athen:config` | expose site data + aliases |
-| `athen:routes` | file-system routing |
-| `athen:transform` | MDX → JSX, front-matter injection |
-| `plugin-mdx` | remark / rehype pipeline with Shiki |
-| `unocss` | Atomic CSS |
-| `plugin-svgr` | Import SVG as Essor component |
+| `athen:config` | Expose site data + aliases |
+| `athen:routes` | Convention-based file-system routing |
+| `athen:site-data` | Virtual module for site configuration |
+| `plugin-mdx` | Remark/rehype pipeline with Shiki highlighting |
+| `unocss` | Atomic CSS framework |
+| `plugin-svgr` | Import SVG as Essor components |
 | `plugin-search` | FlexSearch full-text search (optional) |
-| `plugin-analytics` | Inject analytics snippet (optional) |
-| `vite-plugin-inspect` | Dev inspector |
+| `plugin-analytics` | Analytics integration (optional) |
+| `vite-plugin-inspect` | Development inspector |
 
 ### Using custom plugins
 
 ```ts title="athen.config.ts"
 export default defineConfig({
   plugins: [
-    legacy(), // any Vite plugin
-    myCoolPlugin(), // your own athen-plugin-*
+    legacy(), // Any Vite plugin works
+    myCoolPlugin(), // Your own athen-plugin-*
   ],
 });
 ```
 
-*Plugins in this array run **before** the built-ins.*  If a plugin shares the same `name` as a built-in plugin, the built-in one is removed—making it effortless to swap the default search or analytics implementation.
+*Plugins in this array run **before** the built-ins.* If a plugin shares the same `name` as a built-in plugin, the built-in one is removed—making it effortless to swap the default search or analytics implementation.
 
-To disable a built-in plugin entirely set its config switch to `false` (e.g. `themeConfig.search = false`, `analytics = false`) or shadow it with a noop plugin.
+To disable a built-in plugin entirely, set its config to `false` (e.g. `search: false`, `analytics: false`) or shadow it with a noop plugin.
 
 Want to publish? Name it with the `athen-plugin-*` prefix and ship it to npm.
 
@@ -157,36 +205,49 @@ Want to publish? Name it with the `athen-plugin-*` prefix and ship it to npm.
 
 ## 🌍 Internationalization (i18n)
 
-- Define locale packs in `locales` field of config.
-- Runtime locale switcher component included in default theme.
-- Fallback strategy: build-time static pages for each locale + client-side routing.
+- Define locale configurations in the `locales` field of your config.
+- Runtime locale switcher component included in the default theme.
+- Build-time static page generation for each locale with client-side routing.
+- Automatic language detection and redirection support.
 
 ---
 
 ## 🔥 Hot Module Replacement
 
-- Content edits (Markdown, MDX, Essor) update instantly without losing state.
-- Plugin & theme changes hot-reload as well.
+- Content edits (Markdown, MDX, Essor components) update instantly without losing state.
+- Configuration changes hot-reload automatically.
+- Plugin and theme changes are reflected immediately during development.
 
 ---
 
 ## 🧪 Testing & Coverage
 
 - **Vitest** for unit/integration tests—configured out-of-the-box.
-- **Playwright** for e2e; CI workflow runs against a production build.
-- Coverage threshold is enforced at 100 % lines/branches.
+- **Playwright** for end-to-end testing; CI workflow runs against production builds.
+- Comprehensive test coverage across all packages.
+- Example tests included in the monorepo for reference.
 
 ---
 
 ## 🙌 Contributing
 
-1. `pnpm i` – install workspace dependencies.
-2. `pnpm dev` – run example docs for local development of core packages.
-3. Submit PRs against `main`; all commits must follow Conventional Commits.
-4. Ensure tests & lint pass: `pnpm test` and `pnpm lint`.
+1. **Setup**: `pnpm install` – Install workspace dependencies.
+2. **Development**: `pnpm dev` – Run example docs for local development.
+3. **Building**: `pnpm build` – Build all packages.
+4. **Testing**: `pnpm test` – Run unit and e2e tests.
+5. **Linting**: `pnpm lint` – Check code quality.
+
+Submit PRs against `main`; all commits must follow [Conventional Commits](https://conventionalcommits.org/).
+
+---
+
+## � Related Projects
+
+- [Essor](https://github.com/estjs/essor) - The reactive framework powering Athen
+- [Essor-Router](https://github.com/estjs/essor-router) - Client-side routing for Essor
 
 ---
 
 ## 📄 License
 
-MIT © 2023-present
+MIT © 2023-present [estjs](https://github.com/estjs)
