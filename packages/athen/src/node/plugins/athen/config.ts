@@ -18,7 +18,6 @@ export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<v
       return {
         root: PACKAGE_ROOT,
         optimizeDeps: {
-          // 使用 include 代替显式列出的条目
           include: ['essor', 'essor-router', 'lodash-es', 'copy-to-clipboard', 'fs-extra', 'vite'],
           exclude: ['fsevents'],
         },

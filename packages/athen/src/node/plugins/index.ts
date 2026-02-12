@@ -55,8 +55,10 @@ export async function createVitePlugins(
     }
   }
 
-  // Inspect plugin last
-  builtIn.push(Inspect());
+  if (isServer) {
+    // Inspect plugin last
+    builtIn.push(Inspect());
+  }
 
   const userPlugins: PluginOption[] = config.plugins || [];
 

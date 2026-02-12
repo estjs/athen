@@ -7,7 +7,7 @@ import fs, { copy } from 'fs-extra';
 import { normalizeSlash, withBase } from '@/runtime';
 import { version } from '../../package.json';
 import { resolveConfig } from './config';
-import { CLIENT_ENTRY_PATH, DIST_DIR, PACKAGE_ROOT, SERVER_ENTRY_PATH } from './constants';
+import { DIST_DIR, PACKAGE_ROOT, SSG_ENTRY_PATH, SSR_ENTRY_PATH } from './constants';
 import { createVitePlugins } from './plugins/';
 import type { Router, SiteConfig } from '@/shared/types';
 import type { RollupOutput } from 'rollup';
@@ -31,7 +31,6 @@ export function renderPage(
       }
 
       const routeLoad = (await route.preload()) as any;
-      console.log('routeLoad', routeLoad);
 
       const appHtml = await render(routeLoad);
 
@@ -112,7 +111,7 @@ export async function bundle(root: string, options) {
         ssr: !isServer,
         outDir: isServer ? join(root, DIST_DIR) : join(root, '.temp'),
         rollupOptions: {
-          input: isServer ? CLIENT_ENTRY_PATH : SERVER_ENTRY_PATH,
+          input: isServer ? SSR_ENTRY_PATH : SSG_ENTRY_PATH,
         },
         target: 'baseline-widely-available',
       },
@@ -144,6 +143,7 @@ export async function build(root: string = process.cwd()) {
   fs.remove(distPath);
 
   const config = await resolveConfig(root, 'build', 'production');
+
   const [client, server] = (await bundle(root, config)) as [RollupOutput, RollupOutput];
 
   const serverEntryPath = join(tempPath, 'ssg-entry.js');

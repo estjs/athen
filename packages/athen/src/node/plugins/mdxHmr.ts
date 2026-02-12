@@ -15,7 +15,7 @@ export function pluginMdxHMR(config: SiteConfig, isServer): Plugin {
         const result = transformSync(code, {
           filename: `${id}`,
           sourceType: 'module',
-          plugins: [[BabelPluginEssor, { ...opts, ssg: !isServer }]],
+          plugins: [[BabelPluginEssor, { ...opts,hmr:false, ssg: !isServer }]],
         });
         const selfAcceptCode = 'import.meta.hot.accept();';
         if (typeof result === 'object' && !result!.code?.includes(selfAcceptCode)) {

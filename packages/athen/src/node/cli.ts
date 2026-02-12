@@ -1,10 +1,11 @@
 import { resolve } from 'node:path';
 import process from 'node:process';
 import cac from 'cac';
+import pkg from '../../package.json';
 import { build } from './build';
 import { createDevServer } from './dev';
 import { serve } from './preview';
-const cli = cac('athen').version('0.0.0').help();
+const cli = cac('athen').version(pkg.version).help();
 
 cli.command('dev [root]', 'start dev server').action(async (root: string) => {
   const resolvedRoot = root ? resolve(root) : process.cwd();

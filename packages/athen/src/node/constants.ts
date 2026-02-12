@@ -13,10 +13,10 @@ const resolvePath = relativePath =>
 
 //  paths
 export const PACKAGE_ROOT = resolvePath('');
-export const SERVER_ENTRY_PATH = resolvePath('src/runtime/ssg-entry.tsx');
+export const SSG_ENTRY_PATH = resolvePath('src/runtime/ssg-entry.tsx');
+export const SSR_ENTRY_PATH = resolvePath('src/runtime/ssr-entry.tsx');
 export const CLIENT_ENTRY_PATH = resolvePath('src/runtime/client-entry.tsx');
 export const DEFAULT_HTML_PATH = resolvePath('index.html');
-export const CLIENT_RUNTIME_PATH = resolvePath('src/runtime');
 export const SHARED_PATH = resolvePath('src/shared');
 export const CLIENT_EXPORTS_PATH = resolvePath('src/runtime/index.ts');
 export const DEFAULT_THEME_PATH = resolvePath('src/theme-default');

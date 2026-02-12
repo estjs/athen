@@ -1,4 +1,4 @@
-import { renderToString, provide } from 'essor';
+import { provide, renderToString } from 'essor';
 import { routes } from 'athen:routes';
 import { createMemoryHistory } from 'essor-router';
 import { createRouter } from './router';
@@ -9,6 +9,5 @@ export function render(props) {
   provide(PageDataKey, props);
   return renderToString(props.default);
 }
-
 const route = routes[0].children;
 export { route as routes };

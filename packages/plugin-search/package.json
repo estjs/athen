@@ -36,16 +36,16 @@
     "athen": "workspace:*"
   },
   "optionalDependencies": {
-    "algoliasearch": "^5.46.2",
+    "algoliasearch": "^5.48.0",
     "flexsearch": "^0.8.212",
     "glob-to-regexp": "^0.4.1",
-    "markdown-it": "^14.1.0"
+    "markdown-it": "^14.1.1"
   },
   "devDependencies": {
     "@types/markdown-it": "^13.0.9",
-    "@types/node": "^25.0.6",
+    "@types/node": "^25.2.3",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.18"
   }
 }

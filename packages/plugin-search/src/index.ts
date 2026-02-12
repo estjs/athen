@@ -33,8 +33,6 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
     configResolved(config) {
       // Use options.root if provided (from athen), otherwise fall back to Vite's config.root
       rootDir = options.root || config.root;
-      console.log('[plugin-search] rootDir:', rootDir);
-      console.log('[plugin-search] provider:', provider);
 
       if (provider === 'flex') {
         indexBuilder = new SearchIndexBuilder(options);
@@ -43,32 +41,24 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
         let hasMarkdownFiles = false;
         if (fs.existsSync(rootDir)) {
           const files = fs.readdirSync(rootDir, { recursive: true });
-          console.log('[plugin-search] files count:', files.length);
           hasMarkdownFiles = files.some((f: any) => {
             const fileName = typeof f === 'string' ? f : f.toString();
             return fileName.endsWith('.md') || fileName.endsWith('.mdx');
           });
-          console.log('[plugin-search] hasMarkdownFiles:', hasMarkdownFiles);
         }
 
         let docsDir = rootDir;
         if (!hasMarkdownFiles) {
           // Fallback: check if there's a docs subdirectory
           const subDocsDir = path.resolve(rootDir, 'docs');
-          console.log('[plugin-search] checking subDocsDir:', subDocsDir);
           if (fs.existsSync(subDocsDir)) {
             docsDir = subDocsDir;
           }
         }
 
-        console.log('[plugin-search] docsDir:', docsDir);
         if (fs.existsSync(docsDir)) {
           indexBuilder.addDocumentsFromDirectory(docsDir, docsDir);
           searchIndexJson = indexBuilder.generateSearchIndex();
-          console.log('[plugin-search] searchIndexJson length:', searchIndexJson.length);
-          console.log('[plugin-search] documents count:', indexBuilder.getDocumentsCount());
-        } else {
-          console.log('[plugin-search] docsDir does not exist');
         }
       }
     },

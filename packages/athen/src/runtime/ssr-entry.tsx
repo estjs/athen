@@ -1,12 +1,10 @@
 import { RouterView, createWebHistory } from 'essor-router';
-import { createApp, provide, reactive } from 'essor';
+import { hydrate, provide, reactive } from 'essor';
 import { setup } from '../theme-default';
 import { createRouter, initPageData } from './router';
 import { PageDataKey } from '.';
 
-async function ClientEntry() {
-  document.querySelector('#app')!.innerHTML = '';
-
+async function SSREntry() {
   const router = createRouter(createWebHistory(import.meta.env.BASE_URL));
 
   const pageDataInitValue = await initPageData(import.meta.env.BASE_URL);
@@ -16,14 +14,14 @@ async function ClientEntry() {
     next();
   });
 
-  function ClientRender() {
+  function SSRRender() {
     provide(PageDataKey, pageData);
     return <RouterView router={router}></RouterView>;
   }
-  createApp(ClientRender, '#app');
+  hydrate(SSRRender, '#app');
   return { router };
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await
-ClientEntry().then(() => {
+SSREntry().then(() => {
   setup();
 });
