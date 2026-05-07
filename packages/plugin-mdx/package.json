@@ -42,9 +42,9 @@
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
-    "@shikijs/rehype": "^3.22.0",
-    "acorn": "^8.15.0",
-    "fs-extra": "^11.3.3",
+    "@shikijs/rehype": "^4.0.2",
+    "acorn": "^8.16.0",
+    "fs-extra": "^11.3.4",
     "github-slugger": "^2.0.0",
     "hast-util-from-html": "^2.0.3",
     "mdast-util-mdxjs-esm": "2.0.1",
@@ -58,8 +58,8 @@
     "remark-gemoji": "^8.0.0",
     "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
-    "shiki": "^3.22.0",
-    "simple-git": "^3.30.0",
+    "shiki": "^4.0.2",
+    "simple-git": "^3.36.0",
     "unified": "^11.0.5",
     "unist-util-visit": "5.0.0",
     "unist-util-visit-children": "^3.0.0"
@@ -67,12 +67,12 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/hast": "^3.0.4",
-    "@types/lodash": "^4.17.23",
+    "@types/lodash": "^4.17.24",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^25.2.3",
-    "bumpp": "^10.4.1",
-    "lodash-es": "^4.17.23",
+    "@types/node": "^25.6.0",
+    "bumpp": "^11.0.1",
+    "lodash-es": "^4.18.1",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
