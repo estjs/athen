@@ -52,12 +52,15 @@ export function Aside(props: { pagePath: string; outlineTitle: string }) {
       <div class={hasOutline.value ? 'lg:block' : 'none'}>
         <div class="divider-left relative pl-4 text-[13px] font-medium" id="aside-container">
           <div
-            class="absolute top-[33px] h-18px w-1px bg-brand opacity-0"
+            class="absolute top-[33px] w-2px bg-brand opacity-0"
             ref={markerRef}
             style={{
-              left: '-1px',
+              height: '18px',
+              left: '-2px',
+              borderRadius: '2px',
+              backgroundColor: 'var(--at-c-accent)',
               transition:
-                'top 0.25s cubic-bezier(0, 1, 0.5, 1), background-color 0.5s, opacity 0.25s',
+                'top 0.35s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s ease, opacity 0.3s ease',
             }}
             id="aside-marker"
           ></div>

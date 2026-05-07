@@ -16,6 +16,22 @@
   transition: opacity 0.5s, transform 0.25s ease;
 }
 
+.sidebar-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: calc(var(--at-z-index-sidebar) - 1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.sidebar-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
 :global(.dark) .sidebar {
   box-shadow: var(--at-shadow-1);
 }
