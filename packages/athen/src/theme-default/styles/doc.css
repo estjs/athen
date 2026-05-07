@@ -1,489 +1,239 @@
 /**
- * Headings
+ * Typography & Markdown Elements
  * -------------------------------------------------------------------------- */
 
- .at-doc h1,
- .at-doc h2,
- .at-doc h3,
- .at-doc h4,
- .at-doc h5,
- .at-doc h6 {
-   position: relative;
-   font-weight: 600;
-   outline: none;
- }
-
- .at-doc h1 {
-   letter-spacing: -0.02em;
-   line-height: 40px;
-   font-size: 28px;
-   margin-bottom: 40px;
- }
-
- .at-doc h2 {
-   margin: 48px 0 16px;
-   /* padding-top: 24px; */
-   letter-spacing: -0.02em;
-   line-height: 32px;
-   font-size: 24px;
- }
-
- .at-doc h3 {
-   margin: 32px 0 0;
-   letter-spacing: -0.01em;
-   line-height: 28px;
-   font-size: 20px;
- }
-
- .at-doc .header-anchor {
-   float: left;
-   margin-left: -0.87em;
-   padding-right: 0.23em;
-   font-weight: 500;
-   opacity: 0;
-   transition: color 0.25s, opacity 0.25s;
- }
-
- .at-doc h1:hover .header-anchor,
- .at-doc h1 .header-anchor:focus,
- .at-doc h2:hover .header-anchor,
- .at-doc h2 .header-anchor:focus,
- .at-doc h3:hover .header-anchor,
- .at-doc h3 .header-anchor:focus,
- .at-doc h4:hover .header-anchor,
- .at-doc h4 .header-anchor:focus,
- .at-doc h5:hover .header-anchor,
- .at-doc h5 .header-anchor:focus,
- .at-doc h6:hover .header-anchor,
- .at-doc h6 .header-anchor:focus {
-   opacity: 1;
- }
-
- @media (min-width: 768px) {
-   .at-doc h1 {
-     letter-spacing: -0.02em;
-     line-height: 40px;
-     font-size: 32px;
-   }
- }
-
- /**
-    * Paragraph and inline elements
-    * -------------------------------------------------------------------------- */
-
- .at-doc p,
- .at-doc summary {
-   margin: 16px 0;
- }
-
- .at-doc p {
-   z-index: 2;
-   line-height: 28px;
- }
-
- .at-doc blockquote {
-   margin: 16px 0;
-   border-left: 2px solid var(--at-c-divider);
-   padding-left: 16px;
-   transition: border-color 0.5s;
- }
-
- .at-doc blockquote > p {
-   margin: 0;
-   font-size: 16px;
-   color: var(--at-c-text-2);
-   transition: color 0.5s;
- }
-
- .at-doc a {
-   font-weight: 500;
-   color: var(--at-c-brand);
-   text-decoration-style: dotted;
-   transition: color 0.25s;
- }
-
- .at-doc a:hover {
-   color: var(--at-c-brand-dark);
- }
-
- .at-doc strong {
-   font-weight: 600;
- }
-
- /**
-    * Lists
-    * -------------------------------------------------------------------------- */
-
- .at-doc ul,
- .at-doc ol {
-   padding-left: 1.25rem;
-   margin: 16px 0;
- }
-
- .at-doc ul {
-   list-style: disc;
- }
-
- .at-doc ol {
-   list-style: decimal;
- }
-
- .at-doc li + li {
-   margin-top: 8px;
- }
-
- .at-doc li > ol,
- .at-doc li > ul {
-   margin: 8px 0 0;
- }
-
- /**
-    * Table
-    * -------------------------------------------------------------------------- */
-
- .at-doc table {
-   display: block;
-   border-collapse: collapse;
-   margin: 20px 0;
-   overflow-x: auto;
- }
-
- .at-doc tr {
-   border-top: 1px solid var(--at-c-divider);
-   transition: background-color 0.5s;
- }
-
- .at-doc tr:nth-child(2n) {
-   background-color: var(--at-c-bg-soft);
- }
-
- .at-doc th,
- .at-doc td {
-   border: 1px solid var(--at-c-divider);
-   padding: 12px 16px;
- }
-
- .at-doc th {
-   font-size: 16px;
-   font-weight: 600;
-   background-color: var(--at-c-white-soft);
- }
-
- .dark .at-doc th {
-   background-color: var(--at-c-black);
- }
-
- /**
-    * Decorational elements
-    * -------------------------------------------------------------------------- */
-
- .at-doc hr {
-   margin: 16px 0;
-   border: none;
-   border-top: 1px solid var(--at-c-divider-light);
- }
-
- /**
-    * Custom Block
-    * -------------------------------------------------------------------------- */
-
- .at-doc .custom-block {
-   margin: 16px 0;
- }
-
- .at-doc .custom-block p {
-   margin: 8px 0;
-   line-height: 24px;
- }
-
- .at-doc .custom-block p:first-child {
-   margin: 0;
- }
-
- .at-doc .custom-block a {
-   color: inherit;
-   font-weight: 600;
-   text-decoration: underline;
-   transition: opacity 0.25s;
- }
-
- .at-doc .custom-block a:hover {
-   opacity: 0.6;
- }
-
- .at-doc .custom-block code {
-   font-size: var(--at-custom-block-code-font-size);
-   font-weight: 700;
-   color: inherit;
- }
-
- .at-doc .custom-block div[class*='language-'] {
-   margin: 8px 0;
- }
-
- .at-doc .custom-block div[class*='language-'] code {
-   font-weight: 400;
-   background-color: transparent;
- }
-
- /**
-    * Code
-    * -------------------------------------------------------------------------- */
-
- /* inline code */
- .at-doc :not(pre, h1, h2, h3, h4, h5, h6) > code {
-   font-size: var(--at-code-font-size);
- }
-
- .at-doc :not(pre, div) > code {
-   border-radius: 4px;
-   padding: 3px 6px;
-   color: var(--at-c-text-code);
-   background-color: var(--at-c-bg-mute);
-   transition: color 0.5s, background-color 0.5s;
- }
-
- .at-doc h1 > code,
- .at-doc h2 > code,
- .at-doc h3 > code {
-   font-size: 0.9em;
- }
-
- .at-doc a > code {
-   color: var(--at-c-brand);
-   transition: color 0.25s;
- }
-
- .at-doc a:hover > code {
-   color: var(--at-c-brand-dark);
- }
-
- .at-doc div[class*='language-'] {
-   position: relative;
-   margin: 16px -24px;
-   background-color: var(--at-code-block-bg);
-   overflow-x: auto;
-   transition: background-color 0.5s;
- }
-
- @media (min-width: 640px) {
-   .at-doc div[class*='language-'] {
-     border-radius: 8px;
-     margin: 16px 0;
-   }
- }
-
- @media (max-width: 639px) {
-   .at-doc li div[class*='language-'] {
-     border-radius: 8px 0 0 8px;
-   }
- }
-
- .at-doc div[class*='language-'] + div[class*='language-'],
- .at-doc div[class$='-api'] + div[class*='language-'],
- .at-doc
-   div[class*='language-']
-   + div[class$='-api']
-   > div[class*='language-'] {
-   margin-top: -8px;
- }
-
- .at-doc [class*='language-'] pre,
- .at-doc [class*='language-'] code {
-   text-align: left;
-   white-space: pre;
-   word-spacing: normal;
-   word-break: normal;
-   word-wrap: normal;
-   -moz-tab-size: 4;
-   -o-tab-size: 4;
-   tab-size: 4;
-   -webkit-hyphens: none;
-   -moz-hyphens: none;
-   -ms-hyphens: none;
-   hyphens: none;
- }
-
- .at-doc [class*='language-'] pre {
-   position: relative;
-   z-index: 1;
-   margin: 0;
-   padding: 16px 0;
-   background: transparent;
-   overflow-x: auto;
- }
-
- .at-doc [class*='language-'] code {
-   display: block;
-   padding: 0 24px;
-   width: fit-content;
-   min-width: 100%;
-   line-height: var(--at-code-line-height);
-   font-size: var(--at-code-font-size);
-   color: var(--at-code-block-color);
-   transition: color 0.5s;
- }
-
- .at-doc [class*='language-'] code .highlighted {
-   background-color: var(--at-code-line-highlight-color);
-   transition: background-color 0.5s;
-   margin: 0 -24px;
-   padding: 0 24px;
-   width: calc(100% + 2 * 24px);
-   display: inline-block;
- }
-
- .at-doc div[class*='language-'].line-numbers-mode {
-   padding-left: 32px;
- }
-
- .at-doc.line-number-disable div[class*='language-'].line-numbers-mode {
-   padding-left: 0px;
- }
-
- .at-doc .line-numbers-wrapper {
-   position: absolute;
-   top: 0;
-   bottom: 0;
-   left: 0;
-   z-index: 3;
-   padding-top: 16px;
-   width: 36px;
-   text-align: center;
-   font-family: var(--at-font-family-mono);
-   line-height: var(--at-code-line-height);
-   font-size: var(--at-code-font-size);
-   color: var(--at-code-line-number-color);
-   transition: border-color 0.5s, color 0.5s;
-   display: flex;
-   flex-direction: column;
- }
-
- .at-doc.line-number-disable .line-numbers-wrapper {
-   display: none;
- }
-
- .at-doc [class*='language-'] > button.copy {
-   position: absolute;
-   top: 8px;
-   right: 8px;
-   z-index: 3;
-   display: block;
-   justify-content: center;
-   align-items: center;
-   border-radius: 4px;
-   width: 40px;
-   height: 40px;
-   background-color: var(--at-code-block-bg);
-   opacity: 0;
-   cursor: pointer;
-   background-image: var(--at-icon-copy);
-   background-position: 50%;
-   background-size: 20px;
-   background-repeat: no-repeat;
-   transition: opacity 0.4s;
- }
-
- .at-doc [class*='language-']:hover > button.copy,
- .at-doc [class*='language-'] > button.copy:focus {
-   opacity: 1;
- }
-
- .at-doc [class*='language-'] > button.copy:hover {
-   background-color: var(--at-code-copy-code-hover-bg);
- }
-
- .at-doc [class*='language-'] > button.copy.copied,
- .at-doc [class*='language-'] > button.copy:hover.copied {
-   border-radius: 0 4px 4px 0;
-   background-color: var(--at-code-copy-code-hover-bg);
-   background-image: var(--at-icon-copied);
- }
-
- .at-doc [class*='language-'] > button.copy.copied::before,
- .at-doc [class*='language-'] > button.copy:hover.copied::before {
-   position: relative;
-   left: -65px;
-   display: block;
-   border-radius: 4px 0 0 4px;
-   padding-top: 8px;
-   width: 64px;
-   height: 40px;
-   text-align: center;
-   font-size: 12px;
-   font-weight: 500;
-   color: var(--at-code-copy-code-active-text);
-   background-color: var(--at-code-copy-code-hover-bg);
-   white-space: nowrap;
-   content: 'Copied';
- }
-
- .at-doc [class*='language-'] > span.lang {
-   position: absolute;
-   top: 6px;
-   right: 12px;
-   z-index: 2;
-   font-size: 12px;
-   font-weight: 500;
-   color: var(--at-c-text-dark-3);
-   transition: color 0.4s, opacity 0.4s;
- }
-
- .at-doc [class*='language-']:hover > button.copy + span.lang,
- .at-doc [class*='language-'] > button.copy:focus + span.lang {
-   opacity: 0;
- }
-
- /**
-    * Custom container
-    * -------------------------------------------------------------------------- */
-
- .at-doc .at-directive {
-   border: 1px solid transparent;
-   border-radius: 8px;
-   padding: 16px 16px 8px;
-   line-height: 24px;
-   font-size: 14px;
-   margin: 16px 0;
- }
-
- .at-doc .at-directive .at-directive-title {
-   font-weight: 700;
-   margin: 0;
- }
-
- .at-doc .at-directive .at-directive-content p {
-   margin: 8px 0;
- }
-
- .at-doc .at-directive .at-directive-icon {
-   display: inline-block;
-   width: 20px;
-   height: 20px;
-   margin-right: 3px;
-   background-image: var(--at-icon-tip);
- }
-
- .at-doc .at-directive.tip {
-   border-color: var(--at-custom-block-tip-border);
-   color: var(--at-custom-block-tip-text);
-   background-color: var(--at-custom-block-tip-bg);
- }
-
- .at-doc .at-directive.info {
-   border-color: var(--at-custom-block-info-border);
-   color: var(--at-custom-block-info-text);
-   background-color: var(--at-custom-block-info-bg);
- }
-
- .at-doc .at-directive.warning {
-   border-color: var(--at-custom-block-warning-border);
-   color: var(--at-custom-block-warning-text);
-   background-color: var(--at-custom-block-warning-bg);
- }
-
- .at-doc .at-directive.danger {
-   border-color: var(--at-custom-block-danger-border);
-   color: var(--at-custom-block-danger-text);
-   background-color: var(--at-custom-block-danger-bg);
- }
+.at-doc h1,
+.at-doc h2,
+.at-doc h3,
+.at-doc h4 {
+  font-family: var(--at-font-family-heading);
+  position: relative;
+  font-weight: 700;
+  color: var(--at-c-text-1);
+}
+
+.at-doc h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  letter-spacing: -0.03em;
+}
+
+.at-doc h2 {
+  font-size: 1.75rem;
+  line-height: 1.3;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid var(--at-c-divider-light);
+  padding-bottom: 0.5rem;
+}
+
+.at-doc h3 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.at-doc p,
+.at-doc summary {
+  margin: 1.25rem 0;
+  line-height: 1.8;
+  color: var(--at-c-text-2);
+}
+
+.at-doc a {
+  font-weight: 500;
+  color: var(--at-c-brand);
+  text-decoration: none;
+  border-bottom: 1px solid var(--at-c-brand-light);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.at-doc a:hover {
+  border-bottom-color: var(--at-c-brand);
+}
+
+.at-doc strong {
+  font-weight: 600;
+  color: var(--at-c-text-1);
+}
+
+/* Lists */
+.at-doc ul, .at-doc ol {
+  padding-left: 1.5rem;
+  margin: 1.25rem 0;
+  color: var(--at-c-text-2);
+}
+
+.at-doc li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+/* Blockquotes */
+.at-doc blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 3px solid var(--at-c-accent);
+  background: var(--at-c-bg-soft);
+  border-radius: 0 8px 8px 0;
+}
+.at-doc blockquote p {
+  margin: 0;
+  color: var(--at-c-text-2);
+}
+
+/* Tables */
+.at-doc table {
+  width: 100%;
+  margin: 2rem 0;
+  border-collapse: collapse;
+}
+
+.at-doc th, .at-doc td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--at-c-divider);
+}
+
+.at-doc th {
+  font-weight: 600;
+  color: var(--at-c-text-1);
+  background: var(--at-c-bg-soft);
+}
+
+/* Code Blocks */
+.at-doc :not(pre, h1, h2, h3, h4) > code {
+  font-family: var(--at-font-family-mono);
+  font-size: 0.85em;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  background: var(--at-c-bg-mute);
+  color: var(--at-c-text-code);
+  border: 1px solid var(--at-c-divider-light);
+}
+
+.at-doc div[class*='language-'] {
+  position: relative;
+  margin: 2rem 0;
+  border-radius: 12px;
+  background-color: var(--at-code-block-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Mac OSX style window controls for code blocks */
+.at-doc div[class*='language-']::before {
+  content: "";
+  display: block;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #ff5f56;
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+  z-index: 2;
+}
+
+.at-doc div[class*='language-'] pre {
+  margin: 0;
+  padding: 3rem 1.5rem 1.5rem; /* Space for the mac buttons */
+  overflow-x: auto;
+}
+
+.at-doc div[class*='language-'] code {
+  font-family: var(--at-font-family-mono);
+  font-size: var(--at-code-font-size);
+  color: var(--at-code-block-color);
+  line-height: 1.6;
+}
+
+/* Copy Button */
+.at-doc [class*='language-'] > button.copy {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  cursor: pointer;
+  background-image: var(--at-icon-copy);
+  background-position: center;
+  background-size: 16px;
+  background-repeat: no-repeat;
+  transition: opacity 0.2s, background-color 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.at-doc [class*='language-']:hover > button.copy {
+  opacity: 1;
+}
+
+.at-doc [class*='language-'] > button.copy:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.at-doc [class*='language-'] > span.lang {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  z-index: 2;
+  font-family: var(--at-font-family-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+/* Admonitions / Callouts */
+.at-doc .at-directive {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+
+.at-doc .at-directive::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.at-doc .at-directive.tip {
+  background: var(--at-custom-block-tip-bg);
+  border-color: var(--at-custom-block-tip-border);
+}
+.at-doc .at-directive.tip::before { background: var(--at-custom-block-tip-text); }
+.at-doc .at-directive.tip .at-directive-title { color: var(--at-custom-block-tip-text); }
+
+.at-doc .at-directive.info {
+  background: var(--at-custom-block-info-bg);
+  border-color: var(--at-custom-block-info-border);
+}
+.at-doc .at-directive.info::before { background: var(--at-custom-block-info-text); }
+.at-doc .at-directive.info .at-directive-title { color: var(--at-custom-block-info-text); }
+
+.at-doc .at-directive.warning {
+  background: var(--at-custom-block-warning-bg);
+  border-color: var(--at-custom-block-warning-border);
+}
+.at-doc .at-directive.warning::before { background: var(--at-custom-block-warning-text); }
+.at-doc .at-directive.warning .at-directive-title { color: var(--at-custom-block-warning-text); }
+
+.at-doc .at-directive .at-directive-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
