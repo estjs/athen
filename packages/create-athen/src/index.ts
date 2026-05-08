@@ -6,7 +6,9 @@ import minimist from 'minimist';
 import prompts from 'prompts';
 import { execa } from 'execa';
 import { blue, bold, cyan, dim, green, yellow } from 'kolorist';
-const { version } = await import('../package.json');
+import packageInfo from '../package.json';
+
+const { version } = packageInfo;
 
 const argv = minimist<{
   t?: string;
@@ -86,7 +88,7 @@ async function init() {
     else copy(path.join(templateDir, file), targetPath);
   };
   const files = fs.readdirSync(templateDir);
-  for (const file of files.filter(f => f !== 'package.json')) {
+  for (const file of files.filter((f) => f !== 'package.json')) {
     write(file);
   }
 
@@ -174,7 +176,7 @@ async function getValidPackageName(projectName: string) {
       name: 'inputPackageName',
       message: 'Package name:',
       initial: suggestedPackageName,
-      validate: input => (packageNameRegExp.test(input) ? true : 'Invalid package.json name'),
+      validate: (input) => (packageNameRegExp.test(input) ? true : 'Invalid package.json name'),
     });
     return inputPackageName;
   }
@@ -205,7 +207,7 @@ function emptyDir(dir: string) {
 }
 
 (() => {
-  init().catch(error => {
+  init().catch((error) => {
     console.error(error);
   });
 })();

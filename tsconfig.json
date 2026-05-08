@@ -8,6 +8,7 @@
     "moduleResolution": "bundler",
     "ignoreDeprecations": "6.0",
     "resolveJsonModule": true,
+    "types": ["node", "vitest/globals", "vite/client"],
     "strict": true,
     "strictPropertyInitialization": false,
     "noImplicitAny": false,

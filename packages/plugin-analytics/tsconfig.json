@@ -4,7 +4,7 @@
     "rootDir": "src",
     "outDir": "dist",
     "module": "ESNext",
-    "types": ["node", "vite/client"],
+    "types": ["vite/client"],
     "declaration": true,
     "declarationDir": "dist"
   },
