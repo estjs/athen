@@ -12,7 +12,9 @@ async function ClientEntry() {
   const pageDataInitValue = await initPageData(import.meta.env.BASE_URL);
   const pageData = reactive(pageDataInitValue);
   router.beforeEach(async (to, from, next) => {
-    Object.assign(pageData, await initPageData(to.path));
+    const newData = await initPageData(to.path);
+    console.log(pageData, newData);
+    Object.assign(pageData, newData);
     next();
   });
 

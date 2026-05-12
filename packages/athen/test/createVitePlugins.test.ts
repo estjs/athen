@@ -1,6 +1,10 @@
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 import { cwd } from 'node:process';
 import { describe, expect, it, vi } from 'vitest';
 import type { Plugin } from 'vite';
+
+const require = createRequire(import.meta.url);
 
 // Mock plugins-mdx to bypass build requirement during tests
 vi.mock('@athen/plugin-mdx', () => ({
@@ -130,5 +134,38 @@ describe('createVitePlugins override logic', () => {
 
     // Should still return built-in plugins
     expect(plugins.length).toBeGreaterThan(0);
+  });
+});
+
+describe('runtime dependency aliases', () => {
+  const getAliasReplacement = (aliases: any[], id: string) => {
+    const entry = aliases.find(alias =>
+      typeof alias.find === 'string' ? alias.find === id : alias.find.test(id),
+    );
+    return entry?.replacement;
+  };
+
+  it('aliases Essor runtime imports to Athen dependencies', async () => {
+    const { pluginConfig } = await import('../src/node/plugins/athen/config');
+    const essorDistDir = dirname(require.resolve('essor', { paths: [join(cwd(), 'packages/athen')] }));
+    const essorRouterDistDir = dirname(
+      require.resolve('essor-router', { paths: [join(cwd(), 'packages/athen')] }),
+    );
+    const plugin = pluginConfig(
+      {
+        root: cwd(),
+        srcDir: '',
+        plugins: [],
+        search: false,
+        analytics: false,
+      } as any,
+    ) as Plugin & { config: () => any };
+    const aliases = plugin.config().resolve.alias;
+
+    expect(getAliasReplacement(aliases, 'essor')).toBe(join(essorDistDir, 'essor.esm.js'));
+    expect(getAliasReplacement(aliases, 'essor/server')).toBe(join(essorDistDir, 'server.esm.js'));
+    expect(getAliasReplacement(aliases, 'essor-router')).toBe(
+      join(essorRouterDistDir, 'index.mjs'),
+    );
   });
 });

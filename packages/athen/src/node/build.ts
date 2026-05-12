@@ -8,7 +8,7 @@ import { normalizeSlash, withBase } from '@/runtime';
 import { version } from '../../package.json';
 import { resolveConfig } from './config';
 import { DIST_DIR, PACKAGE_ROOT, SSG_ENTRY_PATH, SSR_ENTRY_PATH } from './constants';
-import { createVitePlugins } from './plugins/';
+import { createVitePlugins } from './plugins';
 import type { Router, SiteConfig } from '@/shared/types';
 import type { RollupOutput } from 'rollup';
 export function renderPage(
@@ -18,13 +18,13 @@ export function renderPage(
   config: SiteConfig,
   routers: Required<Router>[],
 ) {
-  const clientChunk = clientBundle.output.find(chunk => chunk.type === 'chunk' && chunk.isEntry);
+  const clientChunk = clientBundle.output.find((chunk) => chunk.type === 'chunk' && chunk.isEntry);
   const cssChunk = clientBundle.output.filter(
-    chunk => chunk.type === 'asset' && chunk.fileName.endsWith('.css'),
+    (chunk) => chunk.type === 'asset' && chunk.fileName.endsWith('.css'),
   );
 
   return Promise.all(
-    routers.map(async route => {
+    routers.map(async (route) => {
       const routePath = route.path;
       if (!route.preload) {
         console.log(route);
@@ -58,7 +58,7 @@ export function renderPage(
           }
           <link rel="icon" href="${config.siteData!.icon}" type="image/svg+xml">
           ${cssChunk
-            .map(item => `<link rel="stylesheet" href="${withBase(item.fileName)}">`)
+            .map((item) => `<link rel="stylesheet" href="${withBase(item.fileName)}">`)
             .join('\n')}
         </head>
         <body>
@@ -103,6 +103,9 @@ export async function bundle(root: string, options) {
         'import.meta.env.SSR': `${isServer}`,
       },
       plugins,
+      ssr: {
+        noExternal: true,
+      },
       esbuild: {
         jsx: 'preserve',
       },

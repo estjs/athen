@@ -1,4 +1,5 @@
-import { join, relative } from 'node:path';
+import { createRequire } from 'node:module';
+import { dirname, join, relative } from 'node:path';
 import { type Plugin, normalizePath } from 'vite';
 import sirv from 'sirv';
 import {
@@ -10,6 +11,29 @@ import {
 import type { SiteConfig } from '@shared/types';
 
 const SITE_DATA_ID = 'athen:site-data';
+const require = createRequire(import.meta.url);
+
+function createRuntimeAliases() {
+  const essorDistDir = dirname(require.resolve('essor', { paths: [PACKAGE_ROOT] }));
+  const essorClientEntry = join(essorDistDir, 'essor.esm.js');
+  const essorServerEntry = join(essorDistDir, 'server.esm.js');
+  const essorRouterDistDir = dirname(require.resolve('essor-router', { paths: [PACKAGE_ROOT] }));
+
+  return [
+    {
+      find: /^essor$/,
+      replacement: essorClientEntry,
+    },
+    {
+      find: /^essor\/server$/,
+      replacement: essorServerEntry,
+    },
+    {
+      find: /^essor-router$/,
+      replacement: join(essorRouterDistDir, 'index.mjs'),
+    },
+  ];
+}
 
 export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): Plugin {
   return {
@@ -22,12 +46,25 @@ export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<v
           exclude: ['fsevents'],
         },
         resolve: {
-          alias: {
-            '@theme': config.themeDir!,
-            '@runtime': `${CLIENT_EXPORTS_PATH}`,
-            '@shared': `${SHARED_PATH}`,
-            '@theme-default': DEFAULT_THEME_PATH,
-          },
+          alias: [
+            ...createRuntimeAliases(),
+            {
+              find: '@theme',
+              replacement: config.themeDir!,
+            },
+            {
+              find: '@runtime',
+              replacement: `${CLIENT_EXPORTS_PATH}`,
+            },
+            {
+              find: '@shared',
+              replacement: `${SHARED_PATH}`,
+            },
+            {
+              find: '@theme-default',
+              replacement: DEFAULT_THEME_PATH,
+            },
+          ],
         },
         build: {
           target: 'baseline-widely-available',

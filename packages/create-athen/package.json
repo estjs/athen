@@ -1,7 +1,7 @@
 {
   "name": "create-athen",
   "version": "0.0.7-beta.3",
-  "packageManager": "pnpm@11.0.8",
+  "packageManager": "pnpm@11.1.0",
   "description": "create template for athen",
   "type": "module",
   "keywords": [
@@ -41,10 +41,10 @@
   },
   "devDependencies": {
     "@types/minimist": "^1.2.5",
-    "@types/node": "^25.6.2",
+    "@types/node": "^25.7.0",
     "@types/prompts": "^2.4.9",
     "tsup": "^8.5.1",
-    "vite": "^8.0.11"
+    "vite": "^8.0.12"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,json}": [

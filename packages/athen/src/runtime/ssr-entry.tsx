@@ -10,11 +10,14 @@ async function SSREntry() {
   const pageDataInitValue = await initPageData(import.meta.env.BASE_URL);
   const pageData = reactive(pageDataInitValue);
   router.beforeEach(async (to, from, next) => {
+    debugger;
     Object.assign(pageData, await initPageData(to.path));
     next();
   });
 
   function SSRRender() {
+    console.log('pageData', pageData);
+
     provide(PageDataKey, pageData);
     return <RouterView router={router}></RouterView>;
   }

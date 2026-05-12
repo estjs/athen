@@ -1,21 +1,31 @@
 import { useLocaleSiteData, usePathname } from '@/theme-default/hooks';
+import { usePageData } from '@/runtime';
 import PageLink from '../Link';
 import './style.scss';
 import { useSidebarData } from '../../hooks/useSidebarData';
-import { usePageData } from '@/runtime';
+// eslint-disable-next-line import/order
+import { watch } from 'essor';
 
 export function SideBar() {
   const localeData = useLocaleSiteData();
+
   const pathname = usePathname();
-  const sidebarData = useSidebarData(pathname, localeData.value.sidebar!);
+  const sidebarData = useSidebarData(pathname, localeData);
   const { siteData } = usePageData();
   const slots = siteData?.themeConfig?.slots || {};
   const SidebarExtra = slots.sidebarExtra as any;
 
+  watch(
+    () => sidebarData.value,
+    (n, o) => {
+      console.log('sidebar', n, o);
+    },
+  );
+
   return (
     <>
-      <div 
-        class="sidebar-backdrop" 
+      <div
+        class="sidebar-backdrop"
         onClick={() => {
           document.querySelector('.sidebar')?.classList.remove('open');
           document.querySelector('.sidebar-backdrop')?.classList.remove('open');
@@ -23,7 +33,7 @@ export function SideBar() {
       />
       <aside class="sidebar">
         <nav>
-          {sidebarData.value.items.map(item => (
+          {sidebarData.value.items.map((item) => (
             <section class="mt-4 border-t b-border-default first:mt-4">
               <div class="flex items-center justify-between">
                 <h2 class="mb-2 mt-3 text-16px font-bold">
@@ -31,15 +41,14 @@ export function SideBar() {
                 </h2>
               </div>
               <div class="mb-1">
-                {item.items.map(i => (
+                {item.items.map((i) => (
                   <div class="ml-5">
                     <div
                       class={`p-1 font-medium ${i.link === pathname.value ? 'text-brand' : 'text-gray-500'}`}
                       onClick={() => {
                         document.querySelector('.sidebar')?.classList.remove('open');
                         document.querySelector('.sidebar-backdrop')?.classList.remove('open');
-                      }}
-                    >
+                      }}>
                       <PageLink href={i.link}>{i.text}</PageLink>
                     </div>
                   </div>

@@ -1,5 +1,6 @@
-import { provide, renderToString } from 'essor';
+import { renderToString } from 'essor/server';
 import { routes } from 'athen:routes';
+import { provide } from 'essor';
 import { createMemoryHistory } from 'essor-router';
 import { createRouter } from './router';
 import { PageDataKey } from '.';

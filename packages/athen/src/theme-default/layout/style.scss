@@ -26,7 +26,7 @@
 @media (min-width: 960px) and (max-width: 1350px) {
   .content {
     width: calc(100% - var(--at-sidebar-width));
-    padding-left: calc(var(--at-sidebar-width) + 40px);
+    padding-left: calc(var(--at-sidebar-width) - 20px);
     padding-right: 40px;
   }
 }
@@ -34,8 +34,8 @@
 @media (min-width: 1350px) {
   .content {
     /* Asymmetric composition: more breathing room on the left of content */
-    width: 850px;
-    margin-left: calc(var(--at-sidebar-width) + 80px);
+    width: 950px;
+    margin-left: calc(var(--at-sidebar-width) + ((100% - var(--at-layout-max-width)) / 2) + 20px);
     margin-right: auto;
   }
 }

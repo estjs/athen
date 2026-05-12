@@ -16,7 +16,9 @@ export function pluginTransform(isServer): Plugin {
         const result = await transformAsync((await strippedTypes).code, {
           filename: id,
           sourceType: 'module',
-          plugins: [[BabelPluginEssor, { ...opts, hmr:false, mode: !isServer ? 'ssg' : 'ssr' }]],
+          plugins: [
+            [BabelPluginEssor, { ...opts, hmr: false, mode: !isServer ? 'server' : 'hydrate' }],
+          ],
         });
         return {
           code: result?.code || code,

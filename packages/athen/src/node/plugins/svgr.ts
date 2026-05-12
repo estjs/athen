@@ -34,7 +34,9 @@ export function pluginSvgr(options: SvgrOptions = {}, isServer): Plugin {
       const result = transformSync(componentCode, {
         filename: `${id}`,
         sourceType: 'module',
-        plugins: [[BabelPluginEssor, { ssg: !isServer }]],
+        plugins: [
+          [BabelPluginEssor, { mode: !isServer ? 'server' : ('hydrate' as 'server' | 'hydrate') }],
+        ],
       });
       return {
         code: result?.code,

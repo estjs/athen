@@ -13,24 +13,26 @@ interface SidebarData {
 
 export function useSidebarData(
   currentPathname: Signal<string>,
-  sidebar: DefaultTheme.Sidebar,
+  sidebar: any,
 ): Computed<SidebarData> {
   return computed(() => {
     const decodedPathname = decodeURIComponent(currentPathname.value);
     const items: SidebarData['items'] = [];
-    for (const name of Object.keys(sidebar)) {
+    const sv2 = sidebar.value.sidebar!;
+    console.log('sidebar');
+    for (const name of Object.keys(sv2)) {
       if (isEqualPath(withBase(name), decodedPathname)) {
-        Object.assign(items, sidebar[name]);
+        Object.assign(items, sv2[name]);
         return {
           group: '',
           items,
         };
       }
-      const result = sidebar[name].find(group =>
-        group.items.some(item => item.link && isEqualPath(withBase(item.link), decodedPathname)),
+      const result = sv2[name].find((group) =>
+        group.items.some((item) => item.link && isEqualPath(withBase(item.link), decodedPathname)),
       );
       if (result) {
-        Object.assign(items, sidebar[name]);
+        Object.assign(items, sv2[name]);
         return {
           group: result.text || '',
           items,

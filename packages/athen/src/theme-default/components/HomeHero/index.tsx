@@ -1,8 +1,6 @@
 import PageLink from '../Link';
 import type { Hero } from '@/shared/types';
 export function HomeHero({ hero }: { hero: Partial<Hero> }) {
-  console.log(hero);
-  
   return (
     <div class="mx-auto px-10 pb-16 pt-20">
       <div class="mx-auto max-w-screen-xl flex justify-between">
@@ -17,9 +15,9 @@ export function HomeHero({ hero }: { hero: Partial<Hero> }) {
             {hero.tagline}
           </p>
           <div class="flex flex-wrap justify-start pt-8">
-            {hero.actions?.map(action => (
+            {hero.actions?.map((action) => (
               <div class="p-1" key={action.link}>
-                <PageLink className={'at-button medium brand'} href={action.link}>
+                <PageLink className="at-button medium brand" href={action.link}>
                   <span>{action.text}</span>
                 </PageLink>
               </div>
