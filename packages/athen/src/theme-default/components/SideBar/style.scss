@@ -4,27 +4,34 @@
   bottom: 0;
   left: 0;
   z-index: var(--at-z-index-sidebar);
-  padding: 32px 32px 96px;
+  padding: 0px 32px 96px;
   width: calc(100vw - 64px);
   max-width: 320px;
-  background-color: var(--at-c-bg);
   opacity: 0;
   box-shadow: var(--at-c-shadow-3);
   overflow-x: hidden;
   overflow-y: auto;
+  border-right: 1px solid var(--at-c-divider-light);
   transform: translateX(-100%);
-  transition: opacity 0.5s, transform 0.25s ease;
+  transition:
+    opacity 0.5s,
+    transform 0.25s ease;
 }
 
 .sidebar-backdrop {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
   z-index: calc(var(--at-z-index-sidebar) - 1);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
 }
 
 .sidebar-backdrop.open {
@@ -39,32 +46,24 @@
   opacity: 1;
   visibility: visible;
   transform: translateX(0);
-  transition: opacity 0.25s, transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition:
+    opacity 0.25s,
+    transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 @media (min-width: 960px) {
   .sidebar {
+    position: sticky;
+    top: var(--at-nav-height);
+    bottom: auto;
+    left: auto;
+    align-self: start;
     z-index: 1;
-    padding-top: 60px;
-    padding-bottom: 128px;
-    width: var(--at-sidebar-width);
-    max-width: 100%;
-    background-color: var(--at-c-bg-alt);
+    height: calc(100vh - var(--at-nav-height));
+    width: 100%;
+    max-width: none;
     opacity: 1;
     visibility: visible;
     box-shadow: none;
     transform: translateX(0);
-  }
-}
-
-@media (min-width: 1440px) {
-  .sidebar {
-    padding-left: max(
-      32px,
-      calc(32px + (100% - var(--at-layout-max-width)) / 2)
-    );
-    width: calc(
-      var(--at-sidebar-width) +
-        ((100% - var(--at-layout-max-width)) / 2)
-    );
   }
 }

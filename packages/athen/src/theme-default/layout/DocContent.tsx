@@ -1,7 +1,6 @@
 import { RouterView } from 'essor-router';
 import { computed } from 'essor';
 import { usePageData } from '@/runtime';
-import { useHeaders } from '../hooks';
 import { SideBar } from '../components/SideBar';
 import DocFooter from '../components/DocFooter';
 import { Aside } from '../components/Aside';
@@ -12,20 +11,20 @@ import './style.scss';
 export function DocContent() {
   const pageData = usePageData()!;
 
-  const { siteData, frontmatter } = pageData;
-  const headers = useHeaders(pageData.toc || []);
-  const themeConfig = siteData?.themeConfig || {};
-  const hasAside =
-    headers.value.length > 0 && (frontmatter?.outline ?? themeConfig.outline ?? true);
+  const themeConfig = pageData.siteData?.themeConfig || {};
+  const hasAside = computed(() => {
+    return (
+      (pageData.toc || []).length > 0 &&
+      (pageData.frontmatter?.outline ?? themeConfig.outline ?? true)
+    );
+  });
   const content = computed(() => {
-    console.log('reload pageData.pageType', pageData.pageType);
-
     switch (pageData.pageType) {
       case 'home':
         return <DocHomeLayout />;
       case 'doc':
         return (
-          <div>
+          <div class={`doc-layout ${hasAside.value ? 'has-aside' : ''}`}>
             <SideBar />
             <div class="content">
               <div class="at-doc">
@@ -33,7 +32,7 @@ export function DocContent() {
               </div>
               <DocFooter />
             </div>
-            {hasAside && (
+            {hasAside.value && (
               <Aside
                 outlineTitle={themeConfig.outlineTitle || '目录'}
                 pagePath={pageData.pagePath!}
