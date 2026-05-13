@@ -1,17 +1,10 @@
 import { signal } from 'essor';
 import NavMenuItem from './NavMenuItem';
-import type { DefaultTheme } from '@/shared/types';
+import type { NavMenuLinkItem } from './NavMenuItem';
 
 export interface NavMenuGroupItem {
-  text?: string | JSX.Element;
-  items: DefaultTheme.NavItemWithLink[];
-  activeIndex?: number;
-  isTranslation?: boolean;
-}
-
-export interface NavMenuGroupItem {
-  text?: string | JSX.Element;
-  items: DefaultTheme.NavItemWithLink[];
+  text?: string;
+  items: NavMenuLinkItem[];
   activeIndex?: number;
   isTranslation?: boolean;
 }
@@ -51,7 +44,7 @@ export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMen
       >
         <div class="z-100 mr-[1.5rem] h-full max-h-100vh min-w-100px w-full overflow-y-auto b-1 b-border-default rounded-xl b-solid bg-bg-default p-3 shadow-[var(--at-shadow-3)]">
           {items.map((child, index) => (
-            <NavMenuItem item={child} isActive={index === activeIndex} />
+            <NavMenuItem item={child} isActive={index === activeIndex} reload={isTranslation} />
           ))}
         </div>
       </div>

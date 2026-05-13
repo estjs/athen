@@ -3,8 +3,6 @@ import { usePageData } from '@/runtime';
 import PageLink from '../Link';
 import './style.scss';
 import { useSidebarData } from '../../hooks/useSidebarData';
-// eslint-disable-next-line import/order
-import { watch } from 'essor';
 
 export function SideBar() {
   const localeData = useLocaleSiteData();
@@ -14,14 +12,6 @@ export function SideBar() {
   const { siteData } = usePageData();
   const slots = siteData?.themeConfig?.slots || {};
   const SidebarExtra = slots.sidebarExtra as any;
-
-  watch(
-    () => sidebarData.value,
-    (n, o) => {
-      console.log('sidebar', n, o);
-    },
-  );
-
   return (
     <>
       <div

@@ -1,4 +1,4 @@
-import { type Computed, type Signal, computed } from 'essor';
+import { type Computed, computed } from 'essor';
 import { normalizeHref, withBase } from '@/runtime';
 import type { DefaultTheme } from '@shared/types';
 
@@ -12,14 +12,13 @@ interface SidebarData {
 }
 
 export function useSidebarData(
-  currentPathname: Signal<string>,
+  currentPathname: { value: string },
   sidebar: any,
 ): Computed<SidebarData> {
   return computed(() => {
-    const decodedPathname = decodeURIComponent(currentPathname.value);
+    const decodedPathname = decodeURIComponent(currentPathname.value || '/');
     const items: SidebarData['items'] = [];
-    const sv2 = sidebar.value.sidebar!;
-    console.log('sidebar');
+    const sv2 = sidebar.value.sidebar || {};
     for (const name of Object.keys(sv2)) {
       if (isEqualPath(withBase(name), decodedPathname)) {
         Object.assign(items, sv2[name]);

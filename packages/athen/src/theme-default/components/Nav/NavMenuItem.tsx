@@ -1,9 +1,16 @@
+import { computed } from 'essor';
 import Link from '../Link';
+import { withBase } from '@shared/utils';
 import type { DefaultTheme } from '@/shared/types';
 
+export type NavMenuLinkItem = DefaultTheme.NavItemWithLink & {
+  getLink?: () => string;
+};
+
 interface NavMenuItemProps {
-  item: DefaultTheme.NavItemWithLink;
+  item: NavMenuLinkItem;
   isActive: boolean;
+  reload?: boolean;
 }
 
 /**
@@ -11,23 +18,46 @@ interface NavMenuItemProps {
  * @param item 当前菜单项数据
  * @param isActive 是否为当前激活项
  */
-const NavMenuItem = ({ item, isActive }: NavMenuItemProps) => {
+const NavMenuItem = ({ item, isActive, reload }: NavMenuItemProps) => {
+  const href = computed(() => item.getLink?.() ?? item.link);
+
+  const navigateWithReload = (e: MouseEvent) => {
+    if (!item.getLink) {
+      return;
+    }
+    e.preventDefault();
+    window.location.assign(withBase(href.value));
+  };
+
   return isActive ? (
     <div class="rounded-md py-1.6 pl-3">
       <span class="mr-1 text-brand">{item.text}</span>
     </div>
   ) : (
     <div class="font-medium">
-      <Link href={item.link} link={true}>
-        <div class="rounded-md py-1.6 pl-3 hover:bg-bg-mute">
-          <div class="flex items-center">
-            <span class="mr-1">{item.text}</span>
-            <div class="ml-1 text-text-3">
-              <span class="i-carbon-arrow-up-right h-18 w-18" />
+      {reload ? (
+        <a href={withBase(href.value)} class="at-link cursor-pointer" onClick={navigateWithReload}>
+          <div class="rounded-md py-1.6 pl-3 hover:bg-bg-mute">
+            <div class="flex items-center">
+              <span class="mr-1">{item.text}</span>
+              <div class="ml-1 text-text-3">
+                <span class="i-carbon-arrow-up-right h-18 w-18" />
+              </div>
             </div>
           </div>
-        </div>
-      </Link>
+        </a>
+      ) : (
+        <Link href={href.value}>
+          <div class="rounded-md py-1.6 pl-3 hover:bg-bg-mute">
+            <div class="flex items-center">
+              <span class="mr-1">{item.text}</span>
+              <div class="ml-1 text-text-3">
+                <span class="i-carbon-arrow-up-right h-18 w-18" />
+              </div>
+            </div>
+          </div>
+        </Link>
+      )}
     </div>
   );
 };

@@ -1,14 +1,22 @@
-import { renderToString } from 'essor/server';
+import { renderToStringAsync } from 'essor/server';
 import { routes } from 'athen:routes';
 import { provide } from 'essor';
-import { createMemoryHistory } from 'essor-router';
-import { createRouter } from './router';
+import { RouterView, createMemoryHistory } from 'essor-router';
+import { createRouter, initPageData } from './router';
 import { PageDataKey } from '.';
-createRouter(createMemoryHistory(import.meta.env.BASE_URL));
+const router = createRouter(createMemoryHistory(import.meta.env.BASE_URL));
 
-export function render(props) {
-  provide(PageDataKey, props);
-  return renderToString(props.default);
+export async function render(routePath: string) {
+  const pageData = await initPageData(routePath);
+  await router.push(routePath);
+  await router.isReady();
+
+  function SSGRender() {
+    provide(PageDataKey, pageData);
+    return <RouterView router={router}></RouterView>;
+  }
+
+  return renderToStringAsync(SSGRender);
 }
 const route = routes[0].children;
 export { route as routes };

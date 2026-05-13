@@ -1,27 +1,16 @@
-import { useRoute } from 'essor-router';
-import { signal, watch } from 'essor';
-const pathname = signal<string>();
+import { computed } from 'essor';
+import { useRouter } from 'essor-router';
+import { usePageData } from '@/runtime';
 
-let route;
-function useRoutePath() {
-  route ||= useRoute();
-
-  watch(
-    () => route?.path,
-    () => {
-      pathname.value = route.path;
-    },
-    {
-      immediate: true,
-    },
-  );
-}
-
-const init = false;
 export function usePathname() {
-  if (init) {
-    return pathname;
-  }
-  useRoutePath();
-  return pathname;
+  const pageData = usePageData();
+  const router = useRouter();
+
+  return computed(() => {
+    return (
+      pageData.routePath ||
+      router.currentRoute.value.path ||
+      (typeof window !== 'undefined' ? window.location.pathname : '/')
+    );
+  });
 }

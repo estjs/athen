@@ -30,9 +30,7 @@ export function renderPage(
         console.log(route);
       }
 
-      const routeLoad = (await route.preload()) as any;
-
-      const appHtml = await render(routeLoad);
+      const appHtml = await render(routePath);
 
       const html = `
       <!DOCTYPE html>
@@ -142,8 +140,8 @@ export async function build(root: string = process.cwd()) {
   }
   const tempPath = join(root, '.temp');
   const distPath = join(root, DIST_DIR);
-  fs.remove(tempPath);
-  fs.remove(distPath);
+  await fs.remove(tempPath);
+  await fs.remove(distPath);
 
   const config = await resolveConfig(root, 'build', 'production');
 

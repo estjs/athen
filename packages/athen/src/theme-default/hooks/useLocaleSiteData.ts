@@ -4,11 +4,35 @@ import { usePageData, withBase } from '@/runtime';
 import { usePathname } from './usePathname';
 import type { DefaultTheme } from '@shared/types';
 
+export function getLocalePath(
+  pathname = '/',
+  targetLocalePrefix = '/',
+  localePrefixes: string[] = [],
+) {
+  const normalizedTargetPrefix = normalizeSlash(targetLocalePrefix);
+  const normalizedPathname = normalizeSlash(pathname);
+  const sourceLocalePrefix = localePrefixes
+    .map(locale => normalizeSlash(locale))
+    .sort((a, b) => b.length - a.length)
+    .find(locale => normalizedPathname === locale || normalizedPathname.startsWith(`${locale}/`));
+
+  if (!sourceLocalePrefix) {
+    return `${normalizedTargetPrefix}/`;
+  }
+
+  const pathnameWithoutLocale =
+    normalizedPathname === sourceLocalePrefix
+      ? ''
+      : normalizedPathname.slice(sourceLocalePrefix.length);
+
+  return `${normalizedTargetPrefix}${pathnameWithoutLocale || '/'}`;
+}
+
 export function useLocaleSiteData() {
   const pageData = usePageData();
+  const pathname = usePathname();
 
   return computed(() => {
-    const pathname = usePathname();
     const themeConfig = pageData?.siteData?.themeConfig ?? {};
     const locales = themeConfig?.locales;
     if (!locales || Object.keys(locales).length === 0) {
@@ -24,7 +48,7 @@ export function useLocaleSiteData() {
     const localeKey =
       localeKeys.find(locale => {
         const normalizedLocalePrefix = withBase(normalizeSlash(locale));
-        return pathname.value.startsWith(normalizedLocalePrefix);
+        return (pathname.value || '/').startsWith(normalizedLocalePrefix);
       }) || localeKeys[0];
 
     return {

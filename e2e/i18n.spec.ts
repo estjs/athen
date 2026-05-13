@@ -1,29 +1,69 @@
 import { expect, test } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:4173';
-
 /**
  * Verify that navbar & sidebar items localize together when switching languages.
  */
 
 test.describe('i18n synchronization', () => {
-  test('navbar & sidebar reflect locale change', async ({ page }) => {
-    await page.goto(BASE_URL);
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+  });
 
-    // capture english sidebar first item text
-    const firstSidebarEn = (await page.locator('.sidebar a').first().textContent()) ?? '';
-    const firstNavEn = (await page.locator('nav').locator('a').first().textContent()) ?? '';
+  async function switchLanguage(page, label: string) {
+    await page.locator('button:has(.i-carbon-translate)').hover();
+    await page.getByText(label, { exact: true }).click();
+  }
 
-    // Switch to Chinese
-    await page.locator('button:has([data-icon="translator"])').click();
-    await page.locator('text=中文').click();
-    await expect(page).toHaveURL(/\/zh\//);
+  test('switching from English doc to Chinese keeps the current doc path and updates chrome', async ({
+    page,
+  }) => {
+    await page.goto('/en/guide/getting-started');
 
-    const firstSidebarZh = await page.locator('.sidebar a').first();
-    await expect(firstSidebarZh).not.toHaveText(firstSidebarEn);
+    await switchLanguage(page, '简体中文');
 
-    const firstNavZh = await page.locator('nav').locator('a').first();
-    await expect(firstNavZh).not.toHaveText(firstNavEn);
+    await expect(page).toHaveURL(/\/zh\/guide\/getting-started$/);
+    await expect(page.getByRole('heading', { name: '快速开始', level: 1 })).toBeVisible();
+    await expect(page.locator('.nav').getByRole('link', { name: '指南' })).toBeVisible();
+    await expect(page.locator('.sidebar').getByRole('link', { name: '快速开始' })).toBeVisible();
+    await expect(page.locator('.aside')).toContainText('为什么选择 Athen?');
+  });
+
+  test('switching from Chinese doc to English keeps the current doc path and updates chrome', async ({
+    page,
+  }) => {
+    await page.goto('/zh/guide/getting-started');
+
+    await switchLanguage(page, 'English');
+
+    await expect(page).toHaveURL(/\/en\/guide\/getting-started$/);
+    await expect(page.getByRole('heading', { name: 'Quick Start', level: 1 })).toBeVisible();
+    await expect(page.locator('.nav').getByRole('link', { name: 'Guide' })).toBeVisible();
+    await expect(page.locator('.sidebar').getByRole('link', { name: 'Getting Started' })).toBeVisible();
+    await expect(page.locator('.aside')).toContainText('Why Choose Athen?');
+  });
+
+  test('switching after client navigation keeps the current doc path and updates chrome', async ({
+    page,
+  }) => {
+    await page.goto('/en/');
+
+    await page.getByRole('link', { name: 'Get Started' }).click();
+    await expect(page).toHaveURL(/\/en\/guide\/getting-started$/);
+
+    await switchLanguage(page, '简体中文');
+
+    await expect(page).toHaveURL(/\/zh\/guide\/getting-started$/);
+    await expect(page.getByRole('heading', { name: '快速开始', level: 1 })).toBeVisible();
+    await expect(page.locator('.nav').getByRole('link', { name: '指南' })).toBeVisible();
+    await expect(page.locator('.sidebar').getByRole('link', { name: '快速开始' })).toBeVisible();
+    await expect(page.locator('.aside')).toContainText('为什么选择 Athen?');
+  });
+
+  test('doc footer prev and next stay within the current sidebar section', async ({ page }) => {
+    await page.goto('/en/api/config-basic');
+
+    await expect(page.locator('.pager .prev')).toBeEmpty();
+    await expect(page.locator('.pager .next')).toContainText('Theme Config');
+    await expect(page.locator('.pager .next a')).toHaveAttribute('href', '/en/api/config-theme');
   });
 });
- 

@@ -143,6 +143,18 @@ describe('resolveSiteData', () => {
     expect(langScript).toBeDefined();
   });
 
+  it('should not mutate user-provided head entries', () => {
+    const head = [['meta', { name: 'viewport', content: 'width=device-width' }]] as any;
+    const userConfig = { head, colorScheme: true };
+
+    const first = resolveSiteData('/root', userConfig);
+    const second = resolveSiteData('/root', userConfig);
+
+    expect(head).toEqual([['meta', { name: 'viewport', content: 'width=device-width' }]]);
+    expect(first.head.filter(h => h[1]?.id === 'check-dark-light')).toHaveLength(1);
+    expect(second.head.filter(h => h[1]?.id === 'check-dark-light')).toHaveLength(1);
+  });
+
   it('should pass through themeConfig', () => {
     const themeConfig = { nav: [], sidebar: {} };
     const siteData = resolveSiteData('/root', { themeConfig });

@@ -1,5 +1,5 @@
 import { computed, onDestroy, onMount, signal } from 'essor';
-import { scrollToTarget, useActiveToc, useHeaders } from '@theme-default/hooks';
+import { scrollToTarget, useActiveToc } from '@theme-default/hooks';
 import { usePageData } from '@/runtime';
 import type { Header } from '@shared/types/index';
 import './style.scss';
@@ -7,7 +7,7 @@ export function Aside(props: { pagePath: string; outlineTitle: string }) {
   const pageData = usePageData()!;
 
   const headers = computed(() => {
-    return useHeaders(pageData.toc || []).value;
+    return pageData.toc || [];
   });
 
   const hasOutline = computed(() => headers.value.length > 0);

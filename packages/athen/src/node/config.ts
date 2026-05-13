@@ -55,7 +55,7 @@ async function resolveUserConfig(
 }
 
 function resolveSiteDataHead(userConfig?: UserConfig<DefaultTheme.Config>): HeadConfig[] {
-  const head = userConfig?.head ?? [];
+  const head = [...(userConfig?.head ?? [])];
   // add inline script to apply dark mode, if user enables the feature.
   // this is required to prevent "flush" on initial page load.
   if (userConfig?.colorScheme ?? true) {

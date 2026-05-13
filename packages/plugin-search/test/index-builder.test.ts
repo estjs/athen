@@ -1,11 +1,22 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { SearchIndexBuilder } from '../src/index-builder';
 
 describe('searchIndexBuilder', () => {
   let builder: SearchIndexBuilder;
+  let tempDir: string | null = null;
 
   beforeEach(() => {
     builder = new SearchIndexBuilder();
+  });
+
+  afterEach(() => {
+    if (tempDir) {
+      rmSync(tempDir, { recursive: true, force: true });
+      tempDir = null;
+    }
   });
 
   describe('constructor', () => {
@@ -87,6 +98,20 @@ This is a test document.
       const index = JSON.parse(builder.generateSearchIndex());
       expect(index.documents[0].content).not.toContain('<div');
       expect(index.documents[0].content).toContain('Important');
+    });
+
+    it('should normalize Windows paths before generating routes', () => {
+      builder.addDocument('guide\\intro\\index.mdx', '# Intro');
+
+      const index = JSON.parse(builder.generateSearchIndex());
+      expect(index.documents[0].path).toBe('/guide/intro/');
+    });
+
+    it('should fall back to Untitled when no title source exists', () => {
+      builder.addDocument('notes.md', 'Plain content without a heading.');
+
+      const index = JSON.parse(builder.generateSearchIndex());
+      expect(index.documents[0].title).toBe('Untitled');
     });
   });
 
@@ -173,6 +198,41 @@ This is a test document.
 
       const results = await customBuilder.search('Test');
       expect(results.length).toBeLessThanOrEqual(1);
+    });
+
+    it('should include matched heading in search results', async () => {
+      const customBuilder = new SearchIndexBuilder();
+      customBuilder.addDocument('guide.md', '# Guide\n\n## Advanced Search\n\nBody text.');
+
+      const results = await customBuilder.search('Advanced');
+
+      expect(results[0]).toMatchObject({
+        path: '/guide',
+        title: 'Guide',
+        heading: 'Advanced Search',
+      });
+    });
+  });
+
+  describe('addDocumentsFromDirectory', () => {
+    it('should recursively add markdown documents from a directory', () => {
+      tempDir = mkdtempSync(join(tmpdir(), 'athen-search-test-'));
+      mkdirSync(join(tempDir, 'guide'), { recursive: true });
+      writeFileSync(join(tempDir, 'index.md'), '# Home\n\nWelcome');
+      writeFileSync(join(tempDir, 'guide', 'intro.mdx'), '# Intro\n\nGetting started');
+      writeFileSync(join(tempDir, 'guide', 'ignored.txt'), '# Ignored');
+
+      builder.addDocumentsFromDirectory(tempDir, tempDir);
+
+      const index = JSON.parse(builder.generateSearchIndex());
+      expect(builder.getDocumentsCount()).toBe(2);
+      expect(index.documents.map((doc: any) => doc.path).sort()).toEqual(['/guide/intro', '/index']);
+    });
+
+    it('should ignore missing directories', () => {
+      builder.addDocumentsFromDirectory('/path/that/does/not/exist');
+
+      expect(builder.getDocumentsCount()).toBe(0);
     });
   });
 
