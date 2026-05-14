@@ -61,7 +61,7 @@
     "shiki": "^4.0.2",
     "simple-git": "^3.36.0",
     "unified": "^11.0.5",
-    "unist-util-visit": "5.0.0",
+    "unist-util-visit": "5.1.0",
     "unist-util-visit-children": "^3.0.0"
   },
   "devDependencies": {
