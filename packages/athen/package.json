@@ -60,7 +60,7 @@
     "b-tween": "^0.3.3",
     "babel-plugin-essor": "^0.0.16-beta.7",
     "cac": "^7.0.0",
-    "copy-to-clipboard": "3.3.3",
+    "copy-to-clipboard": "4.0.2",
     "dayjs": "^1.11.20",
     "essor": "^0.0.16-beta.7",
     "essor-router": "^0.0.17-beta.3",
