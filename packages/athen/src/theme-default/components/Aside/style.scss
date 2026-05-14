@@ -16,7 +16,7 @@
     transform 0.25s ease;
 }
 
-:global(.dark) .sidebar {
+.dark .sidebar {
   box-shadow: var(--at-shadow-1);
 }
 .sidebar.open {

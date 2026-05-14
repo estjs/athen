@@ -5,10 +5,10 @@ export function useEditLink(editLink?: DefaultTheme.EditLink, relativePagePath?:
     return null;
   }
   const { text, pattern } = editLink;
-  const link = pattern.replace(':path', relativePagePath);
+  const link = pattern.replace(':path', relativePagePath ?? '');
 
   return {
-    text,
+    text: text ?? 'Edit this page',
     link,
   };
 }

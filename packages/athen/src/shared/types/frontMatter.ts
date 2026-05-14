@@ -60,7 +60,7 @@ export interface FrontMatterMeta {
   sponsors?: Sponsor[];
   cta?: CTA;
 }
-export interface PageModule<T extends any> {
+export interface PageModule<T = unknown> {
   default: T;
   frontmatter?: FrontMatterMeta;
   content?: string;
