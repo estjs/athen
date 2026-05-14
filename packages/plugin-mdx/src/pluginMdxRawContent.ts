@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 
-import { MD_REGEX, cleanUrl } from './utils';
+import { MD_REGEX, appendNamedExport, cleanUrl } from './utils';
 import type { Plugin } from 'vite';
 
 export function pluginMdxRawContent(): Plugin {
@@ -10,11 +10,7 @@ export function pluginMdxRawContent(): Plugin {
       id = cleanUrl(id);
       if (!MD_REGEX.test(id)) return code;
       const rawContent = await fs.readFile(id, 'utf-8');
-      code = code.concat(`
-        \n
-          export const content = ${JSON.stringify(rawContent)}
-      `);
-      return code;
+      return appendNamedExport(code, 'content', rawContent);
     },
   };
 }

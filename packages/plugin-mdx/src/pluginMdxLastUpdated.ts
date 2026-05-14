@@ -1,7 +1,7 @@
 import { simpleGit } from 'simple-git';
 import { now } from 'lodash-es';
 
-import { MD_REGEX, cleanUrl } from './utils';
+import { MD_REGEX, appendNamedExport, cleanUrl } from './utils';
 import type { Plugin } from 'vite';
 
 export function pluginMdxGit(): Plugin {
@@ -34,11 +34,7 @@ export function pluginMdxGit(): Plugin {
         cache.set(id, lastUpdatedTime);
       }
 
-      code = code.concat(`
-        \n
-export const lastUpdatedTime = "${lastUpdatedTime}"
-      `);
-      return code;
+      return appendNamedExport(code, 'lastUpdatedTime', lastUpdatedTime);
     },
   };
 }

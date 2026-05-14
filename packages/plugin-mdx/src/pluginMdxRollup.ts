@@ -17,12 +17,14 @@ import { TARGET_BLANK_WHITE_LIST, isReg } from './utils';
 import type { options } from './types';
 import type { Plugin } from 'vite';
 
+let highlighterPromise: ReturnType<typeof createHighlighter> | undefined;
+
 async function getShikiHighlighter() {
-  const highlighter = await createHighlighter({
+  highlighterPromise ??= createHighlighter({
     themes: ['dark-plus'],
     langs: Object.keys(bundledLanguages),
   });
-  return highlighter;
+  return highlighterPromise;
 }
 
 export async function pluginMdxRollup(config: options): Promise<Plugin> {

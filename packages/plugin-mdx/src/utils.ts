@@ -17,40 +17,6 @@ export const TARGET_BLANK_WHITE_LIST = [
   'https://essor-router.netlify.app/',
 ];
 
-export const LANGS = [
-  'javascript',
-  'vue',
-  'typescript',
-  'html',
-  'css',
-  'sass',
-  'less',
-  'stylus',
-  'scss',
-  'jsonc',
-  'yaml',
-  'html',
-  'json',
-  'jsonc',
-  'markdown',
-  'mdx',
-  'shell',
-  'bash',
-  'sql',
-  'python',
-  'java',
-  'c',
-  'c++',
-  'c#',
-  'go',
-  'kotlin',
-  'php',
-  'swift',
-  'rust',
-];
-
-export const dynamicImport = new Function('modulePath', 'return import(modulePath)');
-
 export const createHash = (info: string): string => {
   if (!info) {
     throw new Error(`Invalid info: ${info}`);
@@ -80,6 +46,10 @@ export const defaultConfig = {
   base: '/',
 };
 
-export const isReg = (val: any): val is RegExp => {
-  return typeof val === 'object' && val.constructor === RegExp;
+export const isReg = (val: unknown): val is RegExp => {
+  return val instanceof RegExp;
+};
+
+export const appendNamedExport = (code: string, name: string, value: unknown) => {
+  return `${code}\nexport const ${name} = ${JSON.stringify(value)}\n`;
 };

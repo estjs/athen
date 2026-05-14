@@ -6,8 +6,8 @@ import {
   isReg,
   MD_REGEX,
   DIRECTIVE_TYPES,
-  LANGS,
   TARGET_BLANK_WHITE_LIST,
+  appendNamedExport,
 } from '../src/utils';
 
 describe('cleanUrl', () => {
@@ -136,9 +136,8 @@ describe('isReg', () => {
     expect(isReg([/test/])).toBe(false);
   });
 
-  it('should throw for null (implementation detail)', () => {
-    // isReg doesn't handle null gracefully - it throws
-    expect(() => isReg(null)).toThrow();
+  it('should return false for null', () => {
+    expect(isReg(null)).toBe(false);
   });
 
   it('should return false for undefined', () => {
@@ -188,32 +187,18 @@ describe('DIRECTIVE_TYPES', () => {
   });
 });
 
-describe('LANGS', () => {
-  it('should contain common programming languages', () => {
-    expect(LANGS).toContain('javascript');
-    expect(LANGS).toContain('typescript');
-    expect(LANGS).toContain('python');
-    expect(LANGS).toContain('java');
-    expect(LANGS).toContain('rust');
-  });
-
-  it('should contain markup languages', () => {
-    expect(LANGS).toContain('html');
-    expect(LANGS).toContain('css');
-    expect(LANGS).toContain('markdown');
-    expect(LANGS).toContain('mdx');
-  });
-
-  it('should contain shell languages', () => {
-    expect(LANGS).toContain('shell');
-    expect(LANGS).toContain('bash');
-  });
-});
-
 describe('TARGET_BLANK_WHITE_LIST', () => {
   it('should contain essor related URLs', () => {
     expect(TARGET_BLANK_WHITE_LIST).toContain('https://essor.netlify.app/');
     expect(TARGET_BLANK_WHITE_LIST).toContain('https://essor-playground.netlify.app/');
     expect(TARGET_BLANK_WHITE_LIST).toContain('https://essor-router.netlify.app/');
+  });
+});
+
+describe('appendNamedExport', () => {
+  it('appends a JSON-safe named export', () => {
+    expect(appendNamedExport('const a = 1;', 'content', 'hello "mdx"')).toContain(
+      'export const content = "hello \\"mdx\\""',
+    );
   });
 });
