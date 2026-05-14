@@ -1,10 +1,9 @@
 import { dirname, join, resolve } from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
-import { type InlineConfig, build as viteBuild } from 'vite';
+import { type InlineConfig, build as viteBuild, mergeConfig } from 'vite';
 import fs from 'fs-extra';
 import { withBase } from '@/runtime';
-import { version } from '../../package.json';
 import { resolveConfig } from './config';
 import { DIST_DIR, PACKAGE_ROOT, SSG_ENTRY_PATH, SSR_ENTRY_PATH } from './constants';
 import { createVitePlugins } from './plugins';
@@ -79,13 +78,14 @@ export async function renderPage(
     throw new Error('Unable to find the production client entry chunk.');
   }
 
+  const { siteData } = config;
   const ssgCssAssets = ssgBundle.output.filter(isCssAsset);
   const cssAssets = uniqueCssAssets(clientBundle, ssgBundle);
   const distPath = join(root, DIST_DIR);
   const tempPath = join(root, '.temp');
-  const siteBase = config.siteData?.base || config.base || '/';
+  const siteBase = siteData.base || '/';
   const withSiteBase = (fileName: string) => withBase(fileName, siteBase);
-  const headTags = renderHeadTags(config.siteData?.head);
+  const headTags = renderHeadTags(siteData.head);
 
   for (const css of ssgCssAssets) {
     await fs.copy(join(tempPath, css.fileName), join(distPath, css.fileName));
@@ -101,10 +101,10 @@ export async function renderPage(
           <meta charset=utf-8>
           <meta http-equiv=X-UA-Compatible content="IE=edge">
           <meta name=viewport content="width=device-width,initial-scale=1">
-          <title>${config.siteData!.title || 'Athen'}</title>
-          <meta name="description" content="${version}">
+          <title>${siteData.title || 'Athen'}</title>
+          <meta name="description" content="${siteData.description || 'Athen'}">
           ${headTags}
-          <link rel="icon" href="${config.siteData!.icon}" type="image/svg+xml">
+          <link rel="icon" href="${siteData.icon}" type="image/svg+xml">
           ${cssAssets.map((item) => `<link rel="stylesheet" href="${withSiteBase(item.fileName)}">`).join('\n')}
         </head>
         <body>
@@ -119,12 +119,12 @@ export async function renderPage(
   }
 }
 
-export async function bundle(root: string, options) {
+export async function bundle(root: string, config: SiteConfig) {
   const createBuildConfig = async (isClient: boolean): Promise<InlineConfig> => {
-    const plugins = await createVitePlugins(options, isClient);
+    const plugins = await createVitePlugins(config, isClient);
     const isSsrBuild = !isClient;
 
-    return {
+    const defaultBuildConfig: InlineConfig = {
       mode: 'production',
       root,
       resolve: {
@@ -153,6 +153,8 @@ export async function bundle(root: string, options) {
         target: 'baseline-widely-available',
       },
     };
+
+    return mergeConfig(config.vite || {}, defaultBuildConfig);
   };
 
   const ssgBundle = await viteBuild(await createBuildConfig(false));
@@ -161,30 +163,28 @@ export async function bundle(root: string, options) {
   return [ssgBundle, clientBundle] as [BuildBundle, BuildBundle];
 }
 export async function build(root: string = process.cwd()) {
-  // First, resolve config to check for instances
-  const preConfig = await resolveConfig(root, 'build', 'production');
-  if (Array.isArray(preConfig.instances) && preConfig.instances.length > 0) {
-    for (const inst of preConfig.instances) {
-      const instRoot = join(root, inst.root);
-      await build(instRoot);
+  const config = await resolveConfig(root, 'build', 'production');
+
+  // Handle multi-instance builds by recursing into each instance root
+  if (config.instances?.length) {
+    for (const inst of config.instances) {
+      await build(join(root, inst.root));
     }
     return;
   }
+
   const tempPath = join(root, '.temp');
   const distPath = join(root, DIST_DIR);
   await fs.remove(tempPath);
   await fs.remove(distPath);
 
-  const config = await resolveConfig(root, 'build', 'production');
-
   const [ssgBundle, clientBundle] = await bundle(root, config);
 
   const serverEntryPath = join(tempPath, 'ssg-entry.js');
-  const fileUrl = pathToFileURL(serverEntryPath).href;
-
-  const { render, routes } = await import(fileUrl);
+  const { render, routes } = await import(pathToFileURL(serverEntryPath).href);
 
   await renderPage(render, root, clientBundle, ssgBundle, config, routes);
+
   const publicDirInRoot = join(root, 'public');
   if (await fs.pathExists(publicDirInRoot)) {
     await fs.copy(publicDirInRoot, distPath);

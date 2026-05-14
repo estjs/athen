@@ -4,32 +4,26 @@ import { usePathname } from './usePathname';
 import { useSidebarData } from './useSidebarData';
 import type { DefaultTheme } from '@shared/types';
 
+type SidebarLink = Extract<DefaultTheme.SidebarItem, { link: string }>;
+
+function flattenSidebarItems(items: DefaultTheme.SidebarItem[]): SidebarLink[] {
+  return items.flatMap(item => ('items' in item ? flattenSidebarItems(item.items) : [item]));
+}
+
 export function usePrevNextPage() {
   const pathname = usePathname();
   const localesData = useLocaleSiteData();
   const sidebarData = useSidebarData(pathname, localesData);
 
   return computed(() => {
-    const flattenTitles: DefaultTheme.SidebarItem[] = [];
+    const pages = sidebarData.value.items.flatMap(sidebarGroup =>
+      flattenSidebarItems(sidebarGroup.items),
+    );
 
-    const walkThroughSidebarItems = (items: DefaultTheme.SidebarItem[]) => {
-      items.forEach((item) => {
-        if ('items' in item) {
-          walkThroughSidebarItems(item.items);
-        } else {
-          flattenTitles.push(item);
-        }
-      });
-    };
+    const pageIndex = pages.findIndex((item) => item.link === pathname.value);
 
-    sidebarData.value.items.forEach((sidebarGroup) => {
-      walkThroughSidebarItems(sidebarGroup.items);
-    });
-
-    const pageIndex = flattenTitles.findIndex((item) => item.link === pathname.value);
-
-    const prevPage = flattenTitles[pageIndex - 1] || null;
-    const nextPage = flattenTitles[pageIndex + 1] || null;
+    const prevPage = pages[pageIndex - 1] || null;
+    const nextPage = pages[pageIndex + 1] || null;
 
     return {
       prevPage,

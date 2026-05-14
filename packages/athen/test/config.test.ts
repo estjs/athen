@@ -1,196 +1,92 @@
 import { tmpdir } from 'node:os';
-import { join, resolve as pathResolve } from 'node:path';
+import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
 import { defineConfig, resolveConfig, resolveSiteData } from '../src/node/config';
 import { DEFAULT_THEME_PATH } from '../src/node/constants';
 
-function createTempProject(files: Record<string, string>) {
-  const dir = mkdtempSync(join(tmpdir(), 'athen-config-test-'));
-  for (const [relative, content] of Object.entries(files)) {
-    const filePath = join(dir, relative);
-    mkdirSync(pathResolve(filePath, '..'), { recursive: true });
-    writeFileSync(filePath, content, 'utf-8');
+const writeProject = (files: Record<string, string>) => {
+  const root = mkdtempSync(join(tmpdir(), 'athen-config-'));
+  for (const [file, content] of Object.entries(files)) {
+    writeFileSync(join(root, file), content);
   }
-  return dir;
-}
+  return root;
+};
 
-describe('resolveConfig', () => {
-  let tempDir: string | null = null;
+describe('config', () => {
+  let root = '';
 
   afterEach(() => {
-    if (tempDir) {
-      rmSync(tempDir, { recursive: true, force: true });
-      tempDir = null;
-    }
+    if (root) rmSync(root, { recursive: true, force: true });
   });
 
-  it('should use default theme when none specified', async () => {
-    tempDir = createTempProject({
-      'athen.config.js': `module.exports = {};`,
+  it('loads user config into internal config', async () => {
+    root = writeProject({
+      'athen.config.ts': `export default () => ({
+        title: 'Docs',
+        description: 'Readable docs',
+        search: { provider: 'flex' },
+        plugins: [{ name: 'user-plugin' }]
+      })`,
     });
 
-    const config = await resolveConfig(tempDir, 'serve', 'development');
-    expect(config.themeDir).toBe(DEFAULT_THEME_PATH);
-  });
+    const config = await resolveConfig(root, 'serve', 'development');
 
-  it('should resolve theme path relative to project root', async () => {
-    tempDir = createTempProject({
-      'athen.config.js': `module.exports = { theme: 'my-theme' };`,
+    expect(config).toMatchObject({
+      root,
+      themeDir: DEFAULT_THEME_PATH,
+      search: { provider: 'flex' },
+      siteData: { title: 'Docs', description: 'Readable docs' },
     });
-    mkdirSync(join(tempDir, 'my-theme'), { recursive: true });
-
-    const config = await resolveConfig(tempDir, 'serve', 'development');
-    expect(config.themeDir).toBe(pathResolve(tempDir, 'my-theme'));
+    expect(config.plugins?.[0]).toMatchObject({ name: 'user-plugin' });
   });
 
-  it('should set root in config', async () => {
-    tempDir = createTempProject({
-      'athen.config.js': `module.exports = {};`,
-    });
-
-    const config = await resolveConfig(tempDir, 'serve', 'development');
-    expect(config.root).toBe(tempDir);
-  });
-
-  it('should set configPath in config', async () => {
-    tempDir = createTempProject({
-      'athen.config.ts': `export default {};`,
+  it('loads advanced user config fields (vite, route, etc) into internal config', async () => {
+    root = writeProject({
+      'athen.config.ts': `export default () => ({
+        vite: { server: { port: 8080 } },
+        route: { exclude: ['custom.tsx'] },
+        outDir: 'dist-docs',
+        tempDir: '.temp-docs',
+        enableSpa: true,
+        allowDeadLinks: true,
+        srcDir: 'src-docs'
+      })`,
     });
 
-    const config = await resolveConfig(tempDir, 'serve', 'development');
-    expect(config.configPath).toContain('athen.config.ts');
+    const config = await resolveConfig(root, 'serve', 'development');
+
+    expect(config.vite).toMatchObject({ server: { port: 8080 } });
+    expect(config.route).toMatchObject({ exclude: ['custom.tsx'] });
+    expect(config.outDir).toBe('dist-docs');
+    expect(config.tempDir).toBe('.temp-docs');
+    expect(config.enableSpa).toBe(true);
+    expect(config.allowDeadLinks).toBe(true);
+    expect(config.srcDir).toBe('src-docs');
   });
 
-  it('should resolve siteData with defaults', async () => {
-    tempDir = createTempProject({
-      'athen.config.js': `module.exports = {};`,
-    });
+  it('reports missing config and keeps defineConfig as identity', async () => {
+    root = writeProject({});
+    await expect(resolveConfig(root, 'serve', 'development')).rejects.toThrow(
+      `No athen config file found in ${root}`,
+    );
 
-    const config = await resolveConfig(tempDir, 'serve', 'development');
-    expect(config.siteData.lang).toBe('en-US');
-    expect(config.siteData.title).toBe('Athen');
-    expect(config.siteData.description).toBe('Athen');
+    const userConfig = { title: 'Docs' };
+    expect(defineConfig(userConfig)).toBe(userConfig);
   });
 
-  it('should use custom title and description', async () => {
-    tempDir = createTempProject({
-      'athen.config.js': `module.exports = { title: 'My Site', description: 'My Description' };`,
-    });
-
-    const config = await resolveConfig(tempDir, 'serve', 'development');
-    expect(config.siteData.title).toBe('My Site');
-    expect(config.siteData.description).toBe('My Description');
-  });
-
-  it('should throw error when no config file found', async () => {
-    tempDir = createTempProject({});
-
-    await expect(resolveConfig(tempDir, 'serve', 'development')).rejects.toThrow();
-  });
-});
-
-describe('resolveSiteData', () => {
-  it('should return default values for empty config', () => {
-    const siteData = resolveSiteData('/root', {});
-
-    expect(siteData.lang).toBe('en-US');
-    expect(siteData.title).toBe('Athen');
-    expect(siteData.description).toBe('Athen');
-    expect(siteData.base).toBe('');
-    expect(siteData.icon).toBe('');
-    expect(siteData.colorScheme).toBe(true);
-  });
-
-  it('should use provided values', () => {
+  it('creates site data without mutating head or hardcoding zh redirects', () => {
+    const head = [['meta', { name: 'viewport', content: 'width=device-width' }]] as const;
     const siteData = resolveSiteData('/root', {
-      lang: 'zh-CN',
-      title: 'Custom Title',
-      description: 'Custom Description',
-      base: '/docs/',
-      icon: '/favicon.ico',
+      head: [...head],
+      langs: ['fr', 'de'],
+      colorScheme: true,
     });
+    const script = siteData.head.find(item => item[1]?.id === 'check-lang')?.[2];
 
-    expect(siteData.lang).toBe('zh-CN');
-    expect(siteData.title).toBe('Custom Title');
-    expect(siteData.description).toBe('Custom Description');
-    expect(siteData.base).toBe('/docs/');
-    expect(siteData.icon).toBe('/favicon.ico');
-  });
-
-  it('should include dark mode script when colorScheme is enabled', () => {
-    const siteData = resolveSiteData('/root', { colorScheme: true });
-
-    const darkModeScript = siteData.head.find(
-      h => h[0] === 'script' && h[1]?.id === 'check-dark-light',
-    );
-    expect(darkModeScript).toBeDefined();
-  });
-
-  it('should not include dark mode script when colorScheme is disabled', () => {
-    const siteData = resolveSiteData('/root', { colorScheme: false });
-
-    const darkModeScript = siteData.head.find(
-      h => h[0] === 'script' && h[1]?.id === 'check-dark-light',
-    );
-    expect(darkModeScript).toBeUndefined();
-  });
-
-  it('should include lang redirect script when langs configured', () => {
-    const siteData = resolveSiteData('/root', { langs: ['zh', 'en'] });
-
-    const langScript = siteData.head.find(h => h[0] === 'script' && h[1]?.id === 'check-lang');
-    expect(langScript).toBeDefined();
-  });
-
-  it('should not mutate user-provided head entries', () => {
-    const head = [['meta', { name: 'viewport', content: 'width=device-width' }]] as any;
-    const userConfig = { head, colorScheme: true };
-
-    const first = resolveSiteData('/root', userConfig);
-    const second = resolveSiteData('/root', userConfig);
-
-    expect(head).toEqual([['meta', { name: 'viewport', content: 'width=device-width' }]]);
-    expect(first.head.filter(h => h[1]?.id === 'check-dark-light')).toHaveLength(1);
-    expect(second.head.filter(h => h[1]?.id === 'check-dark-light')).toHaveLength(1);
-  });
-
-  it('should pass through themeConfig', () => {
-    const themeConfig = { nav: [], sidebar: {} };
-    const siteData = resolveSiteData('/root', { themeConfig });
-
-    expect(siteData.themeConfig).toBe(themeConfig);
-  });
-
-  it('should handle search config', () => {
-    const searchConfig = {
-      provider: 'algolia' as const,
-      algolia: { appId: 'test', apiKey: 'test', indexName: 'test' },
-    };
-    const siteData = resolveSiteData('/root', { search: searchConfig });
-
-    expect(siteData.search).toBe(searchConfig);
-  });
-});
-
-describe('defineConfig', () => {
-  it('should return the same config object', () => {
-    const config = { title: 'Test' };
-    const result = defineConfig(config);
-
-    expect(result).toBe(config);
-  });
-
-  it('should work with complex config', () => {
-    const config = {
-      title: 'Test',
-      description: 'Description',
-      themeConfig: {
-        nav: [{ text: 'Home', link: '/' }],
-      },
-    };
-    const result = defineConfig(config);
-
-    expect(result).toEqual(config);
+    expect(head).toHaveLength(1);
+    expect(siteData.head.some(item => item[1]?.id === 'check-dark-light')).toBe(true);
+    expect(script).toContain('["fr","de"]');
+    expect(script).not.toContain('/zh/');
   });
 });

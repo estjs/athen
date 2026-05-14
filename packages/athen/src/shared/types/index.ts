@@ -3,6 +3,7 @@ import type { DefaultTheme } from './defaultTheme';
 import type { RouteOptions } from './router';
 import type { PluginOption, UserConfig as ViteConfiguration } from 'vite';
 export { DefaultTheme } from './defaultTheme';
+export type { RouteOptions } from './router';
 
 export * from './frontMatter';
 
@@ -21,22 +22,26 @@ export interface SearchConfig {
     appId: string;
     apiKey: string;
     indexName: string;
-    algoliaOptions?: Record<string, any>;
+    algoliaOptions?: Record<string, unknown>;
   };
-  transformResult?: (results: any[]) => any[];
+  transformResult?: (results: SearchResult[]) => SearchResult[];
 }
 
-// TODO:
-// router types
-type Component = any;
+export interface SearchResult {
+  path: string;
+  title: string;
+  heading?: string;
+  content?: string;
+}
+
 export interface Meta {
   name?: string;
 }
 export interface Router {
   path: string;
-  component: Component;
+  component: unknown;
   meta?: Meta;
-  preload?: (base?: string) => Promise<Component>;
+  preload?: (base?: string) => Promise<unknown>;
 }
 
 export interface PluginOptions {
@@ -122,7 +127,7 @@ export interface UserConfig<ThemeConfig = unknown> {
   /**
    * Analytics configuration. If set to false, built-in analytics plugin is disabled.
    */
-  analytics?: Record<string, any> | false;
+  analytics?: Record<string, unknown> | false;
   /**
    * Multiple site instances in a single repo.
    */
@@ -145,15 +150,36 @@ export interface UserConfig<ThemeConfig = unknown> {
   plugins?: PluginOption[];
 }
 
-export interface SiteConfig<ThemeConfig = unknown> extends Omit<UserConfig, 'themeConfig'> {
+/**
+ * Resolved site configuration. This is the output of `resolveConfig()` — it only
+ * contains the fields that the config resolver actually produces, rather than
+ * inheriting every optional UserConfig field.
+ */
+export interface SiteConfig<ThemeConfig = unknown> {
   root: string;
-  srcDir: string;
-  configPath?: string;
+  configPath: string;
+  themeDir: string;
+  siteData: SiteData<ThemeConfig>;
   configDeps?: string[];
-  themeDir?: string;
+  /** Search configuration passthrough from user config. */
+  search?: SearchConfig | boolean;
+  /** Analytics configuration passthrough from user config. */
+  analytics?: Record<string, unknown> | false;
+  /** User-supplied Vite/Athen plugins. */
+  plugins?: PluginOption[];
+  /** Multi-instance build configuration. */
+  instances?: Array<{
+    root: string;
+    base?: string;
+    outDir?: string;
+  }>;
+  vite?: ViteConfiguration;
+  route?: RouteOptions;
   outDir?: string;
-  // Current page data
-  siteData?: SiteData<ThemeConfig>;
+  tempDir?: string;
+  enableSpa?: boolean;
+  allowDeadLinks?: boolean;
+  srcDir?: string;
 }
 export interface SiteData<ThemeConfig = unknown> {
   root: string;
@@ -176,11 +202,11 @@ export interface PageData {
   relativePagePath: string;
   lastUpdatedTime?: string;
   title?: string;
-  pageType: string;
+  pageType: PageType;
   frontmatter?: FrontMatterMeta;
   description?: string;
   toc?: Header[];
   content?: string;
   routePath: string;
-  subModules?: PageModule<any>[];
+  subModules?: PageModule<unknown>[];
 }

@@ -1,4 +1,4 @@
-import { addLeadingSlash, normalizeSlash, removeTrailingSlash } from '../shared/utils';
+import { addLeadingSlash, normalizeRoutePath, normalizeSlash, removeTrailingSlash } from '../shared/utils';
 
 export const isProduction = () => import.meta.env.PROD;
 
@@ -28,8 +28,4 @@ export function normalizeHref(url?: string) {
   return addLeadingSlash(`${url}${suffix}`);
 }
 
-export function normalizeRoutePath(routePath: string) {
-  return routePath.replace(/\.html$/, '').replace(/\/index$/, '/');
-}
-
-export { addLeadingSlash, removeTrailingSlash, normalizeSlash };
+export { addLeadingSlash, removeTrailingSlash, normalizeSlash, normalizeRoutePath };

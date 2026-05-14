@@ -1,20 +1,22 @@
 import { resolve } from 'node:path';
 import process from 'node:process';
-import { createServer } from 'vite';
+import { createServer, mergeConfig } from 'vite';
 import { resolveConfig } from './config';
 import { createVitePlugins } from './plugins';
 import { PACKAGE_ROOT } from './constants';
 
 export async function createDevServer(
   root: string = process.cwd(),
-  restartServer: () => Promise<void>,
+  port?: number,
+  host?: string | boolean,
+  restartServer?: () => Promise<void>,
 ) {
   const config = await resolveConfig(root, 'serve', 'development');
 
-  return createServer({
+  const defaultConfig = {
     configFile: false,
     root,
-    base: '/',
+    base: config.siteData.base || '/',
     resolve: {
       alias: {
         '@': resolve(PACKAGE_ROOT, 'src'),
@@ -25,7 +27,8 @@ export async function createDevServer(
     },
     plugins: await createVitePlugins(config, true, restartServer),
     server: {
-      port: 8730,
+      port: port || 8730,
+      host: host,
       fs: {
         allow: [PACKAGE_ROOT],
       },
@@ -33,5 +36,7 @@ export async function createDevServer(
     build: {
       target: 'baseline-widely-available',
     },
-  });
+  };
+
+  return createServer(mergeConfig(config.vite || {}, defaultConfig));
 }

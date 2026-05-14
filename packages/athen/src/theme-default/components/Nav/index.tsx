@@ -1,4 +1,5 @@
 import './style.scss';
+import { computed } from 'essor';
 import { getLocalePath, useLocaleSiteData, usePathname } from '@theme-default/hooks';
 import { SearchBox } from '@athen/plugin-search/client';
 import { usePageData } from '@/runtime';
@@ -12,31 +13,42 @@ function isNavGroup(item: DefaultTheme.NavItem): item is DefaultTheme.NavItemWit
   return 'items' in item;
 }
 
+function createTranslationMenu(
+  pathname: string,
+  locales: DefaultTheme.Config['locales'] = {},
+  activeLang?: string,
+) {
+  const entries = Object.entries(locales);
+  if (entries.length <= 1) {
+    return null;
+  }
+
+  const prefixes = entries.map(([prefix]) => prefix);
+  const languages = entries.map(([prefix, config]) => ({ ...config, prefix }));
+
+  return {
+    items: languages.map(item => {
+      const getLink = () => getLocalePath(pathname, item.prefix, prefixes);
+      return {
+        text: item.label,
+        link: getLink(),
+        getLink,
+      };
+    }),
+    isTranslation: true,
+    activeIndex: languages.findIndex(item => item.lang === activeLang),
+  };
+}
+
 const NavHeader = () => {
   const localeData = useLocaleSiteData();
   const pathname = usePathname();
   const { siteData } = usePageData();
-  const localeEntries = Object.entries(siteData.themeConfig.locales || {});
-  const localeLanguages = localeEntries.map(([prefix, config]) => ({ ...config, prefix }));
-  const localePrefixes = localeEntries.map(([prefix]) => prefix);
-  const hasMultiLanguage = localeLanguages.length > 1;
-
-  // 构建翻译菜单数据
-  const translationMenuData = hasMultiLanguage
-    ? {
-        items: localeLanguages.map((item) => {
-          const getLink = () => getLocalePath(pathname.value, item.prefix, localePrefixes);
-
-          return {
-            text: item.label,
-            link: getLink(),
-            getLink,
-          };
-        }),
-        isTranslation: true,
-        activeIndex: localeLanguages.findIndex((item) => item.lang === localeData.value.lang),
-      }
-    : null;
+  const translationMenuData = computed(() => createTranslationMenu(
+    pathname.value,
+    siteData.themeConfig.locales,
+    localeData.value.lang,
+  ));
 
   return (
     <header
@@ -79,9 +91,7 @@ const NavHeader = () => {
 
           {/* 如果支持多语言，显示翻译菜单 */}
           <div class="hidden sm:block">
-            {hasMultiLanguage && translationMenuData && (
-              <NavTranslations translationMenuData={translationMenuData} />
-            )}
+            {translationMenuData.value && <NavTranslations translationMenuData={translationMenuData.value} />}
           </div>
 
           <div class="mx-2">

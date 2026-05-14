@@ -12,11 +12,11 @@ export function addLeadingSlash(url: string) {
 }
 
 export function removeTrailingSlash(url: string) {
-  return url.charAt(url.length - 1) === '/' ? url.slice(0, -1) : url;
+  return url.length > 1 && url.charAt(url.length - 1) === '/' ? url.slice(0, -1) : url;
 }
 
 export function normalizeSlash(url: string) {
-  return removeTrailingSlash(addLeadingSlash(url));
+  return removeTrailingSlash(addLeadingSlash(url || '/'));
 }
 
 export function withBase(url = '/', base = '/'): string {
@@ -25,21 +25,39 @@ export function withBase(url = '/', base = '/'): string {
   }
   const normalizedBase = normalizeSlash(base);
   const normalizedUrl = addLeadingSlash(url);
-  return `${normalizedBase}${normalizedUrl}`;
+  return normalizedBase === '/' ? normalizedUrl : `${normalizedBase}${normalizedUrl}`;
 }
 
-export function removeBase(url: string): string {
-  const normalizedBase = normalizeSlash('/');
-  return url.replace(normalizedBase, '');
+export function removeBase(url: string, base = '/'): string {
+  if (EXTERNAL_URL_RE.test(url)) {
+    return url;
+  }
+
+  const normalizedUrl = addLeadingSlash(cleanUrl(url));
+  const normalizedBase = normalizeSlash(base);
+  if (normalizedBase === '/') {
+    return normalizedUrl;
+  }
+  if (normalizedUrl === normalizedBase) {
+    return '/';
+  }
+  if (normalizedUrl.startsWith(`${normalizedBase}/`)) {
+    return normalizedUrl.slice(normalizedBase.length) || '/';
+  }
+  return normalizedUrl;
 }
 export const getRelativePagePath = (routePath: string, filePath: string, base: string) => {
   const extname = filePath.split('.').pop();
-  let pagePath = cleanUrl(routePath);
-  if (pagePath.startsWith(base)) {
-    pagePath = pagePath.slice(base.length);
+  const pagePath = removeTrailingSlash(removeBase(routePath, base));
+  if (pagePath === '/') {
+    return extname ? `index.${extname}` : 'index';
   }
   if (extname) {
-    pagePath += `.${extname}`;
+    return `${pagePath}.${extname}`.replace(/^\//, '');
   }
   return pagePath.replace(/^\//, '');
 };
+
+export function normalizeRoutePath(routePath: string) {
+  return routePath.replace(/\.html$/, '').replace(/\/index$/, '/');
+}

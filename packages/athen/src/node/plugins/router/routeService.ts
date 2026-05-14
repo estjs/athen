@@ -1,8 +1,8 @@
 import path, { basename, extname } from 'node:path';
 import { normalizePath } from 'vite';
-import { addLeadingSlash, withBase } from '@shared/utils';
+import { addLeadingSlash, withBase } from '../../../shared/utils';
 import { globSync } from 'glob';
-import type { UserConfig } from '@shared/types';
+import type { RouteOptions, UserConfig } from '../../../shared/types';
 
 interface RouteMeta {
   routePath: string;
@@ -11,12 +11,14 @@ interface RouteMeta {
   name?: string;
 }
 
-// const Layout = import('@theme-default/layout/index.tsx?url');
-// Normalize the route path by removing extensions and 'index' filenames
-export const normalizeRoutePath = (routePath: string) => {
+/**
+ * Normalize a route path by removing file extensions and trailing 'index',
+ * then ensuring a leading slash.
+ */
+export function normalizePageRoutePath(routePath: string): string {
   routePath = routePath.replace(/\.(.*)$/, '').replace(/index$/, '');
   return addLeadingSlash(routePath);
-};
+}
 
 export class RouteService {
   private scanDir: string;
@@ -26,42 +28,43 @@ export class RouteService {
     this.scanDir = scanDir;
   }
 
-  // Get the route path from a file path, relative to the root and base
+  /** Get the route path from a file path, relative to the root and base. */
   static getRoutePathFromFile(filePath: string, root: string, base: string): string | undefined {
     const fileRelativePath = path.relative(root, filePath);
-    const routePath = normalizeRoutePath(fileRelativePath);
+    const routePath = normalizePageRoutePath(fileRelativePath);
     return withBase(routePath, base);
   }
 
-  // Initialize the route service by scanning the directory for files
-  init() {
-    const filePaths = globSync('**/*.{ts,tsx,jsx,md,mdx}', {
+  /** Scan the directory and build route metadata. */
+  init(routeOptions?: RouteOptions) {
+    const defaultIgnores = ['**/node_modules/**', '**/build/**', '**/dist/**', '**/.temp/**', 'athen.config.*'];
+    const exclude = routeOptions?.exclude || [];
+    const ignore = [...defaultIgnores, ...exclude];
+    let includePattern: string | string[] = '**/*.{ts,tsx,jsx,md,mdx}';
+
+    if (routeOptions?.include && routeOptions.include.length > 0) {
+      includePattern = routeOptions.include;
+    }
+
+    const filePaths = globSync(includePattern, {
       cwd: this.scanDir,
       absolute: true,
-      ignore: ['**/node_modules/**', '**/build/**', 'athen.config.ts'],
+      ignore,
     });
 
-    filePaths.forEach(filePath => {
-      // Convert Windows file paths from \ to /
+    for (const filePath of filePaths) {
       const fileRelativePath = normalizePath(path.relative(this.scanDir, filePath));
-
       const absolutePath = normalizePath(filePath);
-      // 1. Route path
-      const routePath = this.normalizeRoutePath(fileRelativePath);
+      const routePath = normalizePageRoutePath(fileRelativePath);
+      const name = basename(filePath, extname(filePath));
 
-      const filename = basename(filePath, extname(filePath));
-      // 2. Absolute file path
-      this.routeData.push({
-        routePath,
-        absolutePath,
-        filePath: fileRelativePath,
-        name: filename,
-      });
-    });
+      this.routeData.push({ routePath, absolutePath, filePath: fileRelativePath, name });
+    }
   }
 
-  // Generate the routes code based on the route data and site config
+  /** Generate the routes code based on the route data and site config. */
   generateRoutesCode(siteData?: UserConfig) {
+    const siteName = siteData?.title || 'title';
     return `
       export const routes = [{
         path: '/',
@@ -70,22 +73,16 @@ export class RouteService {
           .map(route => {
             return `
             {
-                path: "${route.routePath}",
-                component:import("${route.absolutePath}"),
-                preload: () => import("${route.absolutePath}"),
-                title: "${route.name || 'title'}",
-                absolutePath: "${route.absolutePath}",
-                meta: {name: "${siteData?.title || 'title'}", filePath: "${route.filePath}"}
+                path: ${JSON.stringify(route.routePath)},
+                component: import(${JSON.stringify(route.absolutePath)}),
+                preload: () => import(${JSON.stringify(route.absolutePath)}),
+                title: ${JSON.stringify(route.name || 'title')},
+                absolutePath: ${JSON.stringify(route.absolutePath)},
+                meta: {name: ${JSON.stringify(siteName)}, filePath: ${JSON.stringify(route.filePath)}}
             }`;
           })
           .join(', ')}],
       }]
     `;
-  }
-
-  // Normalize the route path by removing extensions and 'index' filenames, and ensuring it starts with a slash
-  private normalizeRoutePath(rawPath: string) {
-    const routePath = rawPath.replace(/\.(.*)$/, '').replace(/index$/, '');
-    return routePath.startsWith('/') ? routePath : `/${routePath}`;
   }
 }

@@ -2,10 +2,10 @@ import { createRouter as createEssorRouter } from 'essor-router';
 import { routes } from 'athen:routes';
 import siteData from 'athen:site-data';
 import { cleanUrl, getRelativePagePath } from '@shared/utils';
-import type { FrontMatterMeta, PageData, PageModule } from '@shared/types';
 import type { RouteRecordRaw, RouterHistory } from 'essor-router';
+import type { FrontMatterMeta, PageData, PageModule } from '@shared/types';
 
-type AthenRouteRecord = Omit<RouteRecordRaw, 'children' | 'meta'> & {
+interface AthenRouteRecord {
   path: string;
   children?: AthenRouteRecord[];
   meta?: {
@@ -13,21 +13,18 @@ type AthenRouteRecord = Omit<RouteRecordRaw, 'children' | 'meta'> & {
     [key: string]: unknown;
   };
   preload?: () => Promise<PageModule<unknown>>;
-};
+}
 
 /**
- * Get the page data of the given route path.
- *
- * @param routerPath The route path.
- * @returns The page data.
+ * Initialize page data for a given route path by loading the matched route's
+ * module and composing the full PageData object.
  */
 export async function initPageData(routerPath: string): Promise<PageData> {
   const router = routes[0] as AthenRouteRecord;
-  const matched = router.children?.find((route) => route.path === routerPath);
+  const matched = router.children?.find(route => route.path === routerPath);
 
   if (matched?.preload) {
     const moduleInfo = await matched.preload();
-
     const pagePath = cleanUrl(matched.meta?.filePath ?? '');
     const relativePagePath = getRelativePagePath(routerPath, pagePath, siteData.base);
 
@@ -42,13 +39,15 @@ export async function initPageData(routerPath: string): Promise<PageData> {
       ...moduleInfo,
     };
   }
+
   return {
     siteData,
     pagePath: routerPath,
     routePath: routerPath,
     relativePagePath: '',
+    pageType: '404',
     frontmatter: {} as FrontMatterMeta,
-  } as PageData;
+  };
 }
 
 export const createRouter = (history: RouterHistory) => {

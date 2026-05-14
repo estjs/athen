@@ -2,7 +2,7 @@ import copy from 'copy-to-clipboard';
 
 export function setupCopyCodeButton() {
   const timeoutIdMap: Map<HTMLElement, NodeJS.Timeout> = new Map();
-  window.addEventListener('click', e => {
+  window.addEventListener('click', async e => {
     const el = e.target as HTMLElement;
 
     if (el.matches('div[class*="language-"] > button.copy')) {
@@ -14,7 +14,7 @@ export function setupCopyCodeButton() {
 
       const { textContent: text = '' } = sibling;
 
-      const isCopied = copy(text || '');
+      const isCopied = await copy(text || '');
 
       if (isCopied) {
         el.classList.add('copied');

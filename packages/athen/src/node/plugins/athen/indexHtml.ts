@@ -13,7 +13,7 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
         // Insert client entry script in development
         // And in production, we will insert it in ssg render
         const head =
-          config.siteData?.head?.map(item => {
+          config.siteData.head?.map(item => {
             const [tag, attrs, children] = item;
             return {
               tag,
@@ -30,7 +30,7 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
               tag: 'link',
               attrs: {
                 rel: 'icon',
-                href: `${config.siteData?.icon}`,
+                href: `${config.siteData.icon}`,
                 type: 'image/image/svg+xml',
               },
               injectTo: 'head',

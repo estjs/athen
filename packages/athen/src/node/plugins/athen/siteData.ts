@@ -29,7 +29,7 @@ export function pluginSiteData(config: SiteConfig): Plugin {
         return `export default ${JSON.stringify(siteData)}`;
       }
       if (id === `\0${BASE_URL}`) {
-        return `export default ${JSON.stringify(siteData?.base || '/')}`;
+        return `export default ${JSON.stringify(siteData.base || '/')}`;
       }
     },
   };

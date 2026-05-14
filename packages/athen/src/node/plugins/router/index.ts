@@ -1,18 +1,18 @@
 import { join } from 'node:path';
 import { RouteService } from './routeService';
-import type { PluginOptions, UserConfig } from '@/shared/types';
+import type { SiteConfig } from '@/shared/types';
 import type { Plugin } from 'vite';
 
 export const CONVENTIONAL_ROUTE_ID = 'athen:routes';
 
-export default function pluginRoute(options: PluginOptions, siteData?: UserConfig): Plugin {
-  const rootPath = join(options.root);
+export default function pluginRoute(config: SiteConfig): Plugin {
+  const rootPath = join(config.root);
   const routeService = new RouteService(rootPath);
   return {
     name: 'athen:routes',
     async configResolved() {
       // init router
-      await routeService.init();
+      await routeService.init(config.route);
     },
     resolveId(id) {
       if (id === CONVENTIONAL_ROUTE_ID) {
@@ -21,7 +21,7 @@ export default function pluginRoute(options: PluginOptions, siteData?: UserConfi
     },
     load(id) {
       if (id === `\0${CONVENTIONAL_ROUTE_ID}`) {
-        const res = routeService.generateRoutesCode(siteData);
+        const res = routeService.generateRoutesCode(config.siteData);
         return res;
       }
     },

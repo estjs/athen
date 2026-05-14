@@ -2,10 +2,11 @@ import EnvironmentPlugin from 'vite-plugin-environment';
 import pluginUnocss from 'unocss/vite';
 import Inspect from 'vite-plugin-inspect';
 import { pluginMdx } from '@athen/plugin-mdx';
-import { pick } from 'lodash-es';
+import searchPlugin from '@athen/plugin-search';
+import analyticsPlugin from '@athen/plugin-analytics';
+
 import pluginRoute from './router';
 import unocssOptions from './unocss';
-import { RouteService } from './router/routeService';
 import { pluginMdxHMR } from './mdxHmr';
 import { pluginAthen } from './athen';
 import { pluginSvgr } from './svgr';
@@ -20,39 +21,29 @@ export async function createVitePlugins(
   // 1. Built-in plugins list
   const builtIn: PluginOption[] = [
     await pluginMdx({
-      ...pick(config, ['root', 'base']),
-      RouteService,
+      root: config.root,
+      base: config.siteData.base,
+      essor: true,
       plugins: [pluginMdxHMR(config, isServer)],
     }),
     pluginUnocss(unocssOptions),
     EnvironmentPlugin([]),
     pluginAthen(config, isServer, restartServer),
-    pluginRoute({ root: config.root }, config.siteData),
+    pluginRoute(config),
     pluginSvgr({}, isServer),
   ];
 
   // Optional built-ins
   if (config?.search) {
-    try {
-      // Plugin may be missing if package removed
-      const searchPlugin = (await import('@athen/plugin-search')).default;
-      const searchOptions =
-        typeof config.search === 'boolean'
-          ? { root: config.root }
-          : { ...config.search, root: config.root };
-      builtIn.push(searchPlugin(searchOptions));
-    } catch (error) {
-      console.warn('[athen] search plugin not found, skip.', error);
-    }
+    const searchOptions =
+      typeof config.search === 'boolean'
+        ? { root: config.root }
+        : { ...config.search, root: config.root };
+    builtIn.push(searchPlugin(searchOptions));
   }
 
   if (config.analytics) {
-    try {
-      const plugin = (await import('@athen/plugin-analytics')).default;
-      builtIn.push(plugin(config.analytics));
-    } catch (error) {
-      console.warn('[athen] analytics plugin not found, skip.', error);
-    }
+    builtIn.push(analyticsPlugin(config.analytics));
   }
 
   if (isServer) {

@@ -5,7 +5,7 @@ import { RouteService } from './router/routeService';
 import type { Plugin } from 'vite';
 import type { SiteConfig } from '@/shared/types/index';
 
-export function pluginMdxHMR(config: SiteConfig, isServer): Plugin {
+export function pluginMdxHMR(config: SiteConfig, isServer: boolean): Plugin {
   return {
     name: 'vite-plugin-mdx-hmr',
     apply: 'serve',
@@ -41,7 +41,7 @@ export function pluginMdxHMR(config: SiteConfig, isServer): Plugin {
         const routePath = RouteService.getRoutePathFromFile(
           ctx.file,
           config.root,
-          config.base || '/',
+          config.siteData.base || '/',
         );
         ctx.server.ws!.send({
           type: 'custom',

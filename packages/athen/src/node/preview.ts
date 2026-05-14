@@ -1,4 +1,4 @@
-import path, { join } from 'node:path';
+import { join } from 'node:path';
 import compression from '@polka/compression';
 import polka from 'polka';
 import sirv from 'sirv';
@@ -9,20 +9,14 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 type PolkaRequest = IncomingMessage & { path: string };
 type PolkaResponse = ServerResponse;
 
-export async function serve(root: string) {
-  const port = 4173;
-  const host = 'localhost';
+export async function serve(root: string, port = 4173, hostOption: string | boolean = 'localhost') {
+  const host = hostOption === true ? '0.0.0.0' : hostOption;
   const config = await resolveConfig(root, 'serve', 'production');
-  const base = config.base?.replace(/^\//, '').replace(/\/$/, '') || '';
+  const base = (config.siteData.base || '').replace(/^\//, '').replace(/\/$/, '');
+  const distPath = join(root, DIST_DIR);
 
   const notAnAsset = (pathname: string) => !pathname.includes('/assets/');
 
-  let distPath = '';
-  if (config.outDir) {
-    distPath = path.isAbsolute(config.outDir) ? config.outDir : join(config.root, DIST_DIR);
-  } else {
-    distPath = join(config.root, DIST_DIR);
-  }
   const onNoMatch = (req: PolkaRequest, res: PolkaResponse) => {
     res.statusCode = 404;
     if (notAnAsset(req.path)) {
@@ -31,7 +25,7 @@ export async function serve(root: string) {
   };
 
   const compress = compression();
-  const serve = sirv(distPath, {
+  const serveStatic = sirv(distPath, {
     etag: true,
     maxAge: 31536000,
     immutable: true,
@@ -47,14 +41,14 @@ export async function serve(root: string) {
   if (base) {
     const app = polka({ onNoMatch });
     app.use(`/${base}`, compress);
-    app.use(`/${base}`, serve);
+    app.use(`/${base}`, serveStatic);
     app.listen(port, () => {
       console.log(`Built site served at http://${host}:${port}/${base}/\n`);
     });
   } else {
     polka({ onNoMatch })
       .use(compress)
-      .use(serve)
+      .use(serveStatic)
       .listen(port, () => {
         console.log(`Built site served at http://${host}:${port}/\n`);
       });

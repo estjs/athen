@@ -13,34 +13,26 @@ interface SidebarData {
 
 export function useSidebarData(
   currentPathname: { value: string },
-  sidebar: any,
+  sidebar: Computed<DefaultTheme.LocaleConfig>,
 ): Computed<SidebarData> {
   return computed(() => {
     const decodedPathname = decodeURIComponent(currentPathname.value || '/');
-    const items: SidebarData['items'] = [];
-    const sv2 = sidebar.value.sidebar || {};
-    for (const name of Object.keys(sv2)) {
+    const sidebarByPath = sidebar.value.sidebar || {};
+
+    for (const name of Object.keys(sidebarByPath)) {
+      const items = sidebarByPath[name];
       if (isEqualPath(withBase(name), decodedPathname)) {
-        Object.assign(items, sv2[name]);
-        return {
-          group: '',
-          items,
-        };
+        return { group: '', items };
       }
-      const result = sv2[name].find((group) =>
+
+      const group = items.find((group) =>
         group.items.some((item) => item.link && isEqualPath(withBase(item.link), decodedPathname)),
       );
-      if (result) {
-        Object.assign(items, sv2[name]);
-        return {
-          group: result.text || '',
-          items,
-        };
+      if (group) {
+        return { group: group.text || '', items };
       }
     }
-    return {
-      group: '',
-      items: [],
-    };
+
+    return { group: '', items: [] };
   });
 }

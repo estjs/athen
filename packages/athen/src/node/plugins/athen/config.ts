@@ -65,7 +65,7 @@ export function pluginConfig(
             ...createRuntimeAliases(isClient),
             {
               find: '@theme',
-              replacement: config.themeDir!,
+              replacement: config.themeDir,
             },
             {
               find: '@runtime',
@@ -101,7 +101,7 @@ export function pluginConfig(
       }
     },
     async handleHotUpdate(ctx) {
-      const customWatchedFiles = [normalizePath(config.configPath!)];
+      const customWatchedFiles = [normalizePath(config.configPath)];
       const include = (id: string) => customWatchedFiles.some(file => id.includes(file));
 
       if (include(ctx.file)) {
