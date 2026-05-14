@@ -17,3 +17,6 @@ public/dist
 .temp
 .gitlogmap
 .claude
+.codex
+test-results
+playwright-report
