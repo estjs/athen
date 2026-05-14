@@ -3,20 +3,17 @@
   NODE_VERSION = "22"
 
 [build]
-  publish = "docs/build"
+
+  publish = "docs/dist" 
   command = "pnpm run build && pnpm run docs:build"
 
 [[headers]]
   for = "*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
+
 [[headers]]
   for = "*.css"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
-[context.deploy-preview]
-   publish = "docs/build"
-
-[context.branch-deploy]
-  publish = "docs/build"
