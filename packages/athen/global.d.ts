@@ -20,3 +20,11 @@ declare module 'athen:base' {
   const baseUrl: string;
   export default baseUrl;
 }
+
+declare module 'athen:ssg-essor-server' {
+  export * from 'essor/server';
+}
+
+declare module 'athen:ssg-essor-router' {
+  export * from 'essor-router';
+}

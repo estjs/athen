@@ -168,4 +168,35 @@ describe('runtime dependency aliases', () => {
       join(essorRouterDistDir, 'index.mjs'),
     );
   });
+
+  it('uses SSG-safe Essor and router aliases for static rendering builds', async () => {
+    const { pluginConfig } = await import('../src/node/plugins/athen/config');
+    const { SSG_ROUTER_PATH, SSG_SERVER_PATH } = await import('../src/node/constants');
+    const essorDistDir = dirname(require.resolve('essor', { paths: [join(cwd(), 'packages/athen')] }));
+    const essorRouterDistDir = dirname(
+      require.resolve('essor-router', { paths: [join(cwd(), 'packages/athen')] }),
+    );
+    const plugin = pluginConfig(
+      {
+        root: cwd(),
+        srcDir: '',
+        plugins: [],
+        search: false,
+        analytics: false,
+      } as any,
+      undefined,
+      false,
+    ) as Plugin & { config: () => any };
+    const aliases = plugin.config().resolve.alias;
+
+    expect(getAliasReplacement(aliases, 'athen:ssg-essor-server')).toBe(
+      join(essorDistDir, 'server.esm.js'),
+    );
+    expect(getAliasReplacement(aliases, 'athen:ssg-essor-router')).toBe(
+      join(essorRouterDistDir, 'index.mjs'),
+    );
+    expect(getAliasReplacement(aliases, 'essor')).toBe(join(essorDistDir, 'essor.esm.js'));
+    expect(getAliasReplacement(aliases, 'essor/server')).toBe(SSG_SERVER_PATH);
+    expect(getAliasReplacement(aliases, 'essor-router')).toBe(SSG_ROUTER_PATH);
+  });
 });

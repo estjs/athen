@@ -7,35 +7,50 @@ import {
   DEFAULT_THEME_PATH,
   PACKAGE_ROOT,
   SHARED_PATH,
+  SSG_ROUTER_PATH,
+  SSG_SERVER_PATH,
 } from '../../constants';
 import type { SiteConfig } from '@shared/types';
 
 const SITE_DATA_ID = 'athen:site-data';
 const require = createRequire(import.meta.url);
 
-function createRuntimeAliases() {
+function createRuntimeAliases(isClient: boolean) {
   const essorDistDir = dirname(require.resolve('essor', { paths: [PACKAGE_ROOT] }));
   const essorClientEntry = join(essorDistDir, 'essor.esm.js');
   const essorServerEntry = join(essorDistDir, 'server.esm.js');
   const essorRouterDistDir = dirname(require.resolve('essor-router', { paths: [PACKAGE_ROOT] }));
+  const essorRouterEntry = join(essorRouterDistDir, 'index.mjs');
 
   return [
+    {
+      find: /^athen:ssg-essor-server$/,
+      replacement: essorServerEntry,
+    },
+    {
+      find: /^athen:ssg-essor-router$/,
+      replacement: essorRouterEntry,
+    },
     {
       find: /^essor$/,
       replacement: essorClientEntry,
     },
     {
       find: /^essor\/server$/,
-      replacement: essorServerEntry,
+      replacement: isClient ? essorServerEntry : SSG_SERVER_PATH,
     },
     {
       find: /^essor-router$/,
-      replacement: join(essorRouterDistDir, 'index.mjs'),
+      replacement: isClient ? essorRouterEntry : SSG_ROUTER_PATH,
     },
   ];
 }
 
-export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): Plugin {
+export function pluginConfig(
+  config: SiteConfig,
+  restartServer?: () => Promise<void>,
+  isClient = true,
+): Plugin {
   return {
     name: 'athen:config',
     config() {
@@ -47,7 +62,7 @@ export function pluginConfig(config: SiteConfig, restartServer?: () => Promise<v
         },
         resolve: {
           alias: [
-            ...createRuntimeAliases(),
+            ...createRuntimeAliases(isClient),
             {
               find: '@theme',
               replacement: config.themeDir!,

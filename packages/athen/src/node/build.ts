@@ -1,38 +1,100 @@
 import { dirname, join, resolve } from 'node:path';
 import process from 'node:process';
-import { writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { type InlineConfig, build as viteBuild } from 'vite';
-import fs, { copy } from 'fs-extra';
-import { normalizeSlash, withBase } from '@/runtime';
+import fs from 'fs-extra';
+import { withBase } from '@/runtime';
 import { version } from '../../package.json';
 import { resolveConfig } from './config';
 import { DIST_DIR, PACKAGE_ROOT, SSG_ENTRY_PATH, SSR_ENTRY_PATH } from './constants';
 import { createVitePlugins } from './plugins';
 import type { Router, SiteConfig } from '@/shared/types';
-import type { RollupOutput } from 'rollup';
-export function renderPage(
-  render: any,
+
+type RenderFunction = (routePath: string) => string | Promise<string>;
+type BundleItem =
+  | {
+    type: 'asset';
+    fileName: string;
+  }
+  | {
+    type: 'chunk';
+    fileName: string;
+    isEntry: boolean;
+  };
+type BuildBundle = {
+  output: BundleItem[];
+};
+
+function normalizeHtmlFilePath(path: string) {
+  if (path.endsWith('/')) {
+    return `${path}index.html`.replace(/^\//, '');
+  }
+
+  return `${path}.html`.replace(/^\//, '');
+}
+
+function isEntryChunk(item: BundleItem) {
+  return item.type === 'chunk' && item.isEntry;
+}
+
+function isCssAsset(item: BundleItem) {
+  return item.type === 'asset' && item.fileName.endsWith('.css');
+}
+
+function uniqueCssAssets(...bundles: BuildBundle[]) {
+  const cssAssets = bundles.flatMap(bundle => bundle.output.filter(isCssAsset));
+
+  return cssAssets.filter(
+    (asset, index) => cssAssets.findIndex(item => item.fileName === asset.fileName) === index,
+  );
+}
+
+function renderHeadTags(head: NonNullable<SiteConfig['siteData']>['head'] = []) {
+  return head
+    .map(([tag, attrs, children]) => {
+      if (attrs && typeof attrs === 'object') {
+        const attributes = Object.entries(attrs)
+          .map(([key, value]) => `${key}="${value}"`)
+          .join(' ');
+        const openTag = `<${tag}${attributes ? ` ${attributes}` : ''}>`;
+
+        return children == null ? openTag : `${openTag}${children}</${tag}>`;
+      }
+
+      return `<${tag}>${children ?? ''}</${tag}>`;
+    })
+    .join('\n');
+}
+
+export async function renderPage(
+  render: RenderFunction,
   root: string,
-  clientBundle: RollupOutput,
+  clientBundle: BuildBundle,
+  ssgBundle: BuildBundle,
   config: SiteConfig,
   routers: Required<Router>[],
 ) {
-  const clientChunk = clientBundle.output.find((chunk) => chunk.type === 'chunk' && chunk.isEntry);
-  const cssChunk = clientBundle.output.filter(
-    (chunk) => chunk.type === 'asset' && chunk.fileName.endsWith('.css'),
-  );
+  const clientChunk = clientBundle.output.find(isEntryChunk);
+  if (!clientChunk) {
+    throw new Error('Unable to find the production client entry chunk.');
+  }
 
-  return Promise.all(
-    routers.map(async (route) => {
-      const routePath = route.path;
-      if (!route.preload) {
-        console.log(route);
-      }
+  const ssgCssAssets = ssgBundle.output.filter(isCssAsset);
+  const cssAssets = uniqueCssAssets(clientBundle, ssgBundle);
+  const distPath = join(root, DIST_DIR);
+  const tempPath = join(root, '.temp');
+  const siteBase = config.siteData?.base || config.base || '/';
+  const withSiteBase = (fileName: string) => withBase(fileName, siteBase);
+  const headTags = renderHeadTags(config.siteData?.head);
 
-      const appHtml = await render(routePath);
+  for (const css of ssgCssAssets) {
+    await fs.copy(join(tempPath, css.fileName), join(distPath, css.fileName));
+  }
 
-      const html = `
+  for (const route of routers) {
+    const routePath = route.path;
+    const appHtml = await render(routePath);
+    const html = `
       <!DOCTYPE html>
       <html>
         <head>
@@ -41,53 +103,26 @@ export function renderPage(
           <meta name=viewport content="width=device-width,initial-scale=1">
           <title>${config.siteData!.title || 'Athen'}</title>
           <meta name="description" content="${version}">
-          ${
-            config.siteData!.head
-              ? config
-                  .siteData!.head.map(([key, value, content]) => {
-                    if (typeof value === 'object') {
-                      return `<${key} ${Object.entries(value).map(([k, v]) => `${k}="${v}"`)}>${content}</${key}>`;
-                    } else {
-                      return `<${key}>${content}</${key}>`;
-                    }
-                  })
-                  .join('\n')
-              : ''
-          }
+          ${headTags}
           <link rel="icon" href="${config.siteData!.icon}" type="image/svg+xml">
-          ${cssChunk
-            .map((item) => `<link rel="stylesheet" href="${withBase(item.fileName)}">`)
-            .join('\n')}
+          ${cssAssets.map((item) => `<link rel="stylesheet" href="${withSiteBase(item.fileName)}">`).join('\n')}
         </head>
         <body>
           <div id="app">${appHtml}</div>
-          <script type="module" src="/${clientChunk?.fileName}"></script>
+          <script type="module" src="${withSiteBase(clientChunk.fileName)}"></script>
         </body>
       </html>`.trim();
-      const normalizeHtmlFilePath = (path: string) => {
-        const normalizedBase = normalizeSlash(root || '/');
+    const fileName = normalizeHtmlFilePath(routePath);
 
-        if (path.endsWith('/')) {
-          path.slice(0, -1);
-        }
-        if (path.endsWith('/')) {
-          return `${path}index.html`.replace(normalizedBase, '');
-        }
-
-        return `${path}.html`.replace(normalizedBase, '');
-      };
-      const fileName = normalizeHtmlFilePath(routePath);
-      const distPath = join(root, DIST_DIR);
-
-      await fs.ensureDir(join(distPath, dirname(fileName)));
-      writeFileSync(join(distPath, fileName), html);
-    }),
-  );
+    await fs.ensureDir(join(distPath, dirname(fileName)));
+    await fs.outputFile(join(distPath, fileName), html);
+  }
 }
 
 export async function bundle(root: string, options) {
-  const resolveViteConfig = async (isServer: boolean): Promise<InlineConfig> => {
-    const plugins = await createVitePlugins(options, isServer);
+  const createBuildConfig = async (isClient: boolean): Promise<InlineConfig> => {
+    const plugins = await createVitePlugins(options, isClient);
+    const isSsrBuild = !isClient;
 
     return {
       mode: 'production',
@@ -98,7 +133,7 @@ export async function bundle(root: string, options) {
         },
       },
       define: {
-        'import.meta.env.SSR': `${isServer}`,
+        'import.meta.env.SSR': `${isSsrBuild}`,
       },
       plugins,
       ssr: {
@@ -109,24 +144,21 @@ export async function bundle(root: string, options) {
       },
       build: {
         emptyOutDir: true,
-        ssr: !isServer,
-        outDir: isServer ? join(root, DIST_DIR) : join(root, '.temp'),
+        ssr: isSsrBuild,
+        ssrEmitAssets: isSsrBuild,
+        outDir: isClient ? join(root, DIST_DIR) : join(root, '.temp'),
         rollupOptions: {
-          input: isServer ? SSR_ENTRY_PATH : SSG_ENTRY_PATH,
+          input: isClient ? SSR_ENTRY_PATH : SSG_ENTRY_PATH,
         },
         target: 'baseline-widely-available',
       },
     };
   };
 
-  try {
-    const client = await viteBuild(await resolveViteConfig(false));
-    const server = await viteBuild(await resolveViteConfig(true));
+  const ssgBundle = await viteBuild(await createBuildConfig(false));
+  const clientBundle = await viteBuild(await createBuildConfig(true));
 
-    return [client, server];
-  } catch (error) {
-    console.error(error);
-  }
+  return [ssgBundle, clientBundle] as [BuildBundle, BuildBundle];
 }
 export async function build(root: string = process.cwd()) {
   // First, resolve config to check for instances
@@ -145,16 +177,22 @@ export async function build(root: string = process.cwd()) {
 
   const config = await resolveConfig(root, 'build', 'production');
 
-  const [client, server] = (await bundle(root, config)) as [RollupOutput, RollupOutput];
+  const [ssgBundle, clientBundle] = await bundle(root, config);
 
   const serverEntryPath = join(tempPath, 'ssg-entry.js');
   const fileUrl = pathToFileURL(serverEntryPath).href;
 
   const { render, routes } = await import(fileUrl);
 
-  await renderPage(render, root, server, config, routes);
+  await renderPage(render, root, clientBundle, ssgBundle, config, routes);
   const publicDirInRoot = join(root, 'public');
-  await copy(publicDirInRoot, distPath);
-  const indexHtml = await fs.readFile(`${root}/index.html`);
-  await fs.writeFile(`${distPath}/index.html`, indexHtml);
+  if (await fs.pathExists(publicDirInRoot)) {
+    await fs.copy(publicDirInRoot, distPath);
+  }
+
+  const indexHtmlPath = join(root, 'index.html');
+  if (await fs.pathExists(indexHtmlPath)) {
+    const indexHtml = await fs.readFile(indexHtmlPath);
+    await fs.outputFile(join(distPath, 'index.html'), indexHtml);
+  }
 }

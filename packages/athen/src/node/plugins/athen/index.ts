@@ -12,7 +12,7 @@ export function pluginAthen(
 ): Plugin[] {
   return [
     pluginSiteData(config),
-    pluginConfig(config, restartServer),
+    pluginConfig(config, restartServer, isServer),
     pluginIndexHtml(config),
     pluginTransform(isServer),
   ];
