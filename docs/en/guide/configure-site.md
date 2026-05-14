@@ -100,4 +100,4 @@ export default defineConfig({
 
 For the above config options, the `create-athen` template already has some default config, you can use it directly. But at the same time, you can also modify it according to your needs to meet your needs.
 
-You can get more config details about the sidebar config in [API Page](/en/api/index).
+You can get more config details about the sidebar config in [API Page](/api/index).

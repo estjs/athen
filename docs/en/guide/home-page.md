@@ -64,7 +64,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /en/guide/getting-started
+      link: /guide/getting-started
     - theme: alt
       text: View on GitHub
       link: https://github.com/estjs/athen
@@ -126,7 +126,7 @@ Example:
 cta:
   title: "Ready to explore?"
   text: "Kick-start your journey in 5 minutes."
-  link: /en/guide/getting-started
+  link: /guide/getting-started
   buttonText: "Get Started"
 ```
 

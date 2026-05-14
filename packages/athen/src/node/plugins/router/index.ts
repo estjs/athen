@@ -12,7 +12,7 @@ export default function pluginRoute(config: SiteConfig): Plugin {
     name: 'athen:routes',
     async configResolved() {
       // init router
-      await routeService.init(config.route);
+      await routeService.init(config.route, config.siteData);
     },
     resolveId(id) {
       if (id === CONVENTIONAL_ROUTE_ID) {

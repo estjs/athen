@@ -42,6 +42,7 @@ export function pluginMdxHMR(config: SiteConfig, isServer: boolean): Plugin {
           ctx.file,
           config.root,
           config.siteData.base || '/',
+          config.siteData,
         );
         ctx.server.ws!.send({
           type: 'custom',

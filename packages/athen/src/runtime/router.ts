@@ -1,7 +1,7 @@
 import { createRouter as createEssorRouter } from 'essor-router';
 import { routes } from 'athen:routes';
 import siteData from 'athen:site-data';
-import { cleanUrl, getRelativePagePath } from '@shared/utils';
+import { cleanUrl } from '@shared/utils';
 import type { RouteRecordRaw, RouterHistory } from 'essor-router';
 import type { FrontMatterMeta, PageData, PageModule } from '@shared/types';
 
@@ -26,7 +26,7 @@ export async function initPageData(routerPath: string): Promise<PageData> {
   if (matched?.preload) {
     const moduleInfo = await matched.preload();
     const pagePath = cleanUrl(matched.meta?.filePath ?? '');
-    const relativePagePath = getRelativePagePath(routerPath, pagePath, siteData.base);
+    const relativePagePath = pagePath;
 
     return {
       pageType:

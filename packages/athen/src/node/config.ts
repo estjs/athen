@@ -14,7 +14,7 @@ type RawConfig =
 function getUserConfigPath(root: string): string {
   const configFilePattern = /^athen\.config\.(?:ts|js|mjs|cjs)$/;
   const files = fs.readdirSync(root);
-  const configFile = files.find(file => configFilePattern.test(file));
+  const configFile = files.find((file) => configFilePattern.test(file));
 
   if (!configFile) {
     throw new Error(`No athen config file found in ${root}`);
@@ -63,9 +63,9 @@ function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
   }
 
   // Language redirect script — derive prefixes from actual config instead of hardcoding.
-  const langPrefixes = getLangPrefixes(userConfig);
-  if (langPrefixes.length > 0) {
-    const zhLang = langPrefixes.find(l => l.includes('zh'));
+  const { hasRootLocale, langPrefixes } = getLangRedirectInfo(userConfig);
+  if (!hasRootLocale && langPrefixes.length > 0) {
+    const zhLang = langPrefixes.find((l) => l.includes('zh'));
     const fallbackLang = `/${langPrefixes[0]}/`;
     const zhRedirectLang = zhLang ? `/${zhLang}/` : fallbackLang;
     head.push([
@@ -74,10 +74,20 @@ function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
       `
         ;(() => {
             var base = ${JSON.stringify(userConfig.base || '')};
-            const withBase = p => base + p;
-            var langPrefixList = ${JSON.stringify(langPrefixes)}.map(l => withBase('/' + l));
+            var normalizePath = function (p) {
+              return (p || '/').replace(/\\/+$/, '') || '/';
+            };
+            var withBase = function (p) {
+              return base + p;
+            };
+            var isPathInPrefix = function (pathname, prefix) {
+              if (prefix === '/') return pathname.startsWith('/');
+              return pathname === prefix || pathname.startsWith(prefix + '/');
+            };
+            var currentPath = normalizePath(window.location.pathname);
+            var langPrefixList = ${JSON.stringify(langPrefixes)}.map(l => normalizePath(withBase('/' + l)));
             var isIncludeLangPrefix = langPrefixList.some(function (langPrefix) {
-              return window.location.pathname.startsWith(langPrefix);
+              return isPathInPrefix(currentPath, langPrefix);
             });
             if (!isIncludeLangPrefix) {
               if (typeof window !== 'undefined' && window.navigator) {
@@ -99,25 +109,24 @@ function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
   return head;
 }
 
-/**
- * Extract language prefixes from `langs` array or `themeConfig.locales` keys.
- * Returns empty array when no i18n is configured.
- */
-function getLangPrefixes(userConfig: ConfigWithLocales): string[] {
-  if (userConfig.langs?.length) {
-    return userConfig.langs;
-  }
-  const locales = userConfig.themeConfig?.locales;
-  if (locales && Object.keys(locales).length > 0) {
-    return Object.keys(locales).map(key => key.replace(/^\/|\/$/g, '')).filter(Boolean);
-  }
-  return [];
+function normalizeLocalePrefix(prefix: string): string {
+  return prefix.replace(/^\/|\/$/g, '');
 }
 
-export function resolveSiteData(
-  root: string,
-  userConfig: ConfigWithLocales = {},
-): SiteData {
+function getLangRedirectInfo(userConfig: ConfigWithLocales) {
+  const localePrefixes = userConfig.langs?.length
+    ? userConfig.langs
+    : Object.keys(userConfig.themeConfig?.locales ?? {});
+
+  const normalizedPrefixes = localePrefixes.map(normalizeLocalePrefix);
+
+  return {
+    hasRootLocale: normalizedPrefixes.some(prefix => prefix === ''),
+    langPrefixes: normalizedPrefixes.filter(Boolean),
+  };
+}
+
+export function resolveSiteData(root: string, userConfig: ConfigWithLocales = {}): SiteData {
   return {
     lang: userConfig.lang || 'en-US',
     title: userConfig.title || 'Athen',

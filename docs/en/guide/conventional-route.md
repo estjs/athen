@@ -47,4 +47,4 @@ export default defineConfig({
 });
 ```
 
-You can see more details in [Basic Config](/en/api/config-basic#route).
+You can see more details in [Basic Config](/api/config-basic#route).

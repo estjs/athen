@@ -13,6 +13,9 @@ const writeProject = (files: Record<string, string>) => {
   return root;
 };
 
+const getLangScript = (head: ReturnType<typeof resolveSiteData>['head']) =>
+  head.find(item => item[1]?.id === 'check-lang')?.[2] || '';
+
 describe('config', () => {
   let root = '';
 
@@ -82,11 +85,26 @@ describe('config', () => {
       langs: ['fr', 'de'],
       colorScheme: true,
     });
-    const script = siteData.head.find(item => item[1]?.id === 'check-lang')?.[2];
+    const script = getLangScript(siteData.head);
 
     expect(head).toHaveLength(1);
     expect(siteData.head.some(item => item[1]?.id === 'check-dark-light')).toBe(true);
     expect(script).toContain('["fr","de"]');
     expect(script).not.toContain('/zh/');
+  });
+
+  it('does not emit a language redirect when the default locale is rooted', () => {
+    const siteData = resolveSiteData('/root', {
+      lang: 'en-US',
+      themeConfig: {
+        locales: {
+          '/': { lang: 'en' },
+          '/zh/': { lang: 'zh' },
+        },
+      },
+    });
+    const script = getLangScript(siteData.head);
+
+    expect(script).toBe('');
   });
 });

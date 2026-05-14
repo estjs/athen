@@ -19,7 +19,7 @@ pageType: api
 ---
 ```
 
-In this way, Athen will automatically parse the document structure of other subpages in the directory for you, extract the title (h1, h2) information, and generate the API page.What's more, Athen will group the API documentation according to your [`sidebar`](/en/api/config-theme#sidebar) config in the config file. For example, the following `sidebar` config:
+In this way, Athen will automatically parse the document structure of other subpages in the directory for you, extract the title (h1, h2) information, and generate the API page.What's more, Athen will group the API documentation according to your [`sidebar`](/api/config-theme#sidebar) config in the config file. For example, the following `sidebar` config:
 
 ```ts
 {

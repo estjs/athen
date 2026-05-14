@@ -2,31 +2,10 @@ import { computed } from 'essor';
 import { normalizeSlash } from '@/shared/utils/index';
 import { usePageData, withBase } from '@/runtime';
 import { usePathname } from './usePathname';
+import { getLocalePath } from './localePath';
 import type { DefaultTheme } from '@shared/types';
 
-export function getLocalePath(
-  pathname = '/',
-  targetLocalePrefix = '/',
-  localePrefixes: string[] = [],
-) {
-  const normalizedTargetPrefix = normalizeSlash(targetLocalePrefix);
-  const normalizedPathname = normalizeSlash(pathname);
-  const sourceLocalePrefix = localePrefixes
-    .map(locale => normalizeSlash(locale))
-    .sort((a, b) => b.length - a.length)
-    .find(locale => normalizedPathname === locale || normalizedPathname.startsWith(`${locale}/`));
-
-  if (!sourceLocalePrefix) {
-    return `${normalizedTargetPrefix}/`;
-  }
-
-  const pathnameWithoutLocale =
-    normalizedPathname === sourceLocalePrefix
-      ? ''
-      : normalizedPathname.slice(sourceLocalePrefix.length);
-
-  return `${normalizedTargetPrefix}${pathnameWithoutLocale || '/'}`;
-}
+export { getLocalePath };
 
 export function useLocaleSiteData() {
   const pageData = usePageData();
@@ -44,7 +23,9 @@ export function useLocaleSiteData() {
         nextPageText: themeConfig.nextPageText,
       } as DefaultTheme.LocaleConfig;
     }
-    const localeKeys = Object.keys(locales);
+    const localeKeys = Object.keys(locales).sort(
+      (a, b) => normalizeSlash(b).length - normalizeSlash(a).length,
+    );
     const localeKey =
       localeKeys.find(locale => {
         const normalizedLocalePrefix = withBase(normalizeSlash(locale));

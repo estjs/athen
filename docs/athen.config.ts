@@ -1,4 +1,5 @@
 import { defineConfig } from 'athen';
+import pgk from '../package.json';
 
 export default defineConfig({
   lang: 'en-US',
@@ -35,7 +36,7 @@ export default defineConfig({
             activeMatch: '/api/',
           },
           {
-            text: 'v0.0.0',
+            text: `v${pgk.version}`,
             items: [
               {
                 text: '更新日志',
@@ -170,23 +171,22 @@ export default defineConfig({
           text: '📝 在 GitHub 上编辑此页',
         },
       },
-      '/en/': {
+      '/': {
         lang: 'en',
         label: 'English',
-        lastUpdated: 'Last Updated',
         nav: [
           {
             text: 'Guide',
-            link: '/en/guide/getting-started',
+            link: '/guide/getting-started',
             activeMatch: '/guide/',
           },
           {
             text: 'API',
-            link: '/en/api/',
+            link: '/api/',
             activeMatch: '/api/',
           },
           {
-            text: 'v0.0.0',
+            text: `v${pgk.version}`,
             items: [
               {
                 text: 'Changelog',
@@ -196,17 +196,17 @@ export default defineConfig({
           },
         ],
         sidebar: {
-          '/en/guide/': [
+          '/guide/': [
             {
               text: 'Getting Started',
               items: [
                 {
                   text: 'Getting Started',
-                  link: '/en/guide/getting-started',
+                  link: '/guide/getting-started',
                 },
                 {
                   text: 'Configure Your Site',
-                  link: '/en/guide/configure-site',
+                  link: '/guide/configure-site',
                 },
               ],
             },
@@ -215,27 +215,27 @@ export default defineConfig({
               items: [
                 {
                   text: 'Conventional Routing',
-                  link: '/en/guide/conventional-route',
+                  link: '/guide/conventional-route',
                 },
                 {
                   text: 'Using MDX',
-                  link: '/en/guide/use-mdx',
+                  link: '/guide/use-mdx',
                 },
                 {
                   text: 'Static Assets',
-                  link: '/en/guide/static-assets',
+                  link: '/guide/static-assets',
                 },
                 {
                   text: 'Multi-Instance Sites',
-                  link: '/en/guide/multi-instance',
+                  link: '/guide/multi-instance',
                 },
                 {
                   text: 'Plugin System',
-                  link: '/en/guide/plugin-system',
+                  link: '/guide/plugin-system',
                 },
                 {
                   text: 'Custom Styling',
-                  link: '/en/guide/custom-styling',
+                  link: '/guide/custom-styling',
                 },
               ],
             },
@@ -244,50 +244,50 @@ export default defineConfig({
               items: [
                 {
                   text: 'Home Page',
-                  link: '/en/guide/home-page',
+                  link: '/guide/home-page',
                 },
                 {
                   text: 'API Page',
-                  link: '/en/guide/api-page',
+                  link: '/guide/api-page',
                 },
                 {
                   text: 'Doc Page',
-                  link: '/en/guide/doc-page',
+                  link: '/guide/doc-page',
                 },
                 {
                   text: 'I18n',
-                  link: '/en/guide/i18n',
+                  link: '/guide/i18n',
                 },
                 {
                   text: 'Search',
-                  link: '/en/guide/search',
+                  link: '/guide/search',
                 },
                 {
                   text: 'Analytics',
-                  link: '/en/guide/analytics',
+                  link: '/guide/analytics',
                 },
                 {
                   text: 'Theme Package',
-                  link: '/en/guide/theme-package',
+                  link: '/guide/theme-package',
                 },
               ],
             },
           ],
-          '/en/api/': [
+          '/api/': [
             {
               text: 'Config',
               items: [
                 {
                   text: 'Basic Config',
-                  link: '/en/api/config-basic',
+                  link: '/api/config-basic',
                 },
                 {
                   text: 'Theme Config',
-                  link: '/en/api/config-theme',
+                  link: '/api/config-theme',
                 },
                 {
                   text: 'Front Matter Config',
-                  link: '/en/api/config-front-matter',
+                  link: '/api/config-front-matter',
                 },
               ],
             },
@@ -296,7 +296,7 @@ export default defineConfig({
               items: [
                 {
                   text: 'Runtime API',
-                  link: '/en/api/api-runtime',
+                  link: '/api/api-runtime',
                 },
               ],
             },
@@ -305,7 +305,7 @@ export default defineConfig({
               items: [
                 {
                   text: 'CLI Reference',
-                  link: '/en/api/cli',
+                  link: '/api/cli',
                 },
               ],
             },

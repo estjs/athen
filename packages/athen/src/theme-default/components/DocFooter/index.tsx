@@ -6,15 +6,14 @@ const DocFooter = () => {
   const pageData = usePageData();
   const localeData = useLocaleSiteData();
   const page = usePrevNextPage();
-  const { siteData, relativePagePath, lastUpdatedTime } = pageData;
-  const themeConfig = siteData?.themeConfig || {};
+  const themeConfig = pageData.siteData?.themeConfig || {};
   const {
     editLink: rawEditLink,
     lastUpdatedText,
     prevPageText = 'Previous Page',
     nextPageText = 'Next page',
   } = localeData.value;
-  const editLink = useEditLink(rawEditLink ?? themeConfig?.editLink, relativePagePath);
+  const editLink = useEditLink(rawEditLink ?? themeConfig?.editLink, pageData.relativePagePath);
 
   return (
     <footer class="pager mt-8">
@@ -30,7 +29,7 @@ const DocFooter = () => {
           class="flex text-2 text-sm font-medium leading-6 sm:leading-8"
           style={{ 'white-space': 'pre-wrap' }}>
           <p>{`${lastUpdatedText ?? 'Last Updated'}: `}</p>
-          <span>{lastUpdatedTime}</span>
+          <span>{pageData.lastUpdatedTime}</span>
         </div>
       </div>
 

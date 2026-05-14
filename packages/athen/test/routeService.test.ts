@@ -72,4 +72,31 @@ describe('RouteService', () => {
     expect(code).not.toContain('foo.tsx');
     expect(code).not.toContain('secret/draft.md');
   });
+
+  it('maps files under the default locale directory to root routes', () => {
+    root = writeProject({
+      'en/index.md': '# Index',
+      'en/guide/getting-started.md': '# Getting Started',
+      'zh/index.md': '# 首页',
+    });
+
+    const routeService = new RouteService(root);
+    routeService.init(undefined, {
+      lang: 'en-US',
+      title: 'Docs',
+      themeConfig: {
+        locales: {
+          '/zh/': { lang: 'zh' },
+          '/en/': { lang: 'en' },
+        },
+      },
+    });
+
+    const code = routeService.generateRoutesCode();
+    expect(code).toContain('path: "/"');
+    expect(code).toContain('path: "/guide/getting-started"');
+    expect(code).toContain('path: "/zh/"');
+    expect(code).not.toContain('path: "/en/"');
+    expect(code).not.toContain('path: "/en/guide/getting-started"');
+  });
 });
