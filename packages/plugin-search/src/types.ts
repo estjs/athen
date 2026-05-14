@@ -3,7 +3,7 @@ export interface AlgoliaOptions {
   appId: string;
   apiKey: string;
   indexName: string;
-  algoliaOptions?: Record<string, any>;
+  algoliaOptions?: Record<string, unknown>;
 }
 
 /** IndexedDB 缓存配置 */
@@ -32,7 +32,7 @@ export interface SearchOptions {
   customFields?: Record<
     string,
     {
-      getter: (page: any) => string;
+      getter: (page: unknown) => string;
       index?: {
         encode?: string | ((str: string) => string);
         tokenize?: string | ((str: string) => string[]);

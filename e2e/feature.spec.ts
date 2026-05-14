@@ -12,7 +12,7 @@ async function switchLocale(page, locale: 'en' | 'zh') {
 
 test.describe('Athen docs E2E', () => {
   test('search box returns result and navigates', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/en/');
     await page.keyboard.press('/'); // Focus search input via shortcut
     await page.getByPlaceholder('Search...').fill('Quick Start');
 

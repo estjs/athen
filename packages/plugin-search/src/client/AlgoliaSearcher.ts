@@ -4,7 +4,7 @@ export interface AlgoliaConfig {
   appId: string;
   apiKey: string;
   indexName: string;
-  algoliaOptions?: Record<string, any>;
+  algoliaOptions?: Record<string, unknown>;
 }
 
 export class AlgoliaSearcher {

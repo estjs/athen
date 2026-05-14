@@ -162,7 +162,7 @@ test.describe('Search Error Handling', () => {
       // Clear and search normally
       await searchPage.clearSearchQuery();
       await searchPage.typeSearchQuery('guide');
-      await searchPage.waitForResults();
+      await searchPage.waitForResultItems();
 
       // Should recover and show results
       const count = await searchPage.getResultsCount();
@@ -184,7 +184,7 @@ test.describe('Search Error Handling', () => {
       // Search box should still be functional
       await searchPage.clearSearchQuery();
       await searchPage.typeSearchQuery('guide');
-      await searchPage.waitForResults();
+      await searchPage.waitForResultItems();
 
       const isVisible = await searchPage.isResultsVisible();
       expect(isVisible).toBe(true);

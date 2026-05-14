@@ -16,7 +16,7 @@ export interface SearchBoxProps {
     appId: string;
     apiKey: string;
     indexName: string;
-    algoliaOptions?: Record<string, any>;
+    algoliaOptions?: Record<string, unknown>;
   };
   langRoutePrefix?: string;
   onSearch?: (query: string, results: SearchResult[]) => void;
@@ -137,9 +137,7 @@ export function SearchBox(props: SearchBoxProps) {
           value={query.value}
           onInput={(e: Event) => onQueryChange((e.target as HTMLInputElement).value)}
           onFocus={() => {
-            setTimeout(() => {
-              focused.value = true;
-            }, 200);
+            focused.value = true;
           }}
           onBlur={() => {
             setTimeout(() => {
@@ -170,6 +168,9 @@ export function SearchBox(props: SearchBoxProps) {
                   isActive={i === currentIndex.value}
                   onClick={() => {
                     window.location.href = r.path;
+                  }}
+                  onMouseEnter={() => {
+                    currentIndex.value = i;
                   }}
                 />
               ))}

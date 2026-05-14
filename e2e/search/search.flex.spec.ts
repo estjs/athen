@@ -8,7 +8,7 @@ import {
 
 test.describe('FlexSearch Basic Functionality', () => {
   test.beforeEach(async ({ searchPage }) => {
-    await searchPage.goto('/');
+    await searchPage.gotoLocale('en');
   });
 
   test.describe('Search Box Visibility', () => {
@@ -77,15 +77,13 @@ test.describe('FlexSearch Basic Functionality', () => {
       // Property 6: Empty Query Returns No Results
       await searchPage.typeSearchQuery('   ');
 
-      const isVisible = await searchPage.isResultsVisible();
-      expect(isVisible).toBe(false);
+      await expect(searchPage.resultItems).toHaveCount(0);
     });
 
     test('tab character search does not show results', async ({ searchPage }) => {
       await searchPage.typeSearchQuery('\t');
 
-      const isVisible = await searchPage.isResultsVisible();
-      expect(isVisible).toBe(false);
+      await expect(searchPage.resultItems).toHaveCount(0);
     });
   });
 
@@ -184,6 +182,10 @@ test.describe('FlexSearch Basic Functionality', () => {
   test.describe('Expected Search Results', () => {
     for (const expected of EXPECTED_RESULTS) {
       test(`search for "${expected.query}" returns expected results`, async ({ searchPage }) => {
+        if (/[\u4E00-\u9FCC]/.test(expected.query)) {
+          await searchPage.gotoLocale('zh');
+        }
+
         await searchPage.typeSearchQuery(expected.query);
         await searchPage.waitForResultItems();
 

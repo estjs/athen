@@ -1,8 +1,12 @@
 import { expect, test } from '../fixtures/search.fixture';
 
+function hrefPattern(href: string) {
+  return new RegExp(`${href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+}
+
 test.describe('Search Navigation', () => {
   test.beforeEach(async ({ searchPage }) => {
-    await searchPage.goto('/');
+    await searchPage.gotoLocale('en');
   });
 
   test.describe('Keyboard Shortcuts', () => {
@@ -22,53 +26,66 @@ test.describe('Search Navigation', () => {
       await searchPage.waitForResultItems();
     });
 
-    test('ArrowDown highlights first result from initial state', async ({ searchPage }) => {
-      await searchPage.pressArrowDown();
+    test('ArrowDown selects first result for Enter navigation', async ({ searchPage }) => {
+      const firstHref = await searchPage.resultItems.first().locator('.result-link').getAttribute('href');
 
-      const activeIndex = await searchPage.getActiveResultIndex();
-      expect(activeIndex).toBe(0);
+      await searchPage.pressArrowDown();
+      await searchPage.pressEnter();
+
+      expect(firstHref).toBeTruthy();
+      await expect(searchPage.page).toHaveURL(hrefPattern(firstHref!));
     });
 
-    test('ArrowDown moves to next result', async ({ searchPage }) => {
+    test('ArrowDown moves selection to next result for Enter navigation', async ({ searchPage }) => {
       // Property 9: From index 0, ArrowDown should go to 1
+      const secondHref = await searchPage.resultItems.nth(1).locator('.result-link').getAttribute('href');
+
       await searchPage.pressArrowDown(); // Go to index 0
       await searchPage.pressArrowDown(); // Go to index 1
+      await searchPage.pressEnter();
 
-      const activeIndex = await searchPage.getActiveResultIndex();
-      expect(activeIndex).toBe(1);
+      expect(secondHref).toBeTruthy();
+      await expect(searchPage.page).toHaveURL(hrefPattern(secondHref!));
     });
 
-    test('ArrowUp moves to previous result', async ({ searchPage }) => {
+    test('ArrowUp moves selection to previous result for Enter navigation', async ({ searchPage }) => {
       // Requirement 4.3: ArrowUp should highlight previous result
       // Property 9: From index 1, ArrowUp should go to 0
+      const firstHref = await searchPage.resultItems.first().locator('.result-link').getAttribute('href');
+
       await searchPage.pressArrowDown(); // Go to index 0
       await searchPage.pressArrowDown(); // Go to index 1
       await searchPage.pressArrowUp(); // Go back to index 0
+      await searchPage.pressEnter();
 
-      const activeIndex = await searchPage.getActiveResultIndex();
-      expect(activeIndex).toBe(0);
+      expect(firstHref).toBeTruthy();
+      await expect(searchPage.page).toHaveURL(hrefPattern(firstHref!));
     });
 
-    test('ArrowUp from first result goes to no selection', async ({ searchPage }) => {
+    test('ArrowUp from first result clears Enter navigation selection', async ({ searchPage }) => {
       // Property 9: From index 0, ArrowUp should go to -1
+      const initialUrl = searchPage.page.url();
+
       await searchPage.pressArrowDown(); // Go to index 0
       await searchPage.pressArrowUp(); // Go back to -1
+      await searchPage.pressEnter();
 
-      const activeIndex = await searchPage.getActiveResultIndex();
-      expect(activeIndex).toBe(-1);
+      expect(searchPage.page.url()).toBe(initialUrl);
     });
 
-    test('ArrowDown does not go beyond last result', async ({ searchPage }) => {
+    test('ArrowDown does not navigate beyond last result', async ({ searchPage }) => {
       // Property 9: ArrowDown should not exceed N-1
       const count = await searchPage.getResultsCount();
+      const lastHref = await searchPage.resultItems.nth(count - 1).locator('.result-link').getAttribute('href');
 
       // Press ArrowDown more times than there are results
       for (let i = 0; i < count + 5; i++) {
         await searchPage.pressArrowDown();
       }
+      await searchPage.pressEnter();
 
-      const activeIndex = await searchPage.getActiveResultIndex();
-      expect(activeIndex).toBe(count - 1);
+      expect(lastHref).toBeTruthy();
+      await expect(searchPage.page).toHaveURL(hrefPattern(lastHref!));
     });
 
     test('Enter navigates to highlighted result', async ({ searchPage }) => {
@@ -101,7 +118,7 @@ test.describe('Search Navigation', () => {
   test.describe('Mouse Navigation', () => {
     test('clicking search result navigates to page', async ({ searchPage }) => {
       // Requirement 4.1: Click should navigate to result page
-      await searchPage.typeSearchQuery('getting-started');
+      await searchPage.typeSearchQuery('Quick Start');
       await searchPage.waitForResultItems();
 
       await searchPage.clickResult(0);
@@ -130,22 +147,22 @@ test.describe('Search Navigation', () => {
    * Navigation State Tests
    */
   test.describe('Navigation State', () => {
-    test('active state is cleared when query changes', async ({ searchPage }) => {
+    test('keyboard selection is cleared when query changes', async ({ searchPage }) => {
       await searchPage.typeSearchQuery('guide');
       await searchPage.waitForResultItems();
 
       // Select first result
       await searchPage.pressArrowDown();
-      expect(await searchPage.getActiveResultIndex()).toBe(0);
 
       // Change query
       await searchPage.clearSearchQuery();
       await searchPage.typeSearchQuery('api');
       await searchPage.waitForResultItems();
+      const initialUrl = searchPage.page.url();
 
-      // Active index should be reset
-      const activeIndex = await searchPage.getActiveResultIndex();
-      expect(activeIndex).toBe(-1);
+      // Selection should reset, so Enter should not navigate immediately.
+      await searchPage.pressEnter();
+      expect(searchPage.page.url()).toBe(initialUrl);
     });
 
     test('results remain visible while navigating with keyboard', async ({ searchPage }) => {
@@ -179,16 +196,18 @@ test.describe('Search Navigation', () => {
       expect(searchPage.page.url()).toBe(initialUrl);
     });
 
-    test('keyboard navigation works after mouse hover', async ({ searchPage }) => {
+    test('keyboard navigation remains usable after mouse interaction', async ({ searchPage }) => {
       await searchPage.typeSearchQuery('guide');
       await searchPage.waitForResultItems();
 
-      // Hover over a result (simulated by clicking and then using keyboard)
-      await searchPage.pressArrowDown();
-      await searchPage.pressArrowDown();
+      await searchPage.resultItems.first().hover();
+      const secondHref = await searchPage.resultItems.nth(1).locator('.result-link').getAttribute('href');
 
-      const activeIndex = await searchPage.getActiveResultIndex();
-      expect(activeIndex).toBeGreaterThanOrEqual(0);
+      await searchPage.pressArrowDown();
+      await searchPage.pressEnter();
+
+      expect(secondHref).toBeTruthy();
+      await expect(searchPage.page).toHaveURL(hrefPattern(secondHref!));
     });
   });
 });

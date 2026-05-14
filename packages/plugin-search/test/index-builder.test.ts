@@ -212,6 +212,25 @@ This is a test document.
         heading: 'Advanced Search',
       });
     });
+
+    it('should create the same result shape for latin and cjk matches', async () => {
+      const customBuilder = new SearchIndexBuilder({
+        searchOptions: { limit: 2 },
+      });
+      customBuilder.addDocument(
+        'zh/search.md',
+        '# 搜索指南\n\n## 中文检索\n\n本项目支持中文内容搜索和结果摘要。',
+      );
+
+      const results = await customBuilder.search('中文');
+
+      expect(results[0]).toMatchObject({
+        path: '/zh/search',
+        title: '搜索指南',
+        heading: '中文检索',
+      });
+      expect(results[0].content).toContain('中文');
+    });
   });
 
   describe('addDocumentsFromDirectory', () => {

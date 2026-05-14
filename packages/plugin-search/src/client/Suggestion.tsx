@@ -6,6 +6,7 @@ export interface SuggestionProps {
   query: string;
   isActive: boolean;
   onClick?: () => void;
+  onMouseEnter?: () => void;
 }
 
 function HighlightedText(props: { text: string; query: string }) {
@@ -21,9 +22,9 @@ function HighlightedText(props: { text: string; query: string }) {
 }
 
 export function Suggestion(props: SuggestionProps) {
-  const { result, query, isActive, onClick } = props;
+  const { result, query, isActive, onClick, onMouseEnter } = props;
   return (
-    <li class={`result-item ${isActive ? 'active' : ''}`} onClick={onClick}>
+    <li class={`result-item ${isActive ? 'active' : ''}`} onClick={onClick} onMouseEnter={onMouseEnter}>
       <a href={result.path} class="result-link">
         <div class="result-title">
           <HighlightedText text={result.title} query={query} />
