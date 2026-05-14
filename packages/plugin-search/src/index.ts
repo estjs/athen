@@ -40,11 +40,10 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
         // Check if rootDir itself contains markdown files, otherwise try rootDir/docs
         let hasMarkdownFiles = false;
         if (fs.existsSync(rootDir)) {
-          const files = fs.readdirSync(rootDir, { recursive: true });
-          hasMarkdownFiles = files.some((f: any) => {
-            const fileName = typeof f === 'string' ? f : f.toString();
-            return fileName.endsWith('.md') || fileName.endsWith('.mdx');
-          });
+          const files = fs.readdirSync(rootDir, { recursive: true, encoding: 'utf-8' });
+          hasMarkdownFiles = files.some(
+            (fileName) => fileName.endsWith('.md') || fileName.endsWith('.mdx'),
+          );
         }
 
         let docsDir = rootDir;

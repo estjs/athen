@@ -314,6 +314,9 @@ importers:
       '@types/node':
         specifier: ^25.7.0
         version: 25.7.0
+      essor:
+        specifier: ^0.0.16-beta.7
+        version: 0.0.16-beta.7
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(tsx@4.21.0)(typescript@6.0.3)(yaml@2.9.0)

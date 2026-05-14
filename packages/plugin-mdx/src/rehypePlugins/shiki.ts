@@ -2,10 +2,10 @@ import { visit } from 'unist-util-visit';
 import { fromHtml } from 'hast-util-from-html';
 import type { Plugin } from 'unified';
 import type { Text } from 'hast';
-import type shiki from 'shiki';
+import type { Highlighter } from 'shiki';
 
 interface Options {
-  highlighter: shiki.Highlighter;
+  highlighter: Highlighter;
 }
 
 function highlightSingleLine(line: number, fragmentAst: ReturnType<typeof fromHtml>) {
@@ -21,7 +21,7 @@ function highlightSingleLine(line: number, fragmentAst: ReturnType<typeof fromHt
 // The plugin cannot be used directly because it won't reserve the class name `language-xxx` in the code tag
 // It cause conflict with preWrapper plugin, so we should integrate it manually
 export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ highlighter }) => {
-  return tree => {
+  return (tree) => {
     visit(tree, 'element', (node, index, parent) => {
       // <pre><code>...</code></pre>
       if (
@@ -35,7 +35,7 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ high
 
         const codeClassName = codeNode.properties?.className?.toString() || '';
 
-        const highlightLinesReg = /language-([a-z]*)\s*({[\d,-]*})?/i;
+        const highlightLinesReg = /language-([a-z]*)\s*(\{[\d,-]*\})?/i;
         const highlightRegExecResult = highlightLinesReg.exec(codeClassName);
 
         if (!highlightRegExecResult) {
@@ -52,7 +52,7 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ high
         highlightRegExecResult[2]
           ?.slice(1, -1)
           ?.split(',')
-          .forEach(str => {
+          .forEach((str) => {
             if (str.includes('-')) {
               const [start, end] = str.split('-');
               // 3,5 -> [3, 4, 5]
@@ -76,7 +76,7 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ high
         // @ts-expect-error
         fragmentAst.children[0].children[0].properties.className = `language-${lang}`;
 
-        highlightLines.forEach(line => highlightSingleLine(line, fragmentAst));
+        highlightLines.forEach((line) => highlightSingleLine(line, fragmentAst));
         parent?.children.splice(index!, 1, ...fragmentAst.children);
       }
     });

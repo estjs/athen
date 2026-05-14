@@ -77,11 +77,14 @@ export class SearchIndexBuilder {
     return false;
   }
 
-  private extractFrontmatter(content: string): { frontmatter: any; content: string } {
+  private extractFrontmatter(content: string): {
+    frontmatter: Record<string, string>;
+    content: string;
+  } {
     const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
     if (match) {
-      const frontmatter: any = {};
-      match[1].split('\n').forEach(line => {
+      const frontmatter: Record<string, string> = {};
+      match[1].split('\n').forEach((line) => {
         const i = line.indexOf(':');
         if (i > 0)
           frontmatter[line.slice(0, i).trim()] = line
@@ -101,7 +104,7 @@ export class SearchIndexBuilder {
     if (!frontmatter.title && titleMatch) title = titleMatch[1].trim();
 
     const headings: string[] = [];
-    const rawHeaders: any[] = [];
+    const rawHeaders: NonNullable<SearchDocument['rawHeaders']> = [];
     let match: RegExpExecArray | null;
     let id = 0;
     const regex = /^(#{1,6})\s+(.*)$/gm;
@@ -173,15 +176,15 @@ export class SearchIndexBuilder {
         this.cjkIndex.search(query, { limit }),
       ]);
       const normalize = (r: any) =>
-        Array.isArray(r) ? r.flatMap(x => (Array.isArray(x?.result) ? x.result : x)) : [];
+        Array.isArray(r) ? r.flatMap((x) => (Array.isArray(x?.result) ? x.result : x)) : [];
       const unique = new Map<number, SearchDocument>();
       [...normalize(eng), ...normalize(cjk)].forEach((id: any) => {
-        const doc = this.documents.find(d => d.id === id);
+        const doc = this.documents.find((d) => d.id === id);
         if (doc) unique.set(doc.id, doc);
       });
       return Array.from(unique.values())
         .slice(0, limit)
-        .map(doc => {
+        .map((doc) => {
           let content = '',
             heading = '';
           if (doc.content) {
@@ -196,7 +199,7 @@ export class SearchIndexBuilder {
             }
           }
           if (doc.headings) {
-            const m = doc.headings.find(h => h.toLowerCase().includes(query.toLowerCase()));
+            const m = doc.headings.find((h) => h.toLowerCase().includes(query.toLowerCase()));
             if (m) heading = m;
           }
           return { path: doc.path, title: doc.title, heading, content };

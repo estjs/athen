@@ -39,10 +39,6 @@ export function SearchBox(props: SearchBoxProps) {
   const initialized = signal(false);
   const searchInputRef = ref<HTMLInputElement>();
   const searcherRef = ref<FlexSearcher | AlgoliaSearcher>();
-  const showResults = computed(() => {
-    debugger;
-    return;
-  });
   const showLoading = computed(() => loading.value && query.value.length > 0);
 
   const debouncedSearch = debounce(async (q: string) => {

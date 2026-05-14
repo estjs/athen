@@ -32,6 +32,9 @@
     "test:run": "vitest run",
     "typecheck": "tsc --noEmit"
   },
+  "peerDependencies": {
+    "essor": "^0.0.16-beta.7"
+  },
   "optionalDependencies": {
     "algoliasearch": "^5.52.1",
     "flexsearch": "^0.8.212",
@@ -41,6 +44,7 @@
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^25.7.0",
+    "essor": "^0.0.16-beta.7",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.12",

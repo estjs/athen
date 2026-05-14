@@ -1,8 +1,8 @@
 import { visitChildren } from 'unist-util-visit-children';
-import { type Program, parse } from 'acorn';
+import { parse } from 'acorn';
 import Slugger from 'github-slugger';
 import type { Plugin } from 'unified';
-import type { Root } from 'hast';
+import type { Root } from 'mdast';
 import type { MdxjsEsm } from 'mdast-util-mdxjs-esm';
 
 const slugger = new Slugger();
@@ -24,6 +24,8 @@ interface Heading {
   depth?: number;
   children?: ChildNode[];
 }
+
+type MdxProgram = NonNullable<NonNullable<MdxjsEsm['data']>['estree']>;
 
 export const remarkPluginToc: Plugin<[], Root> = () => {
   return (tree: Root) => {
@@ -52,7 +54,7 @@ export const remarkPluginToc: Plugin<[], Root> = () => {
               case 'emphasis':
               case 'strong':
               case 'link':
-                return child.children?.map(c => c.value).join('') || '';
+                return child.children?.map((c) => c.value).join('') || '';
 
               // child without value and can not get value from children property
               default:
@@ -65,55 +67,22 @@ export const remarkPluginToc: Plugin<[], Root> = () => {
         toc.push({ id, text: originText, depth });
       }
     })(tree);
-    const insertedTocCode = `export const toc = ${JSON.stringify(toc, null, 2)}`;
-    // Add toc ast to current ast tree
-    tree.children.push({
+    const createMdxExport = (value: string): MdxjsEsm => ({
       type: 'mdxjsEsm',
-      value: insertedTocCode,
+      value,
       data: {
-        estree: parse(insertedTocCode, {
+        estree: parse(value, {
           ecmaVersion: 2020,
           sourceType: 'module',
-        }) as unknown as Program,
+        }) as unknown as MdxProgram,
       },
-    } as MdxjsEsm);
+    });
+
+    // Add toc ast to current ast tree
+    tree.children.push(createMdxExport(`export const toc = ${JSON.stringify(toc, null, 2)}`));
 
     if (title) {
-      const insertedTitle = `export const title = "${title}"`;
-      tree.children.push({
-        type: 'mdxjsEsm',
-        value: insertedTitle,
-        data: {
-          estree: {
-            type: 'Program',
-            sourceType: 'module',
-            body: [
-              {
-                type: 'ExportNamedDeclaration',
-                declaration: {
-                  type: 'VariableDeclaration',
-                  kind: 'const',
-                  declarations: [
-                    {
-                      type: 'VariableDeclarator',
-                      id: {
-                        type: 'Identifier',
-                        name: 'title',
-                      },
-                      init: {
-                        type: 'Literal',
-                        value: title,
-                        raw: `"${title}"`,
-                      },
-                    },
-                  ],
-                },
-                specifiers: [],
-              },
-            ],
-          },
-        },
-      } as MdxjsEsm);
+      tree.children.push(createMdxExport(`export const title = ${JSON.stringify(title)}`));
     }
   };
 };

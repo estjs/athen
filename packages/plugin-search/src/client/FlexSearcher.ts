@@ -1,18 +1,6 @@
 import FlexSearch from 'flexsearch';
 import { SearchIndexCache } from './SearchIndexCache';
-import type { SearchResult } from '../types';
-
-export interface SearchIndexData {
-  documents: Array<{
-    id: number;
-    path: string;
-    title: string;
-    headings: string[];
-    content: string;
-    rawHeaders?: any[];
-  }>;
-  options: any;
-}
+import type { SearchIndexData, SearchResult } from '../types';
 
 export interface FlexSearcherOptions {
   langRoutePrefix?: string;
@@ -112,15 +100,15 @@ export class FlexSearcher {
         this.cjkIndex.search(query, { limit: maxResults }),
       ]);
       const normalize = (r: any) =>
-        Array.isArray(r) ? r.flatMap(x => (Array.isArray(x?.result) ? x.result : x)) : [];
+        Array.isArray(r) ? r.flatMap((x) => (Array.isArray(x?.result) ? x.result : x)) : [];
       const unique = new Map<number, any>();
       [...normalize(eng), ...normalize(cjk)].forEach((id: any) => {
-        const doc = this.documents.find(d => d.id === id);
+        const doc = this.documents.find((d) => d.id === id);
         if (doc) unique.set(doc.id, doc);
       });
       return Array.from(unique.values())
         .slice(0, maxResults)
-        .map(doc => {
+        .map((doc) => {
           let content = '',
             heading = '';
           if (doc.content) {
