@@ -56,17 +56,17 @@ pageType: home
 
 hero:
   name: athen
-  text:Vite & Essor document framework
-  tagline: Simple, powerful, and performant
+  text: Vite & Essor 文档框架
+  tagline: 简单、强大且高性能
   image:
     src: /athen.png
     alt: athen
   actions:
     - theme: brand
-      text: Get Started
-      link: /en/guide/getting-started
+      text: 快速开始
+      link: /zh/guide/getting-started
     - theme: alt
-      text: View on GitHub
+      text: GitHub 地址
       link: https://github.com/estjs/athen
 ---
 ```
@@ -95,14 +95,14 @@ export type FeatureIcon =
 ```md
 features:
 
-- title: "Vite: The DX that can't be beat"
-  details: With Markdown-centered content, it's built to help you focus on writing and deployed with minimum configuration.
+- title: "Vite: 无与伦比的开发体验"
+  details: 以 Markdown 内容为中心，旨在帮助您专注于编写并以最少的配置进行部署。
   icon: 🚀
-- title: 'MDX: The flexible way to write content'
-  details: MDX is a powerful way to write content. You can use Essor components in Markdown.
+- title: 'MDX: 灵活的内容编写方式'
+  details: MDX 是一种强大的内容编写方式。您可以在 Markdown 中使用 Essor 组件。
   icon: 📦
-- title: 'athens Arch: The higher performance in production'
-  details: Designed to be athens architecture, means less javascript bundle, partial hydration and better performance about FCP, TTI.
+- title: 'athens Arch: 生产环境中更高的性能'
+  details: 专为 athens 架构设计，这意味着更少的 Javascript 打包、部分水合（partial hydration）以及更好的性能。
   icon:
     src: /athens-arch-feature-icon.svg
 ```
@@ -175,7 +175,7 @@ import { defineConfig } from 'athen';
 export default defineConfig({
   themeConfig: {
     footer: {
-      message: 'Released under the MIT License.',
+      message: '基于 MIT 协议开源。',
       copyright: 'Copyright © 2023-present estjs'
     }
   }

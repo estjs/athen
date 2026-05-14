@@ -33,19 +33,7 @@ export default defineConfig({
 
 Each instance must contain its own `athen.config.ts` or will inherit the root config.
 
-### CLI Usage
 
-```bash
-# Build all instances
-pnpm docs:build  # internally loops through instances
-
-# Dev single instance
-athen dev docs/core
-```
-
-> Tip: combine with `turbo run dev --filter=docs/*` for parallel serve.
-
----
 
 ## Output Structure
 

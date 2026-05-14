@@ -29,20 +29,21 @@ description: This is my page.
 - Type: `'home' | 'doc' | 'api' | 'custom' | '404'`
 - Default: `'doc'`
 
-The type of the page. By default, the page type is `'doc'`. But if you want to use a different page type, you can use the `pageType` front matter to specify the page type. For example:
+The type of the page. By default, the page type is `'doc'`. But if you want to use a different page type, you can use the `pageType` front matter to specify the page type.
 
-```md
----
-pageType: home
----
-```
+## layout
+
+- Type: `string`
+- Default: `undefined`
+
+The layout to use when rendering the page.
 
 ## api
 
 - Type: `boolean`
 - Default: `false`
 
-Enable api page.It's equal to `pageType: 'api'`:
+Enable api page. It's equal to `pageType: 'api'`:
 
 ```md
 ---
@@ -73,29 +74,6 @@ export interface Hero {
 }
 ```
 
-For example, you can use the following front matter to specify the hero config of the page:
-
-```md
----
-pageType: home
-
-hero:
-  name: athen
-  text: Vite & athens Arch Static Site Generator
-  tagline: Simple, powerful, and performant. Meet the modern SSG framework you've always wanted.
-  image:
-    src: /athen.png
-    alt: athen
-  actions:
-    - theme: brand
-      text: Get Started
-      link: /guide/getting-started
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/estjs/athen
----
-```
-
 ## features
 
 - Type: `Array`
@@ -109,22 +87,55 @@ export interface Feature {
   details: string;
   icon: string;
 }
-
-export type Features = Feature[];
 ```
 
-For example, you can use the following front matter to specify the features config of `home` page:
+## sidebar
 
-```md
----
-pageType: home
+- Type: `boolean`
+- Default: `true`
 
-features:
-  - title: "Vite: The DX that can't be beat"
-    details: With Markdown-centered content, it's built to help you focus on writing and deployed with minimum configuration.
-    icon: 🚀
-  - title: 'MDX: The flexible way to write content'
-    details: MDX is a powerful way to write content. You can use Essor components in Markdown.
-    icon: 📦
----
+Whether to display the left sidebar on the page. Set to `false` to hide it.
+
+## outline
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to display the right outline on the page. Set to `false` to hide it.
+
+## lineNumbers
+
+- Type: `boolean`
+- Default: `false`
+
+Whether to show line numbers for code blocks on this page.
+
+## sponsors
+
+- Type: `Sponsor[]`
+- Default: `[]`
+
+Sponsor list for the page.
+
+```ts
+export interface Sponsor {
+  name: string;
+  logo: string;
+  link: string;
+}
+```
+
+## cta
+
+- Type: `Object`
+
+The Call To Action config.
+
+```ts
+export interface CTA {
+  title: string;
+  text?: string;
+  link?: string;
+  buttonText?: string;
+}
 ```

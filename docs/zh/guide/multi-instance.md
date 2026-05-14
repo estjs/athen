@@ -33,19 +33,7 @@ export default defineConfig({
 
 每个实例都可以拥有自己的 `athen.config.ts`；如果缺失则继承根配置。
 
-### CLI 用法
 
-```bash
-# 构建全部实例
-pnpm docs:build  # 内部会循环 instances 数组
-
-# 仅开发单个实例
-athen dev docs/core
-```
-
-> 提示：搭配 `turbo run dev --filter=docs/*` 可并行启动所有实例。
-
----
 
 ## 输出结构
 

@@ -82,6 +82,10 @@ export default defineConfig({
                   text: '插件系统',
                   link: '/zh/guide/plugin-system',
                 },
+                {
+                  text: '自定义样式',
+                  link: '/zh/guide/custom-styling',
+                },
               ],
             },
             {
@@ -142,6 +146,15 @@ export default defineConfig({
                 {
                   text: '运行时 API',
                   link: '/zh/api/api-runtime',
+                },
+              ],
+            },
+            {
+              text: 'CLI 工具',
+              items: [
+                {
+                  text: '命令参考',
+                  link: '/zh/api/cli',
                 },
               ],
             },
@@ -220,6 +233,10 @@ export default defineConfig({
                   text: 'Plugin System',
                   link: '/en/guide/plugin-system',
                 },
+                {
+                  text: 'Custom Styling',
+                  link: '/en/guide/custom-styling',
+                },
               ],
             },
             {
@@ -280,6 +297,15 @@ export default defineConfig({
                 {
                   text: 'Runtime API',
                   link: '/en/api/api-runtime',
+                },
+              ],
+            },
+            {
+              text: 'CLI Tool',
+              items: [
+                {
+                  text: 'CLI Reference',
+                  link: '/en/api/cli',
                 },
               ],
             },

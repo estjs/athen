@@ -29,13 +29,14 @@ description: 这是我的主页
 - Type: `'home' | 'doc' | 'api' | 'custom' | '404'`
 - Default: `'doc'`
 
-页面的类型。默认情况下，页面类型为`doc`。但是如果你想使用不同的页面类型，你可以使用`pageType`前面的东西来指定页面类型。例如：
+页面的类型。默认情况下，页面类型为`doc`。但是如果你想使用不同的页面类型，你可以使用`pageType`指定页面类型。
 
-```md
----
-pageType: home
----
-```
+## layout
+
+- Type: `string`
+- Default: `undefined`
+
+渲染页面时使用的布局。
 
 ## api
 
@@ -73,29 +74,6 @@ export interface Hero {
 }
 ```
 
-例如，你可以使用以下 Front Matter 来指定页面的 hero config：
-
-```md
----
-pageType: home
-
-hero:
-  name: athen
-  text: Vite & athens Arch Static Site Generator
-  tagline: Simple, powerful, and performant. Meet the modern SSG framework you've always wanted.
-  image:
-    src: /athen.png
-    alt: athen
-  actions:
-    - theme: brand
-      text: Get Started
-      link: /guide/getting-started
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/estjs/athen
----
-```
-
 ## features
 
 - Type: `Array`
@@ -109,22 +87,55 @@ export interface Feature {
   details: string;
   icon: string;
 }
-
-export type Features = Feature[];
 ```
 
-例如，你可以使用以下前端内容来指定 `home` 页面的 features 配置：
+## sidebar
 
-```md
----
-pageType: home
+- Type: `boolean`
+- Default: `true`
 
-features:
-  - title: "Vite: The DX that can't be beat"
-    details: With Markdown-centered content, it's built to help you focus on writing and deployed with minimum configuration.
-    icon: 🚀
-  - title: 'MDX: The flexible way to write content'
-    details: MDX is a powerful way to write content. You can use Essor components in Markdown.
-    icon: 📦
----
+是否在页面上显示左侧边栏。设置为 `false` 可以隐藏它。
+
+## outline
+
+- Type: `boolean`
+- Default: `true`
+
+是否在页面上显示右侧大纲。设置为 `false` 可以隐藏它。
+
+## lineNumbers
+
+- Type: `boolean`
+- Default: `false`
+
+是否在当前页面的代码块中显示行号。
+
+## sponsors
+
+- Type: `Sponsor[]`
+- Default: `[]`
+
+页面的赞助商列表。
+
+```ts
+export interface Sponsor {
+  name: string;
+  logo: string;
+  link: string;
+}
+```
+
+## cta
+
+- Type: `Object`
+
+号召性用语配置。
+
+```ts
+export interface CTA {
+  title: string;
+  text?: string;
+  link?: string;
+  buttonText?: string;
+}
 ```

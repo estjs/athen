@@ -374,32 +374,3 @@ export default defineConfig({
 ```
 
 If `slots` is not defined, default blank areas are rendered.
-
-## analytics
-
-- Type: `object | false`
-- Default: `false`
-
-Configure analytics integrations. Passing `false` disables built-in analytics. Passing an object enables one or more providers.
-
-```ts
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  analytics: {
-    google: { id: 'G-XXXX' },
-    baidu: { id: 'xxxx' },
-    tencent: { sid: 'site_id', cid: 'app_id' },
-    ali: { id: 'cnzz_id' },
-    plausible: { domain: 'athen.dev' },
-    umami: { id: 'uuid', src: 'https://umami.example.com/script.js' },
-    ackee: { server: 'https://ackee.example.com', domainId: 'uuid' },
-    vercel: { id: 'vercel-id' },
-    custom: { snippet: "console.log('custom analytics')" }
-  }
-});
-```
-
-If multiple providers are configured, scripts will be injected for each.
-
-P

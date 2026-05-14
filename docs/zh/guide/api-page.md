@@ -1,8 +1,8 @@
-# API Page
+# API 页面
 
-The Athen default theme has an built-in API page.
+Athen 默认主题内置了 API 页面。
 
-Suppose your project has the following directory structure:
+假设你的项目有以下目录结构：
 
 ```bash
 api
@@ -11,7 +11,7 @@ api
 └── index.md
 ```
 
-Then you just need to add the following to `index.md` in the `api` directory:
+那么你只需要在 `api` 目录下的 `index.md` 中添加以下内容：
 
 ```md
 ---
@@ -19,21 +19,21 @@ pageType: api
 ---
 ```
 
-In this way, Athen will automatically parse the document structure of other subpages in the directory for you, extract the title (h1, h2) information, and generate the API page.What's more, Athen will group the API documentation according to your [`sidebar`](/en/api/config-theme#sidebar) config in the config file. For example, the following `sidebar` config:
+这样，Athen 就会自动为你解析目录下其他子页面的文档结构，提取标题（h1, h2）信息，并生成 API 页面。不仅如此，Athen 还会根据你在配置文件中的 [`sidebar`](/zh/api/config-theme#sidebar) 配置对 API 文档进行分组。例如，以下 `sidebar` 配置：
 
 ```ts
 {
   '/api/': [
     {
-      text: 'Config',
+      text: '配置',
       items: [{ text: '1', link: '/api/1' }, { text: '2', link: '/api/2' }]
     },
     {
-      text: 'Runtime',
+      text: '运行时',
       items: [{ text: '3', link: '/api/3' }, { text: '4', link: '/api/4' }]
     }
   ];
 }
 ```
 
-Then the API page will display two groups of `Config` and `Runtime`.
+那么 API 页面将会显示 `配置` 和 `运行时` 两个分组。

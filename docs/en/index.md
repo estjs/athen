@@ -28,5 +28,3 @@ features:
     icon: 🛠️
 
 ---
-
-- [Multiple Instance Sites](./guide/multi-instance.md)

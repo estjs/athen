@@ -39,12 +39,12 @@ import { defineConfig } from 'athen';
 
 export default defineConfig({
   route: {
-    // These files will be excluded from the routing (support glob pattern)
+    // 这些文件将从路由中排除（支持 glob 模式）
     exclude: ['custom.tsx', 'component/**/*']
-    // These files will be included in the routing (support glob pattern)
+    // 这些文件将包含在路由中（支持 glob 模式）
     include: ['other-dir/**/*'],
   }
 });
 ```
 
-更多细节可以参考 [配置扩展](/zh/api/config-extension)。
+更多细节可以参考 [基础配置](/zh/api/config-basic#route)。
