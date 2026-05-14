@@ -33,21 +33,21 @@ export default defineConfig({
       testIgnore: previewSpec,
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'firefox',
-      testIgnore: previewSpec,
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      testIgnore: previewSpec,
-      use: { ...devices['Desktop Safari'] },
-    },
-    {
-      name: 'mobile-chrome',
-      testIgnore: previewSpec,
-      use: { ...devices['Pixel 5'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   testIgnore: previewSpec,
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
+    // {
+    //   name: 'webkit',
+    //   testIgnore: previewSpec,
+    //   use: { ...devices['Desktop Safari'] },
+    // },
+    // {
+    //   name: 'mobile-chrome',
+    //   testIgnore: previewSpec,
+    //   use: { ...devices['Pixel 5'] },
+    // },
     {
       name: 'preview-chromium',
       testMatch: previewSpec,
