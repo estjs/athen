@@ -1,6 +1,6 @@
 import { transformAsync, types as babelTypes } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
-import { type Plugin, transformWithEsbuild } from 'vite';
+import { type Plugin, transformWithOxc } from 'vite';
 import { MD_REGEX, SX_REGEX } from '../../constants';
 
 function pluginRewriteServerForImport() {
@@ -48,12 +48,12 @@ export function pluginTransform(isServer): Plugin {
     apply: 'build',
     async transform(code, id, opts) {
       if (SX_REGEX.test(id) || MD_REGEX.test(id)) {
-        const strippedTypes = await transformWithEsbuild(code, id, {
+        const strippedTypes = await transformWithOxc(code, id, {
           jsx: 'preserve',
-          loader: 'tsx',
+          lang: 'tsx',
         });
 
-        const result = await transformAsync((await strippedTypes).code, {
+        const result = await transformAsync(strippedTypes.code, {
           filename: id,
           sourceType: 'module',
           plugins: [
