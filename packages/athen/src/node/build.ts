@@ -1,11 +1,17 @@
 import { dirname, join, resolve } from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
-import { type InlineConfig, build as viteBuild, mergeConfig } from 'vite';
+import {
+  type InlineConfig,
+  type Plugin,
+  build as viteBuild,
+  mergeConfig,
+} from 'vite';
 import fs from 'fs-extra';
 import { withBase } from '@/runtime';
 import { resolveConfig } from './config';
 import { DIST_DIR, PACKAGE_ROOT, SSG_ENTRY_PATH, SSR_ENTRY_PATH } from './constants';
+import { applyHtmlTransforms, flattenPlugins } from './htmlTransforms';
 import { createVitePlugins } from './plugins';
 import type { Router, SiteConfig } from '@/shared/types';
 
@@ -72,6 +78,7 @@ export async function renderPage(
   ssgBundle: BuildBundle,
   config: SiteConfig,
   routers: Required<Router>[],
+  htmlPlugins: Plugin[] = [],
 ) {
   const clientChunk = clientBundle.output.find(isEntryChunk);
   if (!clientChunk) {
@@ -113,9 +120,14 @@ export async function renderPage(
         </body>
       </html>`.trim();
     const fileName = normalizeHtmlFilePath(routePath);
+    const transformedHtml = await applyHtmlTransforms(
+      html,
+      { path: routePath, filename: join(distPath, fileName) },
+      htmlPlugins,
+    );
 
     await fs.ensureDir(join(distPath, dirname(fileName)));
-    await fs.outputFile(join(distPath, fileName), html);
+    await fs.outputFile(join(distPath, fileName), transformedHtml);
   }
 }
 
@@ -157,10 +169,16 @@ export async function bundle(root: string, config: SiteConfig) {
     return mergeConfig(config.vite || {}, defaultBuildConfig);
   };
 
-  const ssgBundle = await viteBuild(await createBuildConfig(false));
-  const clientBundle = await viteBuild(await createBuildConfig(true));
+  const ssgBuildConfig = await createBuildConfig(false);
+  const clientBuildConfig = await createBuildConfig(true);
+  const ssgBundle = await viteBuild(ssgBuildConfig);
+  const clientBundle = await viteBuild(clientBuildConfig);
 
-  return [ssgBundle, clientBundle] as [BuildBundle, BuildBundle];
+  return [ssgBundle, clientBundle, flattenPlugins(clientBuildConfig.plugins)] as [
+    BuildBundle,
+    BuildBundle,
+    Plugin[],
+  ];
 }
 export async function build(root: string = process.cwd()) {
   const config = await resolveConfig(root, 'build', 'production');
@@ -178,12 +196,12 @@ export async function build(root: string = process.cwd()) {
   await fs.remove(tempPath);
   await fs.remove(distPath);
 
-  const [ssgBundle, clientBundle] = await bundle(root, config);
+  const [ssgBundle, clientBundle, htmlPlugins] = await bundle(root, config);
 
   const serverEntryPath = join(tempPath, 'ssg-entry.js');
   const { render, routes } = await import(pathToFileURL(serverEntryPath).href);
 
-  await renderPage(render, root, clientBundle, ssgBundle, config, routes);
+  await renderPage(render, root, clientBundle, ssgBundle, config, routes, htmlPlugins);
 
   const publicDirInRoot = join(root, 'public');
   if (await fs.pathExists(publicDirInRoot)) {
