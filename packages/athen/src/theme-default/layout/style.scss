@@ -49,7 +49,7 @@
 }
 
 @media (min-width: 1350px) {
-  .doc-layout.has-aside {
+  .doc-layout {
     grid-template-columns: var(--at-sidebar-width) minmax(0, 1fr) var(
         --at-sidebar-width
       );

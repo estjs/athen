@@ -64,6 +64,20 @@ test.describe('Athen docs E2E', () => {
     await expect(page.locator('.aside')).toContainText('Why Choose Athen?');
   });
 
+  test('doc content width stays stable when aside is missing', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    await page.goto('/guide/getting-started');
+    const withAsideWidth = await page.locator('.content').boundingBox();
+    expect(withAsideWidth).not.toBeNull();
+
+    await page.goto('/guide/search');
+    const withoutAsideWidth = await page.locator('.content').boundingBox();
+    expect(withoutAsideWidth).not.toBeNull();
+
+    expect(Math.round(withoutAsideWidth!.width)).toBe(Math.round(withAsideWidth!.width));
+  });
+
   test('dark mode toggle persists after reload', async ({ page }) => {
     await page.goto('/');
     const html = page.locator('html');
