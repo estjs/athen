@@ -31,6 +31,25 @@
   background-color: var(--at-c-bg);
 }
 
+.nav-desktop-links {
+  display: none;
+  align-items: center;
+}
+
+.nav-sidebar-toggle {
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .nav-desktop-links {
+    display: flex;
+  }
+
+  .nav-sidebar-toggle {
+    display: none;
+  }
+}
 
 .menu-item-before::before {
   margin-right: 12px;

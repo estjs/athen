@@ -75,7 +75,7 @@ const NavHeader = () => {
 
         <div class="flex items-center">
           {/* Desktop Nav Items */}
-          <div class="hidden lg:flex items-center">
+          <div class="nav-desktop-links">
             {(localeData.value?.nav || []).map((item) => {
               return (
                 <div class="mx-3 text-sm font-medium">
@@ -106,7 +106,7 @@ const NavHeader = () => {
 
           {/* Mobile Hamburger Menu */}
           <div
-            class="lg:hidden ml-2 cursor-pointer flex items-center"
+            class="nav-sidebar-toggle ml-2 cursor-pointer"
             onClick={() => {
               document.querySelector('.sidebar')?.classList.toggle('open');
               document.querySelector('.sidebar-backdrop')?.classList.toggle('open');
