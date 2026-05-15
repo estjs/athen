@@ -19,7 +19,7 @@ import type { Plugin } from 'vite';
 
 let highlighterPromise: ReturnType<typeof createHighlighter> | undefined;
 
-async function getShikiHighlighter() {
+function getShikiHighlighter() {
   highlighterPromise ??= createHighlighter({
     themes: ['dark-plus'],
     langs: Object.keys(bundledLanguages),
@@ -62,13 +62,13 @@ export async function pluginMdxRollup(config: options): Promise<Plugin> {
         // Open new window then click external link
         rehypePluginExternalLinks,
         {
-          target: node => {
+          target: (node) => {
             const href = node.properties?.href;
             const whiteList = [...TARGET_BLANK_WHITE_LIST];
             if (typeof href === 'string') {
-              const inWhiteList = whiteList.some(item => {
+              const inWhiteList = whiteList.some((item) => {
                 if (isReg(item)) return item.test(href);
-                else return href.startsWith(item);
+                return href.startsWith(item);
               });
               return inWhiteList ? '_self' : '_blank';
             }

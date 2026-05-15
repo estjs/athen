@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- create-athen is a CLI and console output is its user interface. */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

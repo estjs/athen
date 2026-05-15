@@ -33,7 +33,7 @@ function tencentSnippet(sid: string, cid?: string) {
   return {
     tag: 'script',
     children: `var _mtac = {}; (function() { var mta = document.createElement("script"); mta.src = "//pingjs.qq.com/h5/stats.js?v2.0.4"; mta.setAttribute("name","MTAH5"); ${attrs
-      .map(a => `mta.setAttribute(${a.split('=')[0]}, ${a.split('=')[1]});`) // naive
+      .map((a) => `mta.setAttribute(${a.split('=')[0]}, ${a.split('=')[1]});`) // naive
       .join(
         ' ',
       )} var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(mta, s);})();`,
