@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { SearchIndexBuilder } from '../src/index-builder';
+import { createSearchIndexes, searchDocuments } from '../src/search-core';
 
 describe('searchIndexBuilder', () => {
   let builder: SearchIndexBuilder;
@@ -230,6 +231,27 @@ This is a test document.
         heading: '中文检索',
       });
       expect(results[0].content).toContain('中文');
+    });
+
+    it('should keep default locale docs searchable at the root path', async () => {
+      const customBuilder = new SearchIndexBuilder({
+        defaultLocaleSourcePrefix: '/en/',
+      });
+      customBuilder.addDocument('en/guide/getting-started.md', '# Quick Start\n\nContent about Vite.');
+      customBuilder.addDocument('zh/guide/getting-started.md', '# 快速开始\n\n中文内容。');
+
+      const index = JSON.parse(customBuilder.generateSearchIndex());
+      const indexes = createSearchIndexes(true);
+      for (const doc of index.documents) {
+        indexes.index.add(doc);
+        indexes.cjkIndex.add(doc);
+      }
+
+      const results = await searchDocuments(indexes, index.documents, 'Quick Start', {
+        langRoutePrefix: '/',
+      });
+
+      expect(results[0]?.path).toBe('/guide/getting-started');
     });
   });
 

@@ -6,6 +6,7 @@ import searchPlugin from '@athen/plugin-search';
 import analyticsPlugin from '@athen/plugin-analytics';
 
 import pluginRoute from './router';
+import { getDefaultLocalePrefix } from './router/routeService';
 import unocssOptions from './unocss';
 import { pluginMdxHMR } from './mdxHmr';
 import { pluginAthen } from './athen';
@@ -37,8 +38,12 @@ export async function createVitePlugins(
   if (config?.search) {
     const searchOptions =
       typeof config.search === 'boolean'
-        ? { root: config.root }
-        : { ...config.search, root: config.root };
+        ? { root: config.root, defaultLocaleSourcePrefix: getDefaultLocalePrefix(config.siteData) }
+        : {
+            ...config.search,
+            root: config.root,
+            defaultLocaleSourcePrefix: getDefaultLocalePrefix(config.siteData),
+          };
     builtIn.push(searchPlugin(searchOptions));
   }
 

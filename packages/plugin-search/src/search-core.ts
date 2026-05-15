@@ -60,7 +60,7 @@ function normalizeSearchIds(result: unknown): number[] {
     return [];
   }
 
-  return result.flatMap(item => {
+  return result.flatMap((item) => {
     if (typeof item === 'number') {
       return [item];
     }
@@ -83,34 +83,57 @@ function createSnippet(content: string, query: string) {
   return `${start > 0 ? '...' : ''}${content.slice(start, end)}${end < content.length ? '...' : ''}`;
 }
 
-function withLanguagePrefix(path: string, prefix?: string) {
-  if (!prefix) {
-    return path;
-  }
+function normalizeLocalePrefix(prefix = '') {
+  return prefix.replaceAll(/^\/+|\/+$/g, '').toLowerCase();
+}
 
-  const normalizedPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
-  if (path.startsWith(normalizedPrefix) || /^\/[a-z]{2}(-[A-Z]{2})?\//i.test(path)) {
-    return path;
-  }
-
-  return normalizedPrefix + path.replace(/^\//, '');
+function looksLikeLocalePath(path: string) {
+  return /^\/[a-z]{2}(?:-[a-z]{2})?\//i.test(path);
 }
 
 function isPathForLocale(path: string, localePrefix?: string) {
+  const normalizedLocale = normalizeLocalePrefix(localePrefix);
+  if (!normalizedLocale) {
+    return !looksLikeLocalePath(path);
+  }
+
+  const localePath = `/${normalizedLocale}`;
+  return path.toLowerCase() === localePath || path.toLowerCase().startsWith(`${localePath}/`);
+}
+
+function stripLocalePrefix(path: string, localePrefix?: string) {
+  const normalizedLocale = normalizeLocalePrefix(localePrefix);
+  if (!normalizedLocale) {
+    return path;
+  }
+
+  const localePath = `/${normalizedLocale}`;
+  const lowerPath = path.toLowerCase();
+  if (lowerPath === localePath || lowerPath === `${localePath}/`) {
+    return '/';
+  }
+
+  if (lowerPath.startsWith(`${localePath}/`)) {
+    return path.slice(localePath.length) || '/';
+  }
+
+  return path;
+}
+
+function normalizePath(path: string) {
+  const normalizedPath = path
+    .replaceAll('\\', '/')
+    .replaceAll(/\.(md|mdx)$/g, '')
+    .replaceAll(/\/index$/g, '/');
+  return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
+}
+
+function isResultPathAvailable(path: string, localePrefix?: string) {
   if (!localePrefix) {
     return true;
   }
 
-  const hasLangPrefix = /^\/[a-z]{2}(-[A-Z]{2})?\//i.test(path);
-
-  if (localePrefix !== '/') {
-    const normalizedPrefix = localePrefix.endsWith('/') ? localePrefix : `${localePrefix}/`;
-    if (path.startsWith(normalizedPrefix)) return true;
-    if (hasLangPrefix) return false;
-    return true; // No prefix -> default locale -> will be prefixed
-  } else {
-    return !hasLangPrefix;
-  }
+  return isPathForLocale(path, localePrefix);
 }
 
 export async function searchDocuments(
@@ -132,29 +155,34 @@ export async function searchDocuments(
   const seenPaths = new Set<string>();
 
   for (const id of [...normalizeSearchIds(latin), ...normalizeSearchIds(cjk)]) {
-    const doc = documents.find(item => item.id === id);
-    if (doc && isPathForLocale(doc.path, options.langRoutePrefix)) {
-      const finalPath = withLanguagePrefix(doc.path, options.langRoutePrefix);
-      if (!seenPaths.has(finalPath)) {
-        seenPaths.add(finalPath);
-        unique.set(doc.id, doc);
-      }
+    const doc = documents.find((item) => item.id === id);
+    if (
+      !doc ||
+      !isResultPathAvailable(doc.path, options.langRoutePrefix) ||
+      seenPaths.has(doc.path)
+    ) {
+      continue;
     }
+
+    seenPaths.add(doc.path);
+    unique.set(doc.id, doc);
   }
 
   return Array.from(unique.values())
     .slice(0, limit)
-    .map(doc => ({
-      path: withLanguagePrefix(doc.path, options.langRoutePrefix),
+    .map((doc) => ({
+      path: doc.path,
       title: doc.title,
-      heading: doc.headings.find(item => item.toLowerCase().includes(query.toLowerCase())) || '',
+      heading: doc.headings.find((item) => item.toLowerCase().includes(query.toLowerCase())) || '',
       content: doc.content ? createSnippet(doc.content, query) : '',
     }));
 }
 
-export function normalizeDocumentPath(filePath: string): string {
-  const path = filePath.replaceAll('\\', '/').replace(/\.(md|mdx)$/, '').replace(/\/index$/, '/');
-  return path.startsWith('/') ? path : `/${path}`;
+export function normalizeDocumentPath(
+  filePath: string,
+  defaultLocaleSourcePrefix?: string,
+): string {
+  return stripLocalePrefix(normalizePath(filePath), defaultLocaleSourcePrefix);
 }
 
 export function matchesGlob(pattern: string, value: string): boolean {

@@ -29,6 +29,7 @@ export interface SearchOptions {
   searchOptions?: FlexSearchOptions;
   cache?: CacheOptions;
   transformResult?: (results: SearchResult[]) => SearchResult[];
+  defaultLocaleSourcePrefix?: string;
   customFields?: Record<
     string,
     {

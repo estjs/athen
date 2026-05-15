@@ -76,7 +76,7 @@ export const KEYBOARD_NAV_CASES = [
  * Locale test cases
  */
 export const LOCALE_CASES = [
-  { locale: 'en' as const, query: 'Quick Start', pathPrefix: '/en/' },
+  { locale: 'en' as const, query: 'Quick Start', pathPrefix: '/' },
   { locale: 'zh' as const, query: '快速开始', pathPrefix: '/zh/' },
 ] as const;
 

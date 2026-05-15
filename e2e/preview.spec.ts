@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { SearchPage } from './helpers/search.helpers';
 
 test.describe('production preview', () => {
   test('serves prerendered HTML for locale home pages', async ({ page }) => {
@@ -78,5 +79,18 @@ test.describe('production preview', () => {
     await expect(page.locator('.sidebar')).toBeVisible();
     await expect(page.locator('.aside')).toBeVisible();
     await expect(page.locator('.doc-layout')).toHaveCSS('display', 'grid');
+  });
+
+  test('loads the search index and returns results in preview', async ({ page }) => {
+    const searchPage = new SearchPage(page);
+    await searchPage.goto('/');
+
+    await expect
+      .poll(() => searchPage.getDocumentCount(), { message: 'search index document count' })
+      .toBeGreaterThan(0);
+
+    await searchPage.typeSearchQuery('Vite');
+    await searchPage.waitForResultItems();
+    await expect(searchPage.resultItems.first()).toBeVisible();
   });
 });

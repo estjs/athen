@@ -41,10 +41,11 @@ export class FlexSearcher {
     if (this.initialized) return;
     try {
       let indexData: SearchIndexData | null = null;
-      if (this.cache) indexData = await this.cache.get<SearchIndexData>(this.cacheKey);
-      if (!indexData && typeof window !== 'undefined' && window.__ATHEN_SEARCH_INDEX__) {
+      if (typeof window !== 'undefined' && window.__ATHEN_SEARCH_INDEX__) {
         indexData = window.__ATHEN_SEARCH_INDEX__;
         if (this.cache && indexData) await this.cache.set(this.cacheKey, indexData);
+      } else if (this.cache) {
+        indexData = await this.cache.get<SearchIndexData>(this.cacheKey);
       }
       this.documents = indexData?.documents || [];
       this.indexes = createSearchIndexes(true);

@@ -2,12 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import MarkdownIt from 'markdown-it';
 import {
+  type SearchIndexes,
   createSearchIndexes,
   matchesGlob,
   normalizeDocumentPath,
   resolveSearchLimit,
   searchDocuments,
-  type SearchIndexes,
 } from './search-core';
 import type { SearchDocument, SearchOptions, SearchResult } from './types';
 
@@ -43,37 +43,49 @@ export class SearchIndexBuilder {
     frontmatter: Record<string, string>;
     content: string;
   } {
-    const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
-    if (match) {
-      const frontmatter: Record<string, string> = {};
-      match[1].split('\n').forEach((line) => {
-        const i = line.indexOf(':');
-        if (i > 0)
-          frontmatter[line.slice(0, i).trim()] = line
-            .slice(i + 1)
-            .trim()
-            .replaceAll(/^['"]|['"]$/g, '');
-      });
-      return { frontmatter, content: content.slice(match[0].length) };
+    const lines = content.split('\n');
+    if (lines[0]?.trim() !== '---') {
+      return { frontmatter: {}, content };
     }
-    return { frontmatter: {}, content };
+
+    const endIndex = lines.findIndex((line, index) => index > 0 && line.trim() === '---');
+    if (endIndex === -1) {
+      return { frontmatter: {}, content };
+    }
+
+    const frontmatter: Record<string, string> = {};
+    for (const line of lines.slice(1, endIndex)) {
+      const separatorIndex = line.indexOf(':');
+      if (separatorIndex <= 0) continue;
+
+      frontmatter[line.slice(0, separatorIndex).trim()] = line
+        .slice(separatorIndex + 1)
+        .trim()
+        .replaceAll(/^['"]|['"]$/g, '');
+    }
+
+    return { frontmatter, content: lines.slice(endIndex + 1).join('\n') };
   }
 
   private extractContent(content: string) {
     const { frontmatter, content: body } = this.extractFrontmatter(content);
     let title = frontmatter.title || 'Untitled';
-    const titleMatch = body.match(/^#\s+(.*)$/m);
-    if (!frontmatter.title && titleMatch) title = titleMatch[1].trim();
-
     const headings: string[] = [];
     const rawHeaders: NonNullable<SearchDocument['rawHeaders']> = [];
-    let match: RegExpExecArray | null;
     let id = 0;
-    const regex = /^(#{1,6})\s+(.*)$/gm;
-    while ((match = regex.exec(body))) {
-      const depth = match[1].length;
-      const text = match[2].trim();
-      if (depth > 1) {
+
+    for (const line of body.split('\n')) {
+      const trimmedLine = line.trimStart();
+      const marker = trimmedLine.match(/^#{1,6}/)?.[0];
+      if (!marker || trimmedLine[marker.length] !== ' ') continue;
+
+      const depth = marker.length;
+      const text = trimmedLine.slice(depth + 1).trim();
+      if (!text) continue;
+
+      if (!frontmatter.title && depth === 1 && title === 'Untitled') {
+        title = text;
+      } else if (depth > 1) {
         headings.push(text);
         rawHeaders.push({ id: `heading-${++id}`, text, depth });
       }
@@ -92,7 +104,7 @@ export class SearchIndexBuilder {
     const { title, headings, content: cleanContent, rawHeaders } = this.extractContent(content);
     const doc: SearchDocument = {
       id: this.documents.length + 1,
-      path: normalizeDocumentPath(filePath),
+      path: normalizeDocumentPath(filePath, this.options.defaultLocaleSourcePrefix),
       title,
       headings,
       content: cleanContent,
@@ -123,7 +135,7 @@ export class SearchIndexBuilder {
 
   async search(query: string): Promise<SearchResult[]> {
     try {
-      return searchDocuments(this.indexes, this.documents, query, {
+      return await searchDocuments(this.indexes, this.documents, query, {
         limit: resolveSearchLimit(this.options),
       });
     } catch {

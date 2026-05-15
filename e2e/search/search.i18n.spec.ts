@@ -8,8 +8,8 @@ import {
 
 test.describe('Search Internationalization', () => {
   test.describe('Locale Path Consistency', () => {
-    test('English locale search returns paths with /en/ prefix', async ({ searchPage }) => {
-      // Requirement 5.1: English locale results should have /en/ prefix
+    test('English root locale search returns root paths', async ({ searchPage }) => {
+      // Requirement 5.1: English locale results should use the root locale path
       // Property 10: Locale Path Consistency
       await searchPage.gotoLocale('en');
 
@@ -20,7 +20,8 @@ test.describe('Search Internationalization', () => {
       expect(paths.length).toBeGreaterThan(0);
 
       for (const path of paths) {
-        expect(path).toMatch(/^\/en\//);
+        expect(path).not.toMatch(/^\/zh\//);
+        expect(path).not.toMatch(/^\/en\//);
       }
     });
 
@@ -48,8 +49,8 @@ test.describe('Search Internationalization', () => {
       await searchPage.waitForResultItems();
       await searchPage.clickResult(0);
 
-      // URL should still contain /en/
-      await expect(searchPage.page).toHaveURL(/\/en\//);
+      await expect(searchPage.page).not.toHaveURL(/\/zh\//);
+      await expect(searchPage.page).not.toHaveURL(/\/en\//);
     });
   });
 
@@ -71,7 +72,12 @@ test.describe('Search Internationalization', () => {
 
         const paths = await searchPage.getResultPaths();
         for (const path of paths) {
-          expect(path).toContain(localeCase.pathPrefix);
+          if (localeCase.locale === 'en') {
+            expect(path).not.toMatch(/^\/zh\//);
+            expect(path).not.toMatch(/^\/en\//);
+          } else {
+            expect(path).toContain(localeCase.pathPrefix);
+          }
         }
       });
     }
