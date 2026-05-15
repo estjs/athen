@@ -8,6 +8,8 @@ import type { SiteConfig } from '../src/shared/types';
 const require = createRequire(import.meta.url);
 
 vi.mock('@athen/plugin-mdx', () => ({ pluginMdx: () => ({ name: 'plugins-mdx' }) }));
+vi.mock('@athen/plugin-search', () => ({ default: () => ({ name: 'athen:search' }) }));
+vi.mock('@athen/plugin-analytics', () => ({ default: () => ({ name: 'athen:analytics' }) }));
 vi.mock('unocss/vite', () => ({ default: () => ({ name: 'unocss' }) }));
 vi.mock('vite-plugin-environment', () => ({ default: () => ({ name: 'env' }) }));
 vi.mock('vite-plugin-inspect', () => ({ default: () => ({ name: 'inspect' }) }));
