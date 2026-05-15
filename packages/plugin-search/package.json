@@ -43,11 +43,11 @@
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^25.7.0",
+    "@types/node": "^25.8.0",
     "essor": "^0.0.16-beta.7",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.12",
+    "vite": "^8.0.13",
     "vitest": "^4.1.6"
   }
 }
