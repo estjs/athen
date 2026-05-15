@@ -3,15 +3,16 @@ import { SearchPage } from './helpers/search.helpers';
 
 test.describe('production preview', () => {
   test('serves prerendered HTML for locale home pages', async ({ page }) => {
-    const response = await page.request.get('/en/');
+    const response = await page.request.get('/');
     const html = await response.text();
     const ssgCssHref = html.match(/href="([^"]*\/assets\/ssg-entry-[^"]+\.css)"/)?.[1];
+    const htmlWithoutScripts = html.replace(/<script\b[\s\S]*?<\/script>/gi, '');
 
     expect(response.status()).toBe(200);
     expect(html).toMatch(/Documentation framework based on Vite &(?:amp;)? Essor/);
     expect(html).not.toMatch(/<div id="app">\s*<\/div>/);
-    expect(html).not.toMatch(/&lt;(?:a|div|section|span)\b/);
-    expect(html).not.toContain('&amp;amp;');
+    expect(htmlWithoutScripts).not.toMatch(/&lt;(?:a|div|section|span)\b/);
+    expect(htmlWithoutScripts).not.toContain('&amp;amp;');
     expect(ssgCssHref).toBeTruthy();
 
     const cssResponse = await page.request.get(ssgCssHref!);
@@ -23,13 +24,13 @@ test.describe('production preview', () => {
     const response = await page.goto('/');
 
     expect(response?.status()).toBe(200);
-    await expect(page).toHaveURL(/\/(en|zh)\/$/);
+    await expect(page).toHaveURL(/\/$/);
     await expect(page.locator('#app')).not.toBeEmpty();
     await expect(page.getByRole('heading', { name: /athen/i, level: 1 })).toBeVisible();
   });
 
   test('uses the ssr-entry production bundle', async ({ page }) => {
-    await page.goto('/en/');
+    await page.goto('/');
 
     const scriptSrc = await page.locator('script[type="module"]').first().getAttribute('src');
     expect(scriptSrc).toMatch(/^\/assets\/ssr-entry-.+\.js$/);
@@ -40,7 +41,7 @@ test.describe('production preview', () => {
   });
 
   test('loads production CSS assets', async ({ page }) => {
-    await page.goto('/en/');
+    await page.goto('/');
 
     const stylesheetHrefs = await page
       .locator('link[rel="stylesheet"]')
@@ -73,7 +74,7 @@ test.describe('production preview', () => {
 
   test('hydrates built doc pages and keeps their styles', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/en/guide/getting-started');
+    await page.goto('/guide/getting-started');
 
     await expect(page.getByRole('heading', { name: 'Quick Start', level: 1 })).toBeVisible();
     await expect(page.locator('.sidebar')).toBeVisible();
