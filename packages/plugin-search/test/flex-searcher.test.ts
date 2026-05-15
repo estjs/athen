@@ -9,7 +9,7 @@ const cache = vi.hoisted(() => ({
 }));
 
 vi.mock('../src/client/SearchIndexCache', () => ({
-  SearchIndexCache: vi.fn(() => {
+  SearchIndexCache: vi.fn(function () {
     return cache;
   }),
 }));
