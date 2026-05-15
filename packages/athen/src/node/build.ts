@@ -1,12 +1,7 @@
 import { dirname, join, resolve } from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
-import {
-  type InlineConfig,
-  type Plugin,
-  build as viteBuild,
-  mergeConfig,
-} from 'vite';
+import { type InlineConfig, type Plugin, mergeConfig, build as viteBuild } from 'vite';
 import fs from 'fs-extra';
 import { withBase } from '@/runtime';
 import { resolveConfig } from './config';
@@ -18,14 +13,14 @@ import type { Router, SiteConfig } from '@/shared/types';
 type RenderFunction = (routePath: string) => string | Promise<string>;
 type BundleItem =
   | {
-    type: 'asset';
-    fileName: string;
-  }
+      type: 'asset';
+      fileName: string;
+    }
   | {
-    type: 'chunk';
-    fileName: string;
-    isEntry: boolean;
-  };
+      type: 'chunk';
+      fileName: string;
+      isEntry: boolean;
+    };
 type BuildBundle = {
   output: BundleItem[];
 };
@@ -47,10 +42,10 @@ function isCssAsset(item: BundleItem) {
 }
 
 function uniqueCssAssets(...bundles: BuildBundle[]) {
-  const cssAssets = bundles.flatMap(bundle => bundle.output.filter(isCssAsset));
+  const cssAssets = bundles.flatMap((bundle) => bundle.output.filter(isCssAsset));
 
   return cssAssets.filter(
-    (asset, index) => cssAssets.findIndex(item => item.fileName === asset.fileName) === index,
+    (asset, index) => cssAssets.findIndex((item) => item.fileName === asset.fileName) === index,
   );
 }
 

@@ -6,7 +6,7 @@ test.describe('production preview', () => {
     const response = await page.request.get('/');
     const html = await response.text();
     const ssgCssHref = html.match(/href="([^"]*\/assets\/ssg-entry-[^"]+\.css)"/)?.[1];
-    const htmlWithoutScripts = html.replace(/<script\b[\s\S]*?<\/script>/gi, '');
+    const htmlWithoutScripts = html.replaceAll(/<script\b[\s\S]*?<\/script>/gi, '');
 
     expect(response.status()).toBe(200);
     expect(html).toMatch(/Documentation framework based on Vite &(?:amp;)? Essor/);

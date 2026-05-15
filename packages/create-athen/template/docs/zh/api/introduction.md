@@ -79,10 +79,10 @@ Athen 使用 TypeScript 构建，提供全面的类型定义：
 
 ```typescript
 import type {
-  SiteConfig,
-  ThemeConfig,
   PageData,
-  Plugin
+  Plugin,
+  SiteConfig,
+  ThemeConfig
 } from 'athen';
 ```
 

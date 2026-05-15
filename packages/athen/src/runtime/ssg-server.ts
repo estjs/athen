@@ -76,7 +76,7 @@ export function render(templates: string[], hydrationKey: string, ...components:
     serverRender(
       templates,
       hydrationKey,
-      ...components.map(component => convertToString(component)),
+      ...components.map((component) => convertToString(component)),
     ),
   );
 }

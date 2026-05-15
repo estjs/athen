@@ -1,7 +1,7 @@
 import { expect, test } from '../fixtures/search.fixture';
 
 function hrefPattern(href: string) {
-  return new RegExp(`${href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+  return new RegExp(`${href.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
 }
 
 test.describe('Search Navigation', () => {
@@ -27,7 +27,10 @@ test.describe('Search Navigation', () => {
     });
 
     test('ArrowDown selects first result for Enter navigation', async ({ searchPage }) => {
-      const firstHref = await searchPage.resultItems.first().locator('.result-link').getAttribute('href');
+      const firstHref = await searchPage.resultItems
+        .first()
+        .locator('.result-link')
+        .getAttribute('href');
 
       await searchPage.pressArrowDown();
       await searchPage.pressEnter();
@@ -36,9 +39,14 @@ test.describe('Search Navigation', () => {
       await expect(searchPage.page).toHaveURL(hrefPattern(firstHref!));
     });
 
-    test('ArrowDown moves selection to next result for Enter navigation', async ({ searchPage }) => {
+    test('ArrowDown moves selection to next result for Enter navigation', async ({
+      searchPage,
+    }) => {
       // Property 9: From index 0, ArrowDown should go to 1
-      const secondHref = await searchPage.resultItems.nth(1).locator('.result-link').getAttribute('href');
+      const secondHref = await searchPage.resultItems
+        .nth(1)
+        .locator('.result-link')
+        .getAttribute('href');
 
       await searchPage.pressArrowDown(); // Go to index 0
       await searchPage.pressArrowDown(); // Go to index 1
@@ -48,10 +56,15 @@ test.describe('Search Navigation', () => {
       await expect(searchPage.page).toHaveURL(hrefPattern(secondHref!));
     });
 
-    test('ArrowUp moves selection to previous result for Enter navigation', async ({ searchPage }) => {
+    test('ArrowUp moves selection to previous result for Enter navigation', async ({
+      searchPage,
+    }) => {
       // Requirement 4.3: ArrowUp should highlight previous result
       // Property 9: From index 1, ArrowUp should go to 0
-      const firstHref = await searchPage.resultItems.first().locator('.result-link').getAttribute('href');
+      const firstHref = await searchPage.resultItems
+        .first()
+        .locator('.result-link')
+        .getAttribute('href');
 
       await searchPage.pressArrowDown(); // Go to index 0
       await searchPage.pressArrowDown(); // Go to index 1
@@ -76,7 +89,10 @@ test.describe('Search Navigation', () => {
     test('ArrowDown does not navigate beyond last result', async ({ searchPage }) => {
       // Property 9: ArrowDown should not exceed N-1
       const count = await searchPage.getResultsCount();
-      const lastHref = await searchPage.resultItems.nth(count - 1).locator('.result-link').getAttribute('href');
+      const lastHref = await searchPage.resultItems
+        .nth(count - 1)
+        .locator('.result-link')
+        .getAttribute('href');
 
       // Press ArrowDown more times than there are results
       for (let i = 0; i < count + 5; i++) {
@@ -201,7 +217,10 @@ test.describe('Search Navigation', () => {
       await searchPage.waitForResultItems();
 
       await searchPage.resultItems.first().hover();
-      const secondHref = await searchPage.resultItems.nth(1).locator('.result-link').getAttribute('href');
+      const secondHref = await searchPage.resultItems
+        .nth(1)
+        .locator('.result-link')
+        .getAttribute('href');
 
       await searchPage.pressArrowDown();
       await searchPage.pressEnter();

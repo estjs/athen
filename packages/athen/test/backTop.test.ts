@@ -5,7 +5,7 @@ import {
   isBackTopVisible,
 } from '../src/theme-default/components/BackTop/utils';
 
-describe('BackTop', () => {
+describe('backTop', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });

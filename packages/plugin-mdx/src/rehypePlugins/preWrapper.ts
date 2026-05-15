@@ -3,8 +3,8 @@ import type { Plugin } from 'unified';
 import type { Element, Root } from 'hast';
 
 export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
-  return tree => {
-    visit(tree, 'element', node => {
+  return (tree) => {
+    visit(tree, 'element', (node) => {
       if (
         node.tagName === 'pre' &&
         node.children[0]?.type === 'element' &&

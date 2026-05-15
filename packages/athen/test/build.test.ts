@@ -1,13 +1,13 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SiteConfig } from '../src/shared/types';
 
 const viteBuild = vi.fn();
 const createVitePlugins = vi.fn(async () => []);
 
-vi.mock('vite', async importOriginal => ({
+vi.mock('vite', async (importOriginal) => ({
   ...(await importOriginal<typeof import('vite')>()),
   build: viteBuild,
 }));

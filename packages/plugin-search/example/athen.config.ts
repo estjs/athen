@@ -3,7 +3,7 @@ import { defineConfig } from 'athen';
 export default defineConfig({
   title: 'Athen Search Plugin Example',
   description: 'Example documentation with search functionality',
-  
+
   // Enable search with FlexSearch
   search: {
     provider: 'flex',
@@ -22,7 +22,7 @@ export default defineConfig({
       { text: 'Guide', link: '/guide/' },
       { text: 'API', link: '/api/' },
     ],
-    
+
     sidebar: {
       '/guide/': [
         {

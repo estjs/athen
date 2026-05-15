@@ -21,7 +21,9 @@ export function normalizeLanguageTag(language = ''): string {
   return language.replaceAll('_', '-').trim().toLowerCase();
 }
 
-export function getLocaleConfigs(config?: LocaleAwareConfig): Record<string, LocaleConfig> | undefined {
+export function getLocaleConfigs(
+  config?: LocaleAwareConfig,
+): Record<string, LocaleConfig> | undefined {
   if (!config?.themeConfig || typeof config.themeConfig !== 'object') return;
 
   const locales = (config.themeConfig as { locales?: unknown }).locales;

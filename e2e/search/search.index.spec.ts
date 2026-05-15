@@ -58,13 +58,13 @@ test.describe('Search Index Validation', () => {
     const docs = index?.documents || [];
 
     // Find documents that were originally index files (paths ending with /)
-    const indexPaths = docs.filter(d => d.path.endsWith('/'));
+    const indexPaths = docs.filter((d) => d.path.endsWith('/'));
 
     // There should be at least some index files in a typical docs site
     // This is a soft check - not all sites have index files
     console.log(
       `Found ${indexPaths.length} index file paths:`,
-      indexPaths.map(d => d.path),
+      indexPaths.map((d) => d.path),
     );
   });
 
@@ -122,7 +122,7 @@ test.describe('Search Index Validation', () => {
     const docs = index?.documents || [];
 
     // Find a document with rawHeaders
-    const docWithHeaders = docs.find(d => d.rawHeaders && d.rawHeaders.length > 0);
+    const docWithHeaders = docs.find((d) => d.rawHeaders && d.rawHeaders.length > 0);
 
     if (docWithHeaders) {
       for (const header of docWithHeaders.rawHeaders!) {
@@ -153,7 +153,7 @@ test.describe('Search Index Debug', () => {
 
     const indexInfo = {
       documentCount: index.documents?.length || 0,
-      sampleDocuments: index.documents?.slice(0, 3).map(d => ({
+      sampleDocuments: index.documents?.slice(0, 3).map((d) => ({
         id: d.id,
         path: d.path,
         title: d.title,

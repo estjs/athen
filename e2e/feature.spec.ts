@@ -59,7 +59,9 @@ test.describe('Athen docs E2E', () => {
     await page.getByRole('link', { name: 'Get Started' }).click();
 
     await expect(page).toHaveURL(/\/guide\/getting-started/);
-    await expect(page.locator('.sidebar').getByRole('link', { name: 'Getting Started' })).toBeVisible();
+    await expect(
+      page.locator('.sidebar').getByRole('link', { name: 'Getting Started' }),
+    ).toBeVisible();
     await expect(page.locator('.aside .toc-item').first()).toBeVisible();
     await expect(page.locator('.aside')).toContainText('Why Choose Athen?');
   });

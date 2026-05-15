@@ -39,7 +39,7 @@ function config(plugins?: Plugin[]): SiteConfig {
 }
 
 const pluginNames = (plugins: unknown[]) =>
-  plugins.flatMap(plugin =>
+  plugins.flatMap((plugin) =>
     typeof plugin === 'object' && plugin && 'name' in plugin ? [String(plugin.name)] : [],
   );
 
@@ -52,7 +52,7 @@ describe('plugins', () => {
     const client = await createVitePlugins(config(), false);
 
     expect(server[0]).toBe(userRoute);
-    expect(pluginNames(server).filter(name => name === 'athen:routes')).toHaveLength(1);
+    expect(pluginNames(server).filter((name) => name === 'athen:routes')).toHaveLength(1);
     expect(pluginNames(server)).toContain('inspect');
     expect(pluginNames(client)).not.toContain('inspect');
   });
@@ -66,13 +66,13 @@ describe('plugins', () => {
       require.resolve('essor-router', { paths: [join(cwd(), 'packages/athen')] }),
     );
     const find = (aliases: Alias[], id: string) =>
-      aliases.find(alias =>
+      aliases.find((alias) =>
         typeof alias.find === 'string' ? alias.find === id : alias.find.test(id),
       )?.replacement;
     const aliases = (isClient: boolean) =>
-      (pluginConfig(config(), undefined, isClient) as Plugin & { config: () => UserConfig })
-        .config()
-        .resolve?.alias as Alias[];
+      (
+        pluginConfig(config(), undefined, isClient) as Plugin & { config: () => UserConfig }
+      ).config().resolve?.alias as Alias[];
 
     expect(find(aliases(true), 'essor/server')).toBe(join(essor, 'server.esm.js'));
     expect(find(aliases(true), 'essor-router')).toBe(join(router, 'index.mjs'));

@@ -2,7 +2,7 @@ import { debounce } from 'lodash-es';
 import { signal } from 'essor';
 
 function highlight(id: string) {
-  document.querySelectorAll('.toc-item').forEach(item => {
+  document.querySelectorAll('.toc-item').forEach((item) => {
     item.classList.remove('highlight');
   });
 
@@ -34,7 +34,7 @@ export function useActiveToc() {
   }
 
   const scrollHandler = debounce(() => {
-    const rects = headers.map(header => header.getBoundingClientRect());
+    const rects = headers.map((header) => header.getBoundingClientRect());
 
     for (const [i, title] of headers.entries()) {
       const rect = rects[i];

@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  getRelativePagePath,
-  normalizeRoutePath,
-  removeBase,
-  withBase,
-} from '../src/shared/utils';
+import { getRelativePagePath, normalizeRoutePath, removeBase, withBase } from '../src/shared/utils';
 
 describe('shared path utils', () => {
   it('normalizes base paths without duplicating slashes', () => {

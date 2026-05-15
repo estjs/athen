@@ -109,7 +109,10 @@ function injectHtmlTags(html: string, tags: HtmlTagDescriptor[]) {
   return result;
 }
 
-function getHtmlTransformHooks(plugins: Plugin[], order?: 'pre' | 'post'): IndexHtmlTransformHook[] {
+function getHtmlTransformHooks(
+  plugins: Plugin[],
+  order?: 'pre' | 'post',
+): IndexHtmlTransformHook[] {
   const hooks: IndexHtmlTransformHook[] = [];
 
   for (const plugin of plugins) {

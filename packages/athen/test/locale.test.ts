@@ -47,7 +47,9 @@ describe('locale helpers', () => {
 
   it('removes only the default locale source prefix from paths', () => {
     expect(stripLocalePrefix('/en/guide/getting-started', '/en/')).toBe('/guide/getting-started');
-    expect(stripLocalePrefix('/zh/guide/getting-started', '/en/')).toBe('/zh/guide/getting-started');
+    expect(stripLocalePrefix('/zh/guide/getting-started', '/en/')).toBe(
+      '/zh/guide/getting-started',
+    );
     expect(stripLocalePrefix('/en/', '/en/')).toBe('/');
   });
 });

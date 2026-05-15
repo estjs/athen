@@ -27,7 +27,7 @@ const PageLink = ({
   });
 
   const router = useRouter();
-  const handleNavigate = e => {
+  const handleNavigate = (e) => {
     if (!href || EXTERNAL_URL_RE.test(href)) {
       return;
     }
@@ -41,8 +41,7 @@ const PageLink = ({
       onClick={handleNavigate}
       target={val.value.target}
       rel={val.value.rel}
-      class={`at-link cursor-pointer ${className || ''}`}
-    >
+      class={`at-link cursor-pointer ${className || ''}`}>
       {children}
     </a>
   );

@@ -8,7 +8,7 @@ export const SX_REGEX = /(j|t)sx$/;
 export const MD_REGEX = /\.mdx?$/;
 
 const root = '..';
-const resolvePath = relativePath =>
+const resolvePath = (relativePath) =>
   fileURLToPath(new URL(`${root}/${relativePath}`, import.meta.url));
 
 //  paths

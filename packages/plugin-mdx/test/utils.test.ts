@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  cleanUrl,
-  createHash,
-  parseUrl,
-  isReg,
-  MD_REGEX,
   DIRECTIVE_TYPES,
+  MD_REGEX,
   TARGET_BLANK_WHITE_LIST,
   appendNamedExport,
+  cleanUrl,
+  createHash,
+  isReg,
+  parseUrl,
 } from '../src/utils';
 
 describe('cleanUrl', () => {
@@ -145,7 +145,7 @@ describe('isReg', () => {
   });
 });
 
-describe('MD_REGEX', () => {
+describe('mD_REGEX', () => {
   it('should match .md files', () => {
     expect(MD_REGEX.test('file.md')).toBe(true);
     expect(MD_REGEX.test('path/to/file.md')).toBe(true);
@@ -174,7 +174,7 @@ describe('MD_REGEX', () => {
   });
 });
 
-describe('DIRECTIVE_TYPES', () => {
+describe('dIRECTIVE_TYPES', () => {
   it('should contain expected directive types', () => {
     expect(DIRECTIVE_TYPES).toContain('tip');
     expect(DIRECTIVE_TYPES).toContain('warning');
@@ -187,7 +187,7 @@ describe('DIRECTIVE_TYPES', () => {
   });
 });
 
-describe('TARGET_BLANK_WHITE_LIST', () => {
+describe('tARGET_BLANK_WHITE_LIST', () => {
   it('should contain essor related URLs', () => {
     expect(TARGET_BLANK_WHITE_LIST).toContain('https://essor.netlify.app/');
     expect(TARGET_BLANK_WHITE_LIST).toContain('https://essor-playground.netlify.app/');

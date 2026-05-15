@@ -34,7 +34,10 @@ export class AlgoliaSearcher {
     if (!this.initialized) await this.init();
     if (!query.trim()) return [];
     try {
-      const response = await this.index.search(query, { hitsPerPage: 7, ...this.config.algoliaOptions });
+      const response = await this.index.search(query, {
+        hitsPerPage: 7,
+        ...this.config.algoliaOptions,
+      });
       return response.hits.map((hit: any) => ({
         path: hit.url || hit.path || '',
         title: hit.title || hit.hierarchy?.lvl0 || '',

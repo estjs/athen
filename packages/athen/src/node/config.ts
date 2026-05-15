@@ -2,15 +2,15 @@ import { dirname, isAbsolute, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import fs from 'fs-extra';
 import { loadConfigFromFile } from 'vite';
-import { DEFAULT_THEME_PATH } from './constants';
 import { LOCALE_PREFERENCE_KEY } from '../shared/constants';
 import {
+  type LocaleRedirectEntry,
   getLocaleRedirectEntries,
   hasRootLocale,
   normalizeLanguageTag,
   normalizeLocalePrefix,
-  type LocaleRedirectEntry,
 } from '../shared/locale';
+import { DEFAULT_THEME_PATH } from './constants';
 import type { DefaultTheme, HeadConfig, SiteConfig, SiteData, UserConfig } from '../shared/types';
 
 type ConfigWithLocales = UserConfig<{ locales?: Record<string, unknown> }>;
@@ -71,11 +71,10 @@ export function resolveLocaleRedirectTarget(
   localeEntries: LocaleRedirectEntry[],
   storedLocalePrefix?: string,
 ): string | undefined {
-  const normalizedEntries = localeEntries
-    .map((entry) => ({
-      prefix: normalizeLocalePrefix(entry.prefix),
-      lang: normalizeLanguageTag(entry.lang || entry.prefix),
-    }));
+  const normalizedEntries = localeEntries.map((entry) => ({
+    prefix: normalizeLocalePrefix(entry.prefix),
+    lang: normalizeLanguageTag(entry.lang || entry.prefix),
+  }));
 
   if (normalizedEntries.length === 0) {
     return undefined;
@@ -119,7 +118,8 @@ export function resolveLocaleRedirectTarget(
 function createLanguageRedirectScript(userConfig: ConfigWithLocales): HeadConfig | null {
   const localeEntries = getLocaleRedirectEntries(userConfig);
   const rootLocale =
-    hasRootLocale(userConfig) || localeEntries.some((entry) => normalizeLocalePrefix(entry.prefix) === '');
+    hasRootLocale(userConfig) ||
+    localeEntries.some((entry) => normalizeLocalePrefix(entry.prefix) === '');
   if (localeEntries.length === 0 || (rootLocale && localeEntries.length === 1)) {
     return null;
   }

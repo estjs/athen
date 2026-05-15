@@ -223,8 +223,8 @@ pnpm add athen
 ### Custom Remark Plugins
 
 ```ts
-import { pluginMdx } from '@athen/plugin-mdx';
 import remarkCustomPlugin from 'remark-custom-plugin';
+import { pluginMdx } from '@athen/plugin-mdx';
 
 export default {
   plugins: [

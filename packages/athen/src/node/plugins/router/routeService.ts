@@ -2,9 +2,9 @@ import path, { basename, extname } from 'node:path';
 import { globSync } from 'glob';
 import { normalizePath } from 'vite';
 import {
+  type LocaleAwareConfig,
   getDefaultLocaleSourcePrefix,
   stripLocalePrefix,
-  type LocaleAwareConfig,
 } from '../../../shared/locale';
 import { addLeadingSlash, withBase } from '../../../shared/utils';
 import type { RouteOptions } from '../../../shared/types';

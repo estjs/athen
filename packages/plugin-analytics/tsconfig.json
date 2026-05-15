@@ -2,11 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
     "module": "ESNext",
     "types": ["vite/client"],
     "declaration": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "outDir": "dist"
   },
   "include": ["src/**/*"]
 }

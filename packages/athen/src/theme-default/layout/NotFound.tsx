@@ -12,8 +12,7 @@ export function NotFound() {
         <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row">
           <Link
             href="#"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary inline-flex items-center rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
-          >
+            className="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary inline-flex items-center rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
             Go to Homepage
           </Link>
         </div>

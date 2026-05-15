@@ -28,7 +28,7 @@ export async function createDevServer(
     plugins: await createVitePlugins(config, true, restartServer),
     server: {
       port: port || 8730,
-      host: host,
+      host,
       fs: {
         allow: [PACKAGE_ROOT],
       },

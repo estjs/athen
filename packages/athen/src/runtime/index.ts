@@ -17,7 +17,7 @@ export const getAllPages = (
     routes[0].children
       .filter(filter)
       .filter(Boolean)
-      .map(async route => {
+      .map(async (route) => {
         const mod = await route.preload!();
         return {
           ...route,

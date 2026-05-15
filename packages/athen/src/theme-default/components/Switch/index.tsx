@@ -14,11 +14,9 @@ export function Switch() {
       type="button"
       role="switch"
       aria-checked={isDark.value}
-      onClick={handleClick}
-    >
+      onClick={handleClick}>
       <span
-        class={`check absolute top-1 left-1 w-4 h-4 bg-white dark:bg-#ccc dark:translate-x-4 rounded-full transition-transform transform }`}
-      ></span>
+        class={`check absolute top-1 left-1 w-4 h-4 bg-white dark:bg-#ccc dark:translate-x-4 rounded-full transition-transform transform }`}></span>
     </button>
   );
 }

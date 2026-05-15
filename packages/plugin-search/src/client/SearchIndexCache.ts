@@ -27,21 +27,26 @@ export class SearchIndexCache {
     this.maxAge = options.maxAge ?? DEFAULT_MAX_AGE;
   }
 
-  async init(): Promise<void> {
-    if (this.db) return;
+  init(): Promise<void> {
+    if (this.db) return Promise.resolve();
     if (this.initPromise) return this.initPromise;
     this.initPromise = new Promise((resolve, reject) => {
       try {
         const request = indexedDB.open(this.dbName, 1);
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => { this.db = request.result; resolve(); };
-        request.onupgradeneeded = (e) => {
+        request.addEventListener('error', () => reject(request.error));
+        request.addEventListener('success', () => {
+          this.db = request.result;
+          resolve();
+        });
+        request.addEventListener('upgradeneeded', (e) => {
           const db = (e.target as IDBOpenDBRequest).result;
           if (!db.objectStoreNames.contains(this.storeName)) {
             db.createObjectStore(this.storeName, { keyPath: 'key' });
           }
-        };
-      } catch (error) { reject(error); }
+        });
+      } catch (error) {
+        reject(error);
+      }
     });
     return this.initPromise;
   }
@@ -51,10 +56,12 @@ export class SearchIndexCache {
       if (!this.db) await this.init();
       if (!this.db) return null;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readonly').objectStore(this.storeName);
+        const store = this.db!.transaction([this.storeName], 'readonly').objectStore(
+          this.storeName,
+        );
         const request = store.get(key);
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
+        request.addEventListener('error', () => reject(request.error));
+        request.addEventListener('success', () => {
           const result = request.result as CacheEntry<T> | undefined;
           if (result && Date.now() - result.timestamp <= this.maxAge) {
             resolve(result.data);
@@ -62,9 +69,11 @@ export class SearchIndexCache {
             if (result) this.delete(key).catch(() => {});
             resolve(null);
           }
-        };
+        });
       });
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }
 
   async set<T>(key: string, data: T): Promise<void> {
@@ -72,10 +81,12 @@ export class SearchIndexCache {
       if (!this.db) await this.init();
       if (!this.db) return;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(this.storeName);
+        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(
+          this.storeName,
+        );
         const request = store.put({ key, data, timestamp: Date.now() });
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve();
+        request.addEventListener('error', () => reject(request.error));
+        request.addEventListener('success', () => resolve());
       });
     } catch {}
   }
@@ -85,10 +96,12 @@ export class SearchIndexCache {
       if (!this.db) await this.init();
       if (!this.db) return;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(this.storeName);
+        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(
+          this.storeName,
+        );
         const request = store.delete(key);
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve();
+        request.addEventListener('error', () => reject(request.error));
+        request.addEventListener('success', () => resolve());
       });
     } catch {}
   }
@@ -98,10 +111,12 @@ export class SearchIndexCache {
       if (!this.db) await this.init();
       if (!this.db) return;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(this.storeName);
+        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(
+          this.storeName,
+        );
         const request = store.clear();
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve();
+        request.addEventListener('error', () => reject(request.error));
+        request.addEventListener('success', () => resolve());
       });
     } catch {}
   }

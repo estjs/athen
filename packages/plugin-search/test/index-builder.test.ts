@@ -237,7 +237,10 @@ This is a test document.
       const customBuilder = new SearchIndexBuilder({
         defaultLocaleSourcePrefix: '/en/',
       });
-      customBuilder.addDocument('en/guide/getting-started.md', '# Quick Start\n\nContent about Vite.');
+      customBuilder.addDocument(
+        'en/guide/getting-started.md',
+        '# Quick Start\n\nContent about Vite.',
+      );
       customBuilder.addDocument('zh/guide/getting-started.md', '# 快速开始\n\n中文内容。');
 
       const index = JSON.parse(customBuilder.generateSearchIndex());
@@ -267,7 +270,10 @@ This is a test document.
 
       const index = JSON.parse(builder.generateSearchIndex());
       expect(builder.getDocumentsCount()).toBe(2);
-      expect(index.documents.map((doc: any) => doc.path).sort()).toEqual(['/guide/intro', '/index']);
+      expect(index.documents.map((doc: any) => doc.path).sort()).toEqual([
+        '/guide/intro',
+        '/index',
+      ]);
     });
 
     it('should ignore missing directories', () => {

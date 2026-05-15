@@ -79,10 +79,10 @@ Athen is built with TypeScript and provides comprehensive type definitions:
 
 ```typescript
 import type {
-  SiteConfig,
-  ThemeConfig,
   PageData,
-  Plugin
+  Plugin,
+  SiteConfig,
+  ThemeConfig
 } from 'athen';
 ```
 

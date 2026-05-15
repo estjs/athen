@@ -299,7 +299,7 @@ function SearchBox() {
 ### 同意横幅组件
 
 ```tsx
-import { useState, useEffect } from 'essor';
+import { useEffect, useState } from 'essor';
 
 export function ConsentBanner() {
   const [showBanner, setShowBanner] = useState(false);

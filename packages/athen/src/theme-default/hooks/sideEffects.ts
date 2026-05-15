@@ -36,7 +36,7 @@ function bindingWindowScroll() {
 
   window.addEventListener(
     'click',
-    e => {
+    (e) => {
       // Only handle a tag click
       const link = (e.target as Element).closest('a');
       if (link) {
@@ -62,7 +62,7 @@ function bindingWindowScroll() {
     },
     { capture: true },
   );
-  window.addEventListener('hashchange', e => {
+  window.addEventListener('hashchange', (e) => {
     e.preventDefault();
   });
 }
@@ -80,14 +80,14 @@ export function bindingAsideScroll() {
   const aside = document.querySelector('#aside-container');
   const links = Array.from(
     document.querySelectorAll<HTMLAnchorElement>('.athen-doc .header-anchor'),
-  ).filter(item => item.parentElement?.tagName !== 'H1');
+  ).filter((item) => item.parentElement?.tagName !== 'H1');
 
   if (!aside || links.length === 0) {
     return;
   }
 
   let prevActiveLink: null | HTMLAnchorElement = null;
-  const headers = Array.from(aside?.getElementsByTagName('a') || []).map(item =>
+  const headers = Array.from(aside?.getElementsByTagName('a') || []).map((item) =>
     decodeURIComponent(item.hash),
   );
   if (marker && headers.length === 0) {

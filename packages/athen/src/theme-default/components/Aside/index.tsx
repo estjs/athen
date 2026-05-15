@@ -34,13 +34,12 @@ export function Aside(props: { pagePath: string; outlineTitle: string }) {
           style={{
             'padding-left': `${(header.depth - 2) * 12}px`,
           }}
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault();
             // eslint-disable-next-line unicorn/prefer-query-selector
             const target = document.getElementById(header.id);
             target && scrollToTarget(target, false);
-          }}
-        >
+          }}>
           {header.text}
         </a>
       </li>
@@ -62,8 +61,7 @@ export function Aside(props: { pagePath: string; outlineTitle: string }) {
               transition:
                 'top 0.35s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s ease, opacity 0.3s ease',
             }}
-            id="aside-marker"
-          ></div>
+            id="aside-marker"></div>
           <div class="mt-2 block text-[16px] font-semibold leading-7">{props.outlineTitle}</div>
           <nav>
             <ul class="relative">{headers.value.map(renderHeader)}</ul>

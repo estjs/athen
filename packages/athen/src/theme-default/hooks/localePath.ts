@@ -16,9 +16,9 @@ export function getLocalePath(
   const normalizedTargetPrefix = normalizeSlash(targetLocalePrefix);
   const normalizedPathname = normalizeSlash(pathname);
   const sourceLocalePrefix = localePrefixes
-    .map(locale => normalizeSlash(locale))
+    .map((locale) => normalizeSlash(locale))
     .sort((a, b) => b.length - a.length)
-    .find(locale => {
+    .find((locale) => {
       if (locale === '/') {
         return normalizedPathname.startsWith('/');
       }

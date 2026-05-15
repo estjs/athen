@@ -14,7 +14,7 @@ interface LinkNode {
  */
 export const remarkPluginNormalizeLink: Plugin<[{ base: string; enableSpa: boolean }]> =
   ({ base, enableSpa }) =>
-  tree => {
+  (tree) => {
     visit(
       tree,
       (node: LinkNode) => node.type === 'link',

@@ -21,7 +21,7 @@ interface AthenRouteRecord {
  */
 export async function initPageData(routerPath: string): Promise<PageData> {
   const router = routes[0] as AthenRouteRecord;
-  const matched = router.children?.find(route => route.path === routerPath);
+  const matched = router.children?.find((route) => route.path === routerPath);
 
   if (matched?.preload) {
     const moduleInfo = await matched.preload();

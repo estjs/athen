@@ -2,7 +2,7 @@ import copy from 'copy-to-clipboard';
 
 export function setupCopyCodeButton() {
   const timeoutIdMap: Map<HTMLElement, NodeJS.Timeout> = new Map();
-  window.addEventListener('click', async e => {
+  window.addEventListener('click', async (e) => {
     const el = e.target as HTMLElement;
 
     if (el.matches('div[class*="language-"] > button.copy')) {

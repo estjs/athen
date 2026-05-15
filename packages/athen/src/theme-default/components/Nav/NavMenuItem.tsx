@@ -1,7 +1,7 @@
 import { computed } from 'essor';
-import Link from '../Link';
 import { withBase } from '@shared/utils';
 import { LOCALE_PREFERENCE_KEY } from '@shared/constants';
+import Link from '../Link';
 import type { DefaultTheme } from '@/shared/types';
 
 export type NavMenuLinkItem = DefaultTheme.NavItemWithLink & {

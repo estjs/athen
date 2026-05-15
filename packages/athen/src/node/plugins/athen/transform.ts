@@ -1,4 +1,4 @@
-import { transformAsync, types as babelTypes } from '@babel/core';
+import { types as babelTypes, transformAsync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
 import { type Plugin, transformWithOxc } from 'vite';
 import { MD_REGEX, SX_REGEX } from '../../constants';
@@ -25,13 +25,10 @@ function pluginRewriteServerForImport() {
         }
 
         path.node.specifiers = path.node.specifiers.filter(
-          specifier => !serverSpecifiers.includes(specifier),
+          (specifier) => !serverSpecifiers.includes(specifier),
         );
         path.insertAfter(
-          babelTypes.importDeclaration(
-            serverSpecifiers,
-            babelTypes.stringLiteral('essor/server'),
-          ),
+          babelTypes.importDeclaration(serverSpecifiers, babelTypes.stringLiteral('essor/server')),
         );
 
         if (path.node.specifiers.length === 0) {

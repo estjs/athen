@@ -1,10 +1,10 @@
-import { SearchIndexCache } from './SearchIndexCache';
 import {
   DEFAULT_SEARCH_LIMIT,
+  type SearchIndexes,
   createSearchIndexes,
   searchDocuments,
-  type SearchIndexes,
 } from '../search-core';
+import { SearchIndexCache } from './SearchIndexCache';
 import type { SearchIndexData, SearchResult } from '../types';
 
 export interface FlexSearcherOptions {

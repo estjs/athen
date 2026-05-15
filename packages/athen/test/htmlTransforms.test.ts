@@ -9,21 +9,29 @@ describe('html transforms', () => {
         name: 'pre-transform',
         transformIndexHtml: {
           order: 'pre',
-          handler: html => html.replace('<body>', '<body><p id="pre">pre</p>'),
+          handler: (html) => html.replace('<body>', '<body><p id="pre">pre</p>'),
         },
       },
       {
         name: 'tag-transform',
         transformIndexHtml: () => [
           { tag: 'meta', attrs: { name: 'x-test', content: 'ok' }, injectTo: 'head' },
-          { tag: 'script', attrs: { type: 'module' }, children: 'window.ok=true', injectTo: 'body' },
+          {
+            tag: 'script',
+            attrs: { type: 'module' },
+            children: 'window.ok=true',
+            injectTo: 'body',
+          },
         ],
       },
       {
         name: 'post-transform',
         transformIndexHtml: {
           order: 'post',
-          handler: html => ({ html: html.replace('</body>', '<p id="post">post</p></body>'), tags: [] }),
+          handler: (html) => ({
+            html: html.replace('</body>', '<p id="post">post</p></body>'),
+            tags: [],
+          }),
         },
       },
     ];
@@ -45,8 +53,15 @@ describe('html transforms', () => {
       '<html><head></head><body></body></html>',
       { path: '/', filename: '/tmp/index.html' },
       [
-        { name: 'athen:index-html', transformIndexHtml: html => html.replace('</body>', 'bad</body>') },
-        { name: 'serve-only', apply: 'serve', transformIndexHtml: html => html.replace('</body>', 'bad</body>') },
+        {
+          name: 'athen:index-html',
+          transformIndexHtml: (html) => html.replace('</body>', 'bad</body>'),
+        },
+        {
+          name: 'serve-only',
+          apply: 'serve',
+          transformIndexHtml: (html) => html.replace('</body>', 'bad</body>'),
+        },
       ],
     );
 

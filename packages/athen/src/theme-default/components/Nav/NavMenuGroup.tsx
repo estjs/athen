@@ -24,14 +24,12 @@ export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMen
       class="relative h-60px flex items-center"
       onMouseLeave={() => {
         isOpen.value = false;
-      }}
-    >
+      }}>
       <button
         onMouseEnter={() => {
           isOpen.value = true;
         }}
-        class="flex items-center gap-4px b-x-2 text-1 text-sm font-medium transition-color duration-200 hover:text-text-2"
-      >
+        class="flex items-center gap-4px b-x-2 text-1 text-sm font-medium transition-color duration-200 hover:text-text-2">
         {isTranslation ? <span class="i-carbon-translate" height="18" width="18" /> : text}
         <span class="i-carbon-chevron-down" height="18" width="18" />
       </button>
@@ -40,8 +38,7 @@ export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMen
         style={{
           opacity: isOpen.value ? 1 : 0,
           visibility: isOpen.value ? 'visible' : 'hidden',
-        }}
-      >
+        }}>
         <div class="z-100 mr-[1.5rem] h-full max-h-100vh min-w-100px w-full overflow-y-auto b-1 b-border-default rounded-xl b-solid bg-bg-default p-3 shadow-[var(--at-shadow-3)]">
           {items.map((child, index) => (
             <NavMenuItem item={child} isActive={index === activeIndex} reload={isTranslation} />

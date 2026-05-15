@@ -1,8 +1,5 @@
 import { inject, provide } from 'essor';
-import {
-  useRoute as useClientRoute,
-  useRouter as useClientRouter,
-} from 'athen:ssg-essor-router';
+import { useRoute as useClientRoute, useRouter as useClientRouter } from 'athen:ssg-essor-router';
 import type { Router, RouterViewProps } from 'athen:ssg-essor-router';
 import type { InjectionKey } from 'essor';
 

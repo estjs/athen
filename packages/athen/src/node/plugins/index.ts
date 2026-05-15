@@ -61,7 +61,7 @@ export async function createVitePlugins(
   // Build set of user plugin names to support override logic
   const userPluginNames = new Set(
     userPlugins
-      .map(p => {
+      .map((p) => {
         if (!p) return undefined;
         if (typeof p === 'function') return undefined;
         const plg = p as Partial<Plugin>;
@@ -71,7 +71,7 @@ export async function createVitePlugins(
   );
 
   // Filter built-ins whose names are overridden
-  const finalBuiltIn = builtIn.filter(p => {
+  const finalBuiltIn = builtIn.filter((p) => {
     if (!p) return false;
     if (typeof p === 'function') return true;
     const name = (p as Plugin).name;

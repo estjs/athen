@@ -13,7 +13,7 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
         // Insert client entry script in development
         // And in production, we will insert it in ssg render
         const head =
-          config.siteData.head?.map(item => {
+          config.siteData.head?.map((item) => {
             const [tag, attrs, children] = item;
             return {
               tag,
@@ -50,7 +50,7 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
     configureServer(server) {
       if (config.configPath) {
         server.watcher.add(config.configPath);
-        config.configDeps?.forEach(dep => {
+        config.configDeps?.forEach((dep) => {
           server.watcher.add(dep);
         });
       }

@@ -102,7 +102,7 @@ export function pluginConfig(
     },
     async handleHotUpdate(ctx) {
       const customWatchedFiles = [normalizePath(config.configPath)];
-      const include = (id: string) => customWatchedFiles.some(file => id.includes(file));
+      const include = (id: string) => customWatchedFiles.some((file) => id.includes(file));
 
       if (include(ctx.file)) {
         console.log(`\n${relative(config.root, ctx.file)} changed, restarting server...`);

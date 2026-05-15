@@ -9,7 +9,7 @@ const cache = vi.hoisted(() => ({
 }));
 
 vi.mock('../src/client/SearchIndexCache', () => ({
-  SearchIndexCache: vi.fn(function () {
+  SearchIndexCache: vi.fn(() => {
     return cache;
   }),
 }));
@@ -40,7 +40,7 @@ const freshIndex: SearchIndexData = {
   options: {},
 };
 
-describe('FlexSearcher', () => {
+describe('flexSearcher', () => {
   beforeEach(() => {
     cache.get.mockResolvedValue(staleIndex);
     cache.set.mockResolvedValue(undefined);

@@ -31,13 +31,13 @@ test.describe('Algolia Search Integration', () => {
       // Check for DocSearch CSS
       const hasDocSearchCss = await page.evaluate(() => {
         const links = document.querySelectorAll('link[rel="stylesheet"]');
-        return Array.from(links).some(link => link.getAttribute('href')?.includes('docsearch'));
+        return Array.from(links).some((link) => link.getAttribute('href')?.includes('docsearch'));
       });
 
       // Check for DocSearch script
       const hasDocSearchScript = await page.evaluate(() => {
         const scripts = document.querySelectorAll('script');
-        return Array.from(scripts).some(script =>
+        return Array.from(scripts).some((script) =>
           script.getAttribute('src')?.includes('docsearch'),
         );
       });

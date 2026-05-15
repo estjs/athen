@@ -105,7 +105,7 @@ test.describe('Search Internationalization', () => {
 
       // Find documents with Chinese content
       const chineseDocs = docs.filter(
-        doc =>
+        (doc) =>
           CJK_TEST_DATA.chinese.expectedChars.test(doc.title) ||
           CJK_TEST_DATA.chinese.expectedChars.test(doc.content),
       );
@@ -176,14 +176,14 @@ test.describe('Search Internationalization', () => {
       const docs = index?.documents || [];
 
       // Check for documents with CJK titles
-      const cjkTitleDocs = docs.filter(doc =>
+      const cjkTitleDocs = docs.filter((doc) =>
         /[\u4E00-\u9FCC\u3041-\u3096\u30A1-\u30FA\uAC00-\uD7A3]/.test(doc.title),
       );
 
       console.log(`Documents with CJK titles: ${cjkTitleDocs.length}`);
       console.log(
         'Sample CJK titles:',
-        cjkTitleDocs.slice(0, 3).map(d => d.title),
+        cjkTitleDocs.slice(0, 3).map((d) => d.title),
       );
     });
 
@@ -194,8 +194,8 @@ test.describe('Search Internationalization', () => {
       const docs = index?.documents || [];
 
       // Check for documents with CJK headings
-      const cjkHeadingDocs = docs.filter(doc =>
-        doc.headings.some(h => /[\u4E00-\u9FCC\u3041-\u3096\u30A1-\u30FA\uAC00-\uD7A3]/.test(h)),
+      const cjkHeadingDocs = docs.filter((doc) =>
+        doc.headings.some((h) => /[\u4E00-\u9FCC\u3041-\u3096\u30A1-\u30FA\uAC00-\uD7A3]/.test(h)),
       );
 
       console.log(`Documents with CJK headings: ${cjkHeadingDocs.length}`);

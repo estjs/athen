@@ -1,4 +1,9 @@
-import { addLeadingSlash, normalizeRoutePath, normalizeSlash, removeTrailingSlash } from '../shared/utils';
+import {
+  addLeadingSlash,
+  normalizeRoutePath,
+  normalizeSlash,
+  removeTrailingSlash,
+} from '../shared/utils';
 
 export const isProduction = () => import.meta.env.PROD;
 

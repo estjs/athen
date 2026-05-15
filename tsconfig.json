@@ -2,19 +2,12 @@
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "preserve",
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
+    "lib": ["ESNext", "DOM"],
     "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "types": [
-      "node",
-      "vitest/globals",
-      "vite/client"
-    ],
+    "types": ["node", "vitest/globals", "vite/client"],
     "strict": true,
     "strictPropertyInitialization": false,
     "noImplicitAny": false,
@@ -24,10 +17,5 @@
     "skipDefaultLibCheck": true,
     "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "playground",
-    "tsup.config.ts"
-  ]
+  "exclude": ["node_modules", "dist", "playground", "tsup.config.ts"]
 }

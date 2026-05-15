@@ -27,7 +27,7 @@ export function useLocaleSiteData() {
       (a, b) => normalizeSlash(b).length - normalizeSlash(a).length,
     );
     const localeKey =
-      localeKeys.find(locale => {
+      localeKeys.find((locale) => {
         const normalizedLocalePrefix = withBase(normalizeSlash(locale));
         return (pathname.value || '/').startsWith(normalizedLocalePrefix);
       }) || localeKeys[0];

@@ -299,7 +299,7 @@ function SearchBox() {
 ### Consent Banner Component
 
 ```tsx
-import { useState, useEffect } from 'essor';
+import { useEffect, useState } from 'essor';
 
 export function ConsentBanner() {
   const [showBanner, setShowBanner] = useState(false);

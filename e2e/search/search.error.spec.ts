@@ -198,7 +198,7 @@ test.describe('Search Error Handling', () => {
     test('no console errors during normal search', async ({ page }) => {
       const consoleErrors: string[] = [];
 
-      page.on('console', msg => {
+      page.on('console', (msg) => {
         if (msg.type() === 'error') {
           consoleErrors.push(msg.text());
         }
@@ -216,7 +216,7 @@ test.describe('Search Error Handling', () => {
 
       // Filter out known non-critical errors
       const criticalErrors = consoleErrors.filter(
-        err => !err.includes('favicon') && !err.includes('404') && !err.includes('net::ERR'),
+        (err) => !err.includes('favicon') && !err.includes('404') && !err.includes('net::ERR'),
       );
 
       // Should have no critical console errors

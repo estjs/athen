@@ -97,7 +97,7 @@ test.describe('FlexSearch Basic Functionality', () => {
       expect(count).toBeGreaterThan(0);
 
       const titles = await searchPage.getResultTitles();
-      const hasMatch = titles.some(t => /Quick Start|快速开始/i.test(t));
+      const hasMatch = titles.some((t) => /Quick Start|快速开始/i.test(t));
       expect(hasMatch).toBe(true);
     });
 
@@ -194,13 +194,13 @@ test.describe('FlexSearch Basic Functionality', () => {
 
         if (expected.expectedTitlePattern) {
           const titles = await searchPage.getResultTitles();
-          const hasMatch = titles.some(t => expected.expectedTitlePattern!.test(t));
+          const hasMatch = titles.some((t) => expected.expectedTitlePattern!.test(t));
           expect(hasMatch).toBe(true);
         }
 
         if (expected.expectedPathPattern) {
           const paths = await searchPage.getResultPaths();
-          const hasMatch = paths.some(p => expected.expectedPathPattern!.test(p));
+          const hasMatch = paths.some((p) => expected.expectedPathPattern!.test(p));
           expect(hasMatch).toBe(true);
         }
       });

@@ -7,7 +7,7 @@ import type { DefaultTheme } from '@shared/types';
 type SidebarLink = Extract<DefaultTheme.SidebarItem, { link: string }>;
 
 function flattenSidebarItems(items: DefaultTheme.SidebarItem[]): SidebarLink[] {
-  return items.flatMap(item => ('items' in item ? flattenSidebarItems(item.items) : [item]));
+  return items.flatMap((item) => ('items' in item ? flattenSidebarItems(item.items) : [item]));
 }
 
 export function usePrevNextPage() {
@@ -16,7 +16,7 @@ export function usePrevNextPage() {
   const sidebarData = useSidebarData(pathname, localesData);
 
   return computed(() => {
-    const pages = sidebarData.value.items.flatMap(sidebarGroup =>
+    const pages = sidebarData.value.items.flatMap((sidebarGroup) =>
       flattenSidebarItems(sidebarGroup.items),
     );
 
