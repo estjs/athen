@@ -16,7 +16,7 @@ function getLastChangeLogCommit() {
     encoding: 'utf-8',
   }).split('\n');
 
-  return changeLogCommits.find(cmt => VERSION_REG.test(cmt))?.slice(0, 8) ?? '';
+  return changeLogCommits.find((cmt) => VERSION_REG.test(cmt))?.slice(0, 8) ?? '';
 }
 
 function getGitCommitMap(lastCommit: string) {
@@ -35,11 +35,11 @@ function updateChangeLog() {
   }
   const initialChangelogStr = readFileSync(join(`${resolve()}/CHANGELOG.md`), 'utf8') || '';
 
-  const pageDataStr = `${initialChangelogStr.match(/---[\S\s]+---/)![0]}\n`;
-  const data = initialChangelogStr.split(/---[\S\s]+---/);
+  const pageDataStr = `${initialChangelogStr.match(/---[\s\S]+---/)![0]}\n`;
+  const data = initialChangelogStr.split(/---[\s\S]+---/);
   data.unshift(pageDataStr);
 
-  new Promise(resolve => {
+  new Promise((resolve) => {
     standardChangelog({}, null, { from: lastCommit, to: 'HEAD' })
       .on('data', (chunk: any) => {
         let changeLogStr = chunk.toString().trim();
