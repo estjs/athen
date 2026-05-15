@@ -1,15 +1,19 @@
-import { presetUno } from 'unocss';
+import { createRequire } from 'node:module';
+import { presetWind3 } from 'unocss';
 import presetIcons from '@unocss/preset-icons/browser';
 import type { VitePluginConfig } from 'unocss/vite';
 
+const require = createRequire(import.meta.url);
+const carbonIcons = require('@iconify-json/carbon/icons.json');
+
 const options: VitePluginConfig = {
   presets: [
-    presetUno(),
+    presetWind3(),
     presetIcons({
       scale: 1.2,
       warn: true,
       collections: {
-        carbon: () => import('@iconify-json/carbon/icons.json').then(i => i.default),
+        carbon: () => carbonIcons,
       },
     }),
   ],
