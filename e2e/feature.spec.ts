@@ -7,12 +7,16 @@ async function switchLocale(page, locale: 'en' | 'zh') {
   // Translation dropdown is rendered only when multi-lang enabled
   await page.locator('button:has(.i-carbon-translate)').hover();
   await page.getByText(locale === 'en' ? 'English' : '简体中文', { exact: true }).click();
-  await expect(page).toHaveURL(new RegExp(`/${locale}/`));
+  if (locale === 'zh') {
+    await expect(page).toHaveURL(/\/zh\//);
+  } else {
+    await expect(page).not.toHaveURL(/\/zh\//);
+  }
 }
 
 test.describe('Athen docs E2E', () => {
   test('search box returns result and navigates', async ({ page }) => {
-    await page.goto('/en/');
+    await page.goto('/');
     await page.keyboard.press('/'); // Focus search input via shortcut
     await page.getByPlaceholder('Search...').fill('Quick Start');
 
@@ -27,7 +31,7 @@ test.describe('Athen docs E2E', () => {
   });
 
   test('sidebar navigation changes article', async ({ page }) => {
-    await page.goto('/en/guide/getting-started');
+    await page.goto('/guide/getting-started');
 
     const sidebarLink = page.locator('.sidebar').locator('text=Static Assets');
     await sidebarLink.click();
@@ -37,24 +41,24 @@ test.describe('Athen docs E2E', () => {
   });
 
   test('doc footer updates after sidebar navigation', async ({ page }) => {
-    await page.goto('/en/guide/getting-started');
+    await page.goto('/guide/getting-started');
 
     await page.locator('.sidebar').getByRole('link', { name: 'Static Assets' }).click();
 
-    await expect(page).toHaveURL(/\/en\/guide\/static-assets$/);
+    await expect(page).toHaveURL(/\/guide\/static-assets$/);
     await expect(page.locator('.pager .prev')).toContainText('Using MDX');
-    await expect(page.locator('.pager .prev a')).toHaveAttribute('href', '/en/guide/use-mdx');
+    await expect(page.locator('.pager .prev a')).toHaveAttribute('href', '/guide/use-mdx');
     await expect(page.locator('.pager .next')).toContainText('Multi-Instance Sites');
-    await expect(page.locator('.pager .next a')).toHaveAttribute('href', '/en/guide/multi-instance');
+    await expect(page.locator('.pager .next a')).toHaveAttribute('href', '/guide/multi-instance');
   });
 
   test('aside appears after client navigation from home to doc', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/en/');
+    await page.goto('/');
 
     await page.getByRole('link', { name: 'Get Started' }).click();
 
-    await expect(page).toHaveURL(/\/en\/guide\/getting-started/);
+    await expect(page).toHaveURL(/\/guide\/getting-started/);
     await expect(page.locator('.sidebar').getByRole('link', { name: 'Getting Started' })).toBeVisible();
     await expect(page.locator('.aside .toc-item').first()).toBeVisible();
     await expect(page.locator('.aside')).toContainText('Why Choose Athen?');
@@ -83,8 +87,18 @@ test.describe('Athen docs E2E', () => {
     await expect(html).not.toHaveClass(/dark/);
   });
 
+  test('selected language is reused on the next visit', async ({ page }) => {
+    await page.goto('/');
+    await switchLocale(page, 'zh');
+
+    await page.goto('/');
+
+    await expect(page).toHaveURL(/\/zh\/?$/);
+    await expect(page.getByRole('link', { name: '快速开始' })).toBeVisible();
+  });
+
   test('language switch navigation', async ({ page }) => {
-    await page.goto('/en/');
+    await page.goto('/');
     // Ensure we are on english homepage
     await expect(page.locator('h1')).toContainText('athen');
     await expect(page.getByRole('link', { name: 'Get Started' })).toBeVisible();

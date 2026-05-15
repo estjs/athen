@@ -33,6 +33,7 @@ function createTranslationMenu(
         text: item.label,
         link: getLink(),
         getLink,
+        localePrefix: item.prefix,
       };
     }),
     isTranslation: true,

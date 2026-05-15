@@ -1,7 +1,12 @@
 import path, { basename, extname } from 'node:path';
-import { normalizePath } from 'vite';
-import { addLeadingSlash, normalizeSlash, withBase } from '../../../shared/utils';
 import { globSync } from 'glob';
+import { normalizePath } from 'vite';
+import {
+  getDefaultLocaleSourcePrefix,
+  stripLocalePrefix,
+  type LocaleAwareConfig,
+} from '../../../shared/locale';
+import { addLeadingSlash, withBase } from '../../../shared/utils';
 import type { RouteOptions } from '../../../shared/types';
 
 interface RouteMeta {
@@ -20,60 +25,97 @@ export function normalizePageRoutePath(routePath: string): string {
   return addLeadingSlash(routePath);
 }
 
-type LocaleConfig = {
-  lang?: string;
-};
+const DEFAULT_IGNORE_PATTERNS = [
+  '**/node_modules/**',
+  '**/build/**',
+  '**/dist/**',
+  '**/.temp/**',
+  'athen.config.*',
+];
 
-type LocaleAwareSiteData = {
-  lang?: string;
+const DEFAULT_ROUTE_INCLUDE_PATTERN = '**/*.{ts,tsx,jsx,md,mdx}';
+
+type LocaleAwareSiteData = LocaleAwareConfig & {
   title?: string;
-  themeConfig?: unknown;
 };
 
-function getLocales(siteData?: LocaleAwareSiteData): Record<string, LocaleConfig> | undefined {
-  if (!siteData?.themeConfig || typeof siteData.themeConfig !== 'object') return;
-
-  const locales = (siteData.themeConfig as { locales?: unknown }).locales;
-  if (!locales || typeof locales !== 'object') return;
-
-  return locales as Record<string, LocaleConfig>;
-}
-
-function getDefaultLocalePrefix(siteData?: LocaleAwareSiteData): string | undefined {
-  const locales = getLocales(siteData);
-  if (!locales) return;
-
-  const localeEntry = Object.entries(locales).find(([, localeConfig]) => {
-    if (!localeConfig?.lang || !siteData?.lang) return false;
-    return siteData.lang.toLowerCase().startsWith(localeConfig.lang.toLowerCase());
-  });
-
-  if (!localeEntry) return;
-
-  const [routePrefix, localeConfig] = localeEntry;
-  if (normalizeSlash(routePrefix) !== '/') {
-    return routePrefix;
-  }
-
-  const localeSourcePrefix = localeConfig.lang?.split('-')[0] || siteData?.lang?.split('-')[0];
-  return localeSourcePrefix ? `/${localeSourcePrefix}/` : undefined;
+export function getDefaultLocalePrefix(siteData?: LocaleAwareSiteData): string | undefined {
+  return getDefaultLocaleSourcePrefix(siteData);
 }
 
 function removeLocalePrefix(routePath: string, localePrefix?: string) {
-  if (!localePrefix) return routePath;
+  return stripLocalePrefix(routePath, localePrefix);
+}
 
-  const normalizedRoutePath = normalizeSlash(routePath);
-  const normalizedLocalePrefix = normalizeSlash(localePrefix);
+function getIncludePattern(routeOptions?: RouteOptions) {
+  return routeOptions?.include?.length ? routeOptions.include : DEFAULT_ROUTE_INCLUDE_PATTERN;
+}
 
-  if (normalizedRoutePath === normalizedLocalePrefix) {
-    return '/';
-  }
+function getIgnorePatterns(routeOptions?: RouteOptions) {
+  return [...DEFAULT_IGNORE_PATTERNS, ...(routeOptions?.exclude || [])];
+}
 
-  if (normalizedRoutePath.startsWith(`${normalizedLocalePrefix}/`)) {
-    return addLeadingSlash(normalizedRoutePath.slice(normalizedLocalePrefix.length));
-  }
+function resolveRoutePath(fileRelativePath: string, siteData?: LocaleAwareSiteData) {
+  return removeLocalePrefix(
+    normalizePageRoutePath(fileRelativePath),
+    getDefaultLocalePrefix(siteData),
+  );
+}
 
-  return routePath;
+function createRouteMeta(
+  filePath: string,
+  root: string,
+  siteData?: LocaleAwareSiteData,
+): RouteMeta {
+  const fileRelativePath = normalizePath(path.relative(root, filePath));
+
+  return {
+    routePath: resolveRoutePath(fileRelativePath, siteData),
+    absolutePath: normalizePath(filePath),
+    filePath: fileRelativePath,
+    name: basename(filePath, extname(filePath)),
+  };
+}
+
+function collectRouteFiles(scanDir: string, routeOptions?: RouteOptions) {
+  return globSync(getIncludePattern(routeOptions), {
+    cwd: scanDir,
+    absolute: true,
+    ignore: getIgnorePatterns(routeOptions),
+  });
+}
+
+function collectRouteMeta(
+  scanDir: string,
+  routeOptions?: RouteOptions,
+  siteData?: LocaleAwareSiteData,
+) {
+  return collectRouteFiles(scanDir, routeOptions).map((filePath) =>
+    createRouteMeta(filePath, scanDir, siteData),
+  );
+}
+
+function renderRoutesCode(routeData: RouteMeta[], siteData?: LocaleAwareSiteData) {
+  const siteName = siteData?.title || 'title';
+  return `
+      export const routes = [{
+        path: '/',
+        component: import('@theme-default/layout/index.tsx'),
+        children: [${routeData
+          .map((route) => {
+            return `
+            {
+                path: ${JSON.stringify(route.routePath)},
+                component: import(${JSON.stringify(route.absolutePath)}),
+                preload: () => import(${JSON.stringify(route.absolutePath)}),
+                title: ${JSON.stringify(route.name || 'title')},
+                absolutePath: ${JSON.stringify(route.absolutePath)},
+                meta: {name: ${JSON.stringify(siteName)}, filePath: ${JSON.stringify(route.filePath)}}
+            }`;
+          })
+          .join(', ')}],
+      }]
+    `;
 }
 
 export class RouteService {
@@ -91,67 +133,17 @@ export class RouteService {
     base: string,
     siteData?: LocaleAwareSiteData,
   ): string | undefined {
-    const fileRelativePath = path.relative(root, filePath);
-    const routePath = removeLocalePrefix(
-      normalizePageRoutePath(fileRelativePath),
-      getDefaultLocalePrefix(siteData),
-    );
-    return withBase(routePath, base);
+    const fileRelativePath = normalizePath(path.relative(root, filePath));
+    return withBase(resolveRoutePath(fileRelativePath, siteData), base);
   }
 
   /** Scan the directory and build route metadata. */
   init(routeOptions?: RouteOptions, siteData?: LocaleAwareSiteData) {
-    const defaultIgnores = ['**/node_modules/**', '**/build/**', '**/dist/**', '**/.temp/**', 'athen.config.*'];
-    const exclude = routeOptions?.exclude || [];
-    const ignore = [...defaultIgnores, ...exclude];
-    let includePattern: string | string[] = '**/*.{ts,tsx,jsx,md,mdx}';
-
-    if (routeOptions?.include && routeOptions.include.length > 0) {
-      includePattern = routeOptions.include;
-    }
-
-    const defaultLocalePrefix = getDefaultLocalePrefix(siteData);
-
-    const filePaths = globSync(includePattern, {
-      cwd: this.scanDir,
-      absolute: true,
-      ignore,
-    });
-
-    for (const filePath of filePaths) {
-      const fileRelativePath = normalizePath(path.relative(this.scanDir, filePath));
-      const absolutePath = normalizePath(filePath);
-      const routePath = removeLocalePrefix(
-        normalizePageRoutePath(fileRelativePath),
-        defaultLocalePrefix,
-      );
-      const name = basename(filePath, extname(filePath));
-
-      this.routeData.push({ routePath, absolutePath, filePath: fileRelativePath, name });
-    }
+    this.routeData = collectRouteMeta(this.scanDir, routeOptions, siteData);
   }
 
   /** Generate the routes code based on the route data and site config. */
   generateRoutesCode(siteData?: LocaleAwareSiteData) {
-    const siteName = siteData?.title || 'title';
-    return `
-      export const routes = [{
-        path: '/',
-        component: import('@theme-default/layout/index.tsx'),
-        children: [${this.routeData
-          .map(route => {
-            return `
-            {
-                path: ${JSON.stringify(route.routePath)},
-                component: import(${JSON.stringify(route.absolutePath)}),
-                preload: () => import(${JSON.stringify(route.absolutePath)}),
-                title: ${JSON.stringify(route.name || 'title')},
-                absolutePath: ${JSON.stringify(route.absolutePath)},
-                meta: {name: ${JSON.stringify(siteName)}, filePath: ${JSON.stringify(route.filePath)}}
-            }`;
-          })
-          .join(', ')}],
-      }]
-    `;
+    return renderRoutesCode(this.routeData, siteData);
   }
 }

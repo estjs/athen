@@ -1,10 +1,12 @@
 import { computed } from 'essor';
 import Link from '../Link';
 import { withBase } from '@shared/utils';
+import { LOCALE_PREFERENCE_KEY } from '@shared/constants';
 import type { DefaultTheme } from '@/shared/types';
 
 export type NavMenuLinkItem = DefaultTheme.NavItemWithLink & {
   getLink?: () => string;
+  localePrefix?: string;
 };
 
 interface NavMenuItemProps {
@@ -21,11 +23,19 @@ interface NavMenuItemProps {
 const NavMenuItem = ({ item, isActive, reload }: NavMenuItemProps) => {
   const href = computed(() => item.getLink?.() ?? item.link);
 
+  const saveLocalePreference = () => {
+    if (item.localePrefix === undefined || typeof localStorage === 'undefined') {
+      return;
+    }
+    localStorage.setItem(LOCALE_PREFERENCE_KEY, item.localePrefix);
+  };
+
   const navigateWithReload = (e: MouseEvent) => {
     if (!item.getLink) {
       return;
     }
     e.preventDefault();
+    saveLocalePreference();
     window.location.assign(withBase(href.value));
   };
 

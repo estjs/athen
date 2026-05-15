@@ -3,6 +3,14 @@ import { createRequire } from 'node:module';
 import fs from 'fs-extra';
 import { loadConfigFromFile } from 'vite';
 import { DEFAULT_THEME_PATH } from './constants';
+import { LOCALE_PREFERENCE_KEY } from '../shared/constants';
+import {
+  getLocaleRedirectEntries,
+  hasRootLocale,
+  normalizeLanguageTag,
+  normalizeLocalePrefix,
+  type LocaleRedirectEntry,
+} from '../shared/locale';
 import type { DefaultTheme, HeadConfig, SiteConfig, SiteData, UserConfig } from '../shared/types';
 
 type ConfigWithLocales = UserConfig<{ locales?: Record<string, unknown> }>;
@@ -11,10 +19,10 @@ type RawConfig =
   | Promise<ConfigWithLocales>
   | (() => ConfigWithLocales | Promise<ConfigWithLocales>);
 
+const CONFIG_FILE_PATTERN = /^athen\.config\.(?:ts|js|mjs|cjs)$/;
+
 function getUserConfigPath(root: string): string {
-  const configFilePattern = /^athen\.config\.(?:ts|js|mjs|cjs)$/;
-  const files = fs.readdirSync(root);
-  const configFile = files.find((file) => configFilePattern.test(file));
+  const configFile = fs.readdirSync(root).find((file) => CONFIG_FILE_PATTERN.test(file));
 
   if (!configFile) {
     throw new Error(`No athen config file found in ${root}`);
@@ -41,15 +49,11 @@ async function resolveUserConfig(
   return [configPath, {}] as const;
 }
 
-function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
-  const head: HeadConfig[] = [...(userConfig.head ?? [])];
-
-  // Inline script to apply dark mode before first paint (prevents flash).
-  if (userConfig.colorScheme ?? true) {
-    head.push([
-      'script',
-      { id: 'check-dark-light' },
-      `
+function createDarkModeScript(): HeadConfig {
+  return [
+    'script',
+    { id: 'check-dark-light' },
+    `
      ;(function () {
       const prefersDark =
         window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -59,23 +63,120 @@ function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
       }
     })();
       `,
-    ]);
+  ];
+}
+
+export function resolveLocaleRedirectTarget(
+  preferredLanguages: string[],
+  localeEntries: LocaleRedirectEntry[],
+  storedLocalePrefix?: string,
+): string | undefined {
+  const normalizedEntries = localeEntries
+    .map((entry) => ({
+      prefix: normalizeLocalePrefix(entry.prefix),
+      lang: normalizeLanguageTag(entry.lang || entry.prefix),
+    }));
+
+  if (normalizedEntries.length === 0) {
+    return undefined;
   }
 
-  // Language redirect script — derive prefixes from actual config instead of hardcoding.
-  const { hasRootLocale, langPrefixes } = getLangRedirectInfo(userConfig);
-  if (!hasRootLocale && langPrefixes.length > 0) {
-    const zhLang = langPrefixes.find((l) => l.includes('zh'));
-    const fallbackLang = `/${langPrefixes[0]}/`;
-    const zhRedirectLang = zhLang ? `/${zhLang}/` : fallbackLang;
-    head.push([
-      'script',
-      { id: 'check-lang' },
-      `
+  if (storedLocalePrefix) {
+    const normalizedStoredPrefix = normalizeLocalePrefix(storedLocalePrefix);
+    const storedLocale = normalizedEntries.find((entry) => entry.prefix === normalizedStoredPrefix);
+    if (storedLocale) {
+      return storedLocale.prefix ? `/${storedLocale.prefix}/` : undefined;
+    }
+  }
+
+  const hasRoot = normalizedEntries.some((entry) => entry.prefix === '');
+  const redirectableEntries = normalizedEntries.filter((entry) => entry.prefix);
+  if (hasRoot || redirectableEntries.length === 0) {
+    return undefined;
+  }
+
+  const candidates = preferredLanguages.map(normalizeLanguageTag).filter(Boolean);
+
+  for (const candidate of candidates) {
+    const candidateBase = candidate.split('-')[0];
+    const exactMatch = redirectableEntries.find((entry) => entry.lang === candidate);
+    if (exactMatch) {
+      return `/${exactMatch.prefix}/`;
+    }
+
+    const baseMatch = redirectableEntries.find((entry) => {
+      const entryBase = entry.lang.split('-')[0];
+      return entry.lang === candidateBase || entryBase === candidateBase;
+    });
+    if (baseMatch) {
+      return `/${baseMatch.prefix}/`;
+    }
+  }
+
+  return `/${redirectableEntries[0].prefix}/`;
+}
+
+function createLanguageRedirectScript(userConfig: ConfigWithLocales): HeadConfig | null {
+  const localeEntries = getLocaleRedirectEntries(userConfig);
+  const rootLocale =
+    hasRootLocale(userConfig) || localeEntries.some((entry) => normalizeLocalePrefix(entry.prefix) === '');
+  if (localeEntries.length === 0 || (rootLocale && localeEntries.length === 1)) {
+    return null;
+  }
+
+  return [
+    'script',
+    { id: 'check-lang' },
+    `
         ;(() => {
             var base = ${JSON.stringify(userConfig.base || '')};
+            var localeEntries = ${JSON.stringify(localeEntries)};
+            var localePreferenceKey = ${JSON.stringify(LOCALE_PREFERENCE_KEY)};
+            var hasRootLocale = ${JSON.stringify(rootLocale)};
             var normalizePath = function (p) {
               return (p || '/').replace(/\\/+$/, '') || '/';
+            };
+            var normalizeLanguageTag = function (tag) {
+              return (tag || '').replaceAll('_', '-').trim().toLowerCase();
+            };
+            var normalizeLocalePrefix = function (prefix) {
+              return (prefix || '').replace(/^\\/+|\\/+$/g, '');
+            };
+            var pickLocaleRedirectTarget = function (preferredLanguages, entries) {
+              var normalizedEntries = entries
+                .map(function (entry) {
+                  return {
+                    prefix: normalizeLocalePrefix(entry.prefix),
+                    lang: normalizeLanguageTag(entry.lang || entry.prefix),
+                  };
+                })
+                .filter(function (entry) {
+                  return entry.prefix;
+                });
+              if (!normalizedEntries.length) {
+                return '';
+              }
+              var candidates = (preferredLanguages || [])
+                .map(normalizeLanguageTag)
+                .filter(Boolean);
+              for (var i = 0; i < candidates.length; i++) {
+                var candidate = candidates[i];
+                var candidateBase = candidate.split('-')[0];
+                var exactMatch = normalizedEntries.find(function (entry) {
+                  return entry.lang === candidate;
+                });
+                if (exactMatch) {
+                  return '/' + exactMatch.prefix + '/';
+                }
+                var baseMatch = normalizedEntries.find(function (entry) {
+                  var entryBase = entry.lang.split('-')[0];
+                  return entry.lang === candidateBase || entryBase === candidateBase;
+                });
+                if (baseMatch) {
+                  return '/' + baseMatch.prefix + '/';
+                }
+              }
+              return '/' + normalizedEntries[0].prefix + '/';
             };
             var withBase = function (p) {
               return base + p;
@@ -85,45 +186,61 @@ function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
               return pathname === prefix || pathname.startsWith(prefix + '/');
             };
             var currentPath = normalizePath(window.location.pathname);
-            var langPrefixList = ${JSON.stringify(langPrefixes)}.map(l => normalizePath(withBase('/' + l)));
-            var isIncludeLangPrefix = langPrefixList.some(function (langPrefix) {
-              return isPathInPrefix(currentPath, langPrefix);
+            var localePrefixList = localeEntries
+              .map(function (entry) {
+                return normalizeLocalePrefix(entry.prefix);
+              })
+              .filter(Boolean)
+              .map(function (prefix) {
+                return normalizePath(withBase('/' + prefix));
+              });
+            var hasLocalePrefix = localePrefixList.some(function (localePrefix) {
+              return isPathInPrefix(currentPath, localePrefix);
             });
-            if (!isIncludeLangPrefix) {
-              if (typeof window !== 'undefined' && window.navigator) {
-                var langs = window.navigator.languages || [window.navigator.language]
-                if (langs.some(function (lang) { return lang.includes('zh') })) {
-                  window.location.href = withBase(${JSON.stringify(zhRedirectLang)});
-                } else {
-                  window.location.href = withBase(${JSON.stringify(fallbackLang)});
-                }
-              } else {
-                window.location.href = withBase(${JSON.stringify(fallbackLang)});
+            if (hasLocalePrefix) {
+              return;
+            }
+            var storedLocalePrefix = '';
+            try {
+              storedLocalePrefix = normalizeLocalePrefix(localStorage.getItem(localePreferenceKey) || '');
+            } catch (e) {}
+            if (storedLocalePrefix) {
+              var storedLocale = localeEntries.find(function (entry) {
+                return normalizeLocalePrefix(entry.prefix) === storedLocalePrefix;
+              });
+              if (storedLocale) {
+                window.location.href = withBase('/' + storedLocalePrefix + '/');
+                return;
               }
+            }
+            if (hasRootLocale) {
+              return;
+            }
+            var preferredLanguages = (window.navigator.languages || [window.navigator.language] || [])
+              .map(normalizeLanguageTag)
+              .filter(Boolean);
+            var targetPrefix = pickLocaleRedirectTarget(preferredLanguages, localeEntries);
+            if (targetPrefix) {
+              window.location.href = withBase(targetPrefix);
             }
         })()
       `,
-    ]);
+  ];
+}
+
+function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
+  const head: HeadConfig[] = [...(userConfig.head ?? [])];
+
+  if (userConfig.colorScheme ?? true) {
+    head.push(createDarkModeScript());
+  }
+
+  const languageRedirectScript = createLanguageRedirectScript(userConfig);
+  if (languageRedirectScript) {
+    head.push(languageRedirectScript);
   }
 
   return head;
-}
-
-function normalizeLocalePrefix(prefix: string): string {
-  return prefix.replace(/^\/|\/$/g, '');
-}
-
-function getLangRedirectInfo(userConfig: ConfigWithLocales) {
-  const localePrefixes = userConfig.langs?.length
-    ? userConfig.langs
-    : Object.keys(userConfig.themeConfig?.locales ?? {});
-
-  const normalizedPrefixes = localePrefixes.map(normalizeLocalePrefix);
-
-  return {
-    hasRootLocale: normalizedPrefixes.some(prefix => prefix === ''),
-    langPrefixes: normalizedPrefixes.filter(Boolean),
-  };
 }
 
 export function resolveSiteData(root: string, userConfig: ConfigWithLocales = {}): SiteData {

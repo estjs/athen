@@ -17,7 +17,7 @@ test.describe('i18n synchronization', () => {
   test('switching from English doc to Chinese keeps the current doc path and updates chrome', async ({
     page,
   }) => {
-    await page.goto('/en/guide/getting-started');
+    await page.goto('/guide/getting-started');
 
     await switchLanguage(page, '简体中文');
 
@@ -35,7 +35,7 @@ test.describe('i18n synchronization', () => {
 
     await switchLanguage(page, 'English');
 
-    await expect(page).toHaveURL(/\/en\/guide\/getting-started$/);
+    await expect(page).toHaveURL(/\/guide\/getting-started$/);
     await expect(page.getByRole('heading', { name: 'Quick Start', level: 1 })).toBeVisible();
     await expect(page.locator('.nav').getByRole('link', { name: 'Guide' })).toBeVisible();
     await expect(page.locator('.sidebar').getByRole('link', { name: 'Getting Started' })).toBeVisible();
@@ -45,10 +45,10 @@ test.describe('i18n synchronization', () => {
   test('switching after client navigation keeps the current doc path and updates chrome', async ({
     page,
   }) => {
-    await page.goto('/en/');
+    await page.goto('/');
 
     await page.getByRole('link', { name: 'Get Started' }).click();
-    await expect(page).toHaveURL(/\/en\/guide\/getting-started$/);
+    await expect(page).toHaveURL(/\/guide\/getting-started$/);
 
     await switchLanguage(page, '简体中文');
 
@@ -60,10 +60,10 @@ test.describe('i18n synchronization', () => {
   });
 
   test('doc footer prev and next stay within the current sidebar section', async ({ page }) => {
-    await page.goto('/en/api/config-basic');
+    await page.goto('/api/config-basic');
 
     await expect(page.locator('.pager .prev')).toBeEmpty();
     await expect(page.locator('.pager .next')).toContainText('Theme Config');
-    await expect(page.locator('.pager .next a')).toHaveAttribute('href', '/en/api/config-theme');
+    await expect(page.locator('.pager .next a')).toHaveAttribute('href', '/api/config-theme');
   });
 });

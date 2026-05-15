@@ -1,8 +1,13 @@
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
+import { mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
-import { defineConfig, resolveConfig, resolveSiteData } from '../src/node/config';
+import {
+  defineConfig,
+  resolveConfig,
+  resolveLocaleRedirectTarget,
+  resolveSiteData,
+} from '../src/node/config';
 import { DEFAULT_THEME_PATH } from '../src/node/constants';
 
 const writeProject = (files: Record<string, string>) => {
@@ -14,7 +19,7 @@ const writeProject = (files: Record<string, string>) => {
 };
 
 const getLangScript = (head: ReturnType<typeof resolveSiteData>['head']) =>
-  head.find(item => item[1]?.id === 'check-lang')?.[2] || '';
+  head.find((item) => item[1]?.id === 'check-lang')?.[2] || '';
 
 describe('config', () => {
   let root = '';
@@ -78,22 +83,43 @@ describe('config', () => {
     expect(defineConfig(userConfig)).toBe(userConfig);
   });
 
-  it('creates site data without mutating head or hardcoding zh redirects', () => {
+  it('creates site data with locale entries derived from themeConfig.locales', () => {
     const head = [['meta', { name: 'viewport', content: 'width=device-width' }]] as const;
     const siteData = resolveSiteData('/root', {
       head: [...head],
-      langs: ['fr', 'de'],
+      themeConfig: {
+        locales: {
+          '/en/': { lang: 'en-US' },
+          '/zh/': { lang: 'zh-CN' },
+          '/fr/': { lang: 'fr-FR' },
+        },
+      },
       colorScheme: true,
     });
     const script = getLangScript(siteData.head);
 
     expect(head).toHaveLength(1);
-    expect(siteData.head.some(item => item[1]?.id === 'check-dark-light')).toBe(true);
-    expect(script).toContain('["fr","de"]');
-    expect(script).not.toContain('/zh/');
+    expect(siteData.head.some((item) => item[1]?.id === 'check-dark-light')).toBe(true);
+    expect(script).toContain('"prefix":"en"');
+    expect(script).toContain('"prefix":"zh"');
+    expect(script).toContain('"prefix":"fr"');
+    expect(script).not.toContain("includes('zh')");
   });
 
-  it('does not emit a language redirect when the default locale is rooted', () => {
+  it('matches browser languages to the best locale prefix', () => {
+    const locales = [
+      { prefix: 'en', lang: 'en-US' },
+      { prefix: 'zh', lang: 'zh-CN' },
+      { prefix: 'fr', lang: 'fr-FR' },
+    ];
+
+    expect(resolveLocaleRedirectTarget(['zh-HK', 'en-GB'], locales)).toBe('/zh/');
+    expect(resolveLocaleRedirectTarget(['fr-CA'], locales)).toBe('/fr/');
+    expect(resolveLocaleRedirectTarget(['de-DE'], locales)).toBe('/en/');
+    expect(resolveLocaleRedirectTarget(['en-US'], locales, '/zh/')).toBe('/zh/');
+  });
+
+  it('emits a stored-language redirect when the default locale is rooted', () => {
     const siteData = resolveSiteData('/root', {
       lang: 'en-US',
       themeConfig: {
@@ -105,6 +131,8 @@ describe('config', () => {
     });
     const script = getLangScript(siteData.head);
 
-    expect(script).toBe('');
+    expect(script).toContain('athen-locale');
+    expect(script).toContain('"prefix":""');
+    expect(script).toContain('"prefix":"zh"');
   });
 });
