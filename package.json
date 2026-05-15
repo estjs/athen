@@ -51,6 +51,6 @@
     "commit-msg": "pnpm exec tsx ./scripts/verify-commit.ts $1"
   },
   "lint-staged": {
-    "package/src/*.{ts,tsx,js}": "eslint --cache --fix"
+    "packages/*/src/**/*.{ts,tsx,js}": "eslint --cache --fix"
   }
 }
