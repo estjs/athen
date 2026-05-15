@@ -84,8 +84,8 @@ importers:
         specifier: ^0.3.3
         version: 0.3.3
       babel-plugin-essor:
-        specifier: ^0.0.16-beta.7
-        version: 0.0.16-beta.7
+        specifier: ^0.0.16-beta.8
+        version: 0.0.16-beta.8
       cac:
         specifier: ^7.0.0
         version: 7.0.0
@@ -96,11 +96,11 @@ importers:
         specifier: ^1.11.20
         version: 1.11.20
       essor:
-        specifier: ^0.0.16-beta.7
-        version: 0.0.16-beta.7
+        specifier: ^0.0.16-beta.8
+        version: 0.0.16-beta.8
       essor-router:
         specifier: ^0.0.17-beta.4
-        version: 0.0.17-beta.4(essor@0.0.16-beta.7)
+        version: 0.0.17-beta.4(essor@0.0.16-beta.8)
       fs-extra:
         specifier: ^11.3.5
         version: 11.3.5
@@ -303,7 +303,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       vite:
-        specifier: ^8.0.12
+        specifier: ^8.0.13
         version: 8.0.13(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.22.0)(yaml@2.9.0)
 
   packages/plugin-search:
@@ -315,8 +315,8 @@ importers:
         specifier: ^25.8.0
         version: 25.8.0
       essor:
-        specifier: ^0.0.16-beta.7
-        version: 0.0.16-beta.7
+        specifier: ^0.0.16-beta.8
+        version: 0.0.16-beta.8
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(tsx@4.22.0)(typescript@6.0.3)(yaml@2.9.0)
@@ -928,17 +928,20 @@ packages:
       eslint: '>=9'
       prettier: '>=3'
 
-  '@estjs/server@0.0.16-beta.7':
-    resolution: {integrity: sha512-zNvH+i5HnkLT0sOoNheiE1Mtn/nydgn8wlezZWZngDME16VvtrbVwhScgQLMMoMbLj0DSjpg7xbI92Xx/XynWg==}
+  '@estjs/server@0.0.16-beta.8':
+    resolution: {integrity: sha512-VBJtsqwmNs5rMPFZSe8DmNN3MzrOnwKlYKeLH8VAmFaDIvXNEKTU/Z5XuVB1fXcicIdIbPj9iwGxoHnWYlzzxQ==}
 
   '@estjs/shared@0.0.16-beta.7':
     resolution: {integrity: sha512-mwvCrKB1XFVX8Dbzvoy0b0iGRPXHsyXJLNgYoWcUNw+vFpTXN/1HYsXFT7SF2MPt9sqzwPeHWGDIUaa/nZWjdg==}
 
-  '@estjs/signals@0.0.16-beta.7':
-    resolution: {integrity: sha512-Z4NgaBYOouDVK7v5GOaU7UptD4YyI9YEDz37U+hSiDUua5IyUfREPcoxrX2jgMWIlmhkq4B263urTusqmFULiw==}
+  '@estjs/shared@0.0.16-beta.8':
+    resolution: {integrity: sha512-LtrR39SRbzd39Oo9z5sGI9wNcz2WkGKsw36zD9IlUjWV8PUnw/Phlzvm34rRn0dKKvbxlVUin1HcXfxMAMv41w==}
 
-  '@estjs/template@0.0.16-beta.7':
-    resolution: {integrity: sha512-Y2N4dCNpdRonGvO+tkoDi1z1PDP6WqOQqfB8KSD+gw0WOREdtIXpb4201N/4MWtU9WsDgp5jyCGNMUxhyShVQg==}
+  '@estjs/signals@0.0.16-beta.8':
+    resolution: {integrity: sha512-px58xrTdbo6esykFwGbE7k/AtxHfbMx3B+1oS01FbSCnqrS86gWGnzaGkF1v7mmmCo1LOfKlw+m6nfPjM2tmAg==}
+
+  '@estjs/template@0.0.16-beta.8':
+    resolution: {integrity: sha512-WadmMTa8W7V7LWiWooC9QJbn2HQypUwgMwaszZOFRHrl7KkCGrTISKWWKamhc/5tiXp5Iw168d7pOWKFtlpS4w==}
 
   '@estjs/tools@0.2.0':
     resolution: {integrity: sha512-NdQfdC3Pd748sW04Jce7rkJssbWeM7kX7NKS8XGVIvvQ7j5pR/5408/LFbfIAQxGdbjwdx5Oyvr0TP06+3KjYw==}
@@ -2238,8 +2241,8 @@ packages:
   b-tween@0.3.3:
     resolution: {integrity: sha512-oEHegcRpA7fAuc9KC4nktucuZn2aS8htymCPcP3qkEGPqiBH+GfqtqoG2l7LxHngg6O0HFM7hOeOYExl1Oz4ZA==}
 
-  babel-plugin-essor@0.0.16-beta.7:
-    resolution: {integrity: sha512-Sw04XoVGvsj/JwDwMQLeXKbkC1M5JsP1w9YF0+/OpzjC2hTqnLdIPgc9xdLxnTu8WudY0iI459/Xv8vXTfpFIQ==}
+  babel-plugin-essor@0.0.16-beta.8:
+    resolution: {integrity: sha512-MyP8pK81nMpTRYC70w/NyGywfuvM1KHOukr02rE0dIEaTU3D0RnOnjqyvxkDQxetIejWgVadoSgC0wduo2m8Bg==}
 
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
@@ -2805,8 +2808,8 @@ packages:
     peerDependencies:
       essor: ^0.0.16-beta.1
 
-  essor@0.0.16-beta.7:
-    resolution: {integrity: sha512-w4PCxGeZhGhHId9cgFrmJjmHL2M4Pu0siUJVwfpX9qx9rKhdlnZzWWraiJ4Fm85VyxhGmlQazy/RVF4Nd/olbw==}
+  essor@0.0.16-beta.8:
+    resolution: {integrity: sha512-SEKekBU5H/zUofAycvGQwQuGwViGExR/zLY7nrjK65gcCjrwJInjo30oF/S+DtMkbzFAoaEGigQhDRnnVmdcWA==}
 
   estraverse@5.3.0:
     resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
@@ -5176,22 +5179,24 @@ snapshots:
       - typescript
       - vitest
 
-  '@estjs/server@0.0.16-beta.7':
+  '@estjs/server@0.0.16-beta.8':
     dependencies:
-      '@estjs/shared': 0.0.16-beta.7
-      '@estjs/template': 0.0.16-beta.7
+      '@estjs/shared': 0.0.16-beta.8
+      '@estjs/template': 0.0.16-beta.8
       '@types/node': 25.7.0
 
   '@estjs/shared@0.0.16-beta.7': {}
 
-  '@estjs/signals@0.0.16-beta.7':
-    dependencies:
-      '@estjs/shared': 0.0.16-beta.7
+  '@estjs/shared@0.0.16-beta.8': {}
 
-  '@estjs/template@0.0.16-beta.7':
+  '@estjs/signals@0.0.16-beta.8':
     dependencies:
-      '@estjs/shared': 0.0.16-beta.7
-      '@estjs/signals': 0.0.16-beta.7
+      '@estjs/shared': 0.0.16-beta.8
+
+  '@estjs/template@0.0.16-beta.8':
+    dependencies:
+      '@estjs/shared': 0.0.16-beta.8
+      '@estjs/signals': 0.0.16-beta.8
       csstype: 3.2.3
 
   '@estjs/tools@0.2.0': {}
@@ -6334,10 +6339,10 @@ snapshots:
 
   b-tween@0.3.3: {}
 
-  babel-plugin-essor@0.0.16-beta.7:
+  babel-plugin-essor@0.0.16-beta.8:
     dependencies:
       '@babel/core': 7.29.0
-      '@estjs/shared': 0.0.16-beta.7
+      '@estjs/shared': 0.0.16-beta.8
     transitivePeerDependencies:
       - supports-color
 
@@ -7037,17 +7042,17 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  essor-router@0.0.17-beta.4(essor@0.0.16-beta.7):
+  essor-router@0.0.17-beta.4(essor@0.0.16-beta.8):
     dependencies:
       '@estjs/shared': 0.0.16-beta.7
-      essor: 0.0.16-beta.7
+      essor: 0.0.16-beta.8
 
-  essor@0.0.16-beta.7:
+  essor@0.0.16-beta.8:
     dependencies:
-      '@estjs/server': 0.0.16-beta.7
-      '@estjs/shared': 0.0.16-beta.7
-      '@estjs/signals': 0.0.16-beta.7
-      '@estjs/template': 0.0.16-beta.7
+      '@estjs/server': 0.0.16-beta.8
+      '@estjs/shared': 0.0.16-beta.8
+      '@estjs/signals': 0.0.16-beta.8
+      '@estjs/template': 0.0.16-beta.8
 
   estraverse@5.3.0: {}
 
