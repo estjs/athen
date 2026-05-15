@@ -28,13 +28,13 @@ Athen 是一个基于 **Vite** 和 **MDX** 的静态站点生成器，构建在 
 
 此 monorepo 包含以下包：
 
-| 包 | 描述 | 版本 |
-|---------|-------------|---------|
-| [`athen`](./packages/athen) | 核心框架和 CLI | ![npm](https://img.shields.io/npm/v/athen) |
-| [`@athen/plugin-mdx`](./packages/plugin-mdx) | MDX 处理插件 | ![npm](https://img.shields.io/npm/v/@athen/plugin-mdx) |
-| [`@athen/plugin-search`](./packages/plugin-search) | 全文搜索插件 | ![npm](https://img.shields.io/npm/v/@athen/plugin-search) |
-| [`@athen/plugin-analytics`](./packages/plugin-analytics) | 分析集成 | ![npm](https://img.shields.io/npm/v/@athen/plugin-analytics) |
-| [`create-athen`](./packages/create-athen) | 项目脚手架工具 | ![npm](https://img.shields.io/npm/v/create-athen) |
+| 包                                                       | 描述           | 版本                                                         |
+| -------------------------------------------------------- | -------------- | ------------------------------------------------------------ |
+| [`athen`](./packages/athen)                              | 核心框架和 CLI | ![npm](https://img.shields.io/npm/v/athen)                   |
+| [`@athen/plugin-mdx`](./packages/plugin-mdx)             | MDX 处理插件   | ![npm](https://img.shields.io/npm/v/@athen/plugin-mdx)       |
+| [`@athen/plugin-search`](./packages/plugin-search)       | 全文搜索插件   | ![npm](https://img.shields.io/npm/v/@athen/plugin-search)    |
+| [`@athen/plugin-analytics`](./packages/plugin-analytics) | 分析集成       | ![npm](https://img.shields.io/npm/v/@athen/plugin-analytics) |
+| [`create-athen`](./packages/create-athen)                | 项目脚手架工具 | ![npm](https://img.shields.io/npm/v/create-athen)            |
 
 ---
 
@@ -88,7 +88,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: "指南", link: "/guide/getting-started" },
-      { text: "API", link: "/api/" }
+      { text: "API", link: "/api/" },
     ],
     sidebar: {
       "/guide/": [
@@ -96,35 +96,31 @@ export default defineConfig({
           text: "开始使用",
           items: [
             { text: "介绍", link: "/guide/" },
-            { text: "安装", link: "/guide/installation" }
-          ]
-        }
-      ]
+            { text: "安装", link: "/guide/installation" },
+          ],
+        },
+      ],
     },
-    socialLinks: [
-      { icon: "github", link: "https://github.com/your/repo" }
-    ]
+    links: [{ icon: "github", link: "https://github.com/your/repo" }],
   },
   // 多语言支持
   locales: {
-    "/en/": { 
-      lang: "en-US", 
+    "/en/": {
+      lang: "en-US",
       title: "My Docs",
       themeConfig: {
-        nav: [
-          { text: "Guide", link: "/en/guide/getting-started" }
-        ]
-      }
-    }
+        nav: [{ text: "Guide", link: "/en/guide/getting-started" }],
+      },
+    },
   },
   // 搜索配置
   search: {
-    provider: "flex" // 或 "algolia"
+    provider: "flex", // 或 "algolia"
   },
   // 分析配置
   analytics: {
-    google: "G-XXXXXXXXXX"
-  }
+    google: "G-XXXXXXXXXX",
+  },
 });
 ```
 
@@ -156,11 +152,11 @@ export default defineConfig({
 
 插槽映射：
 
-| 插槽键 | 渲染位置 |
-|----------|-----------------|
-| `banner` | 顶部导航栏正下方 |
-| `sidebarExtra` | 侧边栏导航底部 |
-| `footerExtra` | 页面底部，主要内容之后 |
+| 插槽键         | 渲染位置               |
+| -------------- | ---------------------- |
+| `banner`       | 顶部导航栏正下方       |
+| `sidebarExtra` | 侧边栏导航底部         |
+| `footerExtra`  | 页面底部，主要内容之后 |
 
 第三方主题可以通过提供自己的组件来覆盖任何或所有这些插槽。
 
@@ -172,17 +168,17 @@ Athen 的插件层基于 Vite 的 API 构建，并添加了一些面向文档的
 
 ### 内置插件
 
-| 名称 | 用途 |
-| ---- | ------- |
-| `athen:config` | 暴露站点数据 + 别名 |
-| `athen:routes` | 基于约定的文件系统路由 |
-| `athen:site-data` | 站点配置虚拟模块 |
-| `plugin-mdx` | Remark/rehype 管道与 Shiki 高亮 |
-| `unocss` | 原子化 CSS 框架 |
-| `plugin-svgr` | 将 SVG 导入为 Essor 组件 |
-| `plugin-search` | FlexSearch 全文搜索（可选） |
-| `plugin-analytics` | 分析集成（可选） |
-| `vite-plugin-inspect` | 开发检查器 |
+| 名称                  | 用途                            |
+| --------------------- | ------------------------------- |
+| `athen:config`        | 暴露站点数据 + 别名             |
+| `athen:routes`        | 基于约定的文件系统路由          |
+| `athen:site-data`     | 站点配置虚拟模块                |
+| `plugin-mdx`          | Remark/rehype 管道与 Shiki 高亮 |
+| `unocss`              | 原子化 CSS 框架                 |
+| `plugin-svgr`         | 将 SVG 导入为 Essor 组件        |
+| `plugin-search`       | FlexSearch 全文搜索（可选）     |
+| `plugin-analytics`    | 分析集成（可选）                |
+| `vite-plugin-inspect` | 开发检查器                      |
 
 ### 使用自定义插件
 
@@ -195,7 +191,7 @@ export default defineConfig({
 });
 ```
 
-*此数组中的插件在内置插件**之前**运行。* 如果插件与内置插件具有相同的 `name`，内置插件将被移除——这使得交换默认搜索或分析实现变得轻松。
+_此数组中的插件在内置插件**之前**运行。_ 如果插件与内置插件具有相同的 `name`，内置插件将被移除——这使得交换默认搜索或分析实现变得轻松。
 
 要完全禁用内置插件，请将其配置设置为 `false`（例如 `search: false`、`analytics: false`）或使用空操作插件覆盖它。
 

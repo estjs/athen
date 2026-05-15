@@ -26,50 +26,54 @@ my-docs/
 
 ```typescript
 // docs/athen.config.ts
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
-  title: 'My Documentation',
-  description: 'A comprehensive guide to my project',
-  base: '/',
-  
+  title: "My Documentation",
+  description: "A comprehensive guide to my project",
+  base: "/",
+
   // Enable search
   search: {
-    provider: 'flex'
+    provider: "flex",
   },
-  
+
   themeConfig: {
     // Navigation
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'API', link: '/api/reference' }
+      { text: "Home", link: "/" },
+      { text: "Guide", link: "/guide/getting-started" },
+      { text: "API", link: "/api/reference" },
     ],
-    
+
     // Sidebar
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: 'Getting Started',
+          text: "Getting Started",
           items: [
-            { text: 'Introduction', link: '/guide/getting-started' },
-            { text: 'Configuration', link: '/guide/configuration' }
-          ]
-        }
-      ]
+            { text: "Introduction", link: "/guide/getting-started" },
+            { text: "Configuration", link: "/guide/configuration" },
+          ],
+        },
+      ],
     },
-    
-    // Social links
-    socialLinks: [
-      { icon: 'github', mode: 'link', content: 'https://github.com/your-repo' }
+
+    // Nav links
+    links: [
+      {
+        icon: "github",
+        link: "https://github.com/your-org/your-repo",
+        ariaLabel: "GitHub",
+      },
     ],
-    
+
     // Footer
     footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024 Your Name'
-    }
-  }
+      message: "Released under the MIT License.",
+      copyright: "Copyright © 2024 Your Name",
+    },
+  },
 });
 ```
 
@@ -159,9 +163,11 @@ description: Complete API documentation
 Description of the function.
 
 **Parameters:**
+
 - `input` (string): The input parameter
 
 **Returns:**
+
 - `string`: The processed result
 
 **Example:**
@@ -208,6 +214,7 @@ Description of the method.
 ## Development Workflow
 
 1. **Start development server:**
+
    ```bash
    npm run dev
    ```
@@ -217,6 +224,7 @@ Description of the method.
 3. **Preview changes** at `http://localhost:5173`
 
 4. **Build for production:**
+
    ```bash
    npm run build
    ```
@@ -246,7 +254,7 @@ Create a custom CSS file:
 }
 ```
 
-import App from "./demo.jsx"
+import App from "./demo.jsx";
 
 ## 使用Essor组件
 

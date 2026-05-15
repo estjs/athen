@@ -57,7 +57,7 @@ The site is configured in `docs/athen.config.ts`. Key features:
 - **Search**: Local FlexSearch enabled by default
 - **Multi-language**: English and Chinese support
 - **Navigation**: Organized guide, API, and examples sections
-- **Theme**: Customizable with social links and footer
+- **Theme**: Customizable with nav links and footer
 
 ## Writing Content
 
@@ -81,11 +81,11 @@ Your content here...
 Update navigation in `athen.config.ts`:
 
 ```typescript
-themeConfig: {
-  nav: [
-    { text: 'Guide', link: '/guide/getting-started' },
-    { text: 'API', link: '/api/introduction' }
-  ]
+{
+  [
+    { text: "Guide", link: "/guide/getting-started" },
+    { text: "API", link: "/api/introduction" },
+  ];
 }
 ```
 

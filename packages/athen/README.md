@@ -42,49 +42,45 @@ pnpm build
 Create an `athen.config.ts` file in your project root:
 
 ```ts
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
-  title: 'My Documentation',
-  description: 'A modern documentation site',
-  lang: 'en-US',
-  base: '/',
-  
+  title: "My Documentation",
+  description: "A modern documentation site",
+  lang: "en-US",
+  base: "/",
+
   themeConfig: {
     nav: [
-      { text: 'Guide', link: '/guide/' },
-      { text: 'API', link: '/api/' }
+      { text: "Guide", link: "/guide/" },
+      { text: "API", link: "/api/" },
     ],
-    
+
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: 'Getting Started',
+          text: "Getting Started",
           items: [
-            { text: 'Introduction', link: '/guide/' },
-            { text: 'Installation', link: '/guide/installation' }
-          ]
-        }
-      ]
+            { text: "Introduction", link: "/guide/" },
+            { text: "Installation", link: "/guide/installation" },
+          ],
+        },
+      ],
     },
-    
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/your/repo' }
-    ]
+
+    links: [{ icon: "github", link: "https://github.com/your/repo" }],
   },
-  
+
   // Multi-language support
   locales: {
-    '/zh/': {
-      lang: 'zh-CN',
-      title: '我的文档',
+    "/zh/": {
+      lang: "zh-CN",
+      title: "我的文档",
       themeConfig: {
-        nav: [
-          { text: '指南', link: '/zh/guide/' }
-        ]
-      }
-    }
-  }
+        nav: [{ text: "指南", link: "/zh/guide/" }],
+      },
+    },
+  },
 });
 ```
 
@@ -156,24 +152,24 @@ Athen leverages the modern [Essor](https://github.com/estjs/essor) reactive fram
 
 ### Site Configuration
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `title` | `string` | - | Site title |
-| `description` | `string` | - | Site description |
-| `lang` | `string` | `'en-US'` | Site language |
-| `base` | `string` | `'/'` | Base URL |
-| `srcDir` | `string` | `'docs'` | Source directory |
-| `outDir` | `string` | `'dist'` | Output directory |
+| Option        | Type     | Default   | Description      |
+| ------------- | -------- | --------- | ---------------- |
+| `title`       | `string` | -         | Site title       |
+| `description` | `string` | -         | Site description |
+| `lang`        | `string` | `'en-US'` | Site language    |
+| `base`        | `string` | `'/'`     | Base URL         |
+| `srcDir`      | `string` | `'docs'`  | Source directory |
+| `outDir`      | `string` | `'dist'`  | Output directory |
 
 ### Theme Configuration
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `nav` | `NavItem[]` | Navigation menu items |
-| `sidebar` | `Sidebar` | Sidebar navigation |
-| `socialLinks` | `SocialLink[]` | Social media links |
-| `footer` | `Footer` | Footer configuration |
-| `editLink` | `EditLink` | Edit page links |
+| Option     | Type         | Description                      |
+| ---------- | ------------ | -------------------------------- |
+| `nav`      | `NavItem[]`  | Navigation menu items            |
+| `sidebar`  | `Sidebar`    | Sidebar navigation               |
+| `links`    | `IconLink[]` | Navbar social and external links |
+| `footer`   | `Footer`     | Footer configuration             |
+| `editLink` | `EditLink`   | Edit page links                  |
 
 ### Advanced Configuration
 
@@ -183,22 +179,22 @@ export default defineConfig({
   vite: {
     // Any Vite config options
   },
-  
+
   // Custom plugins
   plugins: [
     // Add your plugins here
   ],
-  
+
   // Search configuration
   search: {
-    provider: 'flex', // or 'algolia'
+    provider: "flex", // or 'algolia'
     // FlexSearch options...
   },
-  
+
   // Analytics
   analytics: {
-    google: 'G-XXXXXXXXXX'
-  }
+    google: "G-XXXXXXXXXX",
+  },
 });
 ```
 
@@ -259,11 +255,11 @@ export default defineConfig({
 Create custom plugins using the Vite plugin API:
 
 ```ts
-import type { Plugin } from 'vite';
+import type { Plugin } from "vite";
 
 export function myAthenPlugin(): Plugin {
   return {
-    name: 'my-athen-plugin',
+    name: "my-athen-plugin",
     // Plugin implementation
   };
 }
@@ -273,9 +269,7 @@ Use in your config:
 
 ```ts
 export default defineConfig({
-  plugins: [
-    myAthenPlugin()
-  ]
+  plugins: [myAthenPlugin()],
 });
 ```
 
@@ -286,19 +280,19 @@ export default defineConfig({
 ```ts
 export default defineConfig({
   locales: {
-    '/': {
-      lang: 'en-US',
-      title: 'My Docs'
+    "/": {
+      lang: "en-US",
+      title: "My Docs",
     },
-    '/zh/': {
-      lang: 'zh-CN',
-      title: '我的文档'
+    "/zh/": {
+      lang: "zh-CN",
+      title: "我的文档",
     },
-    '/ja/': {
-      lang: 'ja-JP',
-      title: '私のドキュメント'
-    }
-  }
+    "/ja/": {
+      lang: "ja-JP",
+      title: "私のドキュメント",
+    },
+  },
 });
 ```
 
@@ -324,7 +318,7 @@ docs/
 ### defineConfig
 
 ```ts
-function defineConfig(config: UserConfig): UserConfig
+function defineConfig(config: UserConfig): UserConfig;
 ```
 
 Define your Athen configuration with full TypeScript support.
@@ -334,14 +328,14 @@ Define your Athen configuration with full TypeScript support.
 The CLI provides programmatic access to Athen's functionality:
 
 ```ts
-import { build, createDevServer } from 'athen';
+import { build, createDevServer } from "athen";
 
 // Start dev server
-const server = await createDevServer('./docs');
+const server = await createDevServer("./docs");
 await server.listen();
 
 // Build for production
-await build('./docs');
+await build("./docs");
 ```
 
 ## 🔗 Related Packages

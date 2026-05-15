@@ -321,16 +321,16 @@ export default defineConfig({
       },
     },
     outlineTitle: 'ON THIS PAGE',
-    socialLinks: [
+    links: [
       {
         icon: 'github',
-        mode: 'link',
-        content: 'https://github.com/estjs/athen',
+        link: 'https://github.com/estjs/athen',
+        ariaLabel: 'GitHub',
       },
       {
         icon: 'discord',
-        mode: 'link',
-        content: 'https://discord.gg',
+        link: 'https://discord.gg',
+        ariaLabel: 'Discord',
       },
     ],
     footer: {

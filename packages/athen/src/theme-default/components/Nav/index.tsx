@@ -13,6 +13,77 @@ function isNavGroup(item: DefaultTheme.NavItem): item is DefaultTheme.NavItemWit
   return 'items' in item;
 }
 
+type IconLinkSvg = Extract<DefaultTheme.IconLinkIcon, { svg: string }>;
+type IconLinkName = Exclude<DefaultTheme.IconLinkIcon, IconLinkSvg>;
+
+const iconLinkIconMap = {
+  discord: 'i-carbon-logo-discord',
+  facebook: 'i-carbon-logo-facebook',
+  gitlab: 'i-carbon-logo-gitlab',
+  github: 'i-carbon-logo-github',
+  instagram: 'i-carbon-logo-instagram',
+  linkedin: 'i-carbon-logo-linkedin',
+  mastodon: 'i-carbon-logo-mastodon',
+  npm: 'i-carbon-logo-npm',
+  slack: 'i-carbon-logo-slack',
+  twitter: 'i-carbon-logo-twitter',
+  wechat: 'i-carbon-logo-wechat',
+  x: 'i-carbon-logo-x',
+  youtube: 'i-carbon-logo-youtube',
+} satisfies Record<IconLinkName, string>;
+
+function isSvgIcon(icon: DefaultTheme.IconLinkIcon): icon is IconLinkSvg {
+  return typeof icon === 'object' && 'svg' in icon;
+}
+
+function getIconLinkLabel(item: DefaultTheme.IconLink) {
+  if (item.ariaLabel) {
+    return item.ariaLabel;
+  }
+
+  return isSvgIcon(item.icon) ? 'external link' : item.icon;
+}
+
+function renderIconLinkIcon(icon: DefaultTheme.IconLinkIcon) {
+  if (isSvgIcon(icon)) {
+    return <span class="nav-icon-link-svg h-5 w-5" innerHTML={icon.svg} />;
+  }
+
+  const iconClass = iconLinkIconMap[icon];
+
+  return iconClass ? (
+    <span class={`${iconClass} h-5 w-5 fill-current`} />
+  ) : (
+    <span class="text-sm">{icon}</span>
+  );
+}
+
+const NavIconLinks = ({ links }: { links?: DefaultTheme.IconLink[] }) => {
+  if (!links?.length) {
+    return null;
+  }
+
+  return (
+    <div class="hidden items-center sm:flex">
+      {links.map((item) => {
+        const label = getIconLinkLabel(item);
+        return (
+          <a
+            key={item.link}
+            href={item.link}
+            class="nav-icon-link ml-3"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+            title={label}>
+            {renderIconLinkIcon(item.icon)}
+          </a>
+        );
+      })}
+    </div>
+  );
+};
+
 function createTranslationMenu(
   pathname: string,
   locales: DefaultTheme.Config['locales'] = {},
@@ -24,20 +95,19 @@ function createTranslationMenu(
   }
 
   const prefixes = entries.map(([prefix]) => prefix);
-  const languages = entries.map(([prefix, config]) => ({ ...config, prefix }));
 
   return {
-    items: languages.map(item => {
-      const getLink = () => getLocalePath(pathname, item.prefix, prefixes);
+    items: entries.map(([prefix, config]) => {
+      const getLink = () => getLocalePath(pathname, prefix, prefixes);
       return {
-        text: item.label,
+        text: config.label,
         link: getLink(),
         getLink,
-        localePrefix: item.prefix,
+        localePrefix: prefix,
       };
     }),
     isTranslation: true,
-    activeIndex: languages.findIndex(item => item.lang === activeLang),
+    activeIndex: entries.findIndex(([, config]) => config.lang === activeLang),
   };
 }
 
@@ -45,11 +115,9 @@ const NavHeader = () => {
   const localeData = useLocaleSiteData();
   const pathname = usePathname();
   const { siteData } = usePageData();
-  const translationMenuData = computed(() => createTranslationMenu(
-    pathname.value,
-    siteData.themeConfig.locales,
-    localeData.value.lang,
-  ));
+  const translationMenuData = computed(() =>
+    createTranslationMenu(pathname.value, siteData.themeConfig.locales, localeData.value.lang),
+  );
 
   return (
     <header
@@ -92,18 +160,16 @@ const NavHeader = () => {
 
           {/* 如果支持多语言，显示翻译菜单 */}
           <div class="hidden sm:block">
-            {translationMenuData.value && <NavTranslations translationMenuData={translationMenuData.value} />}
+            {translationMenuData.value && (
+              <NavTranslations translationMenuData={translationMenuData.value} />
+            )}
           </div>
 
-          <div class="mx-2">
+          <div class="mx-2 h-24px!">
             <Switch />
           </div>
 
-          <div class="social-link-icon ml-2 hidden sm:block">
-            <a href="/">
-              <div class="i-carbon-logo-github h-5 w-5 fill-current"></div>
-            </a>
-          </div>
+          <NavIconLinks links={siteData.themeConfig.links} />
 
           {/* Mobile Hamburger Menu */}
           <div

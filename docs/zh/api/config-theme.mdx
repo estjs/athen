@@ -1,16 +1,16 @@
 # 主题配置
-import Locales from '../fragments/locales.mdx';
 
+import Locales from "../fragments/locales.mdx";
 
 主题配置位于根配置中的 `themeConfig` 下。例如：
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     // ...
-  }
+  },
 });
 ```
 
@@ -26,9 +26,9 @@ interface NavItem {
   // 导航栏文本
   text: string;
   // 导航栏链接
-  link: '/';
+  link: "/";
   // 导航栏链接的激活规则
-  activeMatch: '^/$|^/';
+  activeMatch: "^/$|^/";
 }
 ```
 
@@ -37,18 +37,18 @@ interface NavItem {
 比如:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     nav: [
       {
-        text: 'Home',
-        link: '/',
-        activeMatch: '^/$|^/'
-      }
-    ]
-  }
+        text: "Home",
+        link: "/",
+        activeMatch: "^/$|^/",
+      },
+    ],
+  },
 });
 ```
 
@@ -66,26 +66,26 @@ interface NavGroup {
 例如下面的配置:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     nav: [
       {
-        text: 'Home',
+        text: "Home",
         items: [
           {
-            text: 'Menu 1',
-            link: '/menu1'
+            text: "Menu 1",
+            link: "/menu1",
           },
           {
-            text: 'Menu 2',
-            link: '/menu2'
-          }
-        ]
-      }
-    ]
-  }
+            text: "Menu 2",
+            link: "/menu2",
+          },
+        ],
+      },
+    ],
+  },
 });
 ```
 
@@ -118,24 +118,24 @@ type SidebarItem = {
 比如:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: 'Guide',
+          text: "Guide",
           items: [
             {
-              text: 'Getting Started',
-              link: '/guide/getting-started'
-            }
-          ]
-        }
-      ]
-    }
-  }
+              text: "Getting Started",
+              link: "/guide/getting-started",
+            },
+          ],
+        },
+      ],
+    },
+  },
 });
 ```
 
@@ -158,16 +158,15 @@ export interface EditLink {
 比如：
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     editLink: {
-      pattern:
-        'https://github.com/estjs/athen/tree/master/docs/:path',
-      text: '📝 Edit this page on GitHub'
-    }
-  }
+      pattern: "https://github.com/estjs/athen/tree/master/docs/:path",
+      text: "📝 Edit this page on GitHub",
+    },
+  },
 });
 ```
 
@@ -181,12 +180,12 @@ export default defineConfig({
 上次更新时间的文本。比如：
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    lastUpdatedText: 'Last Updated'
-  }
+    lastUpdatedText: "Last Updated",
+  },
 });
 ```
 
@@ -209,52 +208,54 @@ export interface Footer {
 比如：
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     footer: {
-      message: 'Powered by Athen',
-      copyright: `© ${new Date().getFullYear()} Athen`
-    }
-  }
+      message: "Powered by Athen",
+      copyright: `© ${new Date().getFullYear()} Athen`,
+    },
+  },
 });
 ```
 
-## socialLinks
+## links
 
 - Type: `Array`
 - Default: `[]`
 
-网站的社交链接。
+显示在导航栏末尾的链接，通常用于 GitHub、Discord、Twitter 等外部入口。
 
-`socialLinks` 配置是 `SocialLink` 的数组，具有以下类型：
+`links` 配置是 `IconLink` 的数组，具有以下类型：
 
 ```ts
-export interface SocialLink {
-  icon: SocialLinkIcon;
+export interface IconLink {
+  icon: IconLinkIcon;
   link: string;
+  ariaLabel?: string;
 }
 ```
 
 比如：
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    socialLinks: [
+    links: [
       {
-        icon: 'github',
-        link: 'https://github.com/estjs/athen'
-      }
-    ]
-  }
+        icon: "github",
+        link: "https://github.com/estjs/athen",
+        ariaLabel: "GitHub",
+      },
+    ],
+  },
 });
 ```
 
-> 在当前版本中，`icon` 只支持 `github`
+内置 `icon` 支持 `github`、`discord`、`twitter`、`youtube`、`linkedin` 等常见社交服务，也支持自定义 SVG 图标。
 
 ## outlineTitle
 
@@ -266,12 +267,12 @@ export default defineConfig({
 比如:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    outlineTitle: 'ON THIS PAGE'
-  }
+    outlineTitle: "ON THIS PAGE",
+  },
 });
 ```
 
@@ -283,12 +284,12 @@ export default defineConfig({
 上一页的文本。比如:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    prevPageText: 'Previous Page'
-  }
+    prevPageText: "Previous Page",
+  },
 });
 ```
 
@@ -300,12 +301,12 @@ export default defineConfig({
 下一页的文本。比如:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    nextPageText: 'Next Page'
-  }
+    nextPageText: "Next Page",
+  },
 });
 ```
 
@@ -318,8 +319,6 @@ export default defineConfig({
 
 <Locales />
 
-
-
 ## backTop
 
 - Type: `object | boolean`
@@ -328,12 +327,12 @@ export default defineConfig({
 是否开启返回顶部功能。默认情况下开启，你也通过如下的配置禁用:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    backTop: false
-  }
+    backTop: false,
+  },
 });
 ```
 
@@ -344,26 +343,26 @@ export default defineConfig({
 
 无需完全替换主题，即可在指定位置插入自定义组件。可用插槽键：
 
-| 键 | 渲染位置 |
-|----|----------|
-| `banner` | 顶部导航栏下方 |
-| `sidebarExtra` | 侧边栏底部 |
-| `footerExtra` | 页面底部（主内容之后） |
+| 键             | 渲染位置               |
+| -------------- | ---------------------- |
+| `banner`       | 顶部导航栏下方         |
+| `sidebarExtra` | 侧边栏底部             |
+| `footerExtra`  | 页面底部（主内容之后） |
 
 示例：
 
 ```js
-import { defineConfig } from 'athen';
-import Banner from './components/Banner';
+import { defineConfig } from "athen";
+import Banner from "./components/Banner";
 
 export default defineConfig({
   themeConfig: {
     slots: {
       banner: Banner,
       sidebarExtra: () => <AdWidget />, // 行内组件
-      footerExtra: () => <p style={{ textAlign: 'center' }}>© 2024 我的项目</p>
-    }
-  }
+      footerExtra: () => <p style={{ textAlign: "center" }}>© 2024 我的项目</p>,
+    },
+  },
 });
 ```
 

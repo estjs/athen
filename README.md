@@ -28,13 +28,13 @@ Athen is a **Vite-powered**, **MDX-based** static-site generator built on the **
 
 This monorepo contains the following packages:
 
-| Package | Description | Version |
-|---------|-------------|---------|
-| [`athen`](./packages/athen) | Core framework and CLI | ![npm](https://img.shields.io/npm/v/athen) |
-| [`@athen/plugin-mdx`](./packages/plugin-mdx) | MDX processing plugin | ![npm](https://img.shields.io/npm/v/@athen/plugin-mdx) |
-| [`@athen/plugin-search`](./packages/plugin-search) | Full-text search plugin | ![npm](https://img.shields.io/npm/v/@athen/plugin-search) |
-| [`@athen/plugin-analytics`](./packages/plugin-analytics) | Analytics integration | ![npm](https://img.shields.io/npm/v/@athen/plugin-analytics) |
-| [`create-athen`](./packages/create-athen) | Project scaffolding tool | ![npm](https://img.shields.io/npm/v/create-athen) |
+| Package                                                  | Description              | Version                                                      |
+| -------------------------------------------------------- | ------------------------ | ------------------------------------------------------------ |
+| [`athen`](./packages/athen)                              | Core framework and CLI   | ![npm](https://img.shields.io/npm/v/athen)                   |
+| [`@athen/plugin-mdx`](./packages/plugin-mdx)             | MDX processing plugin    | ![npm](https://img.shields.io/npm/v/@athen/plugin-mdx)       |
+| [`@athen/plugin-search`](./packages/plugin-search)       | Full-text search plugin  | ![npm](https://img.shields.io/npm/v/@athen/plugin-search)    |
+| [`@athen/plugin-analytics`](./packages/plugin-analytics) | Analytics integration    | ![npm](https://img.shields.io/npm/v/@athen/plugin-analytics) |
+| [`create-athen`](./packages/create-athen)                | Project scaffolding tool | ![npm](https://img.shields.io/npm/v/create-athen)            |
 
 ---
 
@@ -88,7 +88,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
-      { text: "API", link: "/api/" }
+      { text: "API", link: "/api/" },
     ],
     sidebar: {
       "/guide/": [
@@ -96,35 +96,31 @@ export default defineConfig({
           text: "Getting Started",
           items: [
             { text: "Introduction", link: "/guide/" },
-            { text: "Installation", link: "/guide/installation" }
-          ]
-        }
-      ]
+            { text: "Installation", link: "/guide/installation" },
+          ],
+        },
+      ],
     },
-    socialLinks: [
-      { icon: "github", link: "https://github.com/your/repo" }
-    ]
+    links: [{ icon: "github", link: "https://github.com/your/repo" }],
   },
   // Multi-language support
   locales: {
-    "/zh/": { 
-      lang: "zh-CN", 
+    "/zh/": {
+      lang: "zh-CN",
       title: "中文文档",
       themeConfig: {
-        nav: [
-          { text: "指南", link: "/zh/guide/getting-started" }
-        ]
-      }
-    }
+        nav: [{ text: "指南", link: "/zh/guide/getting-started" }],
+      },
+    },
   },
   // Search configuration
   search: {
-    provider: "flex" // or "algolia"
+    provider: "flex", // or "algolia"
   },
   // Analytics configuration
   analytics: {
-    google: "G-XXXXXXXXXX"
-  }
+    google: "G-XXXXXXXXXX",
+  },
 });
 ```
 
@@ -156,11 +152,11 @@ export default defineConfig({
 
 Slot map:
 
-| Slot Key | Render Position |
-|----------|-----------------|
-| `banner` | Immediately under the top navigation bar |
-| `sidebarExtra` | Bottom of the sidebar navigation |
-| `footerExtra` | Bottom of the page, after main content |
+| Slot Key       | Render Position                          |
+| -------------- | ---------------------------------------- |
+| `banner`       | Immediately under the top navigation bar |
+| `sidebarExtra` | Bottom of the sidebar navigation         |
+| `footerExtra`  | Bottom of the page, after main content   |
 
 Third-party themes can override any or all of these by supplying their own components.
 
@@ -172,17 +168,17 @@ Athen’s plugin layer builds on Vite’s API and adds a few doc-focused conveni
 
 ### Built-in plugins
 
-| Name | Purpose |
-| ---- | ------- |
-| `athen:config` | Expose site data + aliases |
-| `athen:routes` | Convention-based file-system routing |
-| `athen:site-data` | Virtual module for site configuration |
-| `plugin-mdx` | Remark/rehype pipeline with Shiki highlighting |
-| `unocss` | Atomic CSS framework |
-| `plugin-svgr` | Import SVG as Essor components |
-| `plugin-search` | FlexSearch full-text search (optional) |
-| `plugin-analytics` | Analytics integration (optional) |
-| `vite-plugin-inspect` | Development inspector |
+| Name                  | Purpose                                        |
+| --------------------- | ---------------------------------------------- |
+| `athen:config`        | Expose site data + aliases                     |
+| `athen:routes`        | Convention-based file-system routing           |
+| `athen:site-data`     | Virtual module for site configuration          |
+| `plugin-mdx`          | Remark/rehype pipeline with Shiki highlighting |
+| `unocss`              | Atomic CSS framework                           |
+| `plugin-svgr`         | Import SVG as Essor components                 |
+| `plugin-search`       | FlexSearch full-text search (optional)         |
+| `plugin-analytics`    | Analytics integration (optional)               |
+| `vite-plugin-inspect` | Development inspector                          |
 
 ### Using custom plugins
 
@@ -195,7 +191,7 @@ export default defineConfig({
 });
 ```
 
-*Plugins in this array run **before** the built-ins.* If a plugin shares the same `name` as a built-in plugin, the built-in one is removed—making it effortless to swap the default search or analytics implementation.
+_Plugins in this array run **before** the built-ins._ If a plugin shares the same `name` as a built-in plugin, the built-in one is removed—making it effortless to swap the default search or analytics implementation.
 
 To disable a built-in plugin entirely, set its config to `false` (e.g. `search: false`, `analytics: false`) or shadow it with a noop plugin.
 

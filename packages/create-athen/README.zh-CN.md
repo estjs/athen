@@ -28,6 +28,7 @@ pnpm create athen
 ```
 
 这将提示您输入：
+
 - **项目名称**: 文档项目的名称
 - **包名称**: npm 包名称（从项目名称自动生成）
 - **安装依赖**: 是否自动安装依赖
@@ -48,10 +49,10 @@ pnpm create athen my-docs --yes --install
 
 ## 🎯 CLI 选项
 
-| 选项 | 别名 | 描述 |
-|--------|-------|-------------|
-| `--yes` | `-y` | 跳过所有提示并使用默认值 |
-| `--install` | `-i` | 自动安装依赖 |
+| 选项         | 别名 | 描述                         |
+| ------------ | ---- | ---------------------------- |
+| `--yes`      | `-y` | 跳过所有提示并使用默认值     |
+| `--install`  | `-i` | 自动安装依赖                 |
 | `--template` | `-t` | 指定模板（目前仅有默认模板） |
 
 ### 示例
@@ -105,7 +106,7 @@ my-docs/
 {
   "scripts": {
     "dev": "athen dev",
-    "build": "athen build", 
+    "build": "athen build",
     "preview": "athen preview"
   }
 }
@@ -114,34 +115,32 @@ my-docs/
 ### athen.config.ts
 
 ```ts
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
-  title: '我的文档',
-  description: '使用 Athen 构建的现代文档站点',
-  
+  title: "我的文档",
+  description: "使用 Athen 构建的现代文档站点",
+
   themeConfig: {
     nav: [
-      { text: '指南', link: '/guide/' },
-      { text: 'API', link: '/api/' }
+      { text: "指南", link: "/guide/" },
+      { text: "API", link: "/api/" },
     ],
-    
+
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: '开始使用',
+          text: "开始使用",
           items: [
-            { text: '介绍', link: '/guide/' },
-            { text: '安装', link: '/guide/installation' }
-          ]
-        }
-      ]
+            { text: "介绍", link: "/guide/" },
+            { text: "安装", link: "/guide/installation" },
+          ],
+        },
+      ],
     },
-    
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/your/repo' }
-    ]
-  }
+
+    links: [{ icon: "github", link: "https://github.com/your/repo" }],
+  },
 });
 ```
 
@@ -177,6 +176,7 @@ features:
 ### 指南页面
 
 模板包含示例指南页面：
+
 - 入门说明
 - 安装指南
 - 配置示例
@@ -187,15 +187,17 @@ features:
 ### 更新站点信息
 
 1. **编辑 `athen.config.ts`**:
+
    ```ts
    export default defineConfig({
-     title: '您的站点标题',
-     description: '您的站点描述',
+     title: "您的站点标题",
+     description: "您的站点描述",
      // ... 其他配置
    });
    ```
 
 2. **更新 `package.json`**:
+
    ```json
    {
      "name": "your-docs",
@@ -215,21 +217,21 @@ features:
 export default defineConfig({
   // 启用搜索
   search: {
-    provider: 'flex'
+    provider: "flex",
   },
-  
+
   // 添加分析
   analytics: {
-    google: { id: 'G-XXXXXXXXXX' }
+    google: { id: "G-XXXXXXXXXX" },
   },
-  
+
   // 多语言支持
   locales: {
-    '/en/': {
-      lang: 'en-US',
-      title: 'My Documentation'
-    }
-  }
+    "/en/": {
+      lang: "en-US",
+      title: "My Documentation",
+    },
+  },
 });
 ```
 
@@ -248,6 +250,7 @@ export default defineConfig({
 创建项目后：
 
 1. **启动开发服务器**:
+
    ```bash
    cd my-docs
    pnpm dev
@@ -258,6 +261,7 @@ export default defineConfig({
    - 更改通过 HMR 立即反映
 
 3. **构建生产版本**:
+
    ```bash
    pnpm build
    ```
@@ -272,6 +276,7 @@ export default defineConfig({
 ### 常见问题
 
 **权限错误**:
+
 ```bash
 # 如果遇到权限错误，请尝试：
 npx create-athen@latest my-docs
@@ -279,11 +284,13 @@ npx create-athen@latest my-docs
 
 **包管理器检测**:
 工具自动从以下来源检测您的包管理器：
+
 - `npm_execpath` 环境变量
 - `npm_config_user_agent` 环境变量
 - 如果检测失败则回退到 npm
 
 **模板错误**:
+
 ```bash
 # 如果模板文件丢失，请尝试：
 pnpm create athen@latest my-docs
@@ -292,6 +299,7 @@ pnpm create athen@latest my-docs
 ### 获取帮助
 
 如果遇到问题：
+
 1. 查看 [Athen 文档](https://github.com/estjs/athen)
 2. 在 [GitHub](https://github.com/estjs/athen/issues) 上开启 issue
 3. 加入我们的社区讨论
@@ -302,22 +310,22 @@ pnpm create athen@latest my-docs
 
 ```ts
 interface CreateAthenOptions {
-  projectName?: string;    // 目标目录名称
-  template?: string;       // 模板变体（未来）
-  yes?: boolean;          // 跳过提示
-  install?: boolean;      // 自动安装依赖
+  projectName?: string; // 目标目录名称
+  template?: string; // 模板变体（未来）
+  yes?: boolean; // 跳过提示
+  install?: boolean; // 自动安装依赖
 }
 ```
 
 ### 编程使用
 
 ```ts
-import { createAthenProject } from 'create-athen';
+import { createAthenProject } from "create-athen";
 
 await createAthenProject({
-  projectName: 'my-docs',
-  template: 'default',
-  autoInstall: true
+  projectName: "my-docs",
+  template: "default",
+  autoInstall: true,
 });
 ```
 

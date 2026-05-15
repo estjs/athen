@@ -55,10 +55,9 @@ export namespace DefaultTheme {
     docFooter?: DocFooter;
 
     /**
-     * The social links to be displayed at the end of the nav bar. Perfect for
-     * placing links to social services such as GitHub, Twitter, Facebook, etc.
+     * Links displayed at the end of the nav bar.
      */
-    socialLinks?: SocialLink[];
+    links?: IconLink[];
 
     /**
      * The footer configuration.
@@ -199,29 +198,28 @@ export namespace DefaultTheme {
     next?: SidebarItem;
   }
 
-  // social link ---------------------------------------------------------------
+  // links ---------------------------------------------------------------------
 
-  export interface SocialLink {
-    icon: SocialLinkIcon;
-    mode: 'link' | 'text' | 'img';
-    content: string;
+  export interface IconLink {
+    icon: IconLinkIcon;
+    link: string;
+    ariaLabel?: string;
   }
 
-  export type SocialLinkIcon =
+  export type IconLinkIcon =
     | 'discord'
     | 'facebook'
+    | 'gitlab'
     | 'github'
     | 'instagram'
     | 'linkedin'
+    | 'mastodon'
+    | 'npm'
     | 'slack'
     | 'twitter'
+    | 'x'
     | 'youtube'
-    | 'weixin'
-    | 'qq'
-    | 'juejin'
-    | 'zhihu'
-    | 'bilibili'
-    | 'weibo'
+    | 'wechat'
     | { svg: string };
 
   // footer --------------------------------------------------------------------
@@ -246,10 +244,10 @@ export namespace DefaultTheme {
   export type BackTopOptions =
     | boolean
     | {
-      visibleHeight?: number;
-      duration?: number;
-      animation?: BackTopAnimation;
-    };
+        visibleHeight?: number;
+        duration?: number;
+        animation?: BackTopAnimation;
+      };
 
   export type BackTopAnimation =
     | 'linear'

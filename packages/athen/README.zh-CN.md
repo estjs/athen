@@ -42,49 +42,45 @@ pnpm build
 在项目根目录创建 `athen.config.ts` 文件：
 
 ```ts
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
-  title: '我的文档',
-  description: '现代化文档站点',
-  lang: 'zh-CN',
-  base: '/',
-  
+  title: "我的文档",
+  description: "现代化文档站点",
+  lang: "zh-CN",
+  base: "/",
+
   themeConfig: {
     nav: [
-      { text: '指南', link: '/guide/' },
-      { text: 'API', link: '/api/' }
+      { text: "指南", link: "/guide/" },
+      { text: "API", link: "/api/" },
     ],
-    
+
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: '开始使用',
+          text: "开始使用",
           items: [
-            { text: '介绍', link: '/guide/' },
-            { text: '安装', link: '/guide/installation' }
-          ]
-        }
-      ]
+            { text: "介绍", link: "/guide/" },
+            { text: "安装", link: "/guide/installation" },
+          ],
+        },
+      ],
     },
-    
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/your/repo' }
-    ]
+
+    links: [{ icon: "github", link: "https://github.com/your/repo" }],
   },
-  
+
   // 多语言支持
   locales: {
-    '/en/': {
-      lang: 'en-US',
-      title: 'My Documentation',
+    "/en/": {
+      lang: "en-US",
+      title: "My Documentation",
       themeConfig: {
-        nav: [
-          { text: 'Guide', link: '/en/guide/' }
-        ]
-      }
-    }
-  }
+        nav: [{ text: "Guide", link: "/en/guide/" }],
+      },
+    },
+  },
 });
 ```
 
@@ -156,24 +152,24 @@ Athen 利用现代 [Essor](https://github.com/estjs/essor) 响应式框架：
 
 ### 站点配置
 
-| 选项 | 类型 | 默认值 | 描述 |
-|--------|------|---------|-------------|
-| `title` | `string` | - | 站点标题 |
-| `description` | `string` | - | 站点描述 |
-| `lang` | `string` | `'zh-CN'` | 站点语言 |
-| `base` | `string` | `'/'` | 基础 URL |
-| `srcDir` | `string` | `'docs'` | 源目录 |
-| `outDir` | `string` | `'dist'` | 输出目录 |
+| 选项          | 类型     | 默认值    | 描述     |
+| ------------- | -------- | --------- | -------- |
+| `title`       | `string` | -         | 站点标题 |
+| `description` | `string` | -         | 站点描述 |
+| `lang`        | `string` | `'zh-CN'` | 站点语言 |
+| `base`        | `string` | `'/'`     | 基础 URL |
+| `srcDir`      | `string` | `'docs'`  | 源目录   |
+| `outDir`      | `string` | `'dist'`  | 输出目录 |
 
 ### 主题配置
 
-| 选项 | 类型 | 描述 |
-|--------|------|-------------|
-| `nav` | `NavItem[]` | 导航菜单项 |
-| `sidebar` | `Sidebar` | 侧边栏导航 |
-| `socialLinks` | `SocialLink[]` | 社交媒体链接 |
-| `footer` | `Footer` | 页脚配置 |
-| `editLink` | `EditLink` | 编辑页面链接 |
+| 选项       | 类型         | 描述                 |
+| ---------- | ------------ | -------------------- |
+| `nav`      | `NavItem[]`  | 导航菜单项           |
+| `sidebar`  | `Sidebar`    | 侧边栏导航           |
+| `links`    | `IconLink[]` | 导航栏社交和外部链接 |
+| `footer`   | `Footer`     | 页脚配置             |
+| `editLink` | `EditLink`   | 编辑页面链接         |
 
 ### 高级配置
 
@@ -183,22 +179,22 @@ export default defineConfig({
   vite: {
     // 任何 Vite 配置选项
   },
-  
+
   // 自定义插件
   plugins: [
     // 在这里添加你的插件
   ],
-  
+
   // 搜索配置
   search: {
-    provider: 'flex', // 或 'algolia'
+    provider: "flex", // 或 'algolia'
     // FlexSearch 选项...
   },
-  
+
   // 分析
   analytics: {
-    google: 'G-XXXXXXXXXX'
-  }
+    google: "G-XXXXXXXXXX",
+  },
 });
 ```
 
@@ -259,11 +255,11 @@ export default defineConfig({
 使用 Vite 插件 API 创建自定义插件：
 
 ```ts
-import type { Plugin } from 'vite';
+import type { Plugin } from "vite";
 
 export function myAthenPlugin(): Plugin {
   return {
-    name: 'my-athen-plugin',
+    name: "my-athen-plugin",
     // 插件实现
   };
 }
@@ -273,9 +269,7 @@ export function myAthenPlugin(): Plugin {
 
 ```ts
 export default defineConfig({
-  plugins: [
-    myAthenPlugin()
-  ]
+  plugins: [myAthenPlugin()],
 });
 ```
 
@@ -286,19 +280,19 @@ export default defineConfig({
 ```ts
 export default defineConfig({
   locales: {
-    '/': {
-      lang: 'zh-CN',
-      title: '我的文档'
+    "/": {
+      lang: "zh-CN",
+      title: "我的文档",
     },
-    '/en/': {
-      lang: 'en-US',
-      title: 'My Docs'
+    "/en/": {
+      lang: "en-US",
+      title: "My Docs",
     },
-    '/ja/': {
-      lang: 'ja-JP',
-      title: '私のドキュメント'
-    }
-  }
+    "/ja/": {
+      lang: "ja-JP",
+      title: "私のドキュメント",
+    },
+  },
 });
 ```
 
@@ -324,7 +318,7 @@ docs/
 ### defineConfig
 
 ```ts
-function defineConfig(config: UserConfig): UserConfig
+function defineConfig(config: UserConfig): UserConfig;
 ```
 
 使用完整的 TypeScript 支持定义你的 Athen 配置。
@@ -334,14 +328,14 @@ function defineConfig(config: UserConfig): UserConfig
 CLI 提供对 Athen 功能的编程访问：
 
 ```ts
-import { build, createDevServer } from 'athen';
+import { build, createDevServer } from "athen";
 
 // 启动开发服务器
-const server = await createDevServer('./docs');
+const server = await createDevServer("./docs");
 await server.listen();
 
 // 构建生产版本
-await build('./docs');
+await build("./docs");
 ```
 
 ## 🔗 相关包

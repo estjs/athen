@@ -1,16 +1,16 @@
 # Theme Config
 
-import Locales from '../fragments/locales.mdx';
+import Locales from "../fragments/locales.mdx";
 
 The theme config is under the `themeConfig` in root config. For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     // ...
-  }
+  },
 });
 ```
 
@@ -26,9 +26,9 @@ interface NavItem {
   // The text of the nav item
   text: string;
   // The link href will be entered when click the nav item
-  link: '/';
+  link: "/";
   // The active match rule of the nav item, optional
-  activeMatch: '^/$|^/';
+  activeMatch: "^/$|^/";
 }
 ```
 
@@ -37,18 +37,18 @@ The `activeMatch` is used to match the current route, and the nav item will be h
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     nav: [
       {
-        text: 'Home',
-        link: '/',
-        activeMatch: '^/$|^/'
-      }
-    ]
-  }
+        text: "Home",
+        link: "/",
+        activeMatch: "^/$|^/",
+      },
+    ],
+  },
 });
 ```
 
@@ -66,26 +66,26 @@ interface NavGroup {
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     nav: [
       {
-        text: 'Home',
+        text: "Home",
         items: [
           {
-            text: 'Menu 1',
-            link: '/menu1'
+            text: "Menu 1",
+            link: "/menu1",
           },
           {
-            text: 'Menu 2',
-            link: '/menu2'
-          }
-        ]
-      }
-    ]
-  }
+            text: "Menu 2",
+            link: "/menu2",
+          },
+        ],
+      },
+    ],
+  },
 });
 ```
 
@@ -122,24 +122,24 @@ type SidebarItem = {
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: 'Guide',
+          text: "Guide",
           items: [
             {
-              text: 'Getting Started',
-              link: '/guide/getting-started'
-            }
-          ]
-        }
-      ]
-    }
-  }
+              text: "Getting Started",
+              link: "/guide/getting-started",
+            },
+          ],
+        },
+      ],
+    },
+  },
 });
 ```
 
@@ -164,16 +164,15 @@ export interface EditLink {
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     editLink: {
-      pattern:
-        'https://github.com/estjs/athen/tree/master/docs/:path',
-      text: '📝 Edit this page on GitHub'
-    }
-  }
+      pattern: "https://github.com/estjs/athen/tree/master/docs/:path",
+      text: "📝 Edit this page on GitHub",
+    },
+  },
 });
 ```
 
@@ -189,12 +188,12 @@ The text of last updated time.
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    lastUpdatedText: 'Last Updated'
-  }
+    lastUpdatedText: "Last Updated",
+  },
 });
 ```
 
@@ -217,52 +216,56 @@ export interface Footer {
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
     footer: {
-      message: 'Powered by Athen',
-      copyright: `© ${new Date().getFullYear()} estjs`
-    }
-  }
+      message: "Powered by Athen",
+      copyright: `© ${new Date().getFullYear()} estjs`,
+    },
+  },
 });
 ```
 
-## socialLinks
+## links
 
 - Type: `Array`
 - Default: `[]`
 
-The social links of the site.
+Links displayed at the end of the nav bar, commonly used for GitHub, Discord,
+Twitter, and other external destinations.
 
-The `socialLinks` config is an array of `SocialLink`, which has following type:
+The `links` config is an array of `IconLink`, which has following type:
 
 ```ts
-export interface SocialLink {
-  icon: SocialLinkIcon;
+export interface IconLink {
+  icon: IconLinkIcon;
   link: string;
+  ariaLabel?: string;
 }
 ```
 
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    socialLinks: [
+    links: [
       {
-        icon: 'github',
-        link: 'https://github.com/estjs/athen'
-      }
-    ]
-  }
+        icon: "github",
+        link: "https://github.com/estjs/athen",
+        ariaLabel: "GitHub",
+      },
+    ],
+  },
 });
 ```
 
-> In current version, the `icon` only supports `github`.
+The built-in `icon` supports common social services such as `github`, `discord`,
+`twitter`, `youtube`, `linkedin`, and custom SVG icons.
 
 ## outlineTitle
 
@@ -274,12 +277,12 @@ Configure the title of the outline in the right sidebar.
 For example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    outlineTitle: 'ON THIS PAGE'
-  }
+    outlineTitle: "ON THIS PAGE",
+  },
 });
 ```
 
@@ -291,12 +294,12 @@ export default defineConfig({
 The text of the previous page. for example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    prevPageText: 'Previous Page'
-  }
+    prevPageText: "Previous Page",
+  },
 });
 ```
 
@@ -308,12 +311,12 @@ export default defineConfig({
 Text for the next page. for example:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    nextPageText: 'Next Page'
-  }
+    nextPageText: "Next Page",
+  },
 });
 ```
 
@@ -334,12 +337,12 @@ I18n config. This config is an object, the key is the routing prefix of the corr
 Whether to enable back top.You can disable it by setting it to `false`:
 
 ```js
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    backTop: false
-  }
+    backTop: false,
+  },
 });
 ```
 
@@ -350,26 +353,28 @@ export default defineConfig({
 
 Provide custom layout components without replacing the whole theme. Available slot keys:
 
-| Key | Render Position |
-|-----|-----------------|
-| `banner` | Immediately under the top navigation bar |
-| `sidebarExtra` | Bottom of the sidebar navigation |
-| `footerExtra` | Bottom of each page (after main content) |
+| Key            | Render Position                          |
+| -------------- | ---------------------------------------- |
+| `banner`       | Immediately under the top navigation bar |
+| `sidebarExtra` | Bottom of the sidebar navigation         |
+| `footerExtra`  | Bottom of each page (after main content) |
 
 Example:
 
 ```js
-import { defineConfig } from 'athen';
-import Banner from './components/Banner';
+import { defineConfig } from "athen";
+import Banner from "./components/Banner";
 
 export default defineConfig({
   themeConfig: {
     slots: {
       banner: Banner,
       sidebarExtra: () => <AdWidget />, // inline component
-      footerExtra: () => <p style={{ textAlign: 'center' }}>© 2024 MyProject</p>
-    }
-  }
+      footerExtra: () => (
+        <p style={{ textAlign: "center" }}>© 2024 MyProject</p>
+      ),
+    },
+  },
 });
 ```
 

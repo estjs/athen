@@ -30,10 +30,22 @@ export default defineConfig({
   // 自定义头部标签
   head: [
     ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }],
-    ['meta', { name: 'keywords', content: 'documentation, athen, static site generator' }],
+    [
+      'meta',
+      {
+        name: 'keywords',
+        content: 'documentation, athen, static site generator',
+      },
+    ],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'My Athen Site' }],
-    ['meta', { property: 'og:description', content: 'A documentation site built with Athen' }],
+    [
+      'meta',
+      {
+        property: 'og:description',
+        content: 'A documentation site built with Athen',
+      },
+    ],
   ],
 
   themeConfig: {
@@ -44,19 +56,19 @@ export default defineConfig({
         label: 'English',
         title: 'My Athen Site',
         description: 'A documentation site built with Athen',
-        
+
         // 导航栏配置
         nav: [
           { text: 'Home', link: '/' },
-          { 
-            text: 'Guide', 
+          {
+            text: 'Guide',
             link: '/guide/getting-started',
-            activeMatch: '/guide/'
+            activeMatch: '/guide/',
           },
-          { 
-            text: 'API', 
+          {
+            text: 'API',
             link: '/api/introduction',
-            activeMatch: '/api/'
+            activeMatch: '/api/',
           },
           {
             text: 'Examples',
@@ -64,7 +76,7 @@ export default defineConfig({
               { text: 'Basic Usage', link: '/examples/basic' },
               { text: 'Advanced Features', link: '/examples/advanced' },
               { text: 'Custom Theme', link: '/examples/custom-theme' },
-            ]
+            ],
           },
           {
             text: 'v1.0.0',
@@ -72,8 +84,8 @@ export default defineConfig({
               { text: 'Changelog', link: '/changelog' },
               { text: 'Contributing', link: '/contributing' },
               { text: 'GitHub', link: 'https://github.com/your-org/your-repo' },
-            ]
-          }
+            ],
+          },
         ],
 
         // 侧边栏配置
@@ -86,7 +98,7 @@ export default defineConfig({
                 { text: 'Quick Start', link: '/guide/getting-started' },
                 { text: 'Installation', link: '/guide/installation' },
                 { text: 'Configuration', link: '/guide/configuration' },
-              ]
+              ],
             },
             {
               text: 'Features',
@@ -97,16 +109,19 @@ export default defineConfig({
                 { text: 'Routing', link: '/guide/routing' },
                 { text: 'Search', link: '/guide/search' },
                 { text: 'Internationalization', link: '/guide/i18n' },
-              ]
+              ],
             },
             {
               text: 'Advanced',
               items: [
                 { text: 'Custom Theme', link: '/guide/custom-theme' },
-                { text: 'Plugin Development', link: '/guide/plugin-development' },
+                {
+                  text: 'Plugin Development',
+                  link: '/guide/plugin-development',
+                },
                 { text: 'Deployment', link: '/guide/deployment' },
-              ]
-            }
+              ],
+            },
           ],
           '/api/': [
             {
@@ -116,7 +131,7 @@ export default defineConfig({
                 { text: 'Site Config', link: '/api/site-config' },
                 { text: 'Theme Config', link: '/api/theme-config' },
                 { text: 'Frontmatter', link: '/api/frontmatter' },
-              ]
+              ],
             },
             {
               text: 'Runtime API',
@@ -124,8 +139,8 @@ export default defineConfig({
                 { text: 'Client API', link: '/api/client-api' },
                 { text: 'Node API', link: '/api/node-api' },
                 { text: 'Plugin API', link: '/api/plugin-api' },
-              ]
-            }
+              ],
+            },
           ],
           '/examples/': [
             {
@@ -134,21 +149,21 @@ export default defineConfig({
                 { text: 'Basic Usage', link: '/examples/basic' },
                 { text: 'Advanced Features', link: '/examples/advanced' },
                 { text: 'Custom Theme', link: '/examples/custom-theme' },
-              ]
-            }
-          ]
+              ],
+            },
+          ],
         },
 
         // 编辑链接
         editLink: {
           pattern: 'https://github.com/your-org/your-repo/edit/main/docs/:path',
-          text: 'Edit this page on GitHub'
+          text: 'Edit this page on GitHub',
         },
 
         // 页脚配置
         footer: {
           message: 'Released under the MIT License.',
-          copyright: 'Copyright © 2024-present Your Name'
+          copyright: 'Copyright © 2024-present Your Name',
         },
 
         // 其他文本配置
@@ -164,19 +179,19 @@ export default defineConfig({
         label: '简体中文',
         title: '我的 Athen 站点',
         description: '使用 Athen 构建的文档站点',
-        
+
         // 导航栏配置
         nav: [
           { text: '首页', link: '/zh/' },
-          { 
-            text: '指南', 
+          {
+            text: '指南',
             link: '/zh/guide/getting-started',
-            activeMatch: '/zh/guide/'
+            activeMatch: '/zh/guide/',
           },
-          { 
-            text: 'API', 
+          {
+            text: 'API',
             link: '/zh/api/introduction',
-            activeMatch: '/zh/api/'
+            activeMatch: '/zh/api/',
           },
           {
             text: '示例',
@@ -184,7 +199,7 @@ export default defineConfig({
               { text: '基础用法', link: '/zh/examples/basic' },
               { text: '高级功能', link: '/zh/examples/advanced' },
               { text: '自定义主题', link: '/zh/examples/custom-theme' },
-            ]
+            ],
           },
           {
             text: 'v1.0.0',
@@ -192,8 +207,8 @@ export default defineConfig({
               { text: '更新日志', link: '/zh/changelog' },
               { text: '贡献指南', link: '/zh/contributing' },
               { text: 'GitHub', link: 'https://github.com/your-org/your-repo' },
-            ]
-          }
+            ],
+          },
         ],
 
         // 侧边栏配置
@@ -206,7 +221,7 @@ export default defineConfig({
                 { text: '快速开始', link: '/zh/guide/getting-started' },
                 { text: '安装', link: '/zh/guide/installation' },
                 { text: '配置', link: '/zh/guide/configuration' },
-              ]
+              ],
             },
             {
               text: '功能特性',
@@ -217,7 +232,7 @@ export default defineConfig({
                 { text: '路由系统', link: '/zh/guide/routing' },
                 { text: '搜索功能', link: '/zh/guide/search' },
                 { text: '国际化', link: '/zh/guide/i18n' },
-              ]
+              ],
             },
             {
               text: '进阶使用',
@@ -225,8 +240,8 @@ export default defineConfig({
                 { text: '自定义主题', link: '/zh/guide/custom-theme' },
                 { text: '插件开发', link: '/zh/guide/plugin-development' },
                 { text: '部署', link: '/zh/guide/deployment' },
-              ]
-            }
+              ],
+            },
           ],
           '/zh/api/': [
             {
@@ -236,7 +251,7 @@ export default defineConfig({
                 { text: '站点配置', link: '/zh/api/site-config' },
                 { text: '主题配置', link: '/zh/api/theme-config' },
                 { text: 'Frontmatter', link: '/zh/api/frontmatter' },
-              ]
+              ],
             },
             {
               text: '运行时 API',
@@ -244,8 +259,8 @@ export default defineConfig({
                 { text: '客户端 API', link: '/zh/api/client-api' },
                 { text: 'Node API', link: '/zh/api/node-api' },
                 { text: '插件 API', link: '/zh/api/plugin-api' },
-              ]
-            }
+              ],
+            },
           ],
           '/zh/examples/': [
             {
@@ -254,21 +269,21 @@ export default defineConfig({
                 { text: '基础用法', link: '/zh/examples/basic' },
                 { text: '高级功能', link: '/zh/examples/advanced' },
                 { text: '自定义主题', link: '/zh/examples/custom-theme' },
-              ]
-            }
-          ]
+              ],
+            },
+          ],
         },
 
         // 编辑链接
         editLink: {
           pattern: 'https://github.com/your-org/your-repo/edit/main/docs/:path',
-          text: '在 GitHub 上编辑此页'
+          text: '在 GitHub 上编辑此页',
         },
 
         // 页脚配置
         footer: {
           message: '基于 MIT 许可发布',
-          copyright: 'Copyright © 2024-present 您的名字'
+          copyright: 'Copyright © 2024-present 您的名字',
         },
 
         // 其他文本配置
@@ -277,14 +292,26 @@ export default defineConfig({
         returnToTopLabel: '返回顶部',
         sidebarMenuLabel: '菜单',
         darkModeSwitchLabel: '深色模式',
-      }
+      },
     },
 
-    // 社交链接
-    socialLinks: [
-      { icon: 'github', mode: 'link', content: 'https://github.com/your-org/your-repo' },
-      { icon: 'twitter', mode: 'link', content: 'https://twitter.com/your-handle' },
-      { icon: 'discord', mode: 'link', content: 'https://discord.gg/your-server' },
+    // 导航链接
+    links: [
+      {
+        icon: 'github',
+        link: 'https://github.com/your-org/your-repo',
+        ariaLabel: 'GitHub',
+      },
+      {
+        icon: 'twitter',
+        link: 'https://twitter.com/your-handle',
+        ariaLabel: 'Twitter',
+      },
+      {
+        icon: 'discord',
+        link: 'https://discord.gg/your-server',
+        ariaLabel: 'Discord',
+      },
     ],
 
     // 搜索配置（主题级别）
@@ -294,7 +321,7 @@ export default defineConfig({
         translations: {
           button: {
             buttonText: 'Search',
-            buttonAriaLabel: 'Search'
+            buttonAriaLabel: 'Search',
           },
           modal: {
             noResultsText: 'No results for',
@@ -302,23 +329,23 @@ export default defineConfig({
             footer: {
               selectText: 'to select',
               navigateText: 'to navigate',
-              closeText: 'to close'
-            }
-          }
-        }
-      }
+              closeText: 'to close',
+            },
+          },
+        },
+      },
     },
 
     // 大纲配置
     outline: {
       level: [2, 3],
-      label: 'On This Page'
+      label: 'On This Page',
     },
 
     // 上一页/下一页
     docFooter: {
       prev: 'Previous page',
-      next: 'Next page'
+      next: 'Next page',
     },
 
     // 返回顶部

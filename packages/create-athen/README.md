@@ -28,6 +28,7 @@ pnpm create athen
 ```
 
 This will prompt you for:
+
 - **Project name**: Name of your documentation project
 - **Package name**: npm package name (auto-generated from project name)
 - **Install dependencies**: Whether to install dependencies automatically
@@ -51,18 +52,21 @@ pnpm create athen my-docs --yes --install
 The generated project includes a **comprehensive, production-ready template** with:
 
 ### 🌍 **Full Bilingual Support**
+
 - Complete English and Chinese (简体中文) documentation structure
 - Localized navigation, sidebar, and UI text
 - Language switcher in the header
 - Separate content directories for each language
 
 ### 🔍 **Built-in Search**
+
 - **FlexSearch** enabled by default for lightning-fast local search
 - Configurable search options (limit, suggestions, enrichment)
 - Multi-language search support
 - No external dependencies required
 
 ### 📚 **Complete Documentation Structure**
+
 - **Home pages** with hero sections and feature highlights
 - **Getting Started guides** with installation and configuration
 - **API documentation** with comprehensive examples
@@ -70,14 +74,16 @@ The generated project includes a **comprehensive, production-ready template** wi
 - **Contributing guides** and changelog templates
 
 ### 🎨 **Modern UI Features**
+
 - Dark/light theme toggle
 - Responsive design for all devices
-- Social media links (GitHub, Twitter, Discord)
+- Navbar social and external links (GitHub, Twitter, Discord)
 - Edit links for collaborative editing
 - Table of contents navigation
 - Previous/next page navigation
 
 ### ⚙️ **Developer Experience**
+
 - TypeScript configuration out of the box
 - Hot module replacement (HMR) for instant updates
 - Optimized build process with Vite
@@ -86,11 +92,11 @@ The generated project includes a **comprehensive, production-ready template** wi
 
 ## 🎯 CLI Options
 
-| Option | Alias | Description |
-|--------|-------|-------------|
-| `--yes` | `-y` | Skip all prompts and use defaults |
-| `--install` | `-i` | Automatically install dependencies |
-| `--template` | `-t` | Specify template (currently only default) |
+| Option       | Alias | Description                               |
+| ------------ | ----- | ----------------------------------------- |
+| `--yes`      | `-y`  | Skip all prompts and use defaults         |
+| `--install`  | `-i`  | Automatically install dependencies        |
+| `--template` | `-t`  | Specify template (currently only default) |
 
 ### Examples
 
@@ -172,7 +178,7 @@ my-docs/
 {
   "scripts": {
     "dev": "athen dev",
-    "build": "athen build", 
+    "build": "athen build",
     "preview": "athen preview"
   },
   "dependencies": {
@@ -187,20 +193,20 @@ my-docs/
 The generated configuration includes **all major features** configured and ready to use:
 
 ```ts
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
-  lang: 'en-US',
-  title: 'My Athen Site',
-  description: 'A documentation site built with Athen',
-  icon: '/logo.svg',
-  base: '/',
+  lang: "en-US",
+  title: "My Athen Site",
+  description: "A documentation site built with Athen",
+  icon: "/logo.svg",
+  base: "/",
 
   // 🔍 Local search enabled by default
   search: {
-    provider: 'flex',
-    include: ['**/*.md', '**/*.mdx'],
-    exclude: ['**/node_modules/**', '**/dist/**'],
+    provider: "flex",
+    include: ["**/*.md", "**/*.mdx"],
+    exclude: ["**/node_modules/**", "**/dist/**"],
     searchOptions: {
       limit: 10,
       enrich: true,
@@ -219,82 +225,90 @@ export default defineConfig({
   // 🌍 Full bilingual configuration
   themeConfig: {
     locales: {
-      '/': {
-        lang: 'en-US',
-        label: 'English',
-        title: 'My Athen Site',
-        
+      "/": {
+        lang: "en-US",
+        label: "English",
+        title: "My Athen Site",
+
         // Complete navigation structure
         nav: [
-          { text: 'Home', link: '/' },
-          { text: 'Guide', link: '/guide/getting-started' },
-          { text: 'API', link: '/api/introduction' },
+          { text: "Home", link: "/" },
+          { text: "Guide", link: "/guide/getting-started" },
+          { text: "API", link: "/api/introduction" },
           {
-            text: 'Examples',
+            text: "Examples",
             items: [
-              { text: 'Basic Usage', link: '/examples/basic' },
-              { text: 'Advanced Features', link: '/examples/advanced' },
-            ]
-          }
+              { text: "Basic Usage", link: "/examples/basic" },
+              { text: "Advanced Features", link: "/examples/advanced" },
+            ],
+          },
         ],
 
         // Comprehensive sidebar configuration
         sidebar: {
-          '/guide/': [
+          "/guide/": [
             {
-              text: 'Getting Started',
+              text: "Getting Started",
               items: [
-                { text: 'Introduction', link: '/guide/introduction' },
-                { text: 'Quick Start', link: '/guide/getting-started' },
-                { text: 'Installation', link: '/guide/installation' },
-                { text: 'Configuration', link: '/guide/configuration' },
-              ]
+                { text: "Introduction", link: "/guide/introduction" },
+                { text: "Quick Start", link: "/guide/getting-started" },
+                { text: "Installation", link: "/guide/installation" },
+                { text: "Configuration", link: "/guide/configuration" },
+              ],
             },
             {
-              text: 'Features',
+              text: "Features",
               items: [
-                { text: 'Search', link: '/guide/search' },
-                { text: 'Internationalization', link: '/guide/i18n' },
-              ]
-            }
+                { text: "Search", link: "/guide/search" },
+                { text: "Internationalization", link: "/guide/i18n" },
+              ],
+            },
           ],
           // ... more sidebar configurations
-        }
+        },
       },
 
-      '/zh/': {
-        lang: 'zh-CN',
-        label: '简体中文',
-        title: '我的 Athen 站点',
-        
+      "/zh/": {
+        lang: "zh-CN",
+        label: "简体中文",
+        title: "我的 Athen 站点",
+
         // Chinese navigation and sidebar
         nav: [
-          { text: '首页', link: '/zh/' },
-          { text: '指南', link: '/zh/guide/getting-started' },
+          { text: "首页", link: "/zh/" },
+          { text: "指南", link: "/zh/guide/getting-started" },
           // ... complete Chinese navigation
         ],
         // ... complete Chinese sidebar configuration
-      }
+      },
     },
 
-    // Social links
-    socialLinks: [
-      { icon: 'github', mode: 'link', content: 'https://github.com/your-org/your-repo' },
-      { icon: 'twitter', mode: 'link', content: 'https://twitter.com/your-handle' },
+    // Nav links
+    links: [
+      {
+        icon: "github",
+        link: "https://github.com/your-org/your-repo",
+        ariaLabel: "GitHub",
+      },
+      {
+        icon: "twitter",
+        link: "https://twitter.com/your-handle",
+        ariaLabel: "Twitter",
+      },
     ],
 
     // Edit links for collaboration
     editLink: {
-      pattern: 'https://github.com/your-org/your-repo/edit/main/docs/:path',
-      text: 'Edit this page on GitHub'
+      pattern: "https://github.com/your-org/your-repo/edit/main/docs/:path",
+      text: "Edit this page on GitHub",
     },
 
     // Footer configuration
     footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present Your Name'
-    }
-  }
+      message: "Released under the MIT License.",
+      copyright: "Copyright © 2024-present Your Name",
+    },
+  },
 });
 ```
 
@@ -303,6 +317,7 @@ export default defineConfig({
 ### Bilingual Home Pages
 
 **English Home Page (docs/index.md)**:
+
 ```markdown
 ---
 layout: home
@@ -335,6 +350,7 @@ features:
 ```
 
 **Chinese Home Page (docs/zh/index.md)**:
+
 ```markdown
 ---
 layout: home
@@ -378,28 +394,30 @@ The template includes comprehensive guides in both languages:
 After creating your project, update these key files:
 
 1. **Update Site Information** (`athen.config.ts`):
+
    ```ts
    export default defineConfig({
-     title: 'Your Site Title',
-     description: 'Your site description',
-     icon: '/your-logo.svg',
-     
+     title: "Your Site Title",
+     description: "Your site description",
+     icon: "/your-logo.svg",
+
      themeConfig: {
        locales: {
-         '/': {
-           title: 'Your Site Title',
-           description: 'Your site description',
+         "/": {
+           title: "Your Site Title",
+           description: "Your site description",
          },
-         '/zh/': {
-           title: '您的站点标题',
-           description: '您的站点描述',
-         }
-       }
-     }
+         "/zh/": {
+           title: "您的站点标题",
+           description: "您的站点描述",
+         },
+       },
+     },
    });
    ```
 
 2. **Update Package Information** (`package.json`):
+
    ```json
    {
      "name": "your-docs",
@@ -414,27 +432,37 @@ After creating your project, update these key files:
    - Customize navigation and sidebar in `athen.config.ts`
    - Replace logo and favicon in `public/`
 
-4. **Configure Social Links**:
+4. **Configure Links**:
    ```ts
-   socialLinks: [
-     { icon: 'github', mode: 'link', content: 'https://github.com/your-org/your-repo' },
-     { icon: 'twitter', mode: 'link', content: 'https://twitter.com/your-handle' },
-   ]
+   [
+     {
+       icon: "github",
+       link: "https://github.com/your-org/your-repo",
+       ariaLabel: "GitHub",
+     },
+     {
+       icon: "twitter",
+       link: "https://twitter.com/your-handle",
+       ariaLabel: "Twitter",
+     },
+   ];
    ```
 
 ### Advanced Features Configuration
 
 **Enable Analytics**:
+
 ```ts
 // athen.config.ts
 export default defineConfig({
   analytics: {
-    google: { id: 'G-XXXXXXXXXX' }
-  }
+    google: { id: "G-XXXXXXXXXX" },
+  },
 });
 ```
 
 **Customize Search**:
+
 ```ts
 search: {
   provider: 'flex',
@@ -449,6 +477,7 @@ search: {
 ```
 
 **Add More Languages**:
+
 ```ts
 themeConfig: {
   locales: {
@@ -463,6 +492,7 @@ themeConfig: {
 ## 🎨 Template Features Overview
 
 ### 🔍 **Search Functionality**
+
 - **FlexSearch** integration for instant local search
 - Multi-language search support
 - Configurable search options (limits, suggestions, enrichment)
@@ -470,6 +500,7 @@ themeConfig: {
 - Works offline and in private networks
 
 ### 🌍 **Internationalization (i18n)**
+
 - Complete bilingual template (English + Chinese)
 - Localized navigation, sidebar, and UI text
 - Language switcher in header
@@ -477,6 +508,7 @@ themeConfig: {
 - Easy to add more languages
 
 ### 📚 **Content Structure**
+
 - **Home pages** with hero sections and feature highlights
 - **Getting Started guides** with step-by-step instructions
 - **API documentation** with comprehensive examples
@@ -484,6 +516,7 @@ themeConfig: {
 - **Contributing guides** and changelog templates
 
 ### 🎨 **UI/UX Features**
+
 - Dark/light theme toggle
 - Responsive design for all devices
 - Table of contents navigation
@@ -493,6 +526,7 @@ themeConfig: {
 - Custom logo and favicon support
 
 ### ⚙️ **Developer Experience**
+
 - TypeScript configuration
 - Hot module replacement (HMR)
 - Optimized build process with Vite
@@ -503,12 +537,14 @@ themeConfig: {
 ## 🎯 Template Variants (Current & Future)
 
 ### Current: Default Template
+
 - **Bilingual documentation site** (English + Chinese)
 - **Search enabled** by default
 - **Complete configuration** examples
 - **Production-ready** setup
 
 ### Future Templates (Planned)
+
 - **TypeScript Template**: Enhanced TypeScript configuration
 - **Multi-language Template**: 5+ language support
 - **Blog Template**: Documentation + blog hybrid
@@ -520,27 +556,32 @@ themeConfig: {
 After creating your project, follow this workflow:
 
 ### 1. **Initial Setup**
+
 ```bash
 cd my-docs
 pnpm install  # Install dependencies (if not done automatically)
 ```
 
 ### 2. **Start Development**
+
 ```bash
 pnpm dev
 ```
+
 - Opens development server at `http://localhost:3000`
 - Hot module replacement (HMR) for instant updates
 - Search functionality works immediately
 - Language switcher functional
 
 ### 3. **Content Development**
+
 - **Edit content**: Modify files in `docs/` and `docs/zh/` directories
 - **Add pages**: Create new `.md` files in appropriate directories
 - **Update navigation**: Modify `athen.config.ts` sidebar and nav configuration
 - **Customize styling**: Update theme configuration or add custom CSS
 
 ### 4. **Test Your Site**
+
 ```bash
 # Test search functionality
 # Try switching languages
@@ -549,22 +590,28 @@ pnpm dev
 ```
 
 ### 5. **Build for Production**
+
 ```bash
 pnpm build
 ```
+
 - Generates optimized static files in `dist/`
 - Search index is built automatically
 - All assets are optimized and minified
 
 ### 6. **Preview Production Build**
+
 ```bash
 pnpm preview
 ```
+
 - Serves the production build locally
 - Test the final result before deployment
 
 ### 7. **Deploy**
+
 The generated site is a static site that can be deployed to:
+
 - **Netlify**: Drag and drop `dist/` folder
 - **Vercel**: Connect GitHub repository
 - **GitHub Pages**: Use GitHub Actions
@@ -586,9 +633,10 @@ The generated site is a static site that can be deployed to:
 ✅ **TypeScript support**  
 ✅ **Hot module replacement**  
 ✅ **Optimized build process**  
-✅ **Git integration**  
+✅ **Git integration**
 
 ### Performance Metrics
+
 - **Build time**: ~2-5 seconds for typical documentation
 - **Search**: Instant results with FlexSearch
 - **Page load**: <100ms for static pages
@@ -599,6 +647,7 @@ The generated site is a static site that can be deployed to:
 ### Common Issues & Solutions
 
 **❌ Permission Errors**:
+
 ```bash
 # If you get permission errors, try:
 npx create-athen@latest my-docs
@@ -608,28 +657,33 @@ sudo pnpm create athen my-docs
 
 **❌ Package Manager Detection Issues**:
 The tool automatically detects your package manager from:
+
 - `npm_execpath` environment variable
 - `npm_config_user_agent` environment variable
 - Falls back to npm if detection fails
 
 **❌ Template Files Missing**:
+
 ```bash
 # If template files are missing, try:
 pnpm create athen@latest my-docs --yes
 ```
 
 **❌ Search Not Working**:
+
 - Ensure FlexSearch is configured in `athen.config.ts`
 - Check that search plugin is installed: `@athen/plugin-search`
 - Verify content files are in the correct directories
 - Run `pnpm build` to regenerate search index
 
 **❌ Language Switching Issues**:
+
 - Verify both `/` and `/zh/` locales are configured
 - Check that content exists in both `docs/` and `docs/zh/` directories
 - Ensure navigation links use correct paths
 
 **❌ Build Errors**:
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules pnpm-lock.yaml
@@ -638,6 +692,7 @@ pnpm build
 ```
 
 **❌ Development Server Issues**:
+
 ```bash
 # Try different port
 pnpm dev --port 3001
@@ -659,17 +714,20 @@ If you encounter issues:
 ### Debugging Tips
 
 **Enable Debug Mode**:
+
 ```bash
 DEBUG=athen:* pnpm dev
 ```
 
 **Check Configuration**:
+
 ```bash
 # Validate your athen.config.ts
 pnpm athen config
 ```
 
 **Verify Template Integrity**:
+
 ```bash
 # List all generated files
 find . -type f -name "*.md" | head -20
@@ -694,6 +752,7 @@ pnpm create athen [project-name] [options]
 | `--version` | `-v` | boolean | Show version number |
 
 **Examples:**
+
 ```bash
 # Interactive setup
 pnpm create athen
@@ -717,27 +776,27 @@ pnpm create athen my-docs -t typescript
 ### Programmatic Usage
 
 ```ts
-import { createAthenProject } from 'create-athen';
+import { createAthenProject } from "create-athen";
 
 // Basic usage
 await createAthenProject({
-  projectName: 'my-docs',
-  template: 'default',
+  projectName: "my-docs",
+  template: "default",
   autoInstall: true,
-  packageManager: 'pnpm'
+  packageManager: "pnpm",
 });
 
 // Advanced usage
 await createAthenProject({
-  projectName: 'my-docs',
-  template: 'default',
+  projectName: "my-docs",
+  template: "default",
   autoInstall: false,
-  packageManager: 'pnpm',
+  packageManager: "pnpm",
   customConfig: {
-    title: 'My Custom Site',
-    description: 'Custom description',
-    languages: ['en', 'zh', 'ja']
-  }
+    title: "My Custom Site",
+    description: "Custom description",
+    languages: ["en", "zh", "ja"],
+  },
 });
 ```
 
@@ -745,12 +804,13 @@ await createAthenProject({
 
 ```ts
 interface CreateAthenOptions {
-  projectName?: string;           // Target directory name
-  template?: 'default';           // Template variant
-  yes?: boolean;                  // Skip prompts
-  install?: boolean;              // Auto-install dependencies
-  packageManager?: 'npm' | 'pnpm' | 'yarn'; // Package manager
-  customConfig?: {                // Custom configuration
+  projectName?: string; // Target directory name
+  template?: "default"; // Template variant
+  yes?: boolean; // Skip prompts
+  install?: boolean; // Auto-install dependencies
+  packageManager?: "npm" | "pnpm" | "yarn"; // Package manager
+  customConfig?: {
+    // Custom configuration
     title?: string;
     description?: string;
     languages?: string[];
@@ -764,17 +824,17 @@ interface CreateAthenOptions {
 ```ts
 interface TemplateStructure {
   files: {
-    [path: string]: string;       // File path -> content
+    [path: string]: string; // File path -> content
   };
-  directories: string[];          // Directory paths to create
+  directories: string[]; // Directory paths to create
   dependencies: {
-    [name: string]: string;       // Package name -> version
+    [name: string]: string; // Package name -> version
   };
   devDependencies: {
-    [name: string]: string;       // Dev package name -> version
+    [name: string]: string; // Dev package name -> version
   };
   scripts: {
-    [name: string]: string;       // Script name -> command
+    [name: string]: string; // Script name -> command
   };
 }
 ```
@@ -782,22 +842,26 @@ interface TemplateStructure {
 ## 🔗 Related Resources
 
 ### Official Documentation
+
 - **[Athen Framework](../athen)** - Core framework documentation
 - **[Athen Examples](https://github.com/estjs/athen/tree/main/examples)** - Example projects and demos
 - **[Plugin Search](../plugin-search)** - Search plugin documentation
 - **[Plugin Analytics](../plugin-analytics)** - Analytics plugin documentation
 
 ### External Resources
+
 - **[Vite Documentation](https://vitejs.dev/)** - Build tool used by Athen
 - **[MDX Documentation](https://mdxjs.com/)** - Markdown with JSX support
 - **[FlexSearch](https://github.com/nextapps-de/flexsearch)** - Search library used
 
 ### Community
+
 - **[GitHub Repository](https://github.com/estjs/athen)** - Source code and issues
 - **[GitHub Discussions](https://github.com/estjs/athen/discussions)** - Community discussions
 - **[Discord Server](https://discord.gg/athen)** - Real-time community chat
 
 ### Deployment Guides
+
 - **[Netlify Deployment](https://docs.netlify.com/site-deploys/create-deploys/)** - Deploy to Netlify
 - **[Vercel Deployment](https://vercel.com/docs/concepts/deployments/overview)** - Deploy to Vercel
 - **[GitHub Pages](https://pages.github.com/)** - Deploy to GitHub Pages

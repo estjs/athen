@@ -26,50 +26,54 @@ my-docs/
 
 ```typescript
 // docs/athen.config.ts
-import { defineConfig } from 'athen';
+import { defineConfig } from "athen";
 
 export default defineConfig({
-  title: '我的文档',
-  description: '我的项目的综合指南',
-  base: '/',
-  
+  title: "我的文档",
+  description: "我的项目的综合指南",
+  base: "/",
+
   // 启用搜索
   search: {
-    provider: 'flex'
+    provider: "flex",
   },
-  
+
   themeConfig: {
     // 导航
     nav: [
-      { text: '首页', link: '/zh/' },
-      { text: '指南', link: '/zh/guide/getting-started' },
-      { text: 'API', link: '/zh/api/reference' }
+      { text: "首页", link: "/zh/" },
+      { text: "指南", link: "/zh/guide/getting-started" },
+      { text: "API", link: "/zh/api/reference" },
     ],
-    
+
     // 侧边栏
     sidebar: {
-      '/zh/guide/': [
+      "/zh/guide/": [
         {
-          text: '开始使用',
+          text: "开始使用",
           items: [
-            { text: '介绍', link: '/zh/guide/getting-started' },
-            { text: '配置', link: '/zh/guide/configuration' }
-          ]
-        }
-      ]
+            { text: "介绍", link: "/zh/guide/getting-started" },
+            { text: "配置", link: "/zh/guide/configuration" },
+          ],
+        },
+      ],
     },
-    
-    // 社交链接
-    socialLinks: [
-      { icon: 'github', mode: 'link', content: 'https://github.com/your-repo' }
+
+    // 导航链接
+    links: [
+      {
+        icon: "github",
+        link: "https://github.com/your-org/your-repo",
+        ariaLabel: "GitHub",
+      },
     ],
-    
+
     // 页脚
     footer: {
-      message: '基于 MIT 许可证发布',
-      copyright: 'Copyright © 2024 您的名字'
-    }
-  }
+      message: "基于 MIT 许可证发布",
+      copyright: "Copyright © 2024 您的名字",
+    },
+  },
 });
 ```
 
@@ -159,9 +163,11 @@ description: 完整的 API 文档
 函数的描述。
 
 **参数：**
+
 - `input` (string): 输入参数
 
 **返回值：**
+
 - `string`: 处理后的结果
 
 **示例：**
@@ -208,6 +214,7 @@ new MyClass(options)
 ## 开发工作流
 
 1. **启动开发服务器：**
+
    ```bash
    npm run dev
    ```
@@ -217,6 +224,7 @@ new MyClass(options)
 3. **预览更改** 在 `http://localhost:5173`
 
 4. **生产构建：**
+
    ```bash
    npm run build
    ```
@@ -246,7 +254,7 @@ new MyClass(options)
 }
 ```
 
-import App from "./demo.jsx"
+import App from "./demo.jsx";
 
 ## 使用Essor组件
 

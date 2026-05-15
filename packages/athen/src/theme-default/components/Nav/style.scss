@@ -9,13 +9,23 @@
   font-weight: 500;
 }
 
-.social-link-icon {
+.nav-icon-link {
   display: flex;
   fill: currentColor;
   transition: color 0.2s;
   color: var(--at-c-text-2);
   &:hover {
     color: var(--at-c-text-1);
+  }
+}
+
+.nav-icon-link-svg {
+  display: inline-flex;
+  fill: currentColor;
+
+  svg {
+    width: 100%;
+    height: 100%;
   }
 }
 
