@@ -1,6 +1,6 @@
 {
   "name": "@athen/plugin-search",
-  "version": "0.1.0",
+  "version": "0.0.7",
   "description": "Search plugin for Athen documentation framework",
   "keywords": [
     "athen",
