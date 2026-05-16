@@ -28,24 +28,25 @@ docs
 
 ## locales config
 
-In the config file, you need to add the `themeConfig.locales` field to configure various parts for different languages. for example:
+In the config file, add top-level `locales` to configure various parts for different languages. For example:
 
 ```js
 import { defineConfig } from 'athen';
 
 export default defineConfig({
-  themeConfig: {
-    locales: {
-      '/zh/': {
-        lang: 'zh-CN',
-        title: 'Athen',
-        description: 'Athen 是一个基于 Vite & Essor 的文档生成工具'
-      },
-      '/': {
-        lang: 'en-US',
-        title: 'Athen',
-        description: 'Athen is a documentation generator based on Vite & Essor'
-      }
+  defaultLocale: 'en',
+  locales: {
+    '/zh/': {
+      label: '简体中文',
+      lang: 'zh-CN',
+      title: 'Athen',
+      description: 'Athen 是一个基于 Vite & Essor 的文档生成工具'
+    },
+    '/': {
+      label: 'English',
+      lang: 'en-US',
+      title: 'Athen',
+      description: 'Athen is a documentation generator based on Vite & Essor'
     }
   }
 });

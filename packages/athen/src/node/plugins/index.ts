@@ -19,14 +19,19 @@ export async function createVitePlugins(
   isServer = true,
   restartServer?: () => Promise<void>,
 ) {
+  const mdxOptions = {
+    root: config.root,
+    base: config.siteData.base,
+    enableSpa: config.enableSpa,
+    allowDeadLinks: config.allowDeadLinks,
+    ...(config.markdown || {}),
+    essor: true,
+    plugins: [pluginMdxHMR(config, isServer) as never],
+  } as Parameters<typeof pluginMdx>[0];
+
   // 1. Built-in plugins list
   const builtIn: PluginOption[] = [
-    await pluginMdx({
-      root: config.root,
-      base: config.siteData.base,
-      essor: true,
-      plugins: [pluginMdxHMR(config, isServer)],
-    }),
+    (await pluginMdx(mdxOptions)) as unknown as PluginOption,
     pluginUnocss(unocssOptions),
     EnvironmentPlugin([]),
     pluginAthen(config, isServer, restartServer),

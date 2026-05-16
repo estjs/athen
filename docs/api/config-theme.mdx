@@ -2,14 +2,14 @@
 
 import Locales from "../fragments/locales.mdx";
 
-The theme config is under the `themeConfig` in root config. For example:
+The default theme config is under `themeConfig` in root config. For locale-specific nav/sidebar, use top-level `locales`.
 
-```js
+```ts
 import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    // ...
+    // default theme options
   },
 });
 ```

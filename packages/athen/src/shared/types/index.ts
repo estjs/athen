@@ -58,7 +58,158 @@ export type HeadConfig =
   | [string, Record<string, string>]
   | [string, Record<string, string>, string];
 
+export type BrokenLinksBehavior = 'throw' | 'warn' | 'ignore';
+
+export interface SiteUserConfig {
+  /**
+   * Base path of the site.
+   */
+  base?: string;
+  /**
+   * Path to html icon file. `favicon` is the preferred name for new configs.
+   */
+  icon?: string;
+  favicon?: string;
+  /**
+   * Language of the site.
+   */
+  lang?: string;
+  /**
+   * Title of the site.
+   */
+  title?: string;
+  /**
+   * Description of the site.
+   */
+  description?: string;
+  /**
+   * Custom head config.
+   */
+  head?: HeadConfig[];
+  /**
+   * Whether dark mode/light mode toggle button is displayed.
+   */
+  colorScheme?: boolean;
+}
+
+export interface DocsUserConfig {
+  /**
+   * Source directory of the site.
+   */
+  srcDir?: string;
+  /**
+   * Route prefix for generated documentation pages.
+   */
+  routeBasePath?: string;
+  /**
+   * Include extra files from being converted to routes.
+   */
+  include?: string[];
+  /**
+   * Exclude files from being converted to routes.
+   */
+  exclude?: string[];
+  /**
+   * File extensions that can be converted to routes.
+   */
+  extensions?: string[];
+  /**
+   * Output directory of the site.
+   */
+  outDir?: string;
+  /**
+   * Temporary directory of the site.
+   */
+  tempDir?: string;
+  /**
+   * Enable single page application in production.
+   */
+  enableSpa?: boolean;
+  /**
+   * Broken-link handling strategy.
+   */
+  onBrokenLinks?: BrokenLinksBehavior;
+  /**
+   * Edit link URL pattern, e.g. `https://github.com/org/repo/edit/main/docs/:path`.
+   */
+  editUrl?: string;
+  editLink?: DefaultTheme.EditLink;
+  /**
+   * Whether to calculate git based last-updated metadata.
+   */
+  lastUpdated?: boolean;
+}
+
+export type MarkdownPlugin = unknown | [unknown, Record<string, unknown>?];
+
+export interface MarkdownConfig {
+  /**
+   * Whether code blocks should render line numbers by default.
+   */
+  lineNumbers?: boolean;
+  /**
+   * Table-of-contents extraction/rendering options.
+   */
+  toc?:
+    | boolean
+    | {
+        level?: [number, number];
+      };
+  remarkPlugins?: MarkdownPlugin[];
+  rehypePlugins?: MarkdownPlugin[];
+  externalLinks?:
+    | false
+    | {
+        target?: string | false;
+        rel?: string | false;
+      };
+  shiki?: {
+    theme?: string;
+    themes?: string[];
+  };
+}
+
+export interface I18nConfig {
+  defaultLocale?: string;
+  locales?: Record<string, DefaultTheme.LocaleConfig>;
+  redirect?: boolean;
+}
+
+export interface ThemeUserConfig<ThemeConfig = DefaultTheme.Config> {
+  /**
+   * Theme package name or relative/absolute path.
+   */
+  name?: string;
+  path?: string;
+  /**
+   * Theme-specific configuration.
+   */
+  config?: ThemeConfig;
+  /**
+   * Convenience aliases for the default theme.
+   */
+  nav?: DefaultTheme.NavItem[];
+  sidebar?: DefaultTheme.Sidebar;
+  socialLinks?: DefaultTheme.IconLink[];
+}
+
 export interface UserConfig<ThemeConfig = unknown> {
+  /**
+   * Optional grouped site metadata. Prefer top-level fields for simple configs.
+   */
+  site?: SiteUserConfig;
+  /**
+   * Optional grouped documentation routing/build behavior. Prefer top-level fields for simple configs.
+   */
+  docs?: DocsUserConfig;
+  /**
+   * Markdown / MDX pipeline configuration.
+   */
+  markdown?: MarkdownConfig;
+  /**
+   * Optional grouped internationalization configuration. Prefer top-level `locales` for simple configs.
+   */
+  i18n?: I18nConfig;
   /**
    * Base path of the site.
    */
@@ -67,6 +218,10 @@ export interface UserConfig<ThemeConfig = unknown> {
    * Path to html icon file.
    */
   icon?: string;
+  /**
+   * Preferred name for the site favicon.
+   */
+  favicon?: string;
   /**
    * Source directory of the site.
    */
@@ -80,6 +235,14 @@ export interface UserConfig<ThemeConfig = unknown> {
    * Language of the site.
    */
   langs?: string[];
+  /**
+   * Default locale key or language tag.
+   */
+  defaultLocale?: string;
+  /**
+   * Locale-specific default-theme configuration.
+   */
+  locales?: Record<string, DefaultTheme.LocaleConfig>;
   /**
    * Title of the site.
    */
@@ -117,6 +280,10 @@ export interface UserConfig<ThemeConfig = unknown> {
    */
   allowDeadLinks?: boolean;
   /**
+   * Broken-link handling strategy.
+   */
+  onBrokenLinks?: BrokenLinksBehavior;
+  /**
    * Whether dark mode/light mode toggle button is displayed.
    */
   colorScheme?: boolean;
@@ -124,6 +291,27 @@ export interface UserConfig<ThemeConfig = unknown> {
    * The custom config of vite-plugin-route
    */
   route?: RouteOptions;
+  /**
+   * Route prefix for generated pages.
+   */
+  routeBasePath?: string;
+  /**
+   * Include files from being converted to routes.
+   */
+  include?: string[];
+  /**
+   * Exclude files from being converted to routes.
+   */
+  exclude?: string[];
+  /**
+   * File extensions that can be converted to routes.
+   */
+  extensions?: string[];
+  /**
+   * Edit link URL pattern, e.g. `https://github.com/org/repo/edit/main/docs/:path`.
+   */
+  editUrl?: string;
+  editLink?: DefaultTheme.EditLink;
   /**
    * Analytics configuration. If set to false, built-in analytics plugin is disabled.
    */
@@ -139,7 +327,7 @@ export interface UserConfig<ThemeConfig = unknown> {
   /**
    * Custom theme package name or relative/absolute path. If not provided, built-in default theme will be used.
    */
-  theme?: string;
+  theme?: string | ThemeUserConfig<ThemeConfig>;
   /**
    * Search configuration. If set to false, built-in search plugin is disabled.
    */
@@ -175,9 +363,11 @@ export interface SiteConfig<ThemeConfig = unknown> {
   }>;
   vite?: ViteConfiguration;
   route?: RouteOptions;
+  markdown?: MarkdownConfig;
   outDir?: string;
   tempDir?: string;
   enableSpa?: boolean;
+  onBrokenLinks?: BrokenLinksBehavior;
   allowDeadLinks?: boolean;
   srcDir?: string;
 }

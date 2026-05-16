@@ -6,6 +6,7 @@ import type { Highlighter } from 'shiki';
 
 interface Options {
   highlighter: Highlighter;
+  theme?: string;
 }
 
 function highlightSingleLine(line: number, fragmentAst: ReturnType<typeof fromHtml>) {
@@ -20,7 +21,10 @@ function highlightSingleLine(line: number, fragmentAst: ReturnType<typeof fromHt
 // https://github.com/leafac/rehype-shiki/blob/41e64054d72ab29d5ad48c4c070499fc075090e9/source/index.ts
 // The plugin cannot be used directly because it won't reserve the class name `language-xxx` in the code tag
 // It cause conflict with preWrapper plugin, so we should integrate it manually
-export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ highlighter }) => {
+export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({
+  highlighter,
+  theme = 'dark-plus',
+}) => {
   return (tree) => {
     visit(tree, 'element', (node, index, parent) => {
       // <pre><code>...</code></pre>
@@ -68,7 +72,7 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({ high
 
         const highlightedCode = highlighter.codeToHtml(codeContent, {
           lang,
-          theme: 'dark-plus',
+          theme,
         });
 
         const fragmentAst = fromHtml(highlightedCode, { fragment: true });

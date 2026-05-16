@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 permissions:
   id-token: write
@@ -18,14 +18,14 @@ jobs:
           fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Set node
         uses: actions/setup-node@v6
         with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
+          node-version: lts/*
           package-manager-cache: false
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
@@ -55,7 +55,7 @@ jobs:
             fi
 
             pack_dir="$(mktemp -d)"
-            tag="$(node scripts/npm-publish-tag.js "${version}")"
+            tag="$(node -e "const version = process.argv[1]; const prerelease = version.match(/^\\d+\\.\\d+\\.\\d+-([a-z0-9-]+)/i); console.log(prerelease?.[1] ?? 'latest')" "${version}")"
             pnpm --dir "${package_dir}" pack --pack-destination "${pack_dir}" --json
             tarball="$(find "${pack_dir}" -maxdepth 1 -type f -name "*.tgz" -print -quit)"
 
@@ -66,6 +66,8 @@ jobs:
 
             npm publish "${tarball}" --access public --provenance --tag "${tag}"
           done < <(pnpm --filter './packages/**' -r --workspace-concurrency=1 exec pwd)
+        env:
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3

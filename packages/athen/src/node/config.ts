@@ -11,13 +11,26 @@ import {
   normalizeLocalePrefix,
 } from '../shared/locale';
 import { DEFAULT_THEME_PATH } from './constants';
-import type { DefaultTheme, HeadConfig, SiteConfig, SiteData, UserConfig } from '../shared/types';
+import type {
+  BrokenLinksBehavior,
+  DefaultTheme,
+  HeadConfig,
+  RouteOptions,
+  SiteConfig,
+  SiteData,
+  ThemeUserConfig,
+  UserConfig,
+} from '../shared/types';
 
-type ConfigWithLocales = UserConfig<{ locales?: Record<string, unknown> }>;
+type ThemeConfigWithLocales = Omit<DefaultTheme.Config, 'locales'> & {
+  locales?: Record<string, unknown>;
+};
+type ConfigWithLocales = UserConfig<ThemeConfigWithLocales>;
 type RawConfig =
   | ConfigWithLocales
   | Promise<ConfigWithLocales>
   | (() => ConfigWithLocales | Promise<ConfigWithLocales>);
+type ResolvedLocaleConfig = ConfigWithLocales & { themeConfig: ThemeConfigWithLocales };
 
 const CONFIG_FILE_PATTERN = /^athen\.config\.(?:ts|js|mjs|cjs)$/;
 
@@ -113,6 +126,174 @@ export function resolveLocaleRedirectTarget(
   }
 
   return `/${redirectableEntries[0].prefix}/`;
+}
+
+function isThemeOptions(
+  theme: ConfigWithLocales['theme'],
+): theme is ThemeUserConfig<ThemeConfigWithLocales> {
+  return Boolean(theme && typeof theme === 'object');
+}
+
+function resolveThemePackage(userConfig: ConfigWithLocales): string | undefined {
+  if (typeof userConfig.theme === 'string') {
+    return userConfig.theme;
+  }
+  if (isThemeOptions(userConfig.theme)) {
+    return userConfig.theme.name ?? userConfig.theme.path;
+  }
+}
+
+function resolveBase(userConfig: ConfigWithLocales): string {
+  return userConfig.base ?? userConfig.site?.base ?? '';
+}
+
+function normalizeLocaleLookupKey(prefix: string) {
+  const normalizedPrefix = normalizeLocalePrefix(prefix);
+  return normalizedPrefix ? `/${normalizedPrefix}/` : '/';
+}
+
+function resolveDefaultLocaleConfig(userConfig: ConfigWithLocales) {
+  const locales = userConfig.locales ?? userConfig.i18n?.locales;
+  const defaultLocale = userConfig.defaultLocale ?? userConfig.i18n?.defaultLocale;
+  if (!locales || !defaultLocale) {
+    return undefined;
+  }
+
+  const normalizedDefaultLocale = normalizeLocaleLookupKey(defaultLocale);
+  const normalizedDefaultLanguage = normalizeLanguageTag(defaultLocale);
+  const routeLocale = Object.entries(locales).find(([prefix]) => {
+    return normalizeLocaleLookupKey(prefix) === normalizedDefaultLocale;
+  })?.[1];
+
+  if (routeLocale) {
+    return routeLocale;
+  }
+
+  return Object.values(locales).find((locale) => {
+    const localeLanguage = normalizeLanguageTag(locale?.lang);
+    return (
+      localeLanguage === normalizedDefaultLanguage ||
+      localeLanguage.split('-')[0] === normalizedDefaultLanguage
+    );
+  });
+}
+
+function resolveLang(userConfig: ConfigWithLocales): string {
+  return (
+    userConfig.lang ??
+    resolveDefaultLocaleConfig(userConfig)?.lang ??
+    userConfig.site?.lang ??
+    'en-US'
+  );
+}
+
+function resolveThemeConfig(userConfig: ConfigWithLocales): ThemeConfigWithLocales {
+  const themeOptions = isThemeOptions(userConfig.theme) ? userConfig.theme : undefined;
+  const themeConfig = {
+    ...(themeOptions?.config || {}),
+    ...(userConfig.themeConfig || {}),
+  } as ThemeConfigWithLocales;
+
+  if (themeOptions?.nav && themeConfig.nav === undefined) {
+    themeConfig.nav = themeOptions.nav;
+  }
+  if (themeOptions?.sidebar && themeConfig.sidebar === undefined) {
+    themeConfig.sidebar = themeOptions.sidebar;
+  }
+  if (themeOptions?.socialLinks && themeConfig.links === undefined) {
+    themeConfig.links = themeOptions.socialLinks;
+  }
+  const editUrl = userConfig.editUrl ?? userConfig.docs?.editUrl;
+  const editLink = userConfig.editLink ?? userConfig.docs?.editLink;
+
+  if (editUrl && !themeConfig.editLink) {
+    themeConfig.editLink = {
+      pattern: editUrl,
+    };
+  }
+  if (editLink) {
+    themeConfig.editLink = editLink;
+  }
+  if (userConfig.locales ?? userConfig.i18n?.locales) {
+    themeConfig.locales = userConfig.locales ?? userConfig.i18n?.locales;
+  }
+
+  return themeConfig;
+}
+
+function createLocaleAwareConfig(
+  userConfig: ConfigWithLocales,
+  themeConfig = resolveThemeConfig(userConfig),
+): ResolvedLocaleConfig {
+  return {
+    ...userConfig,
+    base: resolveBase(userConfig),
+    lang: resolveLang(userConfig),
+    themeConfig,
+  };
+}
+
+function resolveSiteHead(
+  userConfig: ConfigWithLocales,
+  localeAwareConfig: ResolvedLocaleConfig,
+): HeadConfig[] {
+  const head: HeadConfig[] = [...(userConfig.head ?? userConfig.site?.head ?? [])];
+
+  if (userConfig.colorScheme ?? userConfig.site?.colorScheme ?? true) {
+    head.push(createDarkModeScript());
+  }
+
+  const languageRedirectScript =
+    userConfig.i18n?.redirect === false ? null : createLanguageRedirectScript(localeAwareConfig);
+  if (languageRedirectScript) {
+    head.push(languageRedirectScript);
+  }
+
+  return head;
+}
+
+function resolveRoute(userConfig: ConfigWithLocales): RouteOptions | undefined {
+  const docs = userConfig.docs;
+  const route: RouteOptions = { ...(userConfig.route || {}) };
+
+  const srcDir = userConfig.srcDir ?? docs?.srcDir;
+  const routeBasePath = userConfig.routeBasePath ?? docs?.routeBasePath;
+  const include = userConfig.include ?? docs?.include;
+  const exclude = userConfig.exclude ?? docs?.exclude;
+  const extensions = userConfig.extensions ?? docs?.extensions;
+
+  if (srcDir) {
+    route.root = srcDir;
+  }
+  if (routeBasePath) {
+    route.prefix = routeBasePath;
+  }
+  if (include) {
+    route.include = include;
+  }
+  if (exclude) {
+    route.exclude = exclude;
+  }
+  if (extensions) {
+    route.extensions = extensions;
+  }
+
+  return Object.keys(route).length ? route : undefined;
+}
+
+function resolveOnBrokenLinks(userConfig: ConfigWithLocales): BrokenLinksBehavior | undefined {
+  return userConfig.onBrokenLinks ?? userConfig.docs?.onBrokenLinks;
+}
+
+function resolveAllowDeadLinks(userConfig: ConfigWithLocales): boolean | undefined {
+  const onBrokenLinks = resolveOnBrokenLinks(userConfig);
+  if (onBrokenLinks === 'throw') {
+    return false;
+  }
+  if (onBrokenLinks === 'warn' || onBrokenLinks === 'ignore') {
+    return true;
+  }
+  return userConfig.allowDeadLinks;
 }
 
 function createLanguageRedirectScript(userConfig: ConfigWithLocales): HeadConfig | null {
@@ -228,32 +409,25 @@ function createLanguageRedirectScript(userConfig: ConfigWithLocales): HeadConfig
   ];
 }
 
-function resolveSiteDataHead(userConfig: ConfigWithLocales): HeadConfig[] {
-  const head: HeadConfig[] = [...(userConfig.head ?? [])];
-
-  if (userConfig.colorScheme ?? true) {
-    head.push(createDarkModeScript());
-  }
-
-  const languageRedirectScript = createLanguageRedirectScript(userConfig);
-  if (languageRedirectScript) {
-    head.push(languageRedirectScript);
-  }
-
-  return head;
-}
-
 export function resolveSiteData(root: string, userConfig: ConfigWithLocales = {}): SiteData {
+  const themeConfig = resolveThemeConfig(userConfig);
+  const localeAwareConfig = createLocaleAwareConfig(userConfig, themeConfig);
+
   return {
-    lang: userConfig.lang || 'en-US',
-    title: userConfig.title || 'Athen',
-    description: userConfig.description || 'Athen',
-    themeConfig: userConfig.themeConfig || {},
-    head: resolveSiteDataHead(userConfig),
-    base: userConfig.base || '',
-    icon: userConfig.icon || '',
+    lang: localeAwareConfig.lang || 'en-US',
+    title: userConfig.title ?? userConfig.site?.title ?? 'Athen',
+    description: userConfig.description ?? userConfig.site?.description ?? 'Athen',
+    themeConfig,
+    head: resolveSiteHead(userConfig, localeAwareConfig),
+    base: localeAwareConfig.base || '',
+    icon:
+      userConfig.favicon ??
+      userConfig.icon ??
+      userConfig.site?.favicon ??
+      userConfig.site?.icon ??
+      '',
     root,
-    colorScheme: userConfig.colorScheme ?? true,
+    colorScheme: userConfig.colorScheme ?? userConfig.site?.colorScheme ?? true,
     search: typeof userConfig.search === 'object' ? userConfig.search : undefined,
   };
 }
@@ -267,9 +441,9 @@ export async function resolveConfig(
 
   const require = createRequire(import.meta.url);
   let themeDir: string;
+  const theme = resolveThemePackage(userConfig);
 
-  if (userConfig.theme) {
-    const theme = userConfig.theme;
+  if (theme) {
     if (isAbsolute(theme)) {
       themeDir = theme;
     } else {
@@ -293,12 +467,14 @@ export async function resolveConfig(
     plugins: userConfig.plugins,
     instances: userConfig.instances,
     vite: userConfig.vite,
-    route: userConfig.route,
-    outDir: userConfig.outDir,
-    tempDir: userConfig.tempDir,
-    enableSpa: userConfig.enableSpa,
-    allowDeadLinks: userConfig.allowDeadLinks,
-    srcDir: userConfig.srcDir,
+    route: resolveRoute(userConfig),
+    markdown: userConfig.markdown,
+    outDir: userConfig.outDir ?? userConfig.docs?.outDir,
+    tempDir: userConfig.tempDir ?? userConfig.docs?.tempDir,
+    enableSpa: userConfig.enableSpa ?? userConfig.docs?.enableSpa,
+    onBrokenLinks: resolveOnBrokenLinks(userConfig),
+    allowDeadLinks: resolveAllowDeadLinks(userConfig),
+    srcDir: userConfig.srcDir ?? userConfig.docs?.srcDir,
   };
 }
 

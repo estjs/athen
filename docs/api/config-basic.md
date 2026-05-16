@@ -1,212 +1,103 @@
 # Basic Config
 
-## base
-
-- Type: `string`
-- Default: `/`
-
-The base URL the site will be deployed at. You can set this to a subdirectory if you plan to deploy your site to a subdirectory of your domain.
-
-For example, if you plan to deploy your site to `https://foo.github.io/bar/`, then you should set `base` to `"/bar/"`:
-
-```js
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  base: '/bar/'
-});
-```
-
-## title
-
-- Type: `string`
-- Default: `"athen"`
-
-The title of site. This will be used as the title of the home page and the title of the HTML document.
-
-```js
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  title: 'my-site'
-});
-```
-
-## description
-
-- Type: `string`
-- Default: `""`
-
-The description of site. This will be used as the description of the home page and the description of the HTML document.
-
-## icon
-
-- Type: `string`
-- Default: `""`
-
-The icon of the site. This will be used as the icon of the home page and the icon of the HTML document. Athen will find your icon in the `public` directory.
-
-## srcDir
-
-- Type: `string`
-- Default: `undefined`
-
-The directory where your markdown pages are located. If undefined, it will use the project root or the directory you pass to the CLI.
-
-## outDir
-
-- Type: `string`
-- Default: `.athen/dist`
-
-The output directory for the built site.
-
-## tempDir
-
-- Type: `string`
-- Default: `undefined`
-
-The temporary directory for intermediate build files.
-
-## lang
-
-- Type: `string`
-- Default: `"en-US"`
-
-The default language of the site.
-
-## langs
-
-- Type: `string[]`
-- Default: `undefined`
-
-The array of supported languages for the site.
-
-## head
-
-- Type: `HeadConfig[]`
-- Default: `[]`
-
-Custom tags to be injected into the HTML `<head>`.
-
-```js
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  head: [
-    ['meta', { name: 'theme-color', content: '#3eaf7c' }]
-  ]
-});
-```
-
-## colorScheme
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to appear the dark mode/light mode toggle button.
-
-## enableSpa
-
-- Type: `boolean`
-- Default: `undefined`
-
-Enable Single Page Application routing in production mode.
-
-## allowDeadLinks
-
-- Type: `boolean`
-- Default: `false`
-
-Whether to fail builds when there are dead links. If set to `true`, the build will not fail.
-
-## themeConfig
-
-- Type: `ThemeConfig`
-- Default: `{}`
-
-The theme configuration. For the default theme configuration, see [Theme Config](./config-theme).
-
-## vite
-
-- Type: `ViteConfiguration`
-- Default: `{}`
-
-Pass custom configuration to Vite. This config will be merged with the internal Vite configuration.
-
-## route
-
-- Type: `RouteOptions`
-- Default: `{}`
-
-Custom configuration for route scanning. You can use `include` and `exclude` to control which Markdown files generate page routes.
+Athen config is intentionally shallow. Most commonly used options live at the top level, and only naturally grouped features use an object such as `themeConfig`, `markdown`, `search`, `vite`, or `route`.
 
 ```ts
 import { defineConfig } from 'athen';
 
 export default defineConfig({
-  route: {
-    // Ignore all files under the secret directory and specific files
-    exclude: ['**/secret/**', 'drafts.md'],
-    // Only include specific file types (optional)
-    include: ['**/*.{md,mdx}']
-  }
+  title: 'My Docs',
+  description: 'Product documentation',
+  lang: 'en-US',
+  base: '/',
+  favicon: '/logo.svg',
+  onBrokenLinks: 'throw',
+
+  themeConfig: {
+    nav: [{ text: 'Guide', link: '/guide/getting-started' }],
+    sidebar: {
+      '/guide/': [
+        {
+          text: 'Guide',
+          items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
+        },
+      ],
+    },
+    links: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
+  },
+
+  locales: {
+    '/zh/': {
+      label: '简体中文',
+      lang: 'zh-CN',
+      nav: [{ text: '指南', link: '/zh/guide/getting-started' }],
+    },
+  },
+
+  markdown: {
+    shiki: { theme: 'dark-plus' },
+  },
 });
 ```
 
-## plugins
+## Top-Level Options
 
-- Type: `PluginOption[]`
-- Default: `[]`
+| Option | Type | Description |
+| --- | --- | --- |
+| `title` | `string` | Site title. |
+| `description` | `string` | Site description and default HTML meta description. |
+| `lang` | `string` | Default language tag. |
+| `base` | `string` | Base URL for deployment. |
+| `favicon` | `string` | Favicon path. `icon` remains as a compatibility alias. |
+| `head` | `HeadConfig[]` | Extra tags injected into HTML `<head>`. |
+| `colorScheme` | `boolean` | Enable dark/light color scheme support. |
+| `srcDir` | `string` | Directory scanned for pages. |
+| `outDir` | `string` | Build output directory. |
+| `tempDir` | `string` | Temporary build directory. |
+| `enableSpa` | `boolean` | Enable production SPA routing. |
+| `onBrokenLinks` | `'throw' \| 'warn' \| 'ignore'` | Broken-link handling strategy. |
+| `routeBasePath` | `string` | Prefix generated routes. |
+| `include` / `exclude` | `string[]` | Include or exclude route files. |
+| `extensions` | `string[]` | Route file extensions. |
+| `theme` | `string` | Custom theme package or path. |
+| `editUrl` | `string` | Edit-link URL pattern using `:path`. |
+| `defaultLocale` | `string` | Default locale key or language tag. |
+| `locales` | `Record<string, LocaleConfig>` | Locale-specific nav/sidebar/text overrides. |
 
-Custom Vite or Athen plugins. If a plugin shares the same `name` with a built-in one, it will override it.
+## Grouped Options
 
-## theme
+- `themeConfig`: default theme navigation, sidebar, links, footer, outline, slots, and page labels.
+- `markdown`: MDX/Markdown pipeline options such as Shiki theme, line numbers, `remarkPlugins`, and `rehypePlugins`.
+- `search`: local FlexSearch or Algolia search configuration.
+- `analytics`: analytics integrations.
+- `vite`: Vite config merged with Athen's internal config.
+- `plugins`: custom Vite/Athen plugins.
+- `route`: advanced route scanner options. Prefer top-level `include`, `exclude`, `extensions`, and `routeBasePath` for common cases.
 
-- Type: `string`
-- Default: `undefined`
+## Migration Notes
 
-Custom theme package name or relative/absolute path. If not provided, built-in default theme will be used.
+The older VitePress-style `themeConfig` remains the recommended theme entry. The deeper experimental shape is still accepted for compatibility, but new projects should prefer the shallow form:
 
-## instances
+| Deeper form | Preferred shallow form |
+| --- | --- |
+| `site.title` | `title` |
+| `site.description` | `description` |
+| `site.base` | `base` |
+| `site.favicon` | `favicon` |
+| `docs.srcDir` | `srcDir` |
+| `docs.onBrokenLinks` | `onBrokenLinks` |
+| `docs.routeBasePath` | `routeBasePath` |
+| `theme.config` | `themeConfig` |
+| `theme.socialLinks` | `themeConfig.links` |
+| `i18n.locales` | `locales` |
 
-- Type: `Array<{ root: string; base?: string; outDir?: string; }>`
-- Default: `[]`
+## Comparison Notes
 
-Multiple site instances in a single repository.
+Compared with VitePress and Docusaurus, the key missing capabilities are still:
 
-## search
-
-- Type: `SearchConfig | boolean`
-- Default: `true`
-
-Whether to enable search. You can configure the search provider or disable it entirely:
-
-```js
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  search: {
-    provider: 'flex',
-    searchOptions: { limit: 10, suggest: true }
-  }
-});
-```
-
-## analytics
-
-- Type: `Record<string, any> | false`
-- Default: `false`
-
-Configure analytics integrations. Passing `false` disables built-in analytics.
-
-```ts
-import { defineConfig } from 'athen';
-
-export default defineConfig({
-  analytics: {
-    google: { id: 'G-XXXX' },
-    baidu: { id: 'xxxx' },
-    umami: { id: 'uuid', src: 'https://umami.example.com/script.js' }
-  }
-});
-```
+- Automatic sidebar generation from filesystem metadata.
+- Full broken-link reporting for `warn` and `ignore`.
+- `cleanUrls` and `trailingSlash` URL policy.
+- Versioned docs.
+- Docusaurus-like preset composition.
+- Rich translated search UI configuration.

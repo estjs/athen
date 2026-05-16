@@ -13,6 +13,11 @@ interface TocItem {
   depth: number;
 }
 
+interface TocOptions {
+  level?: [number, number];
+  enabled?: boolean;
+}
+
 interface ChildNode {
   type: 'link' | 'text' | 'inlineCode' | 'emphasis' | 'strong';
   value: string;
@@ -27,10 +32,11 @@ interface Heading {
 
 type MdxProgram = NonNullable<NonNullable<MdxjsEsm['data']>['estree']>;
 
-export const remarkPluginToc: Plugin<[], Root> = () => {
+export const remarkPluginToc: Plugin<[TocOptions?], Root> = (options = {}) => {
   return (tree: Root) => {
     const toc: TocItem[] = [];
     let title = '';
+    const [minLevel, maxLevel] = options.level ?? [2, 4];
     slugger.reset();
     visitChildren((node: Heading) => {
       if (node.type !== 'heading' || !node.depth || !node.children) {
@@ -41,7 +47,7 @@ export const remarkPluginToc: Plugin<[], Root> = () => {
         title = node.children[0].value;
       }
 
-      if (node.depth > 1 && node.depth < 5) {
+      if (options.enabled !== false && node.depth >= minLevel && node.depth <= maxLevel) {
         const originText = node.children
           .map((child: ChildNode) => {
             switch (child.type) {

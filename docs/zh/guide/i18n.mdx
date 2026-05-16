@@ -28,24 +28,25 @@ docs
 
 ## locales 配置
 
-在配置文件中，你需要添加 `themeConfig.locales` 字段，用于配置不同语言的各项参数。比如：
+在配置文件中，你需要添加顶层 `locales` 字段，用于配置不同语言的各项参数。比如：
 
 ```js
 import { defineConfig } from 'athen';
 
 export default defineConfig({
-  themeConfig: {
-    locales: {
-      '/zh/': {
-        lang: 'zh-CN',
-        title: 'Athen',
-        description: 'Athen 是一个基于 Vite & Essor 的文档生成工具'
-      },
-      '/': {
-        lang: 'en-US',
-        title: 'Athen',
-        description: 'Athen is a documentation generator based on Vite & Essor'
-      }
+  defaultLocale: 'zh',
+  locales: {
+    '/zh/': {
+      label: '简体中文',
+      lang: 'zh-CN',
+      title: 'Athen',
+      description: 'Athen 是一个基于 Vite & Essor 的文档生成工具'
+    },
+    '/': {
+      label: 'English',
+      lang: 'en-US',
+      title: 'Athen',
+      description: 'Athen is a documentation generator based on Vite & Essor'
     }
   }
 });

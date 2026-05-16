@@ -6,7 +6,7 @@ import type { Plugin } from 'vite';
 export const CONVENTIONAL_ROUTE_ID = 'athen:routes';
 
 export default function pluginRoute(config: SiteConfig): Plugin {
-  const rootPath = join(config.root);
+  const rootPath = join(config.root, config.route?.root || config.srcDir || '');
   const routeService = new RouteService(rootPath);
   return {
     name: 'athen:routes',

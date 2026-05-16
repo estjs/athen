@@ -1,8 +1,52 @@
 import { visit } from 'unist-util-visit';
 import type { Plugin } from 'unified';
-import type { Element, Root } from 'hast';
+import type { Element, Root, Text } from 'hast';
 
-export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
+interface Options {
+  lineNumbers?: boolean;
+}
+
+function stringifyClassName(className: unknown) {
+  return Array.isArray(className) ? className.join(' ') : className?.toString() || '';
+}
+
+function getLanguageFromClassName(className: string) {
+  return /\blanguage-(\S+)/.exec(className)?.[1];
+}
+
+function getCodeText(codeNode: Element) {
+  return codeNode.children
+    .map((child) => (child.type === 'text' ? (child as Text).value : ''))
+    .join('');
+}
+
+function countCodeLines(code: string) {
+  const normalizedCode = code.endsWith('\n') ? code.slice(0, -1) : code;
+  return normalizedCode ? normalizedCode.split('\n').length : 1;
+}
+
+function createLineNumbersWrapper(lineCount: number): Element {
+  return {
+    type: 'element',
+    tagName: 'div',
+    properties: {
+      className: 'line-numbers-wrapper',
+    },
+    children: Array.from({ length: lineCount }, (_, index) => ({
+      type: 'element',
+      tagName: 'span',
+      properties: {},
+      children: [
+        {
+          type: 'text',
+          value: String(index + 1),
+        },
+      ],
+    })),
+  };
+}
+
+export const rehypePluginPreWrapper: Plugin<[Options?], Root> = (options = {}) => {
   return (tree) => {
     visit(tree, 'element', (node) => {
       if (
@@ -12,8 +56,8 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
         !(node.data as any)?.isVisited
       ) {
         const codeNode = node.children[0];
-        const codeClassName = codeNode.properties?.className?.toString() || '';
-        const lang = codeClassName.split('-')[1];
+        const codeClassName = stringifyClassName(codeNode.properties?.className);
+        const lang = getLanguageFromClassName(codeClassName);
         if (!codeClassName || !lang) {
           return;
         }
@@ -29,9 +73,11 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
 
         node.tagName = 'div';
         node.properties = node.properties || {};
-        node.properties.className = codeClassName;
+        node.properties.className = options.lineNumbers
+          ? `${codeClassName} line-numbers-mode`
+          : codeClassName;
 
-        node.children = [
+        const children: Element['children'] = [
           {
             type: 'element',
             tagName: 'button',
@@ -60,6 +106,12 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
           },
           clonedNode,
         ];
+
+        if (options.lineNumbers) {
+          children.splice(2, 0, createLineNumbersWrapper(countCodeLines(getCodeText(codeNode))));
+        }
+
+        node.children = children;
       }
     });
   };

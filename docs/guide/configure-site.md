@@ -47,7 +47,7 @@ There are some tips for the config file:
 
 - 2. config file should has a default export, which is a `SiteConfig` object.
 
-In above example, we set the `title` of the site to `my-site`, then you can start the dev server by `yarn dev`.You will see the title of the site has been changed to `my-site`. This means you have awake your first site config, wonderful!
+In above example, we set `title` to `my-site`, then you can start the dev server by `yarn dev`. You will see the title of the site has been changed to `my-site`.
 
 In next section, we will introduce nav and sidebar config, which is very important for a doc site.
 

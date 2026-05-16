@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { transformSync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
 import { MD_REGEX, SX_REGEX } from '@/node/constants';
@@ -40,9 +41,10 @@ export function pluginMdxHMR(config: SiteConfig, isServer: boolean): Plugin {
       if (/\.mdx?/.test(ctx.file)) {
         const routePath = RouteService.getRoutePathFromFile(
           ctx.file,
-          config.root,
+          join(config.root, config.route?.root || config.srcDir || ''),
           config.siteData.base || '/',
           config.siteData,
+          config.route,
         );
         ctx.server.ws!.send({
           type: 'custom',

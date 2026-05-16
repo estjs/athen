@@ -7,8 +7,11 @@ import { remarkPluginTip } from '../src/remarkPlugins/tip';
 import { remarkPluginNormalizeLink } from '../src/remarkPlugins/link';
 
 describe('remarkPluginToc', () => {
-  const processMarkdown = async (markdown: string) => {
-    const processor = unified().use(remarkParse).use(remarkPluginToc);
+  const processMarkdown = async (
+    markdown: string,
+    tocOptions?: Parameters<typeof remarkPluginToc>[0],
+  ) => {
+    const processor = unified().use(remarkParse).use(remarkPluginToc, tocOptions);
     const result = await processor.run(processor.parse(markdown));
     return result;
   };
@@ -119,6 +122,26 @@ describe('remarkPluginToc', () => {
 
     expect(tocNode.value).not.toContain('H5 Heading');
     expect(tocNode.value).not.toContain('H6 Heading');
+  });
+
+  it('should respect configured toc heading levels', async () => {
+    const markdown = `# Title
+
+## Level 2
+
+### Level 3
+
+#### Level 4
+`;
+    const result = await processMarkdown(markdown, { level: [3, 4] });
+
+    const tocNode = result.children.find(
+      (node: any) => node.type === 'mdxjsEsm' && node.value?.includes('export const toc'),
+    );
+
+    expect(tocNode.value).not.toContain('Level 2');
+    expect(tocNode.value).toContain('Level 3');
+    expect(tocNode.value).toContain('Level 4');
   });
 });
 

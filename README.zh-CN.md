@@ -85,6 +85,8 @@ export default defineConfig({
   title: "我的文档",
   lang: "zh-CN",
   base: "/",
+  favicon: "/logo.svg",
+  onBrokenLinks: "throw",
   themeConfig: {
     nav: [
       { text: "指南", link: "/guide/getting-started" },
@@ -104,13 +106,13 @@ export default defineConfig({
     links: [{ icon: "github", link: "https://github.com/your/repo" }],
   },
   // 多语言支持
+  defaultLocale: "zh",
   locales: {
     "/en/": {
+      label: "English",
       lang: "en-US",
       title: "My Docs",
-      themeConfig: {
-        nav: [{ text: "Guide", link: "/en/guide/getting-started" }],
-      },
+      nav: [{ text: "Guide", link: "/en/guide/getting-started" }],
     },
   },
   // 搜索配置

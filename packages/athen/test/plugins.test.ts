@@ -6,8 +6,9 @@ import type { Plugin, UserConfig } from 'vite';
 import type { SiteConfig } from '../src/shared/types';
 
 const require = createRequire(import.meta.url);
+const pluginMdxMock = vi.fn(() => ({ name: 'plugins-mdx' }));
 
-vi.mock('@athen/plugin-mdx', () => ({ pluginMdx: () => ({ name: 'plugins-mdx' }) }));
+vi.mock('@athen/plugin-mdx', () => ({ pluginMdx: pluginMdxMock }));
 vi.mock('@athen/plugin-search', () => ({ default: () => ({ name: 'athen:search' }) }));
 vi.mock('@athen/plugin-analytics', () => ({ default: () => ({ name: 'athen:analytics' }) }));
 vi.mock('unocss/vite', () => ({ default: () => ({ name: 'unocss' }) }));
@@ -44,6 +45,37 @@ const pluginNames = (plugins: unknown[]) =>
   );
 
 describe('plugins', () => {
+  it('passes site markdown configuration to the built-in MDX plugin', async () => {
+    const { createVitePlugins } = await import('../src/node/plugins');
+
+    await createVitePlugins(
+      {
+        ...config(),
+        enableSpa: true,
+        allowDeadLinks: false,
+        markdown: {
+          lineNumbers: true,
+          remarkPlugins: [],
+          rehypePlugins: [],
+        },
+      },
+      true,
+    );
+
+    expect(pluginMdxMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        root: cwd(),
+        base: '',
+        essor: true,
+        enableSpa: true,
+        allowDeadLinks: false,
+        lineNumbers: true,
+        remarkPlugins: [],
+        rehypePlugins: [],
+      }),
+    );
+  });
+
   it('keeps user plugins first, supports built-in replacement, and only adds inspect on server', async () => {
     const { createVitePlugins } = await import('../src/node/plugins');
     const userRoute: Plugin = { name: 'athen:routes' };

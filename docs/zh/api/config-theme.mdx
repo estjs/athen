@@ -2,14 +2,14 @@
 
 import Locales from "../fragments/locales.mdx";
 
-主题配置位于根配置中的 `themeConfig` 下。例如：
+默认主题配置位于根配置中的 `themeConfig` 下。多语言场景下的 nav/sidebar 放在顶层 `locales` 中。
 
-```js
+```ts
 import { defineConfig } from "athen";
 
 export default defineConfig({
   themeConfig: {
-    // ...
+    // 默认主题配置
   },
 });
 ```

@@ -48,29 +48,48 @@ function removeLocalePrefix(routePath: string, localePrefix?: string) {
 }
 
 function getIncludePattern(routeOptions?: RouteOptions) {
-  return routeOptions?.include?.length ? routeOptions.include : DEFAULT_ROUTE_INCLUDE_PATTERN;
+  if (routeOptions?.include?.length) {
+    return routeOptions.include;
+  }
+  if (routeOptions?.extensions?.length) {
+    return `**/*.{${routeOptions.extensions.map((ext) => ext.replace(/^\./, '')).join(',')}}`;
+  }
+  return DEFAULT_ROUTE_INCLUDE_PATTERN;
 }
 
 function getIgnorePatterns(routeOptions?: RouteOptions) {
   return [...DEFAULT_IGNORE_PATTERNS, ...(routeOptions?.exclude || [])];
 }
 
-function resolveRoutePath(fileRelativePath: string, siteData?: LocaleAwareSiteData) {
-  return removeLocalePrefix(
+function withRoutePrefix(routePath: string, prefix?: string) {
+  const normalizedPrefix = prefix?.replaceAll(/^\/+|\/+$/g, '');
+  if (!normalizedPrefix) return routePath;
+
+  return addLeadingSlash(`${normalizedPrefix}/${routePath.replace(/^\/+/, '')}`);
+}
+
+function resolveRoutePath(
+  fileRelativePath: string,
+  siteData?: LocaleAwareSiteData,
+  routeOptions?: RouteOptions,
+) {
+  const routePath = removeLocalePrefix(
     normalizePageRoutePath(fileRelativePath),
     getDefaultLocalePrefix(siteData),
   );
+  return withRoutePrefix(routePath, routeOptions?.prefix);
 }
 
 function createRouteMeta(
   filePath: string,
   root: string,
   siteData?: LocaleAwareSiteData,
+  routeOptions?: RouteOptions,
 ): RouteMeta {
   const fileRelativePath = normalizePath(path.relative(root, filePath));
 
   return {
-    routePath: resolveRoutePath(fileRelativePath, siteData),
+    routePath: resolveRoutePath(fileRelativePath, siteData, routeOptions),
     absolutePath: normalizePath(filePath),
     filePath: fileRelativePath,
     name: basename(filePath, extname(filePath)),
@@ -91,7 +110,7 @@ function collectRouteMeta(
   siteData?: LocaleAwareSiteData,
 ) {
   return collectRouteFiles(scanDir, routeOptions).map((filePath) =>
-    createRouteMeta(filePath, scanDir, siteData),
+    createRouteMeta(filePath, scanDir, siteData, routeOptions),
   );
 }
 
@@ -132,9 +151,10 @@ export class RouteService {
     root: string,
     base: string,
     siteData?: LocaleAwareSiteData,
+    routeOptions?: RouteOptions,
   ): string | undefined {
     const fileRelativePath = normalizePath(path.relative(root, filePath));
-    return withBase(resolveRoutePath(fileRelativePath, siteData), base);
+    return withBase(resolveRoutePath(fileRelativePath, siteData, routeOptions), base);
   }
 
   /** Scan the directory and build route metadata. */

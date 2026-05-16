@@ -73,6 +73,126 @@ describe('config', () => {
     expect(config.srcDir).toBe('src-docs');
   });
 
+  it('loads shallow redesigned user config into internal config', async () => {
+    root = writeProject({
+      'athen.config.ts': `export default () => ({
+        title: 'New Docs',
+        description: 'Modern docs',
+        base: '/product/',
+        favicon: '/favicon.svg',
+        lang: 'en-US',
+        srcDir: 'content',
+        routeBasePath: 'reference',
+        include: ['**/*.mdx'],
+        exclude: ['drafts/**'],
+        outDir: 'public-docs',
+        tempDir: '.athen-temp',
+        enableSpa: true,
+        onBrokenLinks: 'throw',
+        theme: './custom-theme',
+        themeConfig: {
+          nav: [{ text: 'Guide', link: '/guide/' }],
+          sidebar: {
+            '/guide/': [{ text: 'Guide', items: [{ text: 'Intro', link: '/guide/' }] }]
+          },
+          links: [{ icon: 'github', link: 'https://github.com/estjs/athen' }]
+        },
+        defaultLocale: 'en',
+        locales: {
+          '/': { label: 'English', lang: 'en-US' },
+          '/zh/': { label: '简体中文', lang: 'zh-CN' }
+        },
+        markdown: {
+          lineNumbers: true,
+          remarkPlugins: [],
+          rehypePlugins: []
+        },
+        vite: { server: { port: 8080 } }
+      })`,
+    });
+
+    const config = await resolveConfig(root, 'serve', 'development');
+
+    expect(config).toMatchObject({
+      root,
+      siteData: {
+        title: 'New Docs',
+        description: 'Modern docs',
+        base: '/product/',
+        icon: '/favicon.svg',
+        lang: 'en-US',
+      },
+      route: {
+        root: 'content',
+        prefix: 'reference',
+        include: ['**/*.mdx'],
+        exclude: ['drafts/**'],
+      },
+      outDir: 'public-docs',
+      tempDir: '.athen-temp',
+      enableSpa: true,
+      allowDeadLinks: false,
+      onBrokenLinks: 'throw',
+      srcDir: 'content',
+      markdown: {
+        lineNumbers: true,
+        remarkPlugins: [],
+        rehypePlugins: [],
+      },
+      vite: { server: { port: 8080 } },
+    });
+    expect(config.themeDir).toBe(join(root, 'custom-theme'));
+    expect(config.siteData.themeConfig).toMatchObject({
+      nav: [{ text: 'Guide', link: '/guide/' }],
+      links: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
+      locales: {
+        '/': { label: 'English', lang: 'en-US' },
+        '/zh/': { label: '简体中文', lang: 'zh-CN' },
+      },
+    });
+  });
+
+  it('keeps shallow config fields preferred over grouped compatibility fields', async () => {
+    root = writeProject({
+      'athen.config.ts': `export default () => ({
+        base: '/top/',
+        lang: 'en-US',
+        themeConfig: {
+          nav: [{ text: 'Top Guide', link: '/guide/' }],
+          sidebar: {
+            '/top/': [{ text: 'Top', items: [{ text: 'Intro', link: '/top/' }] }]
+          }
+        },
+        site: {
+          base: '/grouped/',
+          lang: 'zh-CN'
+        },
+        theme: {
+          config: {
+            nav: [{ text: 'Grouped Guide', link: '/grouped/' }],
+            sidebar: {
+              '/grouped/': [{ text: 'Grouped', items: [{ text: 'Intro', link: '/grouped/' }] }]
+            }
+          }
+        }
+      })`,
+    });
+
+    const config = await resolveConfig(root, 'serve', 'development');
+
+    expect(config.siteData.base).toBe('/top/');
+    expect(config.siteData.lang).toBe('en-US');
+    expect(config.siteData.themeConfig).toMatchObject({
+      nav: [{ text: 'Top Guide', link: '/guide/' }],
+      sidebar: {
+        '/top/': [{ text: 'Top', items: [{ text: 'Intro', link: '/top/' }] }],
+      },
+    });
+    expect(config.siteData.themeConfig).not.toMatchObject({
+      nav: [{ text: 'Grouped Guide', link: '/grouped/' }],
+    });
+  });
+
   it('reports missing config and keeps defineConfig as identity', async () => {
     root = writeProject({});
     await expect(resolveConfig(root, 'serve', 'development')).rejects.toThrow(
@@ -104,6 +224,28 @@ describe('config', () => {
     expect(script).toContain('"prefix":"zh"');
     expect(script).toContain('"prefix":"fr"');
     expect(script).not.toContain("includes('zh')");
+  });
+
+  it('creates site data with locale entries derived from top-level locales', () => {
+    const siteData = resolveSiteData('/root', {
+      base: '/docs/',
+      title: 'Localized Docs',
+      defaultLocale: 'en',
+      locales: {
+        '/en/': { label: 'English', lang: 'en-US' },
+        '/zh/': { label: '简体中文', lang: 'zh-CN' },
+      },
+    });
+    const script = getLangScript(siteData.head);
+
+    expect(siteData.title).toBe('Localized Docs');
+    expect(siteData.themeConfig.locales).toMatchObject({
+      '/en/': { label: 'English', lang: 'en-US' },
+      '/zh/': { label: '简体中文', lang: 'zh-CN' },
+    });
+    expect(script).toContain('var base = "/docs/"');
+    expect(script).toContain('"prefix":"en"');
+    expect(script).toContain('"prefix":"zh"');
   });
 
   it('matches browser languages to the best locale prefix', () => {

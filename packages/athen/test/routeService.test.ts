@@ -63,6 +63,21 @@ describe('route service', () => {
     expect(code).not.toContain('secret/draft.md');
   });
 
+  it('applies route prefixes and extension-only scanning', () => {
+    const code = renderRouteCode(
+      {
+        'index.md': '# Index',
+        'guide/start.mdx': '# Start',
+        'demo.tsx': 'export default () => <div/>',
+      },
+      { prefix: 'reference', extensions: ['md', '.mdx'] },
+    );
+
+    expect(code).toContain('path: "/reference/"');
+    expect(code).toContain('path: "/reference/guide/start"');
+    expect(code).not.toContain('demo.tsx');
+  });
+
   it('maps files under the configured locale prefix to root routes', () => {
     const code = renderRouteCode(
       {
