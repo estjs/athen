@@ -8,6 +8,11 @@
     "analytics"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/estjs/athen.git",
+    "directory": "packages/plugin-analytics"
+  },
   "files": [
     "dist"
   ],

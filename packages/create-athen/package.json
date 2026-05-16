@@ -10,6 +10,11 @@
     "template"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/estjs/athen.git",
+    "directory": "packages/create-athen"
+  },
   "files": [
     "bin",
     "dist",
