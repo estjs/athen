@@ -14,6 +14,31 @@ export default defineConfig({
 });
 ```
 
+### 完整示例
+
+你可以只开启一个统计服务，也可以在同一份配置中组合多个服务：
+
+```ts title="athen.config.ts"
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  analytics: {
+    google: { id: 'G-ATHENEXAMPLE' },
+    plausible: {
+      domain: 'docs.example.com',
+      apiHost: 'https://plausible.example.com'
+    },
+    umami: {
+      id: 'umami-example-id',
+      src: 'https://analytics.example.com/script.js'
+    },
+    custom: {
+      snippet: 'window.__CUSTOM_ANALYTICS_EXAMPLE__ = "enabled";'
+    }
+  }
+});
+```
+
 内置支持的统计提供商如下表：
 
 | 键名 | 注入内容 | 必填字段 |
@@ -41,7 +66,9 @@ analytics: {
 
 将字段设为 `false` 即完全禁用：
 
-```ts
+```ts title="athen.config.ts"
+import { defineConfig } from 'athen';
+
 export default defineConfig({
   analytics: false
 });
@@ -82,3 +109,8 @@ ANALYTICS_DEBUG=1 pnpm run dev
 ---
 
 如果你需要其他统计服务，欢迎提 PR，或按照 “覆盖” 指南自定义实现！
+
+## 相关示例
+
+- `examples/integrations` 展示 Google Analytics、Plausible、Umami 和自定义 snippet 的组合配置。
+- `examples/integrations/analytics-disabled` 展示 `analytics: false` 禁用内置统计注入。

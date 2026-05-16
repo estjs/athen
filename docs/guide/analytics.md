@@ -14,6 +14,31 @@ export default defineConfig({
 });
 ```
 
+### Complete Example
+
+You can enable one provider or combine several providers in the same config:
+
+```ts title="athen.config.ts"
+import { defineConfig } from 'athen';
+
+export default defineConfig({
+  analytics: {
+    google: { id: 'G-ATHENEXAMPLE' },
+    plausible: {
+      domain: 'docs.example.com',
+      apiHost: 'https://plausible.example.com'
+    },
+    umami: {
+      id: 'umami-example-id',
+      src: 'https://analytics.example.com/script.js'
+    },
+    custom: {
+      snippet: 'window.__CUSTOM_ANALYTICS_EXAMPLE__ = "enabled";'
+    }
+  }
+});
+```
+
 Supported providers out of the box:
 
 | Key        | What is injected                                  | Required fields |
@@ -41,7 +66,9 @@ analytics: {
 
 Set the field to `false`:
 
-```ts
+```ts title="athen.config.ts"
+import { defineConfig } from 'athen';
+
 export default defineConfig({
   analytics: false
 });
@@ -80,3 +107,8 @@ ANALYTICS_DEBUG=1 pnpm run dev
 ---
 
 Need another provider?  PRs welcome or follow the “Override” guide above to ship your own implementation!
+
+## Related Examples
+
+- `examples/integrations` shows Google Analytics, Plausible, Umami, and a custom snippet in one config.
+- `examples/integrations/analytics-disabled` shows `analytics: false`.

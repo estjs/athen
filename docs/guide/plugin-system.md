@@ -128,6 +128,84 @@ export default function myPlugin(cfg?: { /* ... */ }): Plugin {
 
 Publish your plugin under `athen-plugin-*` to help users discover it.
 
+### Minimal plugin example
+
+This example shows the three most common capabilities: virtual modules, generated module code, and HTML injection.
+
+```ts title="plugins/examplePlugin.ts"
+import type { Plugin } from 'vite';
+
+interface ExamplePluginOptions {
+  message: string;
+  htmlMessage: string;
+}
+
+const virtualModuleId = 'virtual:athen-example-plugin';
+const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+
+export function examplePlugin(options: ExamplePluginOptions): Plugin {
+  return {
+    name: 'athen-example-plugin',
+    resolveId(id) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId;
+      }
+    },
+    load(id) {
+      if (id === resolvedVirtualModuleId) {
+        return `export default ${JSON.stringify({ message: options.message })}`;
+      }
+    },
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'athen-example-plugin',
+            content: 'enabled'
+          },
+          injectTo: 'head'
+        },
+        {
+          tag: 'script',
+          children: `window.__ATHEN_EXAMPLE_PLUGIN__=${JSON.stringify(options.htmlMessage)};`,
+          injectTo: 'head'
+        }
+      ];
+    }
+  };
+}
+```
+
+Register it in `athen.config.ts`:
+
+```ts title="athen.config.ts"
+import { defineConfig } from 'athen';
+import { examplePlugin } from './plugins/examplePlugin';
+
+export default defineConfig({
+  exclude: ['plugins/**'],
+  plugins: [
+    examplePlugin({
+      message: 'Loaded from virtual:athen-example-plugin',
+      htmlMessage: 'Plugin data injected into HTML'
+    })
+  ]
+});
+```
+
+Then use the virtual module from MDX:
+
+```mdx title="index.mdx"
+import pluginData from 'virtual:athen-example-plugin';
+
+# Plugin Example
+
+{pluginData.message}
+```
+
+See `examples/integrations` for a complete runnable project.
+
 ---
 
 ## 5. FAQ

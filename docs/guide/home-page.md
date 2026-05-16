@@ -181,3 +181,132 @@ export default defineConfig({
   }
 });
 ```
+
+## Fully Custom Home
+
+Use a fully custom home when frontmatter blocks are not enough and you want complete control over markup, data, and styles. The recommended pattern is:
+
+- `index.mdx` owns the route and renders your component.
+- `components/CustomHome.tsx` owns the layout.
+- `components/home.data.ts` owns editable content.
+- `components/home.css` owns the visual system.
+
+```mdx title="index.mdx"
+import { CustomHome } from './components/CustomHome';
+import { homeData } from './components/home.data';
+
+<CustomHome data={homeData} />
+```
+
+```tsx title="components/CustomHome.tsx"
+import './home.css';
+
+interface HomeAction {
+  text: string;
+  href: string;
+}
+
+interface CustomHomeData {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  primaryAction: HomeAction;
+  secondaryAction: HomeAction;
+  image: { src: string; alt: string };
+  metrics: Array<{ value: string; label: string }>;
+  features: Array<{ title: string; text: string }>;
+  workflow: string[];
+  sponsors: string[];
+  faq: Array<{ question: string; answer: string }>;
+}
+
+export function CustomHome({ data }: { data: CustomHomeData }) {
+  return (
+    <main class="custom-home">
+      <section class="custom-home-hero">
+        <div>
+          <p class="custom-home-eyebrow">{data.eyebrow}</p>
+          <h1>{data.title}</h1>
+          <p class="custom-home-subtitle">{data.subtitle}</p>
+          <div class="custom-home-actions">
+            <a class="custom-home-button primary" href={data.primaryAction.href}>
+              {data.primaryAction.text}
+            </a>
+            <a class="custom-home-button secondary" href={data.secondaryAction.href}>
+              {data.secondaryAction.text}
+            </a>
+          </div>
+        </div>
+        <img class="custom-home-image" src={data.image.src} alt={data.image.alt} />
+      </section>
+
+      <section class="custom-home-grid">
+        {data.features.map((feature) => (
+          <article class="custom-home-card" key={feature.title}>
+            <h2>{feature.title}</h2>
+            <p>{feature.text}</p>
+          </article>
+        ))}
+      </section>
+    </main>
+  );
+}
+```
+
+```ts title="components/home.data.ts"
+export const homeData = {
+  eyebrow: 'Fully custom home',
+  title: 'Build a custom docs home',
+  subtitle: 'Change content in one data file and style it with scoped CSS.',
+  primaryAction: { text: 'Start Building', href: '/guide/getting-started' },
+  secondaryAction: { text: 'View Source', href: 'https://github.com/estjs/athen' },
+  image: { src: '/home-hero.svg', alt: 'Custom home preview' },
+  metrics: [{ value: '1', label: 'MDX route' }],
+  features: [
+    {
+      title: 'Editable content',
+      text: 'Copy, links, metrics, features, workflow, sponsors, and FAQ live in data.'
+    }
+  ],
+  workflow: ['Create index.mdx', 'Render a component', 'Edit data and CSS'],
+  sponsors: ['Athen', 'Vite', 'Essor'],
+  faq: [{ question: 'Can I replace the built-in home?', answer: 'Yes.' }]
+};
+```
+
+```css title="components/home.css"
+.custom-home {
+  --home-brand: #2e6f63;
+  width: min(1120px, calc(100vw - 40px));
+  margin: 0 auto;
+  padding: 56px 0 72px;
+}
+
+.custom-home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.custom-home h1 {
+  margin: 0;
+  font-size: 58px;
+  line-height: 1;
+}
+
+.custom-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 820px) {
+  .custom-home-hero,
+  .custom-home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+See `examples/docs-site` for the complete version with hero, actions, metrics, feature cards, workflow, sponsors, FAQ, responsive CSS, and public assets.

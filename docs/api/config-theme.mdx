@@ -91,9 +91,47 @@ export default defineConfig({
 
 ## sidebar
 
-- Type: `Object`
+- Type: `Object | 'auto'`
 
-The sidebar of the site.The config is a object, which
+The sidebar of the site. Set it to `'auto'` to generate sidebar groups from Markdown/MDX route metadata:
+
+```ts
+import { defineConfig } from "athen";
+
+export default defineConfig({
+  themeConfig: {
+    sidebar: "auto",
+  },
+});
+```
+
+You can also mix auto-generated and manual sections:
+
+```ts
+export default defineConfig({
+  themeConfig: {
+    sidebar: {
+      "/guide/": "auto",
+      "/api/": [
+        {
+          text: "API",
+          items: [{ text: "Config", link: "/api/config-basic" }],
+        },
+      ],
+    },
+  },
+});
+```
+
+Pages can opt out with front matter:
+
+```md
+---
+sidebar: false
+---
+```
+
+Manual sidebar config is still supported:
 
 ```ts
 // The key is the path of the sidebar group

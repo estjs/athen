@@ -122,6 +122,84 @@ export default function myPlugin(): Plugin {
 
 建议以 `athen-plugin-*` 命名并发布到 npm，以便社区检索。
 
+### 最小插件示例
+
+下面这个示例展示三个常用能力：虚拟模块、生成模块代码、注入 HTML。
+
+```ts title="plugins/examplePlugin.ts"
+import type { Plugin } from 'vite';
+
+interface ExamplePluginOptions {
+  message: string;
+  htmlMessage: string;
+}
+
+const virtualModuleId = 'virtual:athen-example-plugin';
+const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+
+export function examplePlugin(options: ExamplePluginOptions): Plugin {
+  return {
+    name: 'athen-example-plugin',
+    resolveId(id) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId;
+      }
+    },
+    load(id) {
+      if (id === resolvedVirtualModuleId) {
+        return `export default ${JSON.stringify({ message: options.message })}`;
+      }
+    },
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'athen-example-plugin',
+            content: 'enabled'
+          },
+          injectTo: 'head'
+        },
+        {
+          tag: 'script',
+          children: `window.__ATHEN_EXAMPLE_PLUGIN__=${JSON.stringify(options.htmlMessage)};`,
+          injectTo: 'head'
+        }
+      ];
+    }
+  };
+}
+```
+
+在 `athen.config.ts` 中注册：
+
+```ts title="athen.config.ts"
+import { defineConfig } from 'athen';
+import { examplePlugin } from './plugins/examplePlugin';
+
+export default defineConfig({
+  exclude: ['plugins/**'],
+  plugins: [
+    examplePlugin({
+      message: 'Loaded from virtual:athen-example-plugin',
+      htmlMessage: 'Plugin data injected into HTML'
+    })
+  ]
+});
+```
+
+然后在 MDX 中使用虚拟模块：
+
+```mdx title="index.mdx"
+import pluginData from 'virtual:athen-example-plugin';
+
+# Plugin Example
+
+{pluginData.message}
+```
+
+完整可运行项目见 `examples/integrations`。
+
 ---
 
 ## 5. 常见问题

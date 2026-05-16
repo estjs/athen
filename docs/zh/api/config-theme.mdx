@@ -91,7 +91,45 @@ export default defineConfig({
 
 ## sidebar
 
-- Type: `Object`
+- Type: `Object | 'auto'`
+
+网站的侧边栏。设置为 `'auto'` 时，Athen 会根据 Markdown/MDX 路由元数据自动生成 sidebar：
+
+```ts
+import { defineConfig } from "athen";
+
+export default defineConfig({
+  themeConfig: {
+    sidebar: "auto",
+  },
+});
+```
+
+也可以混合自动生成和手写配置：
+
+```ts
+export default defineConfig({
+  themeConfig: {
+    sidebar: {
+      "/guide/": "auto",
+      "/api/": [
+        {
+          text: "API",
+          items: [{ text: "Config", link: "/api/config-basic" }],
+        },
+      ],
+    },
+  },
+});
+```
+
+页面可以通过 front matter 从 sidebar 中排除：
+
+```md
+---
+sidebar: false
+---
+```
 
 网站的侧边栏。配置为一个对象，类型如下：
 

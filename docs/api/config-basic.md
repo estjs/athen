@@ -11,26 +11,31 @@ export default defineConfig({
   lang: 'en-US',
   base: '/',
   favicon: '/logo.svg',
+  cleanUrls: true,
+  trailingSlash: false,
+  rewrites: {
+    '/old-guide': '/guide/getting-started',
+  },
   onBrokenLinks: 'throw',
 
   themeConfig: {
     nav: [{ text: 'Guide', link: '/guide/getting-started' }],
-    sidebar: {
-      '/guide/': [
-        {
-          text: 'Guide',
-          items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
-        },
-      ],
-    },
+    sidebar: 'auto',
     links: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
   },
 
+  defaultLocale: 'en',
   locales: {
+    '/': {
+      label: 'English',
+      lang: 'en-US',
+      sidebar: 'auto',
+    },
     '/zh/': {
       label: '简体中文',
       lang: 'zh-CN',
       nav: [{ text: '指南', link: '/zh/guide/getting-started' }],
+      sidebar: 'auto',
     },
   },
 
@@ -56,6 +61,9 @@ export default defineConfig({
 | `tempDir` | `string` | Temporary build directory. |
 | `enableSpa` | `boolean` | Enable production SPA routing. |
 | `onBrokenLinks` | `'throw' \| 'warn' \| 'ignore'` | Broken-link handling strategy. |
+| `cleanUrls` | `boolean` | Normalize public page URLs without exposing file extensions. |
+| `trailingSlash` | `boolean` | Control whether generated page URLs end with `/`. |
+| `rewrites` | `Record<string, string>` | Treat old public paths as aliases for new paths during link checking. |
 | `routeBasePath` | `string` | Prefix generated routes. |
 | `include` / `exclude` | `string[]` | Include or exclude route files. |
 | `extensions` | `string[]` | Route file extensions. |
@@ -73,6 +81,10 @@ export default defineConfig({
 - `vite`: Vite config merged with Athen's internal config.
 - `plugins`: custom Vite/Athen plugins.
 - `route`: advanced route scanner options. Prefer top-level `include`, `exclude`, `extensions`, and `routeBasePath` for common cases.
+
+## route
+
+Use `route` only when you need advanced scanner options. For most sites, prefer the shallow top-level aliases: `srcDir`, `routeBasePath`, `include`, `exclude`, and `extensions`.
 
 ## Migration Notes
 
@@ -93,11 +105,9 @@ The older VitePress-style `themeConfig` remains the recommended theme entry. The
 
 ## Comparison Notes
 
-Compared with VitePress and Docusaurus, the key missing capabilities are still:
+Athen now supports the high-value configuration patterns from VitePress and Docusaurus while keeping config shallow:
 
-- Automatic sidebar generation from filesystem metadata.
-- Full broken-link reporting for `warn` and `ignore`.
-- `cleanUrls` and `trailingSlash` URL policy.
-- Versioned docs.
-- Docusaurus-like preset composition.
-- Rich translated search UI configuration.
+- `themeConfig.sidebar: 'auto'` generates sidebar data from route metadata.
+- `onBrokenLinks` checks local Markdown links and anchors during build.
+- `cleanUrls`, `trailingSlash`, and `rewrites` keep public URLs stable.
+- `defaultLocale` and `locales` provide locale-specific nav/sidebar/text overrides.

@@ -181,3 +181,132 @@ export default defineConfig({
   }
 });
 ```
+
+## 完全自定义主页
+
+当 frontmatter 的内置区块不够用，或者你希望完全控制主页结构、数据和样式时，可以使用自定义主页模式。推荐把能力拆成四个文件：
+
+- `index.mdx` 负责路由并渲染组件。
+- `components/CustomHome.tsx` 负责页面结构。
+- `components/home.data.ts` 负责可编辑内容。
+- `components/home.css` 负责视觉样式。
+
+```mdx title="index.mdx"
+import { CustomHome } from './components/CustomHome';
+import { homeData } from './components/home.data';
+
+<CustomHome data={homeData} />
+```
+
+```tsx title="components/CustomHome.tsx"
+import './home.css';
+
+interface HomeAction {
+  text: string;
+  href: string;
+}
+
+interface CustomHomeData {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  primaryAction: HomeAction;
+  secondaryAction: HomeAction;
+  image: { src: string; alt: string };
+  metrics: Array<{ value: string; label: string }>;
+  features: Array<{ title: string; text: string }>;
+  workflow: string[];
+  sponsors: string[];
+  faq: Array<{ question: string; answer: string }>;
+}
+
+export function CustomHome({ data }: { data: CustomHomeData }) {
+  return (
+    <main class="custom-home">
+      <section class="custom-home-hero">
+        <div>
+          <p class="custom-home-eyebrow">{data.eyebrow}</p>
+          <h1>{data.title}</h1>
+          <p class="custom-home-subtitle">{data.subtitle}</p>
+          <div class="custom-home-actions">
+            <a class="custom-home-button primary" href={data.primaryAction.href}>
+              {data.primaryAction.text}
+            </a>
+            <a class="custom-home-button secondary" href={data.secondaryAction.href}>
+              {data.secondaryAction.text}
+            </a>
+          </div>
+        </div>
+        <img class="custom-home-image" src={data.image.src} alt={data.image.alt} />
+      </section>
+
+      <section class="custom-home-grid">
+        {data.features.map((feature) => (
+          <article class="custom-home-card" key={feature.title}>
+            <h2>{feature.title}</h2>
+            <p>{feature.text}</p>
+          </article>
+        ))}
+      </section>
+    </main>
+  );
+}
+```
+
+```ts title="components/home.data.ts"
+export const homeData = {
+  eyebrow: '完全自定义主页',
+  title: '构建自己的文档主页',
+  subtitle: '在数据文件里修改内容，在作用域 CSS 里修改视觉。',
+  primaryAction: { text: '开始使用', href: '/zh/guide/getting-started' },
+  secondaryAction: { text: '查看源码', href: 'https://github.com/estjs/athen' },
+  image: { src: '/home-hero.svg', alt: '自定义主页预览' },
+  metrics: [{ value: '1', label: 'MDX 路由' }],
+  features: [
+    {
+      title: '内容容易修改',
+      text: '文案、链接、指标、特性、流程、赞助商和 FAQ 都放在数据里。'
+    }
+  ],
+  workflow: ['创建 index.mdx', '渲染组件', '修改数据和 CSS'],
+  sponsors: ['Athen', 'Vite', 'Essor'],
+  faq: [{ question: '可以替换内置主页吗？', answer: '可以。' }]
+};
+```
+
+```css title="components/home.css"
+.custom-home {
+  --home-brand: #2e6f63;
+  width: min(1120px, calc(100vw - 40px));
+  margin: 0 auto;
+  padding: 56px 0 72px;
+}
+
+.custom-home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.custom-home h1 {
+  margin: 0;
+  font-size: 58px;
+  line-height: 1;
+}
+
+.custom-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 820px) {
+  .custom-home-hero,
+  .custom-home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+完整示例见 `examples/docs-site`，其中包含 hero、按钮、指标、特性卡片、流程、赞助商、FAQ、响应式 CSS 和 public 静态资源。

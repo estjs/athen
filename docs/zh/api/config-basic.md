@@ -11,26 +11,31 @@ export default defineConfig({
   lang: 'zh-CN',
   base: '/',
   favicon: '/logo.svg',
+  cleanUrls: true,
+  trailingSlash: false,
+  rewrites: {
+    '/old-guide': '/guide/getting-started',
+  },
   onBrokenLinks: 'throw',
 
   themeConfig: {
     nav: [{ text: '指南', link: '/guide/getting-started' }],
-    sidebar: {
-      '/guide/': [
-        {
-          text: '指南',
-          items: [{ text: '快速开始', link: '/guide/getting-started' }],
-        },
-      ],
-    },
+    sidebar: 'auto',
     links: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
   },
 
+  defaultLocale: 'zh',
   locales: {
+    '/': {
+      label: '简体中文',
+      lang: 'zh-CN',
+      sidebar: 'auto',
+    },
     '/en/': {
       label: 'English',
       lang: 'en-US',
       nav: [{ text: 'Guide', link: '/en/guide/getting-started' }],
+      sidebar: 'auto',
     },
   },
 
@@ -56,6 +61,9 @@ export default defineConfig({
 | `tempDir` | `string` | 临时构建目录。 |
 | `enableSpa` | `boolean` | 生产构建启用 SPA 路由。 |
 | `onBrokenLinks` | `'throw' \| 'warn' \| 'ignore'` | 死链处理策略。 |
+| `cleanUrls` | `boolean` | 生成不暴露文件扩展名的公开页面 URL。 |
+| `trailingSlash` | `boolean` | 控制生成的页面 URL 是否以 `/` 结尾。 |
+| `rewrites` | `Record<string, string>` | 在链接检查中将旧公开路径视为新路径的别名。 |
 | `routeBasePath` | `string` | 给生成路由增加前缀。 |
 | `include` / `exclude` | `string[]` | 包含或排除路由文件。 |
 | `extensions` | `string[]` | 可生成路由的文件扩展名。 |
@@ -73,6 +81,10 @@ export default defineConfig({
 - `vite`：与 Athen 内部配置合并的 Vite 配置。
 - `plugins`：自定义 Vite/Athen 插件。
 - `route`：高级路由扫描配置。常见场景优先使用顶层 `include`、`exclude`、`extensions`、`routeBasePath`。
+
+## route
+
+只有需要高级路由扫描选项时才使用 `route`。大多数站点优先使用更浅的顶层别名：`srcDir`、`routeBasePath`、`include`、`exclude`、`extensions`。
 
 ## 迁移说明
 
@@ -93,11 +105,9 @@ export default defineConfig({
 
 ## 对比结论
 
-相比 VitePress 和 Docusaurus，Athen 仍缺少这些关键能力：
+Athen 现在支持 VitePress 和 Docusaurus 中最有价值的浅层配置能力：
 
-- 根据文件系统和 front matter 自动生成 sidebar。
-- `warn` 和 `ignore` 对应的完整死链报告器。
-- `cleanUrls` 和 `trailingSlash` URL 策略。
-- 文档版本化。
-- 类似 Docusaurus 的 preset 组合能力。
-- 更完整的多语言搜索 UI 翻译配置。
+- `themeConfig.sidebar: 'auto'` 可基于路由元数据自动生成 sidebar。
+- `onBrokenLinks` 会在构建时检查本地 Markdown 链接和 anchor。
+- `cleanUrls`、`trailingSlash`、`rewrites` 用于稳定公开 URL。
+- `defaultLocale` 和 `locales` 提供各语言的 nav/sidebar/文本覆盖。

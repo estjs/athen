@@ -10,48 +10,101 @@ We recommend that you place documents in different languages in different subdir
 
 ```bash
 docs
-├── en
-│   ├── guide
-│   │   ├── basic.md
-│   │   ├── sidebar.md
-│   │   └── theme.md
-│   └── index.md
-└── zh
-    ├── guide
-    │   ├── basic.md
-    │   ├── sidebar.md
-    │   └── theme.md
-    └── index.md
+├── index.md
+├── guide
+│   └── start.md
+├── zh
+│   ├── index.md
+│   └── guide
+│       └── start.md
+└── fr
+    ├── index.md
+    └── guide
+        └── start.md
 ```
 
 > `index.md` generally represents the Home page.
 
 ## locales config
 
-In the config file, add top-level `locales` to configure various parts for different languages. For example:
+In the config file, add top-level `locales` to configure different languages. The locale key is the route prefix. Use `/` for the root language, then prefixed routes such as `/zh/` and `/fr/` for other languages:
 
-```js
+```ts title="athen.config.ts"
 import { defineConfig } from 'athen';
 
 export default defineConfig({
   defaultLocale: 'en',
   locales: {
-    '/zh/': {
-      label: '简体中文',
-      lang: 'zh-CN',
-      title: 'Athen',
-      description: 'Athen 是一个基于 Vite & Essor 的文档生成工具'
-    },
     '/': {
       label: 'English',
       lang: 'en-US',
       title: 'Athen',
-      description: 'Athen is a documentation generator based on Vite & Essor'
+      description: 'Athen is a documentation generator based on Vite & Essor',
+      nav: [{ text: 'Guide', link: '/guide/start' }],
+      sidebar: {
+        '/guide/': [
+          {
+            text: 'Guide',
+            items: [{ text: 'Start', link: '/guide/start' }]
+          }
+        ]
+      }
+    },
+    '/zh/': {
+      label: '简体中文',
+      lang: 'zh-CN',
+      title: 'Athen',
+      description: 'Athen 是一个基于 Vite & Essor 的文档生成工具',
+      nav: [{ text: '指南', link: '/zh/guide/start' }],
+      sidebar: {
+        '/zh/guide/': [
+          {
+            text: '指南',
+            items: [{ text: '开始', link: '/zh/guide/start' }]
+          }
+        ]
+      },
+      outlineTitle: '目录',
+      prevPageText: '上一页',
+      nextPageText: '下一页'
+    },
+    '/fr/': {
+      label: 'Français',
+      lang: 'fr-FR',
+      title: 'Athen',
+      description: 'Athen est un generateur de documentation base sur Vite et Essor',
+      nav: [{ text: 'Guide', link: '/fr/guide/start' }],
+      sidebar: {
+        '/fr/guide/': [
+          {
+            text: 'Guide',
+            items: [{ text: 'Commencer', link: '/fr/guide/start' }]
+          }
+        ]
+      },
+      outlineTitle: 'Sur cette page',
+      prevPageText: 'Page precedente',
+      nextPageText: 'Page suivante'
     }
   }
 });
 ```
 
-The key of locales is the route prefix of the corresponding language, and the value is `LocaleConfig`. There is the type of `LocaleConfig`:
+The default theme automatically shows a language switcher when more than one locale exists. In the example above, the menu contains English, 简体中文, and Français. Switching from `/guide/start` to 简体中文 keeps the current page path and navigates to `/zh/guide/start` when the translated route exists.
+
+You may also use auto sidebar per locale:
+
+```ts title="athen.config.ts"
+export default defineConfig({
+  defaultLocale: 'en',
+  locales: {
+    '/': { label: 'English', lang: 'en-US', sidebar: 'auto' },
+    '/zh/': { label: '简体中文', lang: 'zh-CN', sidebar: 'auto' },
+    '/fr/': { label: 'Français', lang: 'fr-FR', sidebar: 'auto' }
+  }
+});
+```
+
+The key of `locales` is the route prefix of the corresponding language, and the value is `LocaleConfig`. There is the type of `LocaleConfig`:
 
 <Locales />
