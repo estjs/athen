@@ -70,6 +70,7 @@ describe('searchPlugin', () => {
       expect(result.length).toBe(3);
       expect(result[0].tag).toBe('link');
       expect(result[1].tag).toBe('script');
+      expect(result[1].children).toBe('');
       expect(result[2].children).toContain('algolia');
     });
 

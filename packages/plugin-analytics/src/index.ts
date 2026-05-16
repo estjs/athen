@@ -9,6 +9,7 @@ function gaSnippets(id: string) {
         async: true,
         src: `https://www.googletagmanager.com/gtag/js?id=${id}`,
       },
+      children: '',
       injectTo: 'head',
     },
     {
@@ -57,6 +58,7 @@ function plausibleSnippet(domain: string, apiHost?: string) {
       'data-domain': domain,
       'src': `${apiHost || 'https://plausible.io'}/js/plausible.js`,
     },
+    children: '',
     injectTo: 'head',
   };
 }
@@ -69,6 +71,7 @@ function umamiSnippet(id: string, src: string) {
       'data-website-id': id,
       src,
     },
+    children: '',
     injectTo: 'head',
   };
 }
@@ -82,6 +85,7 @@ function ackeeSnippet(server: string, domainId: string) {
       'data-ackee-server': server,
       'data-ackee-domain-id': domainId,
     },
+    children: '',
     injectTo: 'head',
   };
 }
@@ -94,6 +98,7 @@ function vercelSnippet(id: string) {
       'src': `https://vercel.analytics.com/script.js`,
       'data-id': id,
     },
+    children: '',
     injectTo: 'head',
   };
 }

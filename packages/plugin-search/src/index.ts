@@ -76,6 +76,7 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
           {
             tag: 'script',
             attrs: { src: 'https://cdn.jsdelivr.net/npm/@docsearch/js@3' },
+            children: '',
             injectTo: 'head',
           },
           {

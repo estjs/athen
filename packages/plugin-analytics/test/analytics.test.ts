@@ -36,6 +36,7 @@ describe('analyticsPlugin', () => {
       expect(tags[0].tag).toBe('script');
       expect(tags[0].attrs.async).toBe(true);
       expect(tags[0].attrs.src).toBe('https://www.googletagmanager.com/gtag/js?id=G-TESTID123');
+      expect(tags[0].children).toBe('');
       expect(tags[0].injectTo).toBe('head');
       // Second tag: gtag config
       expect(tags[1].tag).toBe('script');
@@ -92,6 +93,7 @@ describe('analyticsPlugin', () => {
       expect(tags[0].attrs.defer).toBe(true);
       expect(tags[0].attrs['data-domain']).toBe('example.com');
       expect(tags[0].attrs.src).toBe('https://plausible.io/js/plausible.js');
+      expect(tags[0].children).toBe('');
       expect(tags[0].injectTo).toBe('head');
     });
 
@@ -117,6 +119,7 @@ describe('analyticsPlugin', () => {
       expect(tags[0].attrs.defer).toBe(true);
       expect(tags[0].attrs['data-website-id']).toBe('umami-website-id');
       expect(tags[0].attrs.src).toBe('https://analytics.example.com/script.js');
+      expect(tags[0].children).toBe('');
       expect(tags[0].injectTo).toBe('head');
     });
   });
@@ -134,6 +137,7 @@ describe('analyticsPlugin', () => {
       expect(tags[0].attrs.src).toBe('https://ackee.example.com/tracker.js');
       expect(tags[0].attrs['data-ackee-server']).toBe('https://ackee.example.com');
       expect(tags[0].attrs['data-ackee-domain-id']).toBe('ackee-domain-id');
+      expect(tags[0].children).toBe('');
       expect(tags[0].injectTo).toBe('head');
     });
   });
@@ -148,6 +152,7 @@ describe('analyticsPlugin', () => {
       expect(tags[0].attrs.defer).toBe(true);
       expect(tags[0].attrs.src).toBe('https://vercel.analytics.com/script.js');
       expect(tags[0].attrs['data-id']).toBe('vercel-id');
+      expect(tags[0].children).toBe('');
       expect(tags[0].injectTo).toBe('head');
     });
   });
