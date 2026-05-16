@@ -1,6 +1,6 @@
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   defineConfig,
@@ -13,7 +13,9 @@ import { DEFAULT_THEME_PATH } from '../src/node/constants';
 const writeProject = (files: Record<string, string>) => {
   const root = mkdtempSync(join(tmpdir(), 'athen-config-'));
   for (const [file, content] of Object.entries(files)) {
-    writeFileSync(join(root, file), content);
+    const filePath = join(root, file);
+    mkdirSync(join(filePath, '..'), { recursive: true });
+    writeFileSync(filePath, content);
   }
   return root;
 };
@@ -190,6 +192,82 @@ describe('config', () => {
     });
     expect(config.siteData.themeConfig).not.toMatchObject({
       nav: [{ text: 'Grouped Guide', link: '/grouped/' }],
+    });
+  });
+
+  it('resolves url policy fields from shallow config', async () => {
+    root = writeProject({
+      'athen.config.ts': `export default () => ({
+        cleanUrls: true,
+        trailingSlash: false,
+        rewrites: {
+          '/old-guide': '/guide/getting-started'
+        }
+      })`,
+    });
+
+    const config = await resolveConfig(root, 'serve', 'development');
+
+    expect(config.cleanUrls).toBe(true);
+    expect(config.trailingSlash).toBe(false);
+    expect(config.rewrites).toEqual({
+      '/old-guide': '/guide/getting-started',
+    });
+  });
+
+  it('resolves themeConfig.sidebar auto into generated sidebar data', async () => {
+    root = writeProject({
+      'athen.config.ts': `export default () => ({
+        themeConfig: {
+          sidebar: 'auto'
+        }
+      })`,
+      'guide/index.md': '# Guide',
+      'guide/getting-started.md': '---\ntitle: Getting Started\n---\n# Start',
+    });
+
+    const config = await resolveConfig(root, 'serve', 'development');
+
+    expect(config.siteData.themeConfig.sidebar).toEqual({
+      '/guide/': [
+        {
+          text: 'Guide',
+          items: [
+            { text: 'Guide', link: '/guide/' },
+            { text: 'Getting Started', link: '/guide/getting-started' },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('resolves locale sidebar auto under its locale prefix', async () => {
+    root = writeProject({
+      'athen.config.ts': `export default () => ({
+        locales: {
+          '/zh/': {
+            label: '简体中文',
+            lang: 'zh-CN',
+            sidebar: 'auto'
+          }
+        }
+      })`,
+      'zh/guide/index.md': '# 指南',
+      'zh/guide/getting-started.md': '# 快速开始',
+    });
+
+    const config = await resolveConfig(root, 'serve', 'development');
+
+    expect(config.siteData.themeConfig.locales?.['/zh/'].sidebar).toEqual({
+      '/zh/guide/': [
+        {
+          text: 'Zh Guide',
+          items: [
+            { text: '指南', link: '/zh/guide/' },
+            { text: '快速开始', link: '/zh/guide/getting-started' },
+          ],
+        },
+      ],
     });
   });
 

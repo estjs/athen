@@ -4,10 +4,13 @@ import { pathToFileURL } from 'node:url';
 import { type InlineConfig, type Plugin, mergeConfig, build as viteBuild } from 'vite';
 import fs from 'fs-extra';
 import { withBase } from '@/runtime';
+import { htmlFilePathFromRoute } from '@/shared/utils';
+import { checkBrokenLinks } from './brokenLinks';
 import { resolveConfig } from './config';
 import { DIST_DIR, PACKAGE_ROOT, SSG_ENTRY_PATH, SSR_ENTRY_PATH } from './constants';
 import { applyHtmlTransforms, flattenPlugins } from './htmlTransforms';
 import { createVitePlugins } from './plugins';
+import { collectRouteMeta } from './plugins/router/routeService';
 import type { Router, SiteConfig } from '@/shared/types';
 
 type RenderFunction = (routePath: string) => string | Promise<string>;
@@ -24,14 +27,6 @@ type BundleItem =
 type BuildBundle = {
   output: BundleItem[];
 };
-
-function normalizeHtmlFilePath(path: string) {
-  if (path.endsWith('/')) {
-    return `${path}index.html`.replace(/^\//, '');
-  }
-
-  return `${path}.html`.replace(/^\//, '');
-}
 
 function isEntryChunk(item: BundleItem) {
   return item.type === 'chunk' && item.isEntry;
@@ -114,7 +109,7 @@ export async function renderPage(
           <script type="module" src="${withSiteBase(clientChunk.fileName)}"></script>
         </body>
       </html>`.trim();
-    const fileName = normalizeHtmlFilePath(routePath);
+    const fileName = htmlFilePathFromRoute(routePath, config);
     const transformedHtml = await applyHtmlTransforms(
       html,
       { path: routePath, filename: join(distPath, fileName) },
@@ -190,6 +185,15 @@ export async function build(root: string = process.cwd()) {
   const distPath = join(root, DIST_DIR);
   await fs.remove(tempPath);
   await fs.remove(distPath);
+
+  if (config.onBrokenLinks && config.onBrokenLinks !== 'ignore') {
+    const scanDir = join(root, config.route?.root || config.srcDir || '');
+    await checkBrokenLinks({
+      routes: collectRouteMeta(scanDir, config.route, config.siteData),
+      onBrokenLinks: config.onBrokenLinks,
+      urlPolicy: config,
+    });
+  }
 
   const [ssgBundle, clientBundle, htmlPlugins] = await bundle(root, config);
 

@@ -46,6 +46,15 @@ describe('route service', () => {
     expect(code).not.toContain('node_modules');
   });
 
+  it('uses the configured theme entry as the root layout', () => {
+    const code = renderRouteCode({
+      'index.md': '# Index',
+    });
+
+    expect(code).toContain("component: import('@theme')");
+    expect(code).not.toContain("@theme-default/layout/index.tsx");
+  });
+
   it('applies include and exclude patterns together', () => {
     const code = renderRouteCode(
       {
@@ -76,6 +85,19 @@ describe('route service', () => {
     expect(code).toContain('path: "/reference/"');
     expect(code).toContain('path: "/reference/guide/start"');
     expect(code).not.toContain('demo.tsx');
+  });
+
+  it('applies trailing slash url policy to generated routes', () => {
+    const code = renderRouteCode(
+      {
+        'index.md': '# Index',
+        'guide/start.md': '# Start',
+      },
+      { trailingSlash: true },
+    );
+
+    expect(code).toContain('path: "/"');
+    expect(code).toContain('path: "/guide/start/"');
   });
 
   it('maps files under the configured locale prefix to root routes', () => {

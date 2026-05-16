@@ -4,6 +4,12 @@ export const EXTERNAL_URL_RE = /^(https?:)?\/\//;
 
 export const cleanUrl = (url: string): string => url.replace(hashRE, '').replace(queryRE, '');
 
+export interface UrlPolicy {
+  cleanUrls?: boolean;
+  trailingSlash?: boolean;
+  rewrites?: Record<string, string>;
+}
+
 export const inBrowser = () => typeof window !== 'undefined';
 
 export function addLeadingSlash(url: string) {
@@ -17,6 +23,70 @@ export function removeTrailingSlash(url: string) {
 
 export function normalizeSlash(url: string) {
   return removeTrailingSlash(addLeadingSlash(url || '/'));
+}
+
+function splitHash(url: string) {
+  const [path, ...hashParts] = url.split('#');
+  return {
+    path,
+    hash: hashParts.length ? `#${hashParts.join('#')}` : '',
+  };
+}
+
+function normalizeRouteCore(routePath: string, policy: UrlPolicy = {}) {
+  if (EXTERNAL_URL_RE.test(routePath)) {
+    return routePath;
+  }
+
+  let route = cleanUrl(routePath || '/')
+    .replaceAll('\\', '/')
+    .replace(/\.(mdx?|html)$/, '')
+    .replace(/\/index$/, '/')
+    .replaceAll(/\/+/g, '/');
+
+  route = addLeadingSlash(route);
+  if (route !== '/') {
+    if (policy.trailingSlash === true) {
+      route = `${removeTrailingSlash(route)}/`;
+    } else if (policy.trailingSlash === false) {
+      route = removeTrailingSlash(route);
+    }
+  }
+
+  return route || '/';
+}
+
+export function normalizePublicRoute(routePath: string, policy: UrlPolicy = {}) {
+  return normalizeRouteCore(routePath, policy);
+}
+
+export function normalizeRouteTarget(target: string, policy: UrlPolicy = {}) {
+  const { path, hash } = splitHash(target);
+  return `${normalizeRouteCore(path, policy)}${hash}`;
+}
+
+export function applyRewrite(target: string, policy: UrlPolicy = {}) {
+  const { path, hash } = splitHash(normalizeRouteTarget(target, policy));
+  const rewrites = policy.rewrites || {};
+
+  for (const [from, to] of Object.entries(rewrites)) {
+    if (normalizeRouteCore(from, policy) === path) {
+      return `${normalizeRouteCore(to, policy)}${hash}`;
+    }
+  }
+
+  return `${path}${hash}`;
+}
+
+export function htmlFilePathFromRoute(routePath: string, policy: UrlPolicy = {}) {
+  const route = normalizeRouteCore(routePath, policy);
+  if (route === '/') {
+    return 'index.html';
+  }
+  if (route.endsWith('/')) {
+    return `${route}index.html`.replace(/^\//, '');
+  }
+  return `${route}.html`.replace(/^\//, '');
 }
 
 export function withBase(url = '/', base = '/'): string {

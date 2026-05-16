@@ -11,28 +11,51 @@ interface SidebarData {
   items: DefaultTheme.SidebarGroup[];
 }
 
+function isExactSidebarKey(sidebarKey: string, decodedPathname: string) {
+  const normalizedKey = normalizeHref(sidebarKey);
+  const normalizedPathname = normalizeHref(decodedPathname);
+  return normalizedKey === '/' ? normalizedPathname === '/' : normalizedKey === normalizedPathname;
+}
+
+export function resolveSidebarData(
+  decodedPathname: string,
+  sidebarByPath: DefaultTheme.Sidebar = {},
+): SidebarData {
+  for (const name of Object.keys(sidebarByPath)) {
+    const items = sidebarByPath[name];
+    if (isExactSidebarKey(name, decodedPathname)) {
+      return { group: '', items };
+    }
+
+    const group = items.find((group) =>
+      group.items.some((item) => item.link && isEqualPath(item.link, decodedPathname)),
+    );
+    if (group) {
+      return { group: group.text || '', items };
+    }
+  }
+
+  return { group: '', items: [] };
+}
+
 export function useSidebarData(
   currentPathname: { value: string },
   sidebar: Computed<DefaultTheme.LocaleConfig>,
 ): Computed<SidebarData> {
   return computed(() => {
     const decodedPathname = decodeURIComponent(currentPathname.value || '/');
-    const sidebarByPath = sidebar.value.sidebar || {};
+    const sidebarByPath = Object.fromEntries(
+      Object.entries(sidebar.value.sidebar || {}).map(([name, items]) => [
+        withBase(name),
+        items.map((group) => ({
+          ...group,
+          items: group.items.map((item) =>
+            item.link ? { ...item, link: withBase(item.link) } : item,
+          ),
+        })),
+      ]),
+    );
 
-    for (const name of Object.keys(sidebarByPath)) {
-      const items = sidebarByPath[name];
-      if (isEqualPath(withBase(name), decodedPathname)) {
-        return { group: '', items };
-      }
-
-      const group = items.find((group) =>
-        group.items.some((item) => item.link && isEqualPath(withBase(item.link), decodedPathname)),
-      );
-      if (group) {
-        return { group: group.text || '', items };
-      }
-    }
-
-    return { group: '', items: [] };
+    return resolveSidebarData(decodedPathname, sidebarByPath);
   });
 }

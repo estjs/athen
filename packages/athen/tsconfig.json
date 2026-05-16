@@ -6,6 +6,7 @@
       "@/*": ["./src/*"],
       "@runtime": ["./src/runtime/index.ts"],
       "@shared/*": ["./src/shared/*"],
+      "@theme": ["./src/theme-default/index.ts"],
       "@theme-default/*": ["./src/theme-default/*"],
       "@athen/plugin-search/client": ["../plugin-search/src/client/index.ts"]
     },

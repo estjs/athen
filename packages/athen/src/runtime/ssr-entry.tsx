@@ -1,9 +1,6 @@
 import { RouterView, createWebHistory } from 'essor-router';
 import { createApp, provide, reactive } from 'essor';
-import '../theme-default/styles/base.css';
-import '../theme-default/styles/vars.css';
-import '../theme-default/styles/doc.css';
-import { setup } from '../theme-default/hooks';
+import * as theme from '@theme';
 import { createRouter, initPageData } from './router';
 import { PageDataKey } from '.';
 
@@ -43,5 +40,5 @@ async function SSREntry() {
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await
 SSREntry().then(() => {
-  setup();
+  theme.setup?.();
 });

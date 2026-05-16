@@ -34,7 +34,7 @@ export namespace DefaultTheme {
     /**
      * The sidebar items.
      */
-    sidebar?: Sidebar;
+    sidebar?: SidebarConfig;
 
     /**
      * Info for the edit link. If it's undefined, the edit link feature will
@@ -109,7 +109,7 @@ export namespace DefaultTheme {
     label: string;
     selectText?: string;
     nav?: NavItem[];
-    sidebar?: Sidebar;
+    sidebar?: SidebarConfig;
     outlineTitle?: string;
     lastUpdatedText?: string;
     editLink?: EditLink;
@@ -150,6 +150,8 @@ export namespace DefaultTheme {
   export interface Sidebar {
     [path: string]: SidebarGroup[];
   }
+
+  export type SidebarConfig = Sidebar | 'auto' | Record<string, SidebarGroup[] | 'auto'>;
 
   export interface SidebarGroup {
     text?: string;

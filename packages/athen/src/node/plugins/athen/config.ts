@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import { existsSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { type Plugin, normalizePath } from 'vite';
 import sirv from 'sirv';
@@ -111,7 +112,9 @@ export function pluginConfig(
     },
     configureServer(server) {
       const publicDir = join(config.root, 'public');
-      server.middlewares.use(sirv(publicDir));
+      if (existsSync(publicDir)) {
+        server.middlewares.use(sirv(publicDir));
+      }
     },
   };
 }

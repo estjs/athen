@@ -1,4 +1,5 @@
 import path, { basename, extname } from 'node:path';
+import fs from 'fs-extra';
 import { globSync } from 'glob';
 import { normalizePath } from 'vite';
 import {
@@ -6,14 +7,21 @@ import {
   getDefaultLocaleSourcePrefix,
   stripLocalePrefix,
 } from '../../../shared/locale';
-import { addLeadingSlash, withBase } from '../../../shared/utils';
+import { addLeadingSlash, normalizePublicRoute, withBase } from '../../../shared/utils';
 import type { RouteOptions } from '../../../shared/types';
 
-interface RouteMeta {
+export interface RouteMeta {
   routePath: string;
   absolutePath: string;
   filePath: string;
   name?: string;
+  title?: string;
+  frontmatter?: Record<string, unknown>;
+  headings?: Array<{
+    id: string;
+    text: string;
+    depth: number;
+  }>;
 }
 
 /**
@@ -68,6 +76,94 @@ function withRoutePrefix(routePath: string, prefix?: string) {
   return addLeadingSlash(`${normalizedPrefix}/${routePath.replace(/^\/+/, '')}`);
 }
 
+function isMarkdownFile(filePath: string) {
+  return /\.mdx?$/.test(filePath);
+}
+
+function parseFrontmatterValue(value: string) {
+  const trimmed = value.trim();
+  if (trimmed === 'true') return true;
+  if (trimmed === 'false') return false;
+  if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return Number(trimmed);
+  return trimmed.replaceAll(/^['"]|['"]$/g, '');
+}
+
+function parseFrontmatter(content: string) {
+  if (!content.startsWith('---')) {
+    return {};
+  }
+
+  const endIndex = content.indexOf('\n---', 3);
+  if (endIndex < 0) {
+    return {};
+  }
+
+  return content
+    .slice(3, endIndex)
+    .split('\n')
+    .reduce<Record<string, unknown>>((frontmatter, line) => {
+      const match = /^([\w-]+):\s*(.+)$/.exec(line.trim());
+      if (match) {
+        frontmatter[match[1]] = parseFrontmatterValue(match[2]);
+      }
+      return frontmatter;
+    }, {});
+}
+
+function slugifyHeading(text: string) {
+  return text
+    .trim()
+    .toLowerCase()
+    .replaceAll(/[^\w\u4E00-\u9FA5 -]/g, '')
+    .replaceAll(/\s+/g, '-');
+}
+
+function collectHeadings(content: string) {
+  return content
+    .split('\n')
+    .map((line) => /^(#{1,6})\s+(.+)$/.exec(line.trim()))
+    .filter(Boolean)
+    .map((match) => {
+      const text = match![2].replace(/\s+#$/, '').trim();
+      return {
+        id: slugifyHeading(text),
+        text,
+        depth: match![1].length,
+      };
+    });
+}
+
+function formatTitle(value: string) {
+  return value
+    .replace(/\.[^.]+$/, '')
+    .replaceAll(/[-_]+/g, ' ')
+    .replaceAll(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function readPageMeta(filePath: string, routePath: string) {
+  if (!isMarkdownFile(filePath)) {
+    return {};
+  }
+
+  const content = fs.readFileSync(filePath, 'utf-8');
+  const frontmatter = parseFrontmatter(content);
+  const headings = collectHeadings(content);
+  const h1 = headings.find((heading) => heading.depth === 1);
+  const title =
+    typeof frontmatter.title === 'string'
+      ? frontmatter.title
+      : h1?.text ||
+        formatTitle(
+          routePath.endsWith('/') ? basename(path.dirname(filePath)) : basename(filePath),
+        );
+
+  return {
+    title,
+    frontmatter,
+    headings,
+  };
+}
+
 function resolveRoutePath(
   fileRelativePath: string,
   siteData?: LocaleAwareSiteData,
@@ -77,7 +173,7 @@ function resolveRoutePath(
     normalizePageRoutePath(fileRelativePath),
     getDefaultLocalePrefix(siteData),
   );
-  return withRoutePrefix(routePath, routeOptions?.prefix);
+  return normalizePublicRoute(withRoutePrefix(routePath, routeOptions?.prefix), routeOptions);
 }
 
 function createRouteMeta(
@@ -93,6 +189,7 @@ function createRouteMeta(
     absolutePath: normalizePath(filePath),
     filePath: fileRelativePath,
     name: basename(filePath, extname(filePath)),
+    ...readPageMeta(filePath, resolveRoutePath(fileRelativePath, siteData, routeOptions)),
   };
 }
 
@@ -104,14 +201,14 @@ function collectRouteFiles(scanDir: string, routeOptions?: RouteOptions) {
   });
 }
 
-function collectRouteMeta(
+export function collectRouteMeta(
   scanDir: string,
   routeOptions?: RouteOptions,
   siteData?: LocaleAwareSiteData,
 ) {
-  return collectRouteFiles(scanDir, routeOptions).map((filePath) =>
-    createRouteMeta(filePath, scanDir, siteData, routeOptions),
-  );
+  return collectRouteFiles(scanDir, routeOptions)
+    .map((filePath) => createRouteMeta(filePath, scanDir, siteData, routeOptions))
+    .sort((a, b) => a.routePath.localeCompare(b.routePath));
 }
 
 function renderRoutesCode(routeData: RouteMeta[], siteData?: LocaleAwareSiteData) {
@@ -119,7 +216,7 @@ function renderRoutesCode(routeData: RouteMeta[], siteData?: LocaleAwareSiteData
   return `
       export const routes = [{
         path: '/',
-        component: import('@theme-default/layout/index.tsx'),
+        component: import('@theme'),
         children: [${routeData
           .map((route) => {
             return `
@@ -127,9 +224,9 @@ function renderRoutesCode(routeData: RouteMeta[], siteData?: LocaleAwareSiteData
                 path: ${JSON.stringify(route.routePath)},
                 component: import(${JSON.stringify(route.absolutePath)}),
                 preload: () => import(${JSON.stringify(route.absolutePath)}),
-                title: ${JSON.stringify(route.name || 'title')},
+                title: ${JSON.stringify(route.title || route.name || 'title')},
                 absolutePath: ${JSON.stringify(route.absolutePath)},
-                meta: {name: ${JSON.stringify(siteName)}, filePath: ${JSON.stringify(route.filePath)}}
+                meta: {name: ${JSON.stringify(siteName)}, filePath: ${JSON.stringify(route.filePath)}, headings: ${JSON.stringify(route.headings || [])}}
             }`;
           })
           .join(', ')}],

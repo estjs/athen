@@ -1,6 +1,6 @@
 import { RouterView, createWebHistory } from 'essor-router';
 import { createApp, provide, reactive } from 'essor';
-import { setup } from '../theme-default';
+import * as theme from '@theme';
 import { createRouter, initPageData } from './router';
 import { PageDataKey } from '.';
 
@@ -43,5 +43,5 @@ async function ClientEntry() {
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await
 ClientEntry().then(() => {
-  setup();
+  theme.setup?.();
 });

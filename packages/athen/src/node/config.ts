@@ -1,4 +1,4 @@
-import { dirname, isAbsolute, resolve } from 'node:path';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import fs from 'fs-extra';
 import { loadConfigFromFile } from 'vite';
@@ -10,7 +10,10 @@ import {
   normalizeLanguageTag,
   normalizeLocalePrefix,
 } from '../shared/locale';
+import { normalizePublicRoute } from '../shared/utils';
 import { DEFAULT_THEME_PATH } from './constants';
+import { collectRouteMeta } from './plugins/router/routeService';
+import { createAutoSidebar, hasAutoSidebar, resolveSidebar } from './sidebar';
 import type {
   BrokenLinksBehavior,
   DefaultTheme,
@@ -261,6 +264,9 @@ function resolveRoute(userConfig: ConfigWithLocales): RouteOptions | undefined {
   const include = userConfig.include ?? docs?.include;
   const exclude = userConfig.exclude ?? docs?.exclude;
   const extensions = userConfig.extensions ?? docs?.extensions;
+  const cleanUrls = userConfig.cleanUrls ?? docs?.cleanUrls;
+  const trailingSlash = userConfig.trailingSlash ?? docs?.trailingSlash;
+  const rewrites = userConfig.rewrites ?? docs?.rewrites;
 
   if (srcDir) {
     route.root = srcDir;
@@ -276,6 +282,15 @@ function resolveRoute(userConfig: ConfigWithLocales): RouteOptions | undefined {
   }
   if (extensions) {
     route.extensions = extensions;
+  }
+  if (cleanUrls !== undefined) {
+    route.cleanUrls = cleanUrls;
+  }
+  if (trailingSlash !== undefined) {
+    route.trailingSlash = trailingSlash;
+  }
+  if (rewrites) {
+    route.rewrites = rewrites;
   }
 
   return Object.keys(route).length ? route : undefined;
@@ -294,6 +309,53 @@ function resolveAllowDeadLinks(userConfig: ConfigWithLocales): boolean | undefin
     return true;
   }
   return userConfig.allowDeadLinks;
+}
+
+function resolveAutoSidebar(
+  root: string,
+  siteData: SiteData<ThemeConfigWithLocales>,
+  route?: RouteOptions,
+  srcDir?: string,
+) {
+  const sidebar = siteData.themeConfig.sidebar;
+  const locales = siteData.themeConfig.locales as
+    | Record<string, DefaultTheme.LocaleConfig>
+    | undefined;
+  const hasLocaleAutoSidebar =
+    locales && Object.values(locales).some((locale) => hasAutoSidebar(locale.sidebar));
+
+  if (!hasAutoSidebar(sidebar) && !hasLocaleAutoSidebar) {
+    return;
+  }
+
+  const scanDir = join(root, route?.root || srcDir || '');
+  const routes = collectRouteMeta(scanDir, route, siteData);
+
+  if (hasAutoSidebar(sidebar)) {
+    siteData.themeConfig.sidebar = resolveSidebar(routes, sidebar as DefaultTheme.SidebarConfig);
+  }
+
+  if (!locales) {
+    return;
+  }
+
+  const nonRootLocalePrefixes = Object.keys(locales)
+    .map((prefix) => normalizePublicRoute(prefix, { trailingSlash: true }))
+    .filter((prefix) => prefix !== '/');
+
+  for (const [prefix, locale] of Object.entries(locales)) {
+    if (!hasAutoSidebar(locale.sidebar)) {
+      continue;
+    }
+
+    const normalizedPrefix = normalizePublicRoute(prefix, { trailingSlash: true });
+    const excludePrefixes = normalizedPrefix === '/' ? nonRootLocalePrefixes : [];
+
+    locale.sidebar =
+      locale.sidebar === 'auto'
+        ? createAutoSidebar(routes, prefix, excludePrefixes)
+        : resolveSidebar(routes, locale.sidebar as DefaultTheme.SidebarConfig);
+  }
 }
 
 function createLanguageRedirectScript(userConfig: ConfigWithLocales): HeadConfig | null {
@@ -457,24 +519,32 @@ export async function resolveConfig(
     themeDir = DEFAULT_THEME_PATH;
   }
 
+  const route = resolveRoute(userConfig);
+  const siteData = resolveSiteData(root, userConfig) as SiteData<ThemeConfigWithLocales>;
+  const srcDir = userConfig.srcDir ?? userConfig.docs?.srcDir;
+  resolveAutoSidebar(root, siteData, route, srcDir);
+
   return {
     root,
     configPath,
     themeDir,
-    siteData: resolveSiteData(root, userConfig),
+    siteData,
     search: userConfig.search,
     analytics: userConfig.analytics,
     plugins: userConfig.plugins,
     instances: userConfig.instances,
     vite: userConfig.vite,
-    route: resolveRoute(userConfig),
+    route,
     markdown: userConfig.markdown,
+    cleanUrls: userConfig.cleanUrls ?? userConfig.docs?.cleanUrls,
+    trailingSlash: userConfig.trailingSlash ?? userConfig.docs?.trailingSlash,
+    rewrites: userConfig.rewrites ?? userConfig.docs?.rewrites,
     outDir: userConfig.outDir ?? userConfig.docs?.outDir,
     tempDir: userConfig.tempDir ?? userConfig.docs?.tempDir,
     enableSpa: userConfig.enableSpa ?? userConfig.docs?.enableSpa,
     onBrokenLinks: resolveOnBrokenLinks(userConfig),
     allowDeadLinks: resolveAllowDeadLinks(userConfig),
-    srcDir: userConfig.srcDir ?? userConfig.docs?.srcDir,
+    srcDir,
   };
 }
 

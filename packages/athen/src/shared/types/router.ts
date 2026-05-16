@@ -20,4 +20,16 @@ export interface RouteOptions {
    * Exclude files from being converted to routes
    */
   exclude?: string[];
+  /**
+   * Whether generated public URLs should be clean.
+   */
+  cleanUrls?: boolean;
+  /**
+   * Whether generated public URLs should end with a trailing slash.
+   */
+  trailingSlash?: boolean;
+  /**
+   * Public URL rewrites used by link checking and route normalization.
+   */
+  rewrites?: Record<string, string>;
 }

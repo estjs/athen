@@ -13,6 +13,10 @@ export interface SearchConfig {
   include?: string[];
   exclude?: string[];
   searchIndexPath?: string;
+  cache?: {
+    enabled?: boolean;
+    maxAge?: number;
+  };
   searchOptions?: {
     limit?: number;
     enrich?: boolean;
@@ -25,6 +29,17 @@ export interface SearchConfig {
     algoliaOptions?: Record<string, unknown>;
   };
   transformResult?: (results: SearchResult[]) => SearchResult[];
+  customFields?: Record<
+    string,
+    {
+      getter: (page: unknown) => string;
+      index?: {
+        encode?: string | ((str: string) => string);
+        tokenize?: string | ((str: string) => string[]);
+        resolution?: number;
+      };
+    }
+  >;
 }
 
 export interface SearchResult {
@@ -129,6 +144,9 @@ export interface DocsUserConfig {
    * Broken-link handling strategy.
    */
   onBrokenLinks?: BrokenLinksBehavior;
+  cleanUrls?: boolean;
+  trailingSlash?: boolean;
+  rewrites?: Record<string, string>;
   /**
    * Edit link URL pattern, e.g. `https://github.com/org/repo/edit/main/docs/:path`.
    */
@@ -189,7 +207,7 @@ export interface ThemeUserConfig<ThemeConfig = DefaultTheme.Config> {
    * Convenience aliases for the default theme.
    */
   nav?: DefaultTheme.NavItem[];
-  sidebar?: DefaultTheme.Sidebar;
+  sidebar?: DefaultTheme.SidebarConfig;
   socialLinks?: DefaultTheme.IconLink[];
 }
 
@@ -283,6 +301,9 @@ export interface UserConfig<ThemeConfig = unknown> {
    * Broken-link handling strategy.
    */
   onBrokenLinks?: BrokenLinksBehavior;
+  cleanUrls?: boolean;
+  trailingSlash?: boolean;
+  rewrites?: Record<string, string>;
   /**
    * Whether dark mode/light mode toggle button is displayed.
    */
@@ -364,6 +385,9 @@ export interface SiteConfig<ThemeConfig = unknown> {
   vite?: ViteConfiguration;
   route?: RouteOptions;
   markdown?: MarkdownConfig;
+  cleanUrls?: boolean;
+  trailingSlash?: boolean;
+  rewrites?: Record<string, string>;
   outDir?: string;
   tempDir?: string;
   enableSpa?: boolean;
