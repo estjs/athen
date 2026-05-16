@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="48" viewBox="0 0 120 48" role="img" aria-label="Athen sponsor">
+  <rect width="120" height="48" rx="10" fill="#f1f5f4"/>
+  <circle cx="28" cy="24" r="12" fill="#315c53"/>
+  <text x="48" y="29" fill="#20201d" font-family="Arial, sans-serif" font-size="16" font-weight="700">Athen</text>
+</svg>

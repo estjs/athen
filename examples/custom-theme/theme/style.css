@@ -1,0 +1,53 @@
+.example-theme-shell {
+  min-height: 100vh;
+  background: #f7f7f3;
+  color: #20201d;
+}
+
+.example-theme-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid #d8d8ce;
+  padding: 18px 28px;
+  background: #ffffff;
+}
+
+.example-theme-brand {
+  color: #20201d;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.example-theme-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.example-theme-nav a {
+  color: #315c53;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.example-theme-main {
+  width: min(880px, calc(100vw - 40px));
+  margin: 0 auto;
+  padding: 56px 0;
+}
+
+.example-theme-label {
+  margin: 0 0 20px;
+  color: #6b6b62;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.example-theme-footer {
+  border-top: 1px solid #d8d8ce;
+  padding: 24px 28px;
+  color: #62625a;
+  text-align: center;
+}

@@ -1,0 +1,15 @@
+import pluginData from 'virtual:athen-example-plugin';
+
+# Plugin Example
+
+This page imports data from a virtual module created by a custom Athen/Vite plugin.
+
+<div class="plugin-example-message">{pluginData.message}</div>
+
+## What the Plugin Does
+
+- `resolveId` maps `virtual:athen-example-plugin` to an internal module id.
+- `load` returns generated ESM code for that virtual module.
+- `transformIndexHtml` injects a meta tag and a small script into the HTML document.
+
+The same plugin is registered from `athen.config.ts`, and the plugin source lives in `plugins/examplePlugin.ts`.
