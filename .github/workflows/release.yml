@@ -55,6 +55,7 @@ jobs:
             fi
 
             pack_dir="$(mktemp -d)"
+            tag="$(node scripts/npm-publish-tag.js "${version}")"
             pnpm --dir "${package_dir}" pack --pack-destination "${pack_dir}" --json
             tarball="$(find "${pack_dir}" -maxdepth 1 -type f -name "*.tgz" -print -quit)"
 
@@ -63,7 +64,7 @@ jobs:
               exit 1
             fi
 
-            npm publish "${tarball}" --access public --provenance
+            npm publish "${tarball}" --access public --provenance --tag "${tag}"
           done < <(pnpm --filter './packages/**' -r --workspace-concurrency=1 exec pwd)
 
       - name: Create GitHub Release
