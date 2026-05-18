@@ -18,13 +18,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v4
 
       - name: Set node
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
-          package-manager-cache: false
+          cache: pnpm
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
@@ -34,38 +34,7 @@ jobs:
         run: pnpm run build
 
       - name: Publish to NPM
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          while IFS= read -r package_dir; do
-            manifest="${package_dir}/package.json"
-            name="$(node -e "console.log(require(process.argv[1]).name)" "${manifest}")"
-            version="$(node -e "console.log(require(process.argv[1]).version)" "${manifest}")"
-            is_private="$(node -e "console.log(require(process.argv[1]).private ? 'true' : 'false')" "${manifest}")"
-
-            if [ "${is_private}" = "true" ]; then
-              echo "Skipping ${name}@${version}; package is private"
-              continue
-            fi
-
-            if npm view "${name}@${version}" version >/dev/null 2>&1; then
-              echo "Skipping ${name}@${version}; already published"
-              continue
-            fi
-
-            pack_dir="$(mktemp -d)"
-            tag="$(node -e "const version = process.argv[1]; const prerelease = version.match(/^\\d+\\.\\d+\\.\\d+-([a-z0-9-]+)/i); console.log(prerelease?.[1] ?? 'latest')" "${version}")"
-            pnpm --dir "${package_dir}" pack --pack-destination "${pack_dir}" --json
-            tarball="$(find "${pack_dir}" -maxdepth 1 -type f -name "*.tgz" -print -quit)"
-
-            if [ -z "${tarball}" ]; then
-              echo "No tarball was created for ${name}@${version}" >&2
-              exit 1
-            fi
-
-            npm publish "${tarball}" --access public --provenance --tag "${tag}"
-          done < <(pnpm --filter './packages/**' -r --workspace-concurrency=1 exec pwd)
+        run: pnpm -filter "./packages/**" -r publish --access public --no-git-checks
         env:
           NPM_CONFIG_PROVENANCE: true
 

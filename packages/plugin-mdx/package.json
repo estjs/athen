@@ -1,5 +1,5 @@
 {
-  "name": "@athen/plugin-mdx",
+  "name": "@athenjs/plugin-mdx",
   "version": "0.0.8-beta.3",
   "description": "",
   "type": "module",
