@@ -5,6 +5,11 @@ toc: false
 docClass: timeline
 ---
 
+## [0.0.8-beta.3](https://github.com/estjs/athen/compare/v0.0.8-beta.2...v0.0.8-beta.3) `2026-05-16`
+
+
+
+
 ## [0.0.8-beta.2](https://github.com/estjs/athen/compare/v0.0.8-beta.1...v0.0.8-beta.2) `2026-05-16`
 
 
