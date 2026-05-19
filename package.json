@@ -26,7 +26,7 @@
     "changelog": "tsx scripts/changelog.ts",
     "tempversion": "tsx scripts/temp-version.ts",
     "prerelease": " pnpm run build && pnpm run lint && pnpm run test",
-    "release": "pnpm run changelog && pnpm run prerelease &&  bumpp package.json packages/*/package.json --no-git-checks --commit --push --tag"
+    "release": "pnpm run changelog && pnpm run prerelease &&  bumpp package.json packages/*/package.json --no-git-checks --all"
   },
   "devDependencies": {
     "@estjs/eslint-config": "^2.3.0",

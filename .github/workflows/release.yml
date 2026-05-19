@@ -33,28 +33,8 @@ jobs:
       - name: PNPM build
         run: pnpm run build
 
-      - name: Publish athen
-        run: pnpm --filter athen publish --access public --no-git-checks
-        env:
-          NPM_CONFIG_PROVENANCE: true
-
-      - name: Publish create-athen
-        run: pnpm --filter create-athen publish --access public --no-git-checks
-        env:
-          NPM_CONFIG_PROVENANCE: true
-
-      - name: Publish plugin-analytics
-        run: pnpm --filter @estjs/athen-plugin-analytics publish --access public --no-git-checks
-        env:
-          NPM_CONFIG_PROVENANCE: true
-
-      - name: Publish plugin-mdx
-        run: pnpm --filter @estjs/athen-plugin-mdx publish --access public --no-git-checks
-        env:
-          NPM_CONFIG_PROVENANCE: true
-
-      - name: Publish plugin-search
-        run: pnpm --filter @estjs/athen-plugin-search publish --access public --no-git-checks
+      - name: Publish to NPM
+        run: pnpm -filter "./packages/**" -r publish --access public --no-git-checks
         env:
           NPM_CONFIG_PROVENANCE: true
 
