@@ -1,6 +1,6 @@
 {
   "name": "athen-monorepo",
-  "version": "0.0.8-beta.6",
+  "version": "0.0.8-beta.7",
   "packageManager": "pnpm@11.1.2",
   "type": "module",
   "license": "MIT",
