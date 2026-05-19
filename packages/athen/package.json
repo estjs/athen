@@ -21,7 +21,8 @@
   "funding": "https://github.com/sponsors/estjs",
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "template.html"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

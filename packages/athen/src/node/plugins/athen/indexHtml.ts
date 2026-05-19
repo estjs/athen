@@ -59,9 +59,9 @@ export function pluginIndexHtml(config: SiteConfig): Plugin {
           if (res.writableEnded) {
             return next();
           }
-          const indexHtmlInRoot = join(config.root, 'athen', 'index.html');
-          const templatePath = (await fs.pathExists(indexHtmlInRoot))
-            ? indexHtmlInRoot
+          const templateHtmlInRoot = join(config.root, 'athen', 'template.html');
+          const templatePath = (await fs.pathExists(templateHtmlInRoot))
+            ? templateHtmlInRoot
             : DEFAULT_HTML_PATH;
 
           if (req.url?.replace(/\?.*/, '')) {
