@@ -1,6 +1,6 @@
 {
   "name": "@estjs/athen-plugin-analytics",
-  "version": "0.0.8-beta.4",
+  "version": "0.0.8-beta.5",
   "description": "Privacy-friendly analytics plugin for Athen docs",
   "keywords": [
     "athen",
