@@ -36,7 +36,7 @@
 更新到最新版本：
 
 ```bash
-npm update athen @athen/plugin-search
+npm update athen @estjs/athen-plugin-search
 ```
 
 ## 迁移指南

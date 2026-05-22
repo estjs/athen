@@ -1,7 +1,7 @@
 import './style.scss';
 import { computed } from 'essor';
 import { getLocalePath, useLocaleSiteData, usePathname } from '@theme-default/hooks';
-import { SearchBox } from '@athen/plugin-search/client';
+import { SearchBox } from '@estjs/athen-plugin-search/client';
 import { usePageData } from '@/runtime';
 import { Switch } from '../Switch';
 import Link from '../Link';

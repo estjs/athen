@@ -31,9 +31,9 @@ Athen 是一个基于 **Vite** 和 **MDX** 的静态站点生成器，构建在 
 | 包                                                       | 描述           | 版本                                                         |
 | -------------------------------------------------------- | -------------- | ------------------------------------------------------------ |
 | [`athen`](./packages/athen)                              | 核心框架和 CLI | ![npm](https://img.shields.io/npm/v/athen)                   |
-| [`@athen/plugin-mdx`](./packages/plugin-mdx)             | MDX 处理插件   | ![npm](https://img.shields.io/npm/v/@athen/plugin-mdx)       |
-| [`@athen/plugin-search`](./packages/plugin-search)       | 全文搜索插件   | ![npm](https://img.shields.io/npm/v/@athen/plugin-search)    |
-| [`@athen/plugin-analytics`](./packages/plugin-analytics) | 分析集成       | ![npm](https://img.shields.io/npm/v/@athen/plugin-analytics) |
+| [`@estjs/athen-plugin-mdx`](./packages/plugin-mdx)             | MDX 处理插件   | ![npm](https://img.shields.io/npm/v/@estjs/athen-plugin-mdx)       |
+| [`@estjs/athen-plugin-search`](./packages/plugin-search)       | 全文搜索插件   | ![npm](https://img.shields.io/npm/v/@estjs/athen-plugin-search)    |
+| [`@estjs/athen-plugin-analytics`](./packages/plugin-analytics) | 分析集成       | ![npm](https://img.shields.io/npm/v/@estjs/athen-plugin-analytics) |
 | [`create-athen`](./packages/create-athen)                | 项目脚手架工具 | ![npm](https://img.shields.io/npm/v/create-athen)            |
 
 ---

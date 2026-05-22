@@ -13,7 +13,7 @@ Before installing the search plugin, make sure you have:
 
 1. Install the plugin:
    ```bash
-   npm install @athen/plugin-search
+   npm install @estjs/athen-plugin-search
    ```
 
 2. Configure in your `athen.config.ts`:

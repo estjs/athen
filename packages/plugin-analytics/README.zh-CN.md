@@ -1,4 +1,4 @@
-# @athen/plugin-analytics
+# @estjs/athen-plugin-analytics
 
 [English](./README.md) | **简体中文**
 
@@ -7,11 +7,11 @@ Athen 文档框架的隐私友好分析插件，支持多种分析提供商。
 ## 📦 安装
 
 ```bash
-npm install @athen/plugin-analytics
+npm install @estjs/athen-plugin-analytics
 # 或
-pnpm add @athen/plugin-analytics
+pnpm add @estjs/athen-plugin-analytics
 # 或
-yarn add @athen/plugin-analytics
+yarn add @estjs/athen-plugin-analytics
 ```
 
 > **注意**: 配置分析时，此插件会自动包含在主 `athen` 包中。
@@ -46,7 +46,7 @@ export default defineConfig({
 ### 手动插件使用
 
 ```ts
-import analyticsPlugin from '@athen/plugin-analytics';
+import analyticsPlugin from '@estjs/athen-plugin-analytics';
 
 export default {
   plugins: [

@@ -36,7 +36,7 @@ All notable changes to this project will be documented in this file.
 To update to the latest version:
 
 ```bash
-npm update athen @athen/plugin-search
+npm update athen @estjs/athen-plugin-search
 ```
 
 ## Migration Guide

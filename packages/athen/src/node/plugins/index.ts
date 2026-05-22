@@ -1,9 +1,9 @@
 import EnvironmentPlugin from 'vite-plugin-environment';
 import pluginUnocss from 'unocss/vite';
 import Inspect from 'vite-plugin-inspect';
-import { pluginMdx } from '@athen/plugin-mdx';
-import searchPlugin from '@athen/plugin-search';
-import analyticsPlugin from '@athen/plugin-analytics';
+import { pluginMdx } from '@estjs/athen-plugin-mdx';
+import searchPlugin from '@estjs/athen-plugin-search';
+import analyticsPlugin from '@estjs/athen-plugin-analytics';
 
 import pluginRoute from './router';
 import { getDefaultLocalePrefix } from './router/routeService';

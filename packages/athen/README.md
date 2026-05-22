@@ -340,9 +340,9 @@ await build("./docs");
 
 ## 🔗 Related Packages
 
-- [`@athen/plugin-mdx`](../plugin-mdx) - MDX processing plugin
-- [`@athen/plugin-search`](../plugin-search) - Full-text search plugin
-- [`@athen/plugin-analytics`](../plugin-analytics) - Analytics integration
+- [`@estjs/athen-plugin-mdx`](../plugin-mdx) - MDX processing plugin
+- [`@estjs/athen-plugin-search`](../plugin-search) - Full-text search plugin
+- [`@estjs/athen-plugin-analytics`](../plugin-analytics) - Analytics integration
 - [`create-athen`](../create-athen) - Project scaffolding tool
 
 ## 📄 License

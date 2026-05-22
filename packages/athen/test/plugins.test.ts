@@ -8,9 +8,9 @@ import type { SiteConfig } from '../src/shared/types';
 const require = createRequire(import.meta.url);
 const pluginMdxMock = vi.fn(() => ({ name: 'plugins-mdx' }));
 
-vi.mock('@athen/plugin-mdx', () => ({ pluginMdx: pluginMdxMock }));
-vi.mock('@athen/plugin-search', () => ({ default: () => ({ name: 'athen:search' }) }));
-vi.mock('@athen/plugin-analytics', () => ({ default: () => ({ name: 'athen:analytics' }) }));
+vi.mock('@estjs/athen-plugin-mdx', () => ({ pluginMdx: pluginMdxMock }));
+vi.mock('@estjs/athen-plugin-search', () => ({ default: () => ({ name: 'athen:search' }) }));
+vi.mock('@estjs/athen-plugin-analytics', () => ({ default: () => ({ name: 'athen:analytics' }) }));
 vi.mock('unocss/vite', () => ({ default: () => ({ name: 'unocss' }) }));
 vi.mock('vite-plugin-environment', () => ({ default: () => ({ name: 'env' }) }));
 vi.mock('vite-plugin-inspect', () => ({ default: () => ({ name: 'inspect' }) }));

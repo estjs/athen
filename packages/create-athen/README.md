@@ -183,7 +183,7 @@ my-docs/
   },
   "dependencies": {
     "athen": "latest",
-    "@athen/plugin-search": "latest"
+    "@estjs/athen-plugin-search": "latest"
   }
 }
 ```
@@ -672,7 +672,7 @@ pnpm create athen@latest my-docs --yes
 **❌ Search Not Working**:
 
 - Ensure FlexSearch is configured in `athen.config.ts`
-- Check that search plugin is installed: `@athen/plugin-search`
+- Check that search plugin is installed: `@estjs/athen-plugin-search`
 - Verify content files are in the correct directories
 - Run `pnpm build` to regenerate search index
 

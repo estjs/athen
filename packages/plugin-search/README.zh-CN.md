@@ -1,4 +1,4 @@
-# @athen/plugin-search
+# @estjs/athen-plugin-search
 
 为 Athen 文档框架提供的强大搜索插件，支持本地 FlexSearch 和云端 Algolia 搜索。
 
@@ -23,7 +23,7 @@
 ## 安装
 
 ```bash
-npm install @athen/plugin-search
+npm install @estjs/athen-plugin-search
 ```
 
 ## 使用方法
@@ -34,7 +34,7 @@ npm install @athen/plugin-search
 
 ```typescript
 import { defineConfig } from 'athen';
-import searchPlugin from '@athen/plugin-search';
+import searchPlugin from '@estjs/athen-plugin-search';
 
 export default defineConfig({
   plugins: [
@@ -83,7 +83,7 @@ searchPlugin({
 对于自定义主题，导入并使用 SearchBox 组件：
 
 ```tsx
-import { SearchBox } from '@athen/plugin-search/client';
+import { SearchBox } from '@estjs/athen-plugin-search/client';
 
 export function MyCustomSearch() {
   return (

@@ -1,4 +1,4 @@
-# @athen/plugin-mdx
+# @estjs/athen-plugin-mdx
 
 [English](./README.md) | **简体中文**
 
@@ -7,11 +7,11 @@ Athen 的 MDX 处理插件 - 将 Markdown 和 MDX 文件转换为具有增强功
 ## 📦 安装
 
 ```bash
-npm install @athen/plugin-mdx
+npm install @estjs/athen-plugin-mdx
 # 或
-pnpm add @athen/plugin-mdx
+pnpm add @estjs/athen-plugin-mdx
 # 或
-yarn add @athen/plugin-mdx
+yarn add @estjs/athen-plugin-mdx
 ```
 
 > **注意**: 此插件已自动包含在主 `athen` 包中。通常你不需要单独安装它。
@@ -34,7 +34,7 @@ yarn add @athen/plugin-mdx
 使用 Athen 时插件会自动配置。手动设置：
 
 ```ts
-import { pluginMdx } from '@athen/plugin-mdx';
+import { pluginMdx } from '@estjs/athen-plugin-mdx';
 
 export default {
   plugins: [
@@ -224,7 +224,7 @@ pnpm add athen
 
 ```ts
 import remarkCustomPlugin from 'remark-custom-plugin';
-import { pluginMdx } from '@athen/plugin-mdx';
+import { pluginMdx } from '@estjs/athen-plugin-mdx';
 
 export default {
   plugins: [

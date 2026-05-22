@@ -1,4 +1,4 @@
-# @athen/plugin-analytics
+# @estjs/athen-plugin-analytics
 
 **English** | [简体中文](./README.zh-CN.md)
 
@@ -7,11 +7,11 @@ Privacy-friendly analytics plugin for Athen documentation framework with support
 ## 📦 Installation
 
 ```bash
-npm install @athen/plugin-analytics
+npm install @estjs/athen-plugin-analytics
 # or
-pnpm add @athen/plugin-analytics
+pnpm add @estjs/athen-plugin-analytics
 # or
-yarn add @athen/plugin-analytics
+yarn add @estjs/athen-plugin-analytics
 ```
 
 > **Note**: This plugin is automatically included with the main `athen` package when analytics is configured.
@@ -46,7 +46,7 @@ export default defineConfig({
 ### Manual Plugin Usage
 
 ```ts
-import analyticsPlugin from '@athen/plugin-analytics';
+import analyticsPlugin from '@estjs/athen-plugin-analytics';
 
 export default {
   plugins: [

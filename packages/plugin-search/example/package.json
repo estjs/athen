@@ -8,7 +8,7 @@
     "preview": "athen preview"
   },
   "dependencies": {
-    "@athen/plugin-search": "workspace:*",
+    "@estjs/athen-plugin-search": "workspace:*",
     "athen": "workspace:*"
   }
 }

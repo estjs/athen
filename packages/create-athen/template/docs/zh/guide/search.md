@@ -171,7 +171,7 @@ export default defineConfig({
 对于高级自定义，您可以创建自定义搜索组件：
 
 ```tsx
-import { SearchBox } from '@athen/plugin-search/client';
+import { SearchBox } from '@estjs/athen-plugin-search/client';
 
 export function CustomSearch() {
   return (

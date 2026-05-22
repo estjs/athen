@@ -31,9 +31,9 @@ This monorepo contains the following packages:
 | Package                                                  | Description              | Version                                                      |
 | -------------------------------------------------------- | ------------------------ | ------------------------------------------------------------ |
 | [`athen`](./packages/athen)                              | Core framework and CLI   | ![npm](https://img.shields.io/npm/v/athen)                   |
-| [`@athen/plugin-mdx`](./packages/plugin-mdx)             | MDX processing plugin    | ![npm](https://img.shields.io/npm/v/@athen/plugin-mdx)       |
-| [`@athen/plugin-search`](./packages/plugin-search)       | Full-text search plugin  | ![npm](https://img.shields.io/npm/v/@athen/plugin-search)    |
-| [`@athen/plugin-analytics`](./packages/plugin-analytics) | Analytics integration    | ![npm](https://img.shields.io/npm/v/@athen/plugin-analytics) |
+| [`@estjs/athen-plugin-mdx`](./packages/plugin-mdx)             | MDX processing plugin    | ![npm](https://img.shields.io/npm/v/@estjs/athen-plugin-mdx)       |
+| [`@estjs/athen-plugin-search`](./packages/plugin-search)       | Full-text search plugin  | ![npm](https://img.shields.io/npm/v/@estjs/athen-plugin-search)    |
+| [`@estjs/athen-plugin-analytics`](./packages/plugin-analytics) | Analytics integration    | ![npm](https://img.shields.io/npm/v/@estjs/athen-plugin-analytics) |
 | [`create-athen`](./packages/create-athen)                | Project scaffolding tool | ![npm](https://img.shields.io/npm/v/create-athen)            |
 
 ---

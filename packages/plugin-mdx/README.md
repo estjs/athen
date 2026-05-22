@@ -1,4 +1,4 @@
-# @athen/plugin-mdx
+# @estjs/athen-plugin-mdx
 
 **English** | [简体中文](./README.zh-CN.md)
 
@@ -7,11 +7,11 @@ MDX processing plugin for Athen - transforms Markdown and MDX files into Essor c
 ## 📦 Installation
 
 ```bash
-npm install @athen/plugin-mdx
+npm install @estjs/athen-plugin-mdx
 # or
-pnpm add @athen/plugin-mdx
+pnpm add @estjs/athen-plugin-mdx
 # or
-yarn add @athen/plugin-mdx
+yarn add @estjs/athen-plugin-mdx
 ```
 
 > **Note**: This plugin is automatically included with the main `athen` package. You typically don't need to install it separately.
@@ -34,7 +34,7 @@ yarn add @athen/plugin-mdx
 The plugin is automatically configured when using Athen. For manual setup:
 
 ```ts
-import { pluginMdx } from '@athen/plugin-mdx';
+import { pluginMdx } from '@estjs/athen-plugin-mdx';
 
 export default {
   plugins: [
@@ -224,7 +224,7 @@ pnpm add athen
 
 ```ts
 import remarkCustomPlugin from 'remark-custom-plugin';
-import { pluginMdx } from '@athen/plugin-mdx';
+import { pluginMdx } from '@estjs/athen-plugin-mdx';
 
 export default {
   plugins: [

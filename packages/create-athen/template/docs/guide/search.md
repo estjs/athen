@@ -171,7 +171,7 @@ export default defineConfig({
 For advanced customization, you can create a custom search component:
 
 ```tsx
-import { SearchBox } from '@athen/plugin-search/client';
+import { SearchBox } from '@estjs/athen-plugin-search/client';
 
 export function CustomSearch() {
   return (

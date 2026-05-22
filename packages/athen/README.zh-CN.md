@@ -340,9 +340,9 @@ await build("./docs");
 
 ## 🔗 相关包
 
-- [`@athen/plugin-mdx`](../plugin-mdx) - MDX 处理插件
-- [`@athen/plugin-search`](../plugin-search) - 全文搜索插件
-- [`@athen/plugin-analytics`](../plugin-analytics) - 分析集成
+- [`@estjs/athen-plugin-mdx`](../plugin-mdx) - MDX 处理插件
+- [`@estjs/athen-plugin-search`](../plugin-search) - 全文搜索插件
+- [`@estjs/athen-plugin-analytics`](../plugin-analytics) - 分析集成
 - [`create-athen`](../create-athen) - 项目脚手架工具
 
 ## 📄 许可证

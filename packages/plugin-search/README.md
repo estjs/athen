@@ -1,4 +1,4 @@
-# @athen/plugin-search
+# @estjs/athen-plugin-search
 
 A powerful search plugin for Athen documentation framework that supports both local FlexSearch and cloud-based Algolia search.
 
@@ -23,7 +23,7 @@ The plugin works by:
 ## Installation
 
 ```bash
-npm install @athen/plugin-search
+npm install @estjs/athen-plugin-search
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ Add the plugin to your `athen.config.ts`:
 
 ```typescript
 import { defineConfig } from 'athen';
-import searchPlugin from '@athen/plugin-search';
+import searchPlugin from '@estjs/athen-plugin-search';
 
 export default defineConfig({
   plugins: [
@@ -83,7 +83,7 @@ The plugin automatically integrates with Athen's default theme. The search compo
 For custom themes, import and use the SearchBox component:
 
 ```tsx
-import { SearchBox } from '@athen/plugin-search/client';
+import { SearchBox } from '@estjs/athen-plugin-search/client';
 
 export function MyCustomSearch() {
   return (
