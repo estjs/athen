@@ -322,7 +322,7 @@ function resolveAutoSidebar(
     | Record<string, DefaultTheme.LocaleConfig>
     | undefined;
   const hasLocaleAutoSidebar =
-    locales && Object.values(locales).some((locale) => hasAutoSidebar(locale.sidebar));
+    locales && Object.values(locales).some((locale) => hasAutoSidebar(locale.themeConfig?.sidebar));
 
   if (!hasAutoSidebar(sidebar) && !hasLocaleAutoSidebar) {
     return;
@@ -344,17 +344,21 @@ function resolveAutoSidebar(
     .filter((prefix) => prefix !== '/');
 
   for (const [prefix, locale] of Object.entries(locales)) {
-    if (!hasAutoSidebar(locale.sidebar)) {
+    const localeSidebar = locale.themeConfig?.sidebar;
+    if (!hasAutoSidebar(localeSidebar)) {
       continue;
     }
 
     const normalizedPrefix = normalizePublicRoute(prefix, { trailingSlash: true });
     const excludePrefixes = normalizedPrefix === '/' ? nonRootLocalePrefixes : [];
 
-    locale.sidebar =
-      locale.sidebar === 'auto'
-        ? createAutoSidebar(routes, prefix, excludePrefixes)
-        : resolveSidebar(routes, locale.sidebar as DefaultTheme.SidebarConfig);
+    locale.themeConfig = {
+      ...locale.themeConfig,
+      sidebar:
+        localeSidebar === 'auto'
+          ? createAutoSidebar(routes, prefix, excludePrefixes)
+          : resolveSidebar(routes, localeSidebar as DefaultTheme.SidebarConfig),
+    };
   }
 }
 

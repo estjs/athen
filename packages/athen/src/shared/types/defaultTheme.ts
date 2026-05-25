@@ -98,24 +98,42 @@ export namespace DefaultTheme {
   }
 
   /**
-   * locale config
+   * Per-locale config. Mirrors VitePress 2.0's locale shape: identity fields
+   * sit on the locale entry; all theme overrides go inside `themeConfig`,
+   * which is merged over the root `Config` at render time.
    */
   export interface LocaleConfig {
-    lang?: string;
-    title?: string;
-    langRoutePrefix?: string;
-    description?: string;
-    head?: HeadConfig[];
+    /** Required UI label shown in the language switcher (e.g. "English", "简体中文"). */
     label: string;
+    /** BCP-47 language tag for this locale (e.g. "en", "zh-CN"). */
+    lang?: string;
+    /** Filled in by the framework — the route prefix for this locale (e.g. "/zh/"). */
+    langRoutePrefix?: string;
+    /** Label used inside the language switcher dropdown. */
     selectText?: string;
-    nav?: NavItem[];
-    sidebar?: SidebarConfig;
-    outlineTitle?: string;
-    lastUpdatedText?: string;
-    editLink?: EditLink;
-    prevPageText?: string;
-    nextPageText?: string;
+    /** Per-locale `<title>`. */
+    title?: string;
+    /** Per-locale `<meta name="description">`. */
+    description?: string;
+    /** Per-locale extra `<head>` entries. */
+    head?: HeadConfig[];
+    /**
+     * Theme overrides for this locale. Shallow-merged with the root `Config`
+     * field-by-field — nested objects (`editLink`, `footer`, `slots`) merge
+     * their own keys; arrays (`nav`, `links`, `head`) fully replace.
+     */
+    themeConfig?: Partial<Omit<Config, 'locales'>>;
   }
+
+  /**
+   * What components see via `useLocaleSiteData()` — the locale identity plus
+   * the theme config merged from `Config` (root) and `LocaleConfig.themeConfig`.
+   */
+  export type ResolvedLocaleSiteData = Omit<Config, 'locales'> &
+    Pick<
+      LocaleConfig,
+      'label' | 'lang' | 'langRoutePrefix' | 'selectText' | 'title' | 'description' | 'head'
+    >;
   // nav -----------------------------------------------------------------------
 
   export type NavItem = NavItemWithLink | NavItemWithChildren;

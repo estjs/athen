@@ -40,7 +40,7 @@ export function resolveSidebarData(
 
 export function useSidebarData(
   currentPathname: { value: string },
-  sidebar: Computed<DefaultTheme.LocaleConfig>,
+  sidebar: Computed<DefaultTheme.ResolvedLocaleSiteData>,
 ): Computed<SidebarData> {
   return computed(() => {
     const decodedPathname = decodeURIComponent(currentPathname.value || '/');
