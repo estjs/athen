@@ -12,7 +12,7 @@ hero:
 ---
 ```
 
-Simply set **`layout: home`** (or legacy `pageType: home`) in Front Matter and Athen will render the built-in Home layout.
+Simply set **`layout: home`** in Front Matter and Athen will render the built-in Home layout.
 The Home layout now offers **four** configurable blocks: `hero`, `features`, `cta`, and `sponsors`.
 
 ## hero
@@ -52,7 +52,7 @@ For example:
 
 ```md
 ---
-pageType: home
+layout: home
 
 hero:
   name: athen

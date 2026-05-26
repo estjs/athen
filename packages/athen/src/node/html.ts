@@ -18,7 +18,7 @@ import type { HeadConfig } from '../shared/types';
  * `<html lang>` attribute are NOT placeholders here — they are injected at
  * render time by Unhead (`transformHtmlTemplate` for SSG / dev middleware,
  * the DOM renderer for SPA navigation). The only template var left is
- * `{{ icon }}` for the favicon, which is site-level and never per-page.
+ * `{{ favicon }}`, populated from `siteData.favicon`.
  *
  * Users can override the whole document by dropping their own at
  * `<root>/index.html`.
@@ -31,7 +31,7 @@ export const BASE_TEMPLATE = `<!DOCTYPE html>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Athen">
-  <link rel="icon" href="{{ icon }}">
+  <link rel="icon" href="{{ favicon }}">
 </head>
 
 <body>

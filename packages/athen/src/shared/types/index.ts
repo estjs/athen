@@ -216,7 +216,6 @@ export interface SiteConfig {
   tempDir?: string;
   enableSpa?: boolean;
   onBrokenLinks?: BrokenLinksBehavior;
-  allowDeadLinks?: boolean;
   srcDir?: string;
   /** Internal: pre-scanned route table shared across plugins and build steps. */
   _routes?: unknown[];
@@ -233,8 +232,6 @@ export interface SiteData {
   title: string;
   description: string;
   favicon: string;
-  /** Alias for favicon (kept for template-var compatibility). */
-  icon: string;
   head: HeadConfig[];
   colorScheme: boolean;
   search?: SearchConfig;

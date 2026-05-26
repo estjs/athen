@@ -61,7 +61,7 @@ function getNodeOrder(node: Node): number {
     const value = node.meta?.order;
     return typeof value === 'number' && Number.isFinite(value) ? value : Number.POSITIVE_INFINITY;
   }
-  const value = node.route.frontmatter?.order ?? node.route.frontmatter?.sidebarOrder;
+  const value = node.route.frontmatter?.order;
   const order = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(order) ? order : Number.POSITIVE_INFINITY;
 }

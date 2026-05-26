@@ -187,11 +187,9 @@ export interface LocaleTemplateContext {
 }
 
 export interface TemplateVars {
-  icon: string;
+  favicon: string;
   base: string;
   siteTitle: string;
-  logo: string;
-  favicon: string;
 }
 
 function firstString(...values: Array<unknown>): string | undefined {
@@ -234,20 +232,15 @@ export function getLocaleSiteData(
  * Build site-level template variables for `<root>/index.html` placeholders.
  * Per-page meta (`title`/`description`/`<html lang>`) is no longer rendered
  * here — Unhead injects those at render time. This function just produces the
- * static, site-level vars: favicon paths, base URL, site title.
+ * static, site-level vars: favicon path, base URL, site title.
  */
 export function buildTemplateVars(
   siteData: SiteData,
   locale?: LocaleTemplateContext,
 ): TemplateVars {
-  const icon = siteData.icon || siteData.favicon || '';
-  const siteTitle = firstString(locale?.title, siteData.title) || 'Athen';
-
   return {
-    icon,
+    favicon: siteData.favicon || '',
     base: siteData.base || '/',
-    siteTitle,
-    logo: icon,
-    favicon: icon,
+    siteTitle: firstString(locale?.title, siteData.title) || 'Athen',
   };
 }

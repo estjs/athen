@@ -1,8 +1,8 @@
 import { RouterView } from 'essor-router';
 import { usePageData } from '@runtime';
-import '@theme-default/styles/base.css';
-import '@theme-default/styles/vars.css';
-import '@theme-default/styles/doc.css';
+import '@theme-default/styles/preset.css';
+import '@theme-default/styles/tokens.css';
+import '@theme-default/styles/prose.css';
 import './style.css';
 
 interface NavItem {

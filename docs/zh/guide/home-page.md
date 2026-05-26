@@ -12,7 +12,7 @@ hero:
 ---
 ```
 
-只需在 Front Matter 中设置 **`layout: home`**（或兼容的 `pageType: home`）即可启用内置主页布局。
+只需在 Front Matter 中设置 **`layout: home`** 即可启用内置主页布局。
 主页目前包含 **四** 个可配置区块：`hero`、`features`、`cta`、`sponsors`。
 
 ## 开屏
@@ -52,7 +52,7 @@ export interface HeroAction {
 
 ```md
 ---
-pageType: home
+layout: home
 
 hero:
   name: athen

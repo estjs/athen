@@ -13,7 +13,7 @@ describe('base template', () => {
     expect(BASE_TEMPLATE).not.toContain('{{ title }}');
     expect(BASE_TEMPLATE).not.toContain('{{ description }}');
     expect(BASE_TEMPLATE).not.toContain('{{ lang }}');
-    expect(BASE_TEMPLATE).toContain('{{ icon }}');
+    expect(BASE_TEMPLATE).toContain('{{ favicon }}');
     expect(BASE_TEMPLATE).toContain('<div id="app">');
   });
 });

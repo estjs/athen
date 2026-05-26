@@ -175,12 +175,6 @@ export function resolveLocaleRedirectTarget(
   return `/${redirectable[0].prefix}/`;
 }
 
-const ALLOW_DEAD_LINKS_MAP: Record<string, boolean> = {
-  throw: false,
-  warn: true,
-  ignore: true,
-};
-
 function resolveRoute(userConfig: UserConfig): RouteOptions | undefined {
   const route: RouteOptions = {
     ...(userConfig.route || {}),
@@ -227,7 +221,6 @@ export function resolveSiteData(root: string, userConfig: UserConfig = {}): Site
     title: userConfig.title ?? 'Athen',
     description: userConfig.description ?? '',
     favicon: userConfig.favicon ?? '',
-    icon: userConfig.favicon ?? '',
     head: [],
     colorScheme: userConfig.colorScheme ?? true,
     search: typeof userConfig.search === 'object' ? userConfig.search : undefined,
@@ -300,9 +293,6 @@ export async function resolveConfig(
     tempDir: userConfig.tempDir,
     enableSpa: userConfig.enableSpa,
     onBrokenLinks: userConfig.onBrokenLinks,
-    allowDeadLinks: userConfig.onBrokenLinks
-      ? ALLOW_DEAD_LINKS_MAP[userConfig.onBrokenLinks]
-      : undefined,
     srcDir: userConfig.srcDir,
     _routes: routes,
   };

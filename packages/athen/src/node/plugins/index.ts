@@ -84,7 +84,6 @@ export async function createVitePlugins(
     root: config.root,
     base: config.siteData.base,
     enableSpa: config.enableSpa,
-    allowDeadLinks: config.allowDeadLinks,
     ...(config.markdown || {}),
     essor: true,
     plugins: [pluginMdxHMR(config, isServer) as never],

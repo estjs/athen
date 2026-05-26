@@ -15,7 +15,7 @@ Then you just need to add the following to `index.md` in the `api` directory:
 
 ```md
 ---
-pageType: api
+layout: api
 ---
 ```
 

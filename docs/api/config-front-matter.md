@@ -43,7 +43,7 @@ The layout to use when rendering the page.
 - Type: `boolean`
 - Default: `false`
 
-Enable api page. It's equal to `pageType: 'api'`:
+When set to `true`, Athen automatically parses child-page `<h1>`/`<h2>` headings and renders them as an API overview page, grouped by your `sidebar` config. Equivalent to `layout: api`:
 
 ```md
 ---

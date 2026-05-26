@@ -14,8 +14,10 @@ interface AthenRouteRecord {
 
 function inferPageType(mod?: PageModule<unknown>): PageData['pageType'] {
   if (!mod) return '404';
-  if (mod.frontmatter?.pageType) return mod.frontmatter.pageType as PageData['pageType'];
-  return mod.frontmatter?.layout === 'home' ? 'home' : 'doc';
+  if (mod.frontmatter?.layout === 'home') return 'home';
+  if (mod.frontmatter?.layout === 'api') return 'api';
+  if (mod.frontmatter?.layout === 'custom') return 'custom';
+  return 'doc';
 }
 
 /**

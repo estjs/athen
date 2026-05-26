@@ -43,7 +43,7 @@ description: 这是我的主页
 - Type: `boolean`
 - Default: `false`
 
-表示当前页为 api 页面。相当于`pageType: 'api'`：
+设为 `true` 时，Athen 会自动解析子页面的 `<h1>`/`<h2>` 标题，按 `sidebar` 配置分组渲染成 API 概览页。等效于 `layout: api`：
 
 ```md
 ---

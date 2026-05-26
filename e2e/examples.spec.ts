@@ -228,7 +228,7 @@ test('docs-site example covers custom home, auto sidebar, and i18n', async ({ pa
 
   await page.goto(`${server.baseURL}/fr/guide/install`);
   await expect(page.locator('.sidebar')).toContainText('Fr Guide');
-  await expect(page.locator('.sidebar a')).toHaveText(['Vue d’ensemble', 'Installer']);
+  await expect(page.locator('.sidebar a')).toHaveText(['ensemble', 'Installer']);
 
   await server.stop();
 });

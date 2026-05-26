@@ -33,7 +33,6 @@ function config(plugins?: Plugin[]): SiteConfig {
       title: '',
       description: '',
       favicon: '',
-      icon: '',
       head: [],
       themeConfig: {},
       colorScheme: true,
@@ -54,7 +53,6 @@ describe('plugins', () => {
       {
         ...config(),
         enableSpa: true,
-        allowDeadLinks: false,
         markdown: {
           lineNumbers: true,
           remarkPlugins: [],
@@ -70,7 +68,6 @@ describe('plugins', () => {
         base: '',
         essor: true,
         enableSpa: true,
-        allowDeadLinks: false,
         lineNumbers: true,
         remarkPlugins: [],
         rehypePlugins: [],

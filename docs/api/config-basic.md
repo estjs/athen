@@ -53,7 +53,7 @@ export default defineConfig({
 | `description` | `string` | Site description and default HTML meta description. |
 | `lang` | `string` | Default language tag. |
 | `base` | `string` | Base URL for deployment. |
-| `favicon` | `string` | Favicon path. `icon` remains as a compatibility alias. |
+| `favicon` | `string` | Favicon path. |
 | `head` | `HeadConfig[]` | Extra tags injected into HTML `<head>`. |
 | `colorScheme` | `boolean` | Enable dark/light color scheme support. |
 | `srcDir` | `string` | Directory scanned for pages. |
@@ -75,39 +75,40 @@ export default defineConfig({
 ## Grouped Options
 
 - `themeConfig`: default theme navigation, sidebar, links, footer, outline, slots, and page labels.
-- `markdown`: MDX/Markdown pipeline options such as Shiki theme, line numbers, `remarkPlugins`, and `rehypePlugins`.
+- `markdown`: MDX/Markdown pipeline options. See the table below.
 - `search`: local FlexSearch or Algolia search configuration.
 - `analytics`: analytics integrations.
 - `vite`: Vite config merged with Athen's internal config.
 - `plugins`: custom Vite/Athen plugins.
 - `route`: advanced route scanner options. Prefer top-level `include`, `exclude`, `extensions`, and `routeBasePath` for common cases.
 
+## markdown
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `lineNumbers` | `boolean` | Show line numbers in fenced code blocks. |
+| `toc` | `boolean \| { minLevel?, maxLevel? }` | Generate `<TOC>` blocks for pages with `[[toc]]` markers. |
+| `remarkPlugins` | `PluggableList` | Extra remark plugins prepended to the pipeline. |
+| `rehypePlugins` | `PluggableList` | Extra rehype plugins prepended to the pipeline. |
+| `externalLinks` | `{ target?, rel? }` | Default `target` and `rel` for outbound links. |
+| `shiki.theme` | `string` | Single shiki theme name. |
+| `shiki.themes` | `{ light, dark }` | Per-color-scheme themes; emits CSS variables for both. |
+
 ## route
 
 Use `route` only when you need advanced scanner options. For most sites, prefer the shallow top-level aliases: `srcDir`, `routeBasePath`, `include`, `exclude`, and `extensions`.
 
-## Migration Notes
+## locales
 
-The older VitePress-style `themeConfig` remains the recommended theme entry. The deeper experimental shape is still accepted for compatibility, but new projects should prefer the shallow form:
+Per-locale overrides for nav, sidebar, head, and theme strings. Each locale entry uses the same field names as the root config — anything not set falls back to the root.
 
-| Deeper form | Preferred shallow form |
-| --- | --- |
-| `site.title` | `title` |
-| `site.description` | `description` |
-| `site.base` | `base` |
-| `site.favicon` | `favicon` |
-| `docs.srcDir` | `srcDir` |
-| `docs.onBrokenLinks` | `onBrokenLinks` |
-| `docs.routeBasePath` | `routeBasePath` |
-| `theme.config` | `themeConfig` |
-| `theme.socialLinks` | `themeConfig.links` |
-| `i18n.locales` | `locales` |
-
-## Comparison Notes
-
-Athen now supports the high-value configuration patterns from VitePress and Docusaurus while keeping config shallow:
-
-- `themeConfig.sidebar: 'auto'` generates sidebar data from route metadata.
-- `onBrokenLinks` checks local Markdown links and anchors during build.
-- `cleanUrls`, `trailingSlash`, and `rewrites` keep public URLs stable.
-- `defaultLocale` and `locales` provide locale-specific nav/sidebar/text overrides.
+| Option | Type | Description |
+| --- | --- | --- |
+| `label` | `string` | Display name in the language switcher (required). |
+| `lang` | `string` | BCP-47 tag emitted as `<html lang>` on routes under this locale. |
+| `title` / `description` | `string` | Locale-specific site title and meta description. |
+| `head` | `HeadConfig[]` | Extra `<head>` tags for this locale. |
+| `nav` / `sidebar` / `socialLinks` / `editLink` / `footer` / `logo` | various | Theme overrides; same shape as root. |
+| `outlineTitle` | `string` | The aside heading above the table of contents (e.g. `'本页内容'` for Chinese). The site-level fallback comes from `outlineTitle` at the root config; if unset, defaults to `'On this page'`. |
+| `lastUpdatedText` | `string` | Footer "last updated" label. |
+| `prevPageText` / `nextPageText` | `string` | Pager labels. |

@@ -144,7 +144,7 @@ function pluginIndexHtml(config: SiteConfig): Plugin {
         const matched = findRoute(routes, url);
         const locale = getLocaleSiteData(config.siteData, matched?.localePrefix);
 
-        // Static (site-level) template vars — `{{ icon }}` only after the
+        // Static (site-level) template vars — `{{ favicon }}` only after the
         // title/description/lang placeholders were removed from BASE_TEMPLATE.
         const vars = buildTemplateVars(config.siteData, locale);
         let nextHtml = renderTemplateVars(html, vars);

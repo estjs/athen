@@ -14,7 +14,6 @@ const siteData: SiteData = {
   title: 'Athen',
   description: 'Site description',
   favicon: '/favicon.ico',
-  icon: '/favicon.ico',
   head: [],
   colorScheme: true,
 };

@@ -11,6 +11,8 @@ export default defineConfig({
     '/old-start': '/guide/start',
   },
   onBrokenLinks: 'throw',
+  // Build output goes to ./dist by default; uncomment to redirect.
+  // outDir: 'build',
   markdown: {
     lineNumbers: true,
     toc: {
@@ -21,6 +23,7 @@ export default defineConfig({
       rel: 'noopener noreferrer',
     },
     shiki: {
+      // Use a single theme. Pass `themes: { light, dark }` for dual theming.
       theme: 'github-dark',
     },
   },

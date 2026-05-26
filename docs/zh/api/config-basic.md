@@ -75,39 +75,41 @@ export default defineConfig({
 ## 成组配置
 
 - `themeConfig`：默认主题导航、侧边栏、链接、页脚、大纲、插槽和页面文案。
-- `markdown`：MDX/Markdown 编译配置，例如 Shiki 主题、行号、`remarkPlugins`、`rehypePlugins`。
+- `markdown`：MDX/Markdown 编译配置。见下表。
 - `search`：本地 FlexSearch 或 Algolia 搜索配置。
 - `analytics`：统计集成。
 - `vite`：与 Athen 内部配置合并的 Vite 配置。
 - `plugins`：自定义 Vite/Athen 插件。
 - `route`：高级路由扫描配置。常见场景优先使用顶层 `include`、`exclude`、`extensions`、`routeBasePath`。
 
+## markdown
+
+| 选项 | 类型 | 说明 |
+| --- | --- | --- |
+| `lineNumbers` | `boolean` | 代码块显示行号。 |
+| `toc` | `boolean \| { minLevel?, maxLevel? }` | 对包含 `[[toc]]` 标记的页面生成目录块。 |
+| `remarkPlugins` | `PluggableList` | 追加到 remark 流水线前部的插件。 |
+| `rehypePlugins` | `PluggableList` | 追加到 rehype 流水线前部的插件。 |
+| `externalLinks` | `{ target?, rel? }` | 外链默认 `target` 与 `rel`。 |
+| `shiki.theme` | `string` | 单一 shiki 主题。 |
+| `shiki.themes` | `{ light, dark }` | 双主题切换;输出对应 CSS 变量。 |
+
 ## route
 
-只有需要高级路由扫描选项时才使用 `route`。大多数站点优先使用更浅的顶层别名：`srcDir`、`routeBasePath`、`include`、`exclude`、`extensions`。
+只有需要高级路由扫描选项时才使用 `route`。大多数站点优先使用更浅的顶层别名:`srcDir`、`routeBasePath`、`include`、`exclude`、`extensions`。
 
-## 迁移说明
+## locales
 
-旧的 VitePress 风格 `themeConfig` 仍然是推荐主题入口。更深的实验写法会继续兼容，但新项目应优先使用扁平写法：
+各语言对 nav、sidebar、head、主题文案的覆盖。每条 locale 字段名与顶层一致 —— 未填的回退到根。
 
-| 较深写法 | 推荐扁平写法 |
-| --- | --- |
-| `site.title` | `title` |
-| `site.description` | `description` |
-| `site.base` | `base` |
-| `site.favicon` | `favicon` |
-| `docs.srcDir` | `srcDir` |
-| `docs.onBrokenLinks` | `onBrokenLinks` |
-| `docs.routeBasePath` | `routeBasePath` |
-| `theme.config` | `themeConfig` |
-| `theme.socialLinks` | `themeConfig.links` |
-| `i18n.locales` | `locales` |
+| 选项 | 类型 | 说明 |
+| --- | --- | --- |
+| `label` | `string` | 语言切换菜单中的显示名称(必填)。 |
+| `lang` | `string` | 该 locale 下路由 `<html lang>` 的 BCP-47 标签。 |
+| `title` / `description` | `string` | 该 locale 的站点标题与 meta description。 |
+| `head` | `HeadConfig[]` | 该 locale 额外的 `<head>` 标签。 |
+| `nav` / `sidebar` / `socialLinks` / `editLink` / `footer` / `logo` | various | 主题覆盖,字段与根一致。 |
+| `outlineTitle` | `string` | 文档右侧目录的标题,如中文站可设置 `'本页内容'`。站点级回退来自根 `outlineTitle`;再无则使用 `'On this page'`。 |
+| `lastUpdatedText` | `string` | 页脚 "最近更新" 文案。 |
+| `prevPageText` / `nextPageText` | `string` | 翻页器文案。 |
 
-## 对比结论
-
-Athen 现在支持 VitePress 和 Docusaurus 中最有价值的浅层配置能力：
-
-- `themeConfig.sidebar: 'auto'` 可基于路由元数据自动生成 sidebar。
-- `onBrokenLinks` 会在构建时检查本地 Markdown 链接和 anchor。
-- `cleanUrls`、`trailingSlash`、`rewrites` 用于稳定公开 URL。
-- `defaultLocale` 和 `locales` 提供各语言的 nav/sidebar/文本覆盖。

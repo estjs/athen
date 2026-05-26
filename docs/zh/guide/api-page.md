@@ -15,7 +15,7 @@ api
 
 ```md
 ---
-pageType: api
+layout: api
 ---
 ```
 

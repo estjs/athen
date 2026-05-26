@@ -71,7 +71,6 @@ describe('config', () => {
     expect(config.outDir).toBe('dist-docs');
     expect(config.tempDir).toBe('.temp-docs');
     expect(config.enableSpa).toBe(true);
-    expect(config.allowDeadLinks).toBe(true);
     expect(config.srcDir).toBe('src-docs');
   });
 
@@ -118,7 +117,6 @@ describe('config', () => {
         description: 'Modern docs',
         base: '/product/',
         favicon: '/favicon.svg',
-        icon: '/favicon.svg',
         lang: 'en-US',
         nav: [{ text: 'Guide', link: '/guide/' }],
         socialLinks: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
@@ -136,7 +134,6 @@ describe('config', () => {
       outDir: 'public-docs',
       tempDir: '.athen-temp',
       enableSpa: true,
-      allowDeadLinks: false,
       onBrokenLinks: 'throw',
       srcDir: 'content',
       markdown: {

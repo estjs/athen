@@ -9,7 +9,6 @@ const baseSite = (extras?: Partial<SiteData>): SiteData => ({
   title: 'Site',
   description: '',
   favicon: '',
-  icon: '',
   head: [],
   colorScheme: true,
   nav: [{ text: 'Guide', link: '/guide/' }],

@@ -28,7 +28,7 @@ const config = (root: string, siteData: Partial<SiteConfig['siteData']> = {}): S
     lang: 'en-US',
     title: 'Athen',
     description: 'Athen docs',
-    icon: '/logo.svg',
+    favicon: '/logo.svg',
     head: [],
     themeConfig: {},
     colorScheme: true,

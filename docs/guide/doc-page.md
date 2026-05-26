@@ -41,7 +41,7 @@ order: 2
 # Install
 ```
 
-Lower numbers appear first. Pages without `order` are placed after ordered pages and sorted by route path. `sidebarOrder` is also supported for compatibility.
+Lower numbers appear first. Pages without `order` are placed after ordered pages and sorted by route path.
 
 You can mix generated and manual sidebars:
 

@@ -1,5 +1,3 @@
-import type { PageType } from '.';
-
 export type FeatureIcon = string | { src: string; alt?: string; width?: string; height: string };
 
 export interface Hero {
@@ -46,19 +44,27 @@ export interface Sponsor {
 }
 
 export interface FrontMatterMeta {
-  title: string;
-  description: string;
-  api: boolean;
-  pageType: PageType;
+  title?: string;
+  description?: string;
   /**
-   * The layout to use when rendering the page, e.g. `home`.
+   * The layout to use when rendering the page. `'home'` selects the built-in
+   * home layout; `'api'` and `'custom'` switch the resolved `pageType`
+   * accordingly. Anything else (including unset) falls through to the default
+   * doc layout.
    */
   layout?: string;
-  features?: Feature[];
-  hero?: Hero;
+  /** Override the resolved sidebar entry order. Lower values appear first. */
+  order?: number;
+  /** Hide the page from the auto-generated sidebar. */
   sidebar?: boolean;
+  /** Hide the right-side "On this page" outline. */
   outline?: boolean;
+  /** Render line numbers in code blocks on this page (overrides markdown.lineNumbers). */
   lineNumbers?: boolean;
+
+  // Home layout blocks (rendered when `layout: 'home'`)
+  hero?: Hero;
+  features?: Feature[];
   sponsors?: Sponsor[];
   cta?: CTA;
 }
