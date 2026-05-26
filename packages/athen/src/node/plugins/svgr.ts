@@ -39,8 +39,8 @@ export function pluginSvgr(options: SvgrOptions = {}, isServer): Plugin {
         ],
       });
       return {
-        code: result?.code,
-        map: result?.map,
+        code: result?.code ?? code,
+        map: result?.map ?? undefined,
       };
     },
   };

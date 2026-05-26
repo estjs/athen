@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import compression from '@polka/compression';
 import polka from 'polka';
 import sirv from 'sirv';
-import { DIST_DIR } from './constants';
+import { resolveOutDir } from './constants';
 import { resolveConfig } from './config';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
@@ -13,7 +13,7 @@ export async function serve(root: string, port = 4173, hostOption: string | bool
   const host = hostOption === true ? '0.0.0.0' : hostOption;
   const config = await resolveConfig(root, 'serve', 'production');
   const base = (config.siteData.base || '').replace(/^\//, '').replace(/\/$/, '');
-  const distPath = join(root, DIST_DIR);
+  const distPath = join(root, resolveOutDir(config));
 
   const notAnAsset = (pathname: string) => !pathname.includes('/assets/');
 
