@@ -26,6 +26,8 @@ test.describe('i18n synchronization', () => {
     await expect(page.locator('.nav').getByRole('link', { name: '指南' })).toBeVisible();
     await expect(page.locator('.sidebar').getByRole('link', { name: '快速开始' })).toBeVisible();
     await expect(page.locator('.aside')).toContainText('为什么选择 Athen?');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh');
+    await expect(page).toHaveTitle(/快速开始/);
   });
 
   test('switching from Chinese doc to English keeps the current doc path and updates chrome', async ({
@@ -42,6 +44,8 @@ test.describe('i18n synchronization', () => {
       page.locator('.sidebar').getByRole('link', { name: 'Getting Started' }),
     ).toBeVisible();
     await expect(page.locator('.aside')).toContainText('Why Choose Athen?');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page).toHaveTitle(/Quick Start/);
   });
 
   test('switching after client navigation keeps the current doc path and updates chrome', async ({
