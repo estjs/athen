@@ -1,17 +1,21 @@
-type LocaleConfig = {
-  lang?: string;
-};
+import type { LocaleConfig } from './types';
 
-export type LocaleAwareConfig = {
-  lang?: string;
-  langs?: string[];
-  themeConfig?: unknown;
-};
+export const LOCALE_PREFERENCE_KEY = 'athen-locale';
 
 export type LocaleRedirectEntry = {
   prefix: string;
   lang: string;
 };
+
+/**
+ * Minimal locale-aware shape. Accepts the user's `UserConfig` and the resolved
+ * `SiteData` (both have `lang` and `locales` at top level after the flat-config
+ * refactor).
+ */
+export interface LocaleAwareConfig {
+  lang?: string;
+  locales?: Record<string, LocaleConfig>;
+}
 
 export function normalizeLocalePrefix(prefix = ''): string {
   return prefix.replaceAll(/^\/+|\/+$/g, '').toLowerCase();
@@ -24,31 +28,20 @@ export function normalizeLanguageTag(language = ''): string {
 export function getLocaleConfigs(
   config?: LocaleAwareConfig,
 ): Record<string, LocaleConfig> | undefined {
-  if (!config?.themeConfig || typeof config.themeConfig !== 'object') return;
-
-  const locales = (config.themeConfig as { locales?: unknown }).locales;
+  const locales = config?.locales;
   if (!locales || typeof locales !== 'object') return;
-
-  return locales as Record<string, LocaleConfig>;
+  return locales;
 }
 
 export function getLocaleRedirectEntries(config: LocaleAwareConfig): LocaleRedirectEntry[] {
   const localeConfigs = getLocaleConfigs(config);
-  if (localeConfigs && Object.keys(localeConfigs).length > 0) {
-    return Object.entries(localeConfigs).map(([prefix, locale]) => {
-      const normalizedPrefix = normalizeLocalePrefix(prefix);
-      return {
-        prefix: normalizedPrefix,
-        lang: normalizeLanguageTag(locale?.lang ?? normalizedPrefix),
-      };
-    });
-  }
+  if (!localeConfigs) return [];
 
-  return (config.langs ?? []).map((prefix) => {
+  return Object.entries(localeConfigs).map(([prefix, locale]) => {
     const normalizedPrefix = normalizeLocalePrefix(prefix);
     return {
       prefix: normalizedPrefix,
-      lang: normalizeLanguageTag(normalizedPrefix),
+      lang: normalizeLanguageTag(locale?.lang ?? normalizedPrefix),
     };
   });
 }
@@ -56,7 +49,6 @@ export function getLocaleRedirectEntries(config: LocaleAwareConfig): LocaleRedir
 export function hasRootLocale(config?: LocaleAwareConfig): boolean {
   const localeConfigs = getLocaleConfigs(config);
   if (!localeConfigs || Object.keys(localeConfigs).length === 0) return false;
-
   return Object.keys(localeConfigs).some((prefix) => normalizeLocalePrefix(prefix) === '');
 }
 
@@ -64,6 +56,12 @@ function normalizeSlash(path: string): string {
   return `/${path.replaceAll('\\', '/').replaceAll(/^\/+|\/+$/g, '')}/`.replaceAll(/\/+/g, '/');
 }
 
+/**
+ * If the root locale (`'/'`) lives in a language subdirectory (e.g. files
+ * stored under `docs/en/...` but served at `/`), return that source prefix so
+ * the router can strip it. For locales with explicit URL prefixes, returns
+ * undefined.
+ */
 export function getDefaultLocaleSourcePrefix(config?: LocaleAwareConfig): string | undefined {
   const localeConfigs = getLocaleConfigs(config);
   if (!localeConfigs) return;
@@ -78,7 +76,7 @@ export function getDefaultLocaleSourcePrefix(config?: LocaleAwareConfig): string
 
   const [routePrefix, locale] = localeEntry;
   if (normalizeSlash(routePrefix) !== '/') {
-    return normalizeSlash(routePrefix);
+    return undefined;
   }
 
   const sourcePrefix = normalizeLanguageTag(locale?.lang || config?.lang).split('-')[0];

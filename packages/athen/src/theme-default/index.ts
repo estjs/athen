@@ -1,9 +1,8 @@
 import Layout from './layout';
-import './styles/base.css';
-import './styles/vars.css';
-import './styles/doc.css';
+import './styles/tokens.css';
+import './styles/preset.css';
+import './styles/prose.css';
 import 'uno.css';
 import { setup } from './hooks';
-
 export { setup };
 export default Layout;

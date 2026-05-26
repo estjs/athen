@@ -11,7 +11,10 @@ export function useLocaleSiteData() {
   const pathname = usePathname();
 
   return computed(() => {
-    const themeConfig = pageData?.siteData?.themeConfig ?? {};
-    return resolveLocaleSiteData(themeConfig, pathname.value, pageData?.siteData?.base || '/');
+    const siteData = pageData?.siteData;
+    if (!siteData) {
+      return { label: '' };
+    }
+    return resolveLocaleSiteData(siteData, pathname.value, siteData.base || '/');
   });
 }

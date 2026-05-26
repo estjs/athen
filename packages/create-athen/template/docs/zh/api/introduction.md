@@ -112,12 +112,11 @@ Athen 对 TypeScript 有一流的支持。所有 API 都是完全类型化的，
 ```typescript
 // athen.config.ts
 import { defineConfig } from 'athen';
-import type { DefaultTheme } from 'athen/theme';
 
-export default defineConfig<DefaultTheme.Config>({
-  themeConfig: {
-    // 完全类型化的主题配置
-  }
+export default defineConfig({
+  title: '我的文档',
+  nav: [{ text: '指南', link: '/guide/' }],
+  // sidebar 会自动根据文件 + _meta.json 派生
 });
 ```
 

@@ -1,4 +1,6 @@
-import type { DefaultTheme, PageType } from '.';
+import type { PageType } from '.';
+
+export type FeatureIcon = string | { src: string; alt?: string; width?: string; height: string };
 
 export interface Hero {
   name: string;
@@ -16,7 +18,7 @@ export interface Hero {
 }
 
 export interface Feature {
-  icon: DefaultTheme.FeatureIcon;
+  icon: FeatureIcon;
   title: string;
   details: string;
 }

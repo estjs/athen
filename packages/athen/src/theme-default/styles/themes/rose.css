@@ -1,0 +1,12 @@
+/** Rose brand preset. */
+
+:root {
+  --at-c-brand: #f43f5e;
+  --at-c-brand-light: #fb7185;
+  --at-c-brand-lighter: #fda4af;
+  --at-c-brand-dark: #e11d48;
+  --at-c-brand-darker: #be123c;
+  --at-c-brand-dimm-1: rgba(244, 63, 94, 0.5);
+  --at-c-brand-dimm-2: rgba(244, 63, 94, 0.25);
+  --at-c-brand-dimm-3: rgba(244, 63, 94, 0.05);
+}

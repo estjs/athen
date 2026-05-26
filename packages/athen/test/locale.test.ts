@@ -14,14 +14,11 @@ describe('locale helpers', () => {
     expect(normalizeLanguageTag('zh_CN')).toBe('zh-cn');
   });
 
-  it('derives locale redirect entries from theme locales first', () => {
+  it('derives locale redirect entries from the flat locales record', () => {
     const entries = getLocaleRedirectEntries({
-      langs: ['fr'],
-      themeConfig: {
-        locales: {
-          '/': { lang: 'en-US' },
-          '/zh/': { lang: 'zh-CN' },
-        },
+      locales: {
+        '/': { label: 'English', lang: 'en-US' },
+        '/zh/': { label: '简体中文', lang: 'zh-CN' },
       },
     });
 
@@ -35,11 +32,9 @@ describe('locale helpers', () => {
     expect(
       getDefaultLocaleSourcePrefix({
         lang: 'en-US',
-        themeConfig: {
-          locales: {
-            '/': { lang: 'en-US' },
-            '/zh/': { lang: 'zh-CN' },
-          },
+        locales: {
+          '/': { label: 'English', lang: 'en-US' },
+          '/zh/': { label: '简体中文', lang: 'zh-CN' },
         },
       }),
     ).toBe('/en/');

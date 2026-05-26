@@ -1,7 +1,6 @@
 ---
 layout: home
 title: 我的 Athen 站点
-titleTemplate: 让文档变得简单
 
 hero:
   name: 我的 Athen 站点

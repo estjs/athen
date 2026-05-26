@@ -4,20 +4,19 @@ import { usePageData } from '@/runtime';
 import { SideBar } from '../components/SideBar';
 import DocFooter from '../components/DocFooter';
 import { Aside } from '../components/Aside';
+import { useLocaleSiteData } from '../hooks';
 import { DocHomeLayout } from './DocHome';
 import { NotFound } from './NotFound';
-import './style.scss';
+import './style.css';
 
 export function DocContent() {
   const pageData = usePageData()!;
+  const localeData = useLocaleSiteData();
 
-  const themeConfig = pageData.siteData?.themeConfig || {};
   const hasAside = computed(() => {
-    return (
-      (pageData.toc || []).length > 0 &&
-      (pageData.frontmatter?.outline ?? themeConfig.outline ?? true)
-    );
+    return (pageData.toc || []).length > 0 && (pageData.frontmatter?.outline ?? true);
   });
+  const outlineTitle = computed(() => localeData.value.outlineTitle ?? 'On this page');
   const content = computed(() => {
     switch (pageData.pageType) {
       case 'home':
@@ -33,10 +32,7 @@ export function DocContent() {
               <DocFooter />
             </div>
             {hasAside.value && (
-              <Aside
-                outlineTitle={themeConfig.outlineTitle || '目录'}
-                pagePath={pageData.pagePath!}
-              />
+              <Aside outlineTitle={outlineTitle.value} pagePath={pageData.pagePath!} />
             )}
           </div>
         );

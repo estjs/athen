@@ -13,9 +13,7 @@ export function DocHomeLayout() {
       <HomeFeature features={pageData.frontmatter?.features || []} />
       <HomeCTA cta={pageData.frontmatter?.cta} />
       <HomeSponsors sponsors={pageData.frontmatter?.sponsors} />
-      {pageData.siteData?.themeConfig?.footer && (
-        <HomeFooter footer={pageData.siteData?.themeConfig?.footer} />
-      )}
+      {pageData.siteData?.footer && <HomeFooter footer={pageData.siteData.footer} />}
     </div>
   );
 }

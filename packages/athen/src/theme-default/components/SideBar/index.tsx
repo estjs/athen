@@ -1,7 +1,7 @@
-import { useLocaleSiteData, usePathname } from '@/theme-default/hooks';
+import { closeSidebar, sidebarOpen, useLocaleSiteData, usePathname } from '@/theme-default/hooks';
 import { usePageData } from '@/runtime';
 import PageLink from '../Link';
-import './style.scss';
+import './style.css';
 import { useSidebarData } from '../../hooks/useSidebarData';
 
 export function SideBar() {
@@ -10,18 +10,12 @@ export function SideBar() {
   const pathname = usePathname();
   const sidebarData = useSidebarData(pathname, localeData);
   const { siteData } = usePageData();
-  const slots = siteData?.themeConfig?.slots || {};
+  const slots = siteData?.slots || {};
   const SidebarExtra = slots.sidebarExtra as any;
   return (
     <>
-      <div
-        class="sidebar-backdrop"
-        onClick={() => {
-          document.querySelector('.sidebar')?.classList.remove('open');
-          document.querySelector('.sidebar-backdrop')?.classList.remove('open');
-        }}
-      />
-      <aside class="sidebar">
+      <div class={`sidebar-backdrop ${sidebarOpen.value ? 'open' : ''}`} onClick={closeSidebar} />
+      <aside class={`sidebar ${sidebarOpen.value ? 'open' : ''}`}>
         <nav>
           {sidebarData.value.items.map((item) => (
             <section class="mt-4 border-t b-border-default first:mt-4">
@@ -34,12 +28,11 @@ export function SideBar() {
                 {item.items.map((i) => (
                   <div class="ml-5">
                     <div
-                      class={`p-1 font-medium ${i.link === pathname.value ? 'text-brand' : 'text-gray-500'}`}
-                      onClick={() => {
-                        document.querySelector('.sidebar')?.classList.remove('open');
-                        document.querySelector('.sidebar-backdrop')?.classList.remove('open');
-                      }}>
-                      <PageLink href={i.link}>{i.text}</PageLink>
+                      class={`p-1 font-medium ${
+                        'link' in i && i.link === pathname.value ? 'text-brand' : 'text-gray-500'
+                      }`}
+                      onClick={closeSidebar}>
+                      {'link' in i && i.link ? <PageLink href={i.link}>{i.text}</PageLink> : i.text}
                     </div>
                   </div>
                 ))}

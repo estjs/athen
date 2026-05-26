@@ -1,10 +1,12 @@
 import { renderToStringAsync } from 'essor/server';
-import { routes } from 'athen:routes';
 import { provide } from 'essor';
 import { RouterView, createMemoryHistory } from 'essor-router';
+import { useHead } from 'unhead';
+import { createHead } from 'unhead/server';
 import 'uno.css';
 import { createRouter, initPageData } from './router';
-import { PageDataKey } from '.';
+import { resolveHeadInput } from './head';
+import { PageDataKey, flatRoutes } from '.';
 
 export async function render(routePath: string) {
   const router = createRouter(createMemoryHistory(import.meta.env.BASE_URL));
@@ -12,12 +14,15 @@ export async function render(routePath: string) {
   await router.push(routePath);
   await router.isReady();
 
-  function SSGRender() {
+  const head = createHead();
+  useHead(head, resolveHeadInput(pageData));
+
+  const html = await renderToStringAsync(() => {
     provide(PageDataKey, pageData);
     return <RouterView router={router}></RouterView>;
-  }
+  });
 
-  return renderToStringAsync(SSGRender);
+  return { html, head };
 }
-const route = routes[0].children;
-export { route as routes };
+
+export const routes = flatRoutes();

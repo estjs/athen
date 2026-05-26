@@ -1,0 +1,22 @@
+{
+  "title": "Guide",
+  "items": [
+    "getting-started",
+    "configure-site",
+    "conventional-route",
+    "use-mdx",
+    "mdx-components",
+    "static-assets",
+    "multi-instance",
+    "plugin-system",
+    "custom-styling",
+    "home-page",
+    "api-page",
+    "doc-page",
+    "i18n",
+    "head-and-seo",
+    "search",
+    "analytics",
+    "theme-package"
+  ]
+}

@@ -7,14 +7,6 @@ import {
 
 export const isProduction = () => import.meta.env.PROD;
 
-export const omit = (obj: Record<string, unknown>, keys: string[]) => {
-  const ret = { ...obj };
-  for (const key of keys) {
-    delete ret[key];
-  }
-  return ret;
-};
-
 export function normalizeHref(url?: string) {
   if (!url) {
     return '/';

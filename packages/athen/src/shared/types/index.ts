@@ -1,27 +1,57 @@
 import type { FrontMatterMeta, PageModule } from './frontMatter';
-import type { DefaultTheme } from './defaultTheme';
-import type { RouteOptions } from './router';
 import type { PluginOption, UserConfig as ViteConfiguration } from 'vite';
-export { DefaultTheme } from './defaultTheme';
-export type { RouteOptions } from './router';
+import type {
+  EditLink,
+  Footer,
+  HeadConfig,
+  IconLink,
+  Image,
+  LocaleConfig,
+  NavItem,
+  Sidebar,
+  SidebarConfig,
+} from './theme';
 
 export * from './frontMatter';
+export * from './theme';
 
-// Search configuration types
+// -----------------------------------------------------------------------
+// Route options (passed through to the file-based route scanner)
+// -----------------------------------------------------------------------
+
+export interface RouteOptions {
+  /** The directory to search for pages. */
+  root?: string;
+  /** The basename of the site. */
+  prefix?: string;
+  /**
+   * Extensions of files that should be converted into routes.
+   * @default ['js','jsx','ts','tsx','md','mdx']
+   */
+  extensions?: string[];
+  /** Extra glob patterns to include. */
+  include?: string[];
+  /** Glob patterns to exclude. */
+  exclude?: string[];
+  /** Whether generated public URLs should be clean (no `.html` suffix). */
+  cleanUrls?: boolean;
+  /** Whether generated public URLs should end with a trailing slash. */
+  trailingSlash?: boolean;
+  /** Public URL rewrites used by link checking and route normalization. */
+  rewrites?: Record<string, string>;
+}
+
+// -----------------------------------------------------------------------
+// Search
+// -----------------------------------------------------------------------
+
 export interface SearchConfig {
   provider?: 'flex' | 'algolia';
   include?: string[];
   exclude?: string[];
   searchIndexPath?: string;
-  cache?: {
-    enabled?: boolean;
-    maxAge?: number;
-  };
-  searchOptions?: {
-    limit?: number;
-    enrich?: boolean;
-    suggest?: boolean;
-  };
+  cache?: { enabled?: boolean; maxAge?: number };
+  searchOptions?: { limit?: number; enrich?: boolean; suggest?: boolean };
   algolia?: {
     appId: string;
     apiKey: string;
@@ -49,14 +79,28 @@ export interface SearchResult {
   content?: string;
 }
 
+// -----------------------------------------------------------------------
+// Misc shared
+// -----------------------------------------------------------------------
+
 export interface Meta {
   name?: string;
+  filePath?: string;
+  description?: string;
+  lang?: string;
+  localePrefix?: string;
+  headings?: Array<{ id: string; text: string; depth: number }>;
 }
+
 export interface Router {
   path: string;
   component: unknown;
   meta?: Meta;
   preload?: (base?: string) => Promise<unknown>;
+  title?: string;
+  description?: string;
+  lang?: string;
+  localePrefix?: string;
 }
 
 export interface PluginOptions {
@@ -69,319 +113,99 @@ export interface Header {
   depth: number;
 }
 
-export type HeadConfig =
-  | [string, Record<string, string>]
-  | [string, Record<string, string>, string];
-
 export type BrokenLinksBehavior = 'throw' | 'warn' | 'ignore';
 
-export interface SiteUserConfig {
-  /**
-   * Base path of the site.
-   */
-  base?: string;
-  /**
-   * Path to html icon file. `favicon` is the preferred name for new configs.
-   */
-  icon?: string;
-  favicon?: string;
-  /**
-   * Language of the site.
-   */
-  lang?: string;
-  /**
-   * Title of the site.
-   */
-  title?: string;
-  /**
-   * Description of the site.
-   */
-  description?: string;
-  /**
-   * Custom head config.
-   */
-  head?: HeadConfig[];
-  /**
-   * Whether dark mode/light mode toggle button is displayed.
-   */
-  colorScheme?: boolean;
-}
-
-export interface DocsUserConfig {
-  /**
-   * Source directory of the site.
-   */
-  srcDir?: string;
-  /**
-   * Route prefix for generated documentation pages.
-   */
-  routeBasePath?: string;
-  /**
-   * Include extra files from being converted to routes.
-   */
-  include?: string[];
-  /**
-   * Exclude files from being converted to routes.
-   */
-  exclude?: string[];
-  /**
-   * File extensions that can be converted to routes.
-   */
-  extensions?: string[];
-  /**
-   * Output directory of the site.
-   */
-  outDir?: string;
-  /**
-   * Temporary directory of the site.
-   */
-  tempDir?: string;
-  /**
-   * Enable single page application in production.
-   */
-  enableSpa?: boolean;
-  /**
-   * Broken-link handling strategy.
-   */
-  onBrokenLinks?: BrokenLinksBehavior;
-  cleanUrls?: boolean;
-  trailingSlash?: boolean;
-  rewrites?: Record<string, string>;
-  /**
-   * Edit link URL pattern, e.g. `https://github.com/org/repo/edit/main/docs/:path`.
-   */
-  editUrl?: string;
-  editLink?: DefaultTheme.EditLink;
-  /**
-   * Whether to calculate git based last-updated metadata.
-   */
-  lastUpdated?: boolean;
-}
-
-export type MarkdownPlugin = unknown | [unknown, Record<string, unknown>?];
-
 export interface MarkdownConfig {
-  /**
-   * Whether code blocks should render line numbers by default.
-   */
   lineNumbers?: boolean;
-  /**
-   * Table-of-contents extraction/rendering options.
-   */
-  toc?:
-    | boolean
-    | {
-        level?: [number, number];
-      };
-  remarkPlugins?: MarkdownPlugin[];
-  rehypePlugins?: MarkdownPlugin[];
-  externalLinks?:
-    | false
-    | {
-        target?: string | false;
-        rel?: string | false;
-      };
-  shiki?: {
-    theme?: string;
-    themes?: string[];
-  };
+  toc?: boolean | { level?: [number, number] };
+  remarkPlugins?: unknown[];
+  rehypePlugins?: unknown[];
+  externalLinks?: false | { target?: string | false; rel?: string | false };
+  shiki?: { theme?: string; themes?: string[] };
 }
 
-export interface I18nConfig {
-  defaultLocale?: string;
-  locales?: Record<string, DefaultTheme.LocaleConfig>;
-  redirect?: boolean;
-}
+// -----------------------------------------------------------------------
+// Main user config — flat
+// -----------------------------------------------------------------------
 
-export interface ThemeUserConfig<ThemeConfig = DefaultTheme.Config> {
-  /**
-   * Theme package name or relative/absolute path.
-   */
-  name?: string;
-  path?: string;
-  /**
-   * Theme-specific configuration.
-   */
-  config?: ThemeConfig;
-  /**
-   * Convenience aliases for the default theme.
-   */
-  nav?: DefaultTheme.NavItem[];
-  sidebar?: DefaultTheme.SidebarConfig;
-  socialLinks?: DefaultTheme.IconLink[];
-}
-
-export interface UserConfig<ThemeConfig = unknown> {
-  /**
-   * Optional grouped site metadata. Prefer top-level fields for simple configs.
-   */
-  site?: SiteUserConfig;
-  /**
-   * Optional grouped documentation routing/build behavior. Prefer top-level fields for simple configs.
-   */
-  docs?: DocsUserConfig;
-  /**
-   * Markdown / MDX pipeline configuration.
-   */
-  markdown?: MarkdownConfig;
-  /**
-   * Optional grouped internationalization configuration. Prefer top-level `locales` for simple configs.
-   */
-  i18n?: I18nConfig;
-  /**
-   * Base path of the site.
-   */
-  base?: string;
-  /**
-   * Path to html icon file.
-   */
-  icon?: string;
-  /**
-   * Preferred name for the site favicon.
-   */
-  favicon?: string;
-  /**
-   * Source directory of the site.
-   */
-  srcDir?: string;
-  /**
-   * Language of the site.
-   */
-  lang?: string;
-
-  /**
-   * Language of the site.
-   */
-  langs?: string[];
-  /**
-   * Default locale key or language tag.
-   */
-  defaultLocale?: string;
-  /**
-   * Locale-specific default-theme configuration.
-   */
-  locales?: Record<string, DefaultTheme.LocaleConfig>;
-  /**
-   * Title of the site.
-   */
+export interface UserConfig {
+  // ---- site identity ----
   title?: string;
-  /**
-   * Description of the site.
-   */
   description?: string;
-  /**
-   * Custom head config.
-   */
+  lang?: string;
+  base?: string;
+  favicon?: string;
+  /** Site logo (used in navbar). */
+  logo?: Image;
   head?: HeadConfig[];
-  /**
-   * Theme config.
-   */
-  themeConfig?: ThemeConfig;
-  /**
-   * Output directory of the site.
-   */
+  /** Whether the light/dark toggle is enabled. */
+  colorScheme?: boolean;
+
+  // ---- routing ----
+  srcDir?: string;
   outDir?: string;
-  /**
-   * Temporary directory of the site.
-   */
   tempDir?: string;
-  /**
-   * Vite Configuration
-   */
-  vite?: ViteConfiguration;
-  /**
-   * Enable single page application in production.
-   */
-  enableSpa?: boolean;
-  /**
-   * Whether to fail builds when there are dead links.
-   */
-  allowDeadLinks?: boolean;
-  /**
-   * Broken-link handling strategy.
-   */
-  onBrokenLinks?: BrokenLinksBehavior;
+  routeBasePath?: string;
+  include?: string[];
+  exclude?: string[];
+  extensions?: string[];
   cleanUrls?: boolean;
   trailingSlash?: boolean;
   rewrites?: Record<string, string>;
-  /**
-   * Whether dark mode/light mode toggle button is displayed.
-   */
-  colorScheme?: boolean;
-  /**
-   * The custom config of vite-plugin-route
-   */
-  route?: RouteOptions;
-  /**
-   * Route prefix for generated pages.
-   */
-  routeBasePath?: string;
-  /**
-   * Include files from being converted to routes.
-   */
-  include?: string[];
-  /**
-   * Exclude files from being converted to routes.
-   */
-  exclude?: string[];
-  /**
-   * File extensions that can be converted to routes.
-   */
-  extensions?: string[];
-  /**
-   * Edit link URL pattern, e.g. `https://github.com/org/repo/edit/main/docs/:path`.
-   */
-  editUrl?: string;
-  editLink?: DefaultTheme.EditLink;
-  /**
-   * Analytics configuration. If set to false, built-in analytics plugin is disabled.
-   */
-  analytics?: Record<string, unknown> | false;
-  /**
-   * Multiple site instances in a single repo.
-   */
-  instances?: Array<{
-    root: string; // sub directory relative to workspace root
-    base?: string;
-    outDir?: string;
-  }>;
-  /**
-   * Custom theme package name or relative/absolute path. If not provided, built-in default theme will be used.
-   */
-  theme?: string | ThemeUserConfig<ThemeConfig>;
-  /**
-   * Search configuration. If set to false, built-in search plugin is disabled.
-   */
+  /** Single-page application mode in production. */
+  enableSpa?: boolean;
+  onBrokenLinks?: BrokenLinksBehavior;
+  /** Show last-updated timestamps under each page. */
+  lastUpdated?: boolean;
+
+  // ---- i18n ----
+  defaultLocale?: string;
+  locales?: Record<string, LocaleConfig>;
+
+  // ---- theme content ----
+  nav?: NavItem[];
+  /** Sidebar config. Defaults to `'auto'` (derived from filesystem + `_meta.json`). */
+  sidebar?: SidebarConfig;
+  socialLinks?: IconLink[];
+  /** Either a URL pattern string (e.g. `https://github.com/org/repo/edit/main/:path`) or an `EditLink` object. */
+  editLink?: string | EditLink;
+  footer?: Footer;
+  /** Custom layout slots (banner/sidebar-extra/footer-extra). */
+  slots?: {
+    banner?: unknown;
+    sidebarExtra?: unknown;
+    footerExtra?: unknown;
+  };
+
+  // ---- capabilities ----
   search?: SearchConfig | boolean;
-  /**
-   * Custom Vite / Athen plugins. If a plugin shares the same `name` with a built-in one, it will override it.
-   */
+  analytics?: Record<string, unknown> | false;
+  markdown?: MarkdownConfig;
+
+  // ---- custom theme ----
+  /** Custom theme package name or path. */
+  theme?: string;
+  /** Free-form bag passed through to custom themes. */
+  themeConfig?: Record<string, unknown>;
+
+  // ---- escape hatches ----
+  vite?: ViteConfiguration;
+  route?: RouteOptions;
   plugins?: PluginOption[];
 }
 
 /**
- * Resolved site configuration. This is the output of `resolveConfig()` — it only
- * contains the fields that the config resolver actually produces, rather than
- * inheriting every optional UserConfig field.
+ * Resolved site configuration. Output of `resolveConfig()`.
  */
-export interface SiteConfig<ThemeConfig = unknown> {
+export interface SiteConfig {
   root: string;
   configPath: string;
   themeDir: string;
-  siteData: SiteData<ThemeConfig>;
+  siteData: SiteData;
   configDeps?: string[];
-  /** Search configuration passthrough from user config. */
   search?: SearchConfig | boolean;
-  /** Analytics configuration passthrough from user config. */
   analytics?: Record<string, unknown> | false;
-  /** User-supplied Vite/Athen plugins. */
   plugins?: PluginOption[];
-  /** Multi-instance build configuration. */
-  instances?: Array<{
-    root: string;
-    base?: string;
-    outDir?: string;
-  }>;
   vite?: ViteConfiguration;
   route?: RouteOptions;
   markdown?: MarkdownConfig;
@@ -394,24 +218,56 @@ export interface SiteConfig<ThemeConfig = unknown> {
   onBrokenLinks?: BrokenLinksBehavior;
   allowDeadLinks?: boolean;
   srcDir?: string;
+  /** Internal: pre-scanned route table shared across plugins and build steps. */
+  _routes?: unknown[];
 }
-export interface SiteData<ThemeConfig = unknown> {
+
+/**
+ * Resolved site data exposed to the runtime via the `athen:site-data` virtual
+ * module. All theme fields are flat — no nested `themeConfig` wrapper.
+ */
+export interface SiteData {
   root: string;
   base: string;
   lang: string;
   title: string;
   description: string;
+  favicon: string;
+  /** Alias for favicon (kept for template-var compatibility). */
   icon: string;
   head: HeadConfig[];
-  themeConfig: ThemeConfig;
   colorScheme: boolean;
   search?: SearchConfig;
+
+  // i18n
+  defaultLocale?: string;
+  locales?: Record<string, LocaleConfig>;
+
+  // theme content (resolved — `editLink` always an object if present)
+  logo?: Image;
+  nav?: NavItem[];
+  sidebar?: Sidebar;
+  socialLinks?: IconLink[];
+  editLink?: EditLink;
+  footer?: Footer;
+  lastUpdated?: boolean;
+  /** Site-level fallback for the aside outline heading. Per-locale overrides
+   *  live in `locales[x].outlineTitle`. Defaults to `'On this page'`. */
+  outlineTitle?: string;
+  slots?: {
+    banner?: unknown;
+    sidebarExtra?: unknown;
+    footerExtra?: unknown;
+  };
+
+  /** Passthrough bag for custom themes. */
+  themeConfig?: Record<string, unknown>;
 }
 
 export type PageType = 'home' | 'doc' | 'api' | 'custom' | '404';
 
 export interface PageData {
-  siteData: SiteData<DefaultTheme.Config>;
+  siteData: SiteData;
   pagePath: string;
   relativePagePath: string;
   lastUpdatedTime?: string;

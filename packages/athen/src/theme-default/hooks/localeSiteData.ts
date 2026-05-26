@@ -1,68 +1,82 @@
 import { normalizeSlash, withBase } from '../../shared/utils';
-import type { DefaultTheme } from '../../shared/types';
-
-type ThemeConfig = DefaultTheme.Config;
-type LocaleThemeConfig = NonNullable<DefaultTheme.LocaleConfig['themeConfig']>;
+import type {
+  EditLink,
+  Footer,
+  IconLink,
+  Image,
+  LocaleConfig,
+  NavItem,
+  ResolvedLocaleData,
+  Sidebar,
+  SiteData,
+} from '../../shared/types';
 
 /**
- * Merge a per-locale `themeConfig` over the root `themeConfig`.
- *
- * Strategy is intentionally **explicit, not recursive**: only the nested
- * record-like fields (`editLink`, `footer`, `slots`) get a one-level shallow
- * merge; arrays (`nav`, `links`, `head`) and scalars override. This keeps the
- * semantics greppable — a generic deepMerge would hide which fields support
- * partial overrides.
+ * Merge a per-locale config over the root site data. Strategy is intentionally
+ * explicit: nested record-like fields (`editLink`, `footer`) get a one-level
+ * shallow merge; arrays (`nav`, `socialLinks`, `head`) and scalars override.
  */
-function mergeLocaleTheme(root: ThemeConfig, override?: LocaleThemeConfig): ThemeConfig {
-  if (!override) return root;
+function mergeLocale(siteData: SiteData, override?: LocaleConfig): ResolvedLocaleData {
+  let editLink: EditLink | undefined;
+  if (typeof override?.editLink === 'string') {
+    editLink = { ...siteData.editLink, pattern: override.editLink };
+  } else if (override?.editLink || siteData.editLink) {
+    const base = siteData.editLink ?? { pattern: '' };
+    editLink = { ...base, ...(override?.editLink as EditLink | undefined) };
+  }
+
+  const footer: Footer | undefined =
+    override?.footer || siteData.footer ? { ...siteData.footer, ...override?.footer } : undefined;
+
   return {
-    ...root,
-    ...override,
-    editLink:
-      override.editLink || root.editLink ? { ...root.editLink, ...override.editLink } : undefined,
-    footer: override.footer || root.footer ? { ...root.footer, ...override.footer } : undefined,
-    slots: override.slots || root.slots ? { ...root.slots, ...override.slots } : undefined,
-  } as ThemeConfig;
+    label: override?.label ?? '',
+    lang: override?.lang ?? siteData.lang,
+    langRoutePrefix: override?.langRoutePrefix,
+    selectText: override?.selectText,
+    title: override?.title ?? siteData.title,
+    description: override?.description ?? siteData.description,
+    head: override?.head,
+    nav: (override?.nav ?? siteData.nav) as NavItem[] | undefined,
+    sidebar: (siteData.sidebar ?? undefined) as Sidebar | undefined,
+    socialLinks: (override?.socialLinks ?? siteData.socialLinks) as IconLink[] | undefined,
+    editLink,
+    footer,
+    logo: (override?.logo ?? siteData.logo) as Image | undefined,
+    lastUpdatedText: override?.lastUpdatedText,
+    outlineTitle: override?.outlineTitle ?? siteData.outlineTitle,
+    prevPageText: override?.prevPageText,
+    nextPageText: override?.nextPageText,
+  };
 }
 
 function resolveLocaleKey(
-  locales: NonNullable<DefaultTheme.Config['locales']>,
+  locales: Record<string, LocaleConfig>,
   pathname: string,
   base: string,
 ): string {
   const path = pathname || '/';
-  const keysByPrefixLength = Object.keys(locales).sort(
+  const keys = Object.keys(locales).sort(
     (a, b) => normalizeSlash(b).length - normalizeSlash(a).length,
   );
-  return (
-    keysByPrefixLength.find((key) => path.startsWith(withBase(normalizeSlash(key), base))) ??
-    keysByPrefixLength[0]
-  );
+  return keys.find((key) => path.startsWith(withBase(normalizeSlash(key), base))) ?? keys[0];
 }
 
+/**
+ * Resolve the locale view for the current page — `siteData` merged with the
+ * matching `locales[<key>]` entry.
+ */
 export function resolveLocaleSiteData(
-  themeConfig: DefaultTheme.Config,
+  siteData: SiteData,
   pathname: string,
   base = '/',
-): DefaultTheme.ResolvedLocaleSiteData {
-  const { locales, ...rootTheme } = themeConfig;
-
+): ResolvedLocaleData {
+  const locales = siteData.locales;
   if (!locales || Object.keys(locales).length === 0) {
-    return { label: '', ...rootTheme };
+    return mergeLocale(siteData);
   }
-
-  const langRoutePrefix = resolveLocaleKey(locales, pathname, base);
-  const localeConfig = locales[langRoutePrefix];
-  const merged = mergeLocaleTheme(rootTheme, localeConfig?.themeConfig);
-
-  return {
-    ...merged,
-    label: localeConfig?.label ?? '',
-    lang: localeConfig?.lang,
-    selectText: localeConfig?.selectText,
-    title: localeConfig?.title ?? merged.siteTitle,
-    description: localeConfig?.description,
-    head: localeConfig?.head,
-    langRoutePrefix,
-  };
+  const key = resolveLocaleKey(locales, pathname, base);
+  const localeConfig = locales[key];
+  const merged = mergeLocale(siteData, localeConfig);
+  merged.langRoutePrefix = localeConfig?.langRoutePrefix ?? key;
+  return merged;
 }

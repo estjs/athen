@@ -79,7 +79,7 @@
 }
 
 
-// Search Results Dropdown
+/* Search Results Dropdown */
 .search-results {
   position: absolute;
   top: 100%;
@@ -157,7 +157,7 @@
   line-height: 1.4;
 }
 
-// Highlight styles
+/* Highlight styles */
 .search-highlight {
   background: var(--athen-search-brand-soft);
   color: var(--at-c-text-1);
@@ -165,7 +165,7 @@
   border-radius: 0.125rem;
 }
 
-// Dark mode support
+/* Dark mode support */
 :root.dark,
 .dark {
   .athen-search-box {
@@ -208,7 +208,7 @@
   }
 }
 
-// Responsive design
+/* Responsive design */
 @media (max-width: 768px) {
   .athen-search-box {
     width: 2.25rem;

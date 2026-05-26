@@ -112,12 +112,11 @@ Athen has first-class TypeScript support. All APIs are fully typed, and you can 
 ```typescript
 // athen.config.ts
 import { defineConfig } from 'athen';
-import type { DefaultTheme } from 'athen/theme';
 
-export default defineConfig<DefaultTheme.Config>({
-  themeConfig: {
-    // Fully typed theme configuration
-  }
+export default defineConfig({
+  title: 'My Docs',
+  nav: [{ text: 'Guide', link: '/guide/' }],
+  // sidebar is auto-derived from your files + _meta.json
 });
 ```
 

@@ -1,0 +1,18 @@
+/**
+ * Athen default color preset (teal-green brand).
+ *
+ * Athen's `tokens.css` already ships this preset baked in, so importing this
+ * file is a no-op for new projects. It exists so users who switch to another
+ * preset can switch back with a single `@import` line.
+ */
+
+:root {
+  --at-c-brand: #21b8a3;
+  --at-c-brand-light: #41c6b0;
+  --at-c-brand-lighter: #41c6b0;
+  --at-c-brand-dark: #149684;
+  --at-c-brand-darker: #149684;
+  --at-c-brand-dimm-1: rgba(33, 184, 163, 0.5);
+  --at-c-brand-dimm-2: rgba(33, 184, 163, 0.25);
+  --at-c-brand-dimm-3: rgba(33, 184, 163, 0.05);
+}

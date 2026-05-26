@@ -2,11 +2,11 @@ import { computed } from 'essor';
 import { useLocaleSiteData } from './useLocaleSiteData';
 import { usePathname } from './usePathname';
 import { useSidebarData } from './useSidebarData';
-import type { DefaultTheme } from '@shared/types';
+import type { SidebarItem } from '@shared/types';
 
-type SidebarLink = Extract<DefaultTheme.SidebarItem, { link: string }>;
+type SidebarLink = Extract<SidebarItem, { link: string }>;
 
-function flattenSidebarItems(items: DefaultTheme.SidebarItem[]): SidebarLink[] {
+function flattenSidebarItems(items: SidebarItem[]): SidebarLink[] {
   return items.flatMap((item) => ('items' in item ? flattenSidebarItems(item.items) : [item]));
 }
 

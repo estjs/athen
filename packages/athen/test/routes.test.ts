@@ -2,29 +2,30 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
-import { RouteService } from '../src/node/plugins/router/routeService';
+import { collectRoutes, buildRoutesModule } from '../src/node/routes';
+import type { LocaleAwareConfig } from '../src/shared/locale';
+import type { RouteOptions } from '../src/shared/types';
 
 let root = '';
 
 const writeProject = (files: Record<string, string>) => {
-  const root = mkdtempSync(join(tmpdir(), 'athen-route-'));
+  const dir = mkdtempSync(join(tmpdir(), 'athen-route-'));
   for (const [file, content] of Object.entries(files)) {
-    const filePath = join(root, file);
+    const filePath = join(dir, file);
     mkdirSync(join(filePath, '..'), { recursive: true });
     writeFileSync(filePath, content);
   }
-  return root;
+  return dir;
 };
 
 function renderRouteCode(
   files: Record<string, string>,
-  routeOptions?: Parameters<RouteService['init']>[0],
-  siteData?: Parameters<RouteService['init']>[1],
+  routeOptions?: RouteOptions,
+  siteData?: LocaleAwareConfig & { title?: string },
 ) {
   root = writeProject(files);
-  const routeService = new RouteService(root);
-  routeService.init(routeOptions, siteData);
-  return routeService.generateRoutesCode(siteData);
+  const routes = collectRoutes(root, routeOptions, siteData);
+  return buildRoutesModule(routes, siteData);
 }
 
 describe('route service', () => {
@@ -47,12 +48,10 @@ describe('route service', () => {
   });
 
   it('uses the configured theme entry as the root layout', () => {
-    const code = renderRouteCode({
-      'index.md': '# Index',
-    });
+    const code = renderRouteCode({ 'index.md': '# Index' });
 
     expect(code).toContain("component: import('@theme')");
-    expect(code).not.toContain("@theme-default/layout/index.tsx");
+    expect(code).not.toContain('@theme-default/layout/index.tsx');
   });
 
   it('applies include and exclude patterns together', () => {
@@ -100,7 +99,7 @@ describe('route service', () => {
     expect(code).toContain('path: "/guide/start/"');
   });
 
-  it('maps files under the configured locale prefix to root routes', () => {
+  it('keeps the source prefix when each locale has an explicit URL prefix', () => {
     const code = renderRouteCode(
       {
         'en/index.md': '# Index',
@@ -111,20 +110,17 @@ describe('route service', () => {
       {
         lang: 'en-US',
         title: 'Docs',
-        themeConfig: {
-          locales: {
-            '/zh/': { lang: 'zh' },
-            '/en/': { lang: 'en' },
-          },
+        locales: {
+          '/zh/': { lang: 'zh' },
+          '/en/': { lang: 'en' },
         },
-      },
+      } as LocaleAwareConfig & { title?: string },
     );
 
-    expect(code).toContain('path: "/"');
-    expect(code).toContain('path: "/guide/getting-started"');
+    expect(code).toContain('path: "/en/"');
+    expect(code).toContain('path: "/en/guide/getting-started"');
     expect(code).toContain('path: "/zh/"');
-    expect(code).not.toContain('path: "/en/"');
-    expect(code).not.toContain('path: "/en/guide/getting-started"');
+    expect(code).not.toContain('path: "/guide/getting-started"');
   });
 
   it('keeps the root locale at the site root', () => {
@@ -138,13 +134,11 @@ describe('route service', () => {
       {
         lang: 'en-US',
         title: 'Docs',
-        themeConfig: {
-          locales: {
-            '/': { lang: 'en' },
-            '/zh/': { lang: 'zh' },
-          },
+        locales: {
+          '/': { lang: 'en' },
+          '/zh/': { lang: 'zh' },
         },
-      },
+      } as LocaleAwareConfig & { title?: string },
     );
 
     expect(code).toContain('path: "/"');
@@ -152,14 +146,12 @@ describe('route service', () => {
     expect(code).toContain('path: "/zh/guide/getting-started"');
   });
 
-  it('resets route data when init runs more than once', () => {
-    const code = renderRouteCode({ 'index.md': '# Index' });
-    const routeService = new RouteService(root);
-    routeService.init();
-    routeService.init();
-    const rerenderedCode = routeService.generateRoutesCode();
+  it('produces idempotent output across repeated collectRoutes calls', () => {
+    root = writeProject({ 'index.md': '# Index' });
+    const a = buildRoutesModule(collectRoutes(root));
+    const b = buildRoutesModule(collectRoutes(root));
 
-    expect(code.match(/path: "\/"/g)).toHaveLength(1);
-    expect(rerenderedCode.match(/path: "\/"/g)).toHaveLength(1);
+    expect(a).toBe(b);
+    expect(a.match(/path: "\/"/g)).toHaveLength(1);
   });
 });

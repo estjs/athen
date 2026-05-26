@@ -3,62 +3,144 @@ import process from 'node:process';
 import { pathToFileURL } from 'node:url';
 import { type InlineConfig, type Plugin, mergeConfig, build as viteBuild } from 'vite';
 import fs from 'fs-extra';
+import { useHead } from 'unhead';
+import { transformHtmlTemplate } from 'unhead/server';
 import { withBase } from '@/runtime';
-import { htmlFilePathFromRoute } from '@/shared/utils';
+import {
+  buildTemplateVars,
+  getLocaleSiteData,
+  htmlFilePathFromRoute,
+  renderTemplateVars,
+} from '@/shared/utils';
+import { resolveServerPageHead } from '@/shared/title';
 import { checkBrokenLinks } from './brokenLinks';
 import { resolveConfig } from './config';
-import { DIST_DIR, PACKAGE_ROOT, SSG_ENTRY_PATH, SSR_ENTRY_PATH } from './constants';
-import { applyHtmlTransforms, flattenPlugins } from './htmlTransforms';
+import {
+  PACKAGE_ROOT,
+  SSG_ENTRY_PATH,
+  SSR_ENTRY_PATH,
+  resolveOutDir,
+  resolveTempDir,
+} from './constants';
+import {
+  applyHtmlTransforms,
+  flattenPlugins,
+  injectIntoHtml,
+  renderHeadTags,
+  resolveBaseTemplate,
+} from './html';
 import { createVitePlugins } from './plugins';
-import { collectRouteMeta } from './plugins/router/routeService';
+import type { SSRHeadPayload, Unhead } from 'unhead/types';
 import type { Router, SiteConfig } from '@/shared/types';
+import type { RouteMeta } from './routes';
 
-type RenderFunction = (routePath: string) => string | Promise<string>;
+type RenderResult = { html: string; head: Unhead<any, SSRHeadPayload> };
+type RenderFunction = (routePath: string) => Promise<RenderResult>;
 type BundleItem =
-  | {
-      type: 'asset';
-      fileName: string;
-    }
-  | {
-      type: 'chunk';
-      fileName: string;
-      isEntry: boolean;
-    };
-type BuildBundle = {
-  output: BundleItem[];
+  | { type: 'asset'; fileName: string }
+  | { type: 'chunk'; fileName: string; isEntry: boolean };
+type BuildBundle = { output: BundleItem[] };
+
+type RouteWithMeta = Required<Router> & {
+  title?: string;
+  description?: string;
+  lang?: string;
+  localePrefix?: string;
 };
 
-function isEntryChunk(item: BundleItem) {
-  return item.type === 'chunk' && item.isEntry;
+interface PageAssets {
+  cssLinks: string;
+  clientScript: string;
+  siteHeadTags: string;
+  template: string;
+  distPath: string;
 }
 
-function isCssAsset(item: BundleItem) {
-  return item.type === 'asset' && item.fileName.endsWith('.css');
-}
+const isEntryChunk = (item: BundleItem) => item.type === 'chunk' && item.isEntry;
+const isCssAsset = (item: BundleItem) => item.type === 'asset' && item.fileName.endsWith('.css');
 
 function uniqueCssAssets(...bundles: BuildBundle[]) {
-  const cssAssets = bundles.flatMap((bundle) => bundle.output.filter(isCssAsset));
-
-  return cssAssets.filter(
-    (asset, index) => cssAssets.findIndex((item) => item.fileName === asset.fileName) === index,
-  );
+  const seen = new Set<string>();
+  const out: BundleItem[] = [];
+  for (const bundle of bundles) {
+    for (const item of bundle.output) {
+      if (!isCssAsset(item) || seen.has(item.fileName)) continue;
+      seen.add(item.fileName);
+      out.push(item);
+    }
+  }
+  return out;
 }
 
-function renderHeadTags(head: NonNullable<SiteConfig['siteData']>['head'] = []) {
-  return head
-    .map(([tag, attrs, children]) => {
-      if (attrs && typeof attrs === 'object') {
-        const attributes = Object.entries(attrs)
-          .map(([key, value]) => `${key}="${value}"`)
-          .join(' ');
-        const openTag = `<${tag}${attributes ? ` ${attributes}` : ''}>`;
+/**
+ * Prepare per-build artifacts:
+ *  - Pick the client entry script.
+ *  - Deduplicate CSS assets across SSG+client bundles.
+ *  - Copy SSG-only CSS into `dist/`.
+ *  - Read (and cache) the HTML template + site-level head tags.
+ */
+async function prepareAssets(
+  clientBundle: BuildBundle,
+  ssgBundle: BuildBundle,
+  root: string,
+  config: SiteConfig,
+): Promise<PageAssets> {
+  const clientChunk = clientBundle.output.find(isEntryChunk);
+  if (!clientChunk) throw new Error('Unable to find the production client entry chunk.');
 
-        return children == null ? openTag : `${openTag}${children}</${tag}>`;
-      }
+  const distPath = join(root, resolveOutDir(config));
+  const tempPath = join(root, resolveTempDir(config));
+  const siteBase = config.siteData.base || '/';
+  const withSiteBase = (fileName: string) => withBase(fileName, siteBase);
 
-      return `<${tag}>${children ?? ''}</${tag}>`;
-    })
-    .join('\n');
+  const ssgCss = ssgBundle.output.filter(isCssAsset);
+  for (const css of ssgCss) {
+    await fs.copy(join(tempPath, css.fileName), join(distPath, css.fileName));
+  }
+
+  return {
+    cssLinks: uniqueCssAssets(clientBundle, ssgBundle)
+      .map((item) => `<link rel="stylesheet" href="${withSiteBase(item.fileName)}">`)
+      .join('\n'),
+    clientScript: `<script type="module" src="${withSiteBase(clientChunk.fileName)}"></script>`,
+    siteHeadTags: renderHeadTags(config.siteData.head),
+    template: await resolveBaseTemplate(root),
+    distPath,
+  };
+}
+
+async function renderRouteHtml(
+  route: RouteWithMeta,
+  render: RenderFunction,
+  config: SiteConfig,
+  assets: PageAssets,
+  htmlPlugins: Plugin[],
+): Promise<{ html: string; fileName: string }> {
+  const { html: appHtml, head } = await render(route.path);
+  const locale = getLocaleSiteData(config.siteData, route.localePrefix);
+
+  // Layer the build-time, locale-aware route meta on top of whatever the SSR
+  // entry already pushed. Later `useHead` calls win in Unhead, so this is the
+  // authoritative source for per-route title / description / `<html lang>`.
+  useHead(head, resolveServerPageHead(config.siteData, route, locale));
+
+  const vars = buildTemplateVars(config.siteData, locale);
+  const localeHeadTags = locale?.head ? renderHeadTags(locale.head) : '';
+  let html = renderTemplateVars(assets.template, vars);
+  html = injectIntoHtml(html, {
+    head: [assets.siteHeadTags, localeHeadTags, assets.cssLinks].filter(Boolean).join('\n'),
+    app: appHtml,
+    body: assets.clientScript,
+  });
+  html = transformHtmlTemplate(head, html);
+
+  const fileName = htmlFilePathFromRoute(route.path, config);
+  const transformedHtml = await applyHtmlTransforms(
+    html,
+    { path: route.path, filename: join(assets.distPath, fileName) },
+    htmlPlugins,
+  );
+  return { html: transformedHtml, fileName };
 }
 
 export async function renderPage(
@@ -70,54 +152,11 @@ export async function renderPage(
   routers: Required<Router>[],
   htmlPlugins: Plugin[] = [],
 ) {
-  const clientChunk = clientBundle.output.find(isEntryChunk);
-  if (!clientChunk) {
-    throw new Error('Unable to find the production client entry chunk.');
-  }
-
-  const { siteData } = config;
-  const ssgCssAssets = ssgBundle.output.filter(isCssAsset);
-  const cssAssets = uniqueCssAssets(clientBundle, ssgBundle);
-  const distPath = join(root, DIST_DIR);
-  const tempPath = join(root, '.temp');
-  const siteBase = siteData.base || '/';
-  const withSiteBase = (fileName: string) => withBase(fileName, siteBase);
-  const headTags = renderHeadTags(siteData.head);
-
-  for (const css of ssgCssAssets) {
-    await fs.copy(join(tempPath, css.fileName), join(distPath, css.fileName));
-  }
-
-  for (const route of routers) {
-    const routePath = route.path;
-    const appHtml = await render(routePath);
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset=utf-8>
-          <meta http-equiv=X-UA-Compatible content="IE=edge">
-          <meta name=viewport content="width=device-width,initial-scale=1">
-          <title>${siteData.title || 'Athen'}</title>
-          <meta name="description" content="${siteData.description || 'Athen'}">
-          ${headTags}
-          <link rel="icon" href="${siteData.icon}" type="image/svg+xml">
-          ${cssAssets.map((item) => `<link rel="stylesheet" href="${withSiteBase(item.fileName)}">`).join('\n')}
-        </head>
-        <body>
-          <div id="app">${appHtml}</div>
-          <script type="module" src="${withSiteBase(clientChunk.fileName)}"></script>
-        </body>
-      </html>`.trim();
-    const fileName = htmlFilePathFromRoute(routePath, config);
-    const transformedHtml = await applyHtmlTransforms(
-      html,
-      { path: routePath, filename: join(distPath, fileName) },
-      htmlPlugins,
-    );
-
-    await fs.ensureDir(join(distPath, dirname(fileName)));
-    await fs.outputFile(join(distPath, fileName), transformedHtml);
+  const assets = await prepareAssets(clientBundle, ssgBundle, root, config);
+  for (const route of routers as RouteWithMeta[]) {
+    const { html, fileName } = await renderRouteHtml(route, render, config, assets, htmlPlugins);
+    await fs.ensureDir(join(assets.distPath, dirname(fileName)));
+    await fs.outputFile(join(assets.distPath, fileName), html);
   }
 }
 
@@ -125,38 +164,36 @@ export async function bundle(root: string, config: SiteConfig) {
   const createBuildConfig = async (isClient: boolean): Promise<InlineConfig> => {
     const plugins = await createVitePlugins(config, isClient);
     const isSsrBuild = !isClient;
-
-    const defaultBuildConfig: InlineConfig = {
-      mode: 'production',
-      root,
-      resolve: {
-        alias: {
-          '@': resolve(PACKAGE_ROOT, 'src'),
+    const buildConfig = mergeConfig(
+      {
+        root,
+        resolve: {
+          alias: {
+            '@': resolve(PACKAGE_ROOT, 'src'),
+          },
+        },
+        esbuild: {
+          jsx: 'preserve',
+        },
+        build: {
+          target: 'baseline-widely-available',
         },
       },
-      define: {
-        'import.meta.env.SSR': `${isSsrBuild}`,
-      },
-      plugins,
-      ssr: {
-        noExternal: true,
-      },
-      esbuild: {
-        jsx: 'preserve',
-      },
-      build: {
-        emptyOutDir: true,
-        ssr: isSsrBuild,
-        ssrEmitAssets: isSsrBuild,
-        outDir: isClient ? join(root, DIST_DIR) : join(root, '.temp'),
-        rollupOptions: {
-          input: isClient ? SSR_ENTRY_PATH : SSG_ENTRY_PATH,
+      {
+        mode: 'production',
+        define: { 'import.meta.env.SSR': `${isSsrBuild}` },
+        plugins,
+        ssr: { noExternal: true },
+        build: {
+          emptyOutDir: true,
+          ssr: isSsrBuild,
+          ssrEmitAssets: isSsrBuild,
+          outDir: isClient ? join(root, resolveOutDir(config)) : join(root, resolveTempDir(config)),
+          rollupOptions: { input: isClient ? SSR_ENTRY_PATH : SSG_ENTRY_PATH },
         },
-        target: 'baseline-widely-available',
       },
-    };
-
-    return mergeConfig(config.vite || {}, defaultBuildConfig);
+    );
+    return mergeConfig(config.vite || {}, buildConfig);
   };
 
   const ssgBuildConfig = await createBuildConfig(false);
@@ -170,26 +207,18 @@ export async function bundle(root: string, config: SiteConfig) {
     Plugin[],
   ];
 }
+
 export async function build(root: string = process.cwd()) {
   const config = await resolveConfig(root, 'build', 'production');
 
-  // Handle multi-instance builds by recursing into each instance root
-  if (config.instances?.length) {
-    for (const inst of config.instances) {
-      await build(join(root, inst.root));
-    }
-    return;
-  }
-
-  const tempPath = join(root, '.temp');
-  const distPath = join(root, DIST_DIR);
+  const tempPath = join(root, resolveTempDir(config));
+  const distPath = join(root, resolveOutDir(config));
   await fs.remove(tempPath);
   await fs.remove(distPath);
 
   if (config.onBrokenLinks && config.onBrokenLinks !== 'ignore') {
-    const scanDir = join(root, config.route?.root || config.srcDir || '');
     await checkBrokenLinks({
-      routes: collectRouteMeta(scanDir, config.route, config.siteData),
+      routes: (config._routes as RouteMeta[]) || [],
       onBrokenLinks: config.onBrokenLinks,
       urlPolicy: config,
     });
@@ -197,7 +226,7 @@ export async function build(root: string = process.cwd()) {
 
   const [ssgBundle, clientBundle, htmlPlugins] = await bundle(root, config);
 
-  const serverEntryPath = join(tempPath, 'ssg-entry.js');
+  const serverEntryPath = join(tempPath, 'ssgEntry.js');
   const { render, routes } = await import(pathToFileURL(serverEntryPath).href);
 
   await renderPage(render, root, clientBundle, ssgBundle, config, routes, htmlPlugins);

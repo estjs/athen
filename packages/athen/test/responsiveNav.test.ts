@@ -9,8 +9,8 @@ const readThemeFile = (file: string) => readFileSync(join(themeRoot, file), 'utf
 describe('responsive navigation breakpoints', () => {
   it('uses the same 960px breakpoint for sidebar and hamburger navigation', () => {
     const nav = readThemeFile('components/Nav/index.tsx');
-    const navStyle = readThemeFile('components/Nav/style.scss');
-    const sidebarStyle = readThemeFile('components/SideBar/style.scss');
+    const navStyle = readThemeFile('components/Nav/style.css');
+    const sidebarStyle = readThemeFile('components/SideBar/style.css');
 
     expect(sidebarStyle).toContain('@media (min-width: 960px)');
     expect(nav).not.toContain('lg:hidden');

@@ -8,51 +8,36 @@ import type { FrontMatterMeta, PageData, PageModule } from '@shared/types';
 interface AthenRouteRecord {
   path: string;
   children?: AthenRouteRecord[];
-  meta?: {
-    filePath?: string;
-    [key: string]: unknown;
-  };
+  meta?: { filePath?: string; [key: string]: unknown };
   preload?: () => Promise<PageModule<unknown>>;
+}
+
+function inferPageType(mod?: PageModule<unknown>): PageData['pageType'] {
+  if (!mod) return '404';
+  if (mod.frontmatter?.pageType) return mod.frontmatter.pageType as PageData['pageType'];
+  return mod.frontmatter?.layout === 'home' ? 'home' : 'doc';
 }
 
 /**
  * Initialize page data for a given route path by loading the matched route's
- * module and composing the full PageData object.
+ * module and composing the full PageData object. Returns 404 page data when
+ * the route is unmatched.
  */
 export async function initPageData(routerPath: string): Promise<PageData> {
-  const router = routes[0] as AthenRouteRecord;
-  const matched = router.children?.find((route) => route.path === routerPath);
-
-  if (matched?.preload) {
-    const moduleInfo = await matched.preload();
-    const pagePath = cleanUrl(matched.meta?.filePath ?? '');
-    const relativePagePath = pagePath;
-
-    return {
-      pageType:
-        moduleInfo.frontmatter?.pageType ??
-        (moduleInfo.frontmatter?.layout === 'home' ? 'home' : 'doc'),
-      siteData,
-      pagePath: routerPath,
-      routePath: routerPath,
-      relativePagePath,
-      ...moduleInfo,
-    };
-  }
+  const root = routes[0] as AthenRouteRecord;
+  const matched = root.children?.find((r) => r.path === routerPath);
+  const mod = matched?.preload ? await matched.preload() : undefined;
 
   return {
     siteData,
     pagePath: routerPath,
     routePath: routerPath,
-    relativePagePath: '',
-    pageType: '404',
-    frontmatter: {} as FrontMatterMeta,
+    relativePagePath: mod ? cleanUrl(matched?.meta?.filePath ?? '') : '',
+    pageType: inferPageType(mod),
+    frontmatter: mod?.frontmatter ?? ({} as FrontMatterMeta),
+    ...mod,
   };
 }
 
-export const createRouter = (history: RouterHistory) => {
-  return createEssorRouter({
-    history,
-    routes: routes as RouteRecordRaw[],
-  });
-};
+export const createRouter = (history: RouterHistory) =>
+  createEssorRouter({ history, routes: routes as RouteRecordRaw[] });

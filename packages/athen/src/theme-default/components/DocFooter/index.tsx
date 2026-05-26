@@ -1,19 +1,18 @@
 import { useEditLink, useLocaleSiteData, usePrevNextPage } from '@theme-default/hooks';
-import './index.scss';
+import './index.css';
 import { usePageData } from '@/runtime';
 import PageLink from '../Link';
 const DocFooter = () => {
   const pageData = usePageData();
   const localeData = useLocaleSiteData();
   const page = usePrevNextPage();
-  const themeConfig = pageData.siteData?.themeConfig || {};
   const {
     editLink: rawEditLink,
     lastUpdatedText,
     prevPageText = 'Previous Page',
     nextPageText = 'Next page',
   } = localeData.value;
-  const editLink = useEditLink(rawEditLink ?? themeConfig?.editLink, pageData.relativePagePath);
+  const editLink = useEditLink(rawEditLink, pageData.relativePagePath);
 
   return (
     <footer class="pager mt-8">

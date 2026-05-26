@@ -5,9 +5,9 @@ import { DocContent } from './DocContent';
 
 export default function Layout() {
   const { siteData } = usePageData();
-  const slots = siteData?.themeConfig?.slots || {};
-  const Banner = slots.banner;
-  const FooterExtra = slots.footerExtra;
+  const slots = siteData?.slots || {};
+  const Banner = slots.banner as (() => unknown) | undefined;
+  const FooterExtra = slots.footerExtra as (() => unknown) | undefined;
 
   return (
     <>

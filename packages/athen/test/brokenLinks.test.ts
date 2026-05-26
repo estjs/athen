@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { checkBrokenLinks } from '../src/node/brokenLinks';
-import { collectRouteMeta } from '../src/node/plugins/router/routeService';
+import { collectRoutes } from '../src/node/routes';
 
 let root = '';
 
@@ -30,7 +30,7 @@ describe('broken link checker', () => {
     });
 
     const result = await checkBrokenLinks({
-      routes: collectRouteMeta(root),
+      routes: collectRoutes(root),
       onBrokenLinks: 'throw',
     });
 
@@ -44,7 +44,7 @@ describe('broken link checker', () => {
 
     await expect(
       checkBrokenLinks({
-        routes: collectRouteMeta(root),
+        routes: collectRoutes(root),
         onBrokenLinks: 'throw',
       }),
     ).rejects.toThrow('Broken link found');
@@ -58,7 +58,7 @@ describe('broken link checker', () => {
 
     await expect(
       checkBrokenLinks({
-        routes: collectRouteMeta(root),
+        routes: collectRoutes(root),
         onBrokenLinks: 'throw',
       }),
     ).rejects.toThrow('Broken anchor found');
@@ -74,7 +74,7 @@ describe('broken link checker', () => {
     });
 
     const result = await checkBrokenLinks({
-      routes: collectRouteMeta(root),
+      routes: collectRoutes(root),
       onBrokenLinks: 'throw',
     });
 
@@ -88,7 +88,7 @@ describe('broken link checker', () => {
     });
 
     const result = await checkBrokenLinks({
-      routes: collectRouteMeta(root),
+      routes: collectRoutes(root),
       onBrokenLinks: 'warn',
     });
 

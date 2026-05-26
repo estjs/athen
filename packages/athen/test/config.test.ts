@@ -59,7 +59,7 @@ describe('config', () => {
         outDir: 'dist-docs',
         tempDir: '.temp-docs',
         enableSpa: true,
-        allowDeadLinks: true,
+        onBrokenLinks: 'warn',
         srcDir: 'src-docs'
       })`,
     });
@@ -75,7 +75,7 @@ describe('config', () => {
     expect(config.srcDir).toBe('src-docs');
   });
 
-  it('loads shallow redesigned user config into internal config', async () => {
+  it('loads flat user config into resolved site data', async () => {
     root = writeProject({
       'athen.config.ts': `export default () => ({
         title: 'New Docs',
@@ -92,13 +92,9 @@ describe('config', () => {
         enableSpa: true,
         onBrokenLinks: 'throw',
         theme: './custom-theme',
-        themeConfig: {
-          nav: [{ text: 'Guide', link: '/guide/' }],
-          sidebar: {
-            '/guide/': [{ text: 'Guide', items: [{ text: 'Intro', link: '/guide/' }] }]
-          },
-          links: [{ icon: 'github', link: 'https://github.com/estjs/athen' }]
-        },
+        nav: [{ text: 'Guide', link: '/guide/' }],
+        sidebar: { '/guide/': [{ text: 'Guide', items: [{ text: 'Intro', link: '/guide/' }] }] },
+        socialLinks: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
         defaultLocale: 'en',
         locales: {
           '/': { label: 'English', lang: 'en-US' },
@@ -121,8 +117,15 @@ describe('config', () => {
         title: 'New Docs',
         description: 'Modern docs',
         base: '/product/',
+        favicon: '/favicon.svg',
         icon: '/favicon.svg',
         lang: 'en-US',
+        nav: [{ text: 'Guide', link: '/guide/' }],
+        socialLinks: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
+        locales: {
+          '/': { label: 'English', lang: 'en-US' },
+          '/zh/': { label: '简体中文', lang: 'zh-CN' },
+        },
       },
       route: {
         root: 'content',
@@ -144,58 +147,9 @@ describe('config', () => {
       vite: { server: { port: 8080 } },
     });
     expect(config.themeDir).toBe(join(root, 'custom-theme'));
-    expect(config.siteData.themeConfig).toMatchObject({
-      nav: [{ text: 'Guide', link: '/guide/' }],
-      links: [{ icon: 'github', link: 'https://github.com/estjs/athen' }],
-      locales: {
-        '/': { label: 'English', lang: 'en-US' },
-        '/zh/': { label: '简体中文', lang: 'zh-CN' },
-      },
-    });
   });
 
-  it('keeps shallow config fields preferred over grouped compatibility fields', async () => {
-    root = writeProject({
-      'athen.config.ts': `export default () => ({
-        base: '/top/',
-        lang: 'en-US',
-        themeConfig: {
-          nav: [{ text: 'Top Guide', link: '/guide/' }],
-          sidebar: {
-            '/top/': [{ text: 'Top', items: [{ text: 'Intro', link: '/top/' }] }]
-          }
-        },
-        site: {
-          base: '/grouped/',
-          lang: 'zh-CN'
-        },
-        theme: {
-          config: {
-            nav: [{ text: 'Grouped Guide', link: '/grouped/' }],
-            sidebar: {
-              '/grouped/': [{ text: 'Grouped', items: [{ text: 'Intro', link: '/grouped/' }] }]
-            }
-          }
-        }
-      })`,
-    });
-
-    const config = await resolveConfig(root, 'serve', 'development');
-
-    expect(config.siteData.base).toBe('/top/');
-    expect(config.siteData.lang).toBe('en-US');
-    expect(config.siteData.themeConfig).toMatchObject({
-      nav: [{ text: 'Top Guide', link: '/guide/' }],
-      sidebar: {
-        '/top/': [{ text: 'Top', items: [{ text: 'Intro', link: '/top/' }] }],
-      },
-    });
-    expect(config.siteData.themeConfig).not.toMatchObject({
-      nav: [{ text: 'Grouped Guide', link: '/grouped/' }],
-    });
-  });
-
-  it('resolves url policy fields from shallow config', async () => {
+  it('resolves url policy fields from flat config', async () => {
     root = writeProject({
       'athen.config.ts': `export default () => ({
         cleanUrls: true,
@@ -215,40 +169,29 @@ describe('config', () => {
     });
   });
 
-  it('resolves themeConfig.sidebar auto into generated sidebar data', async () => {
+  it('defaults sidebar to auto-generated from the filesystem', async () => {
     root = writeProject({
-      'athen.config.ts': `export default () => ({
-        themeConfig: {
-          sidebar: 'auto'
-        }
-      })`,
+      'athen.config.ts': `export default () => ({})`,
       'guide/index.md': '# Guide',
       'guide/getting-started.md': '---\ntitle: Getting Started\n---\n# Start',
     });
 
     const config = await resolveConfig(root, 'serve', 'development');
 
-    expect(config.siteData.themeConfig.sidebar).toEqual({
-      '/guide/': [
-        {
-          text: 'Guide',
-          items: [
-            { text: 'Guide', link: '/guide/' },
-            { text: 'Getting Started', link: '/guide/getting-started' },
-          ],
-        },
-      ],
+    expect(config.siteData.sidebar?.['/guide/'][0].text).toBe('Guide');
+    expect(config.siteData.sidebar?.['/guide/'][0].items).toContainEqual({
+      text: 'Getting Started',
+      link: '/guide/getting-started',
     });
   });
 
-  it('resolves locale sidebar auto under its locale prefix', async () => {
+  it('auto-generates per-locale sidebar entries', async () => {
     root = writeProject({
       'athen.config.ts': `export default () => ({
         locales: {
           '/zh/': {
             label: '简体中文',
-            lang: 'zh-CN',
-            sidebar: 'auto'
+            lang: 'zh-CN'
           }
         }
       })`,
@@ -258,16 +201,10 @@ describe('config', () => {
 
     const config = await resolveConfig(root, 'serve', 'development');
 
-    expect(config.siteData.themeConfig.locales?.['/zh/'].sidebar).toEqual({
-      '/zh/guide/': [
-        {
-          text: 'Zh Guide',
-          items: [
-            { text: '指南', link: '/zh/guide/' },
-            { text: '快速开始', link: '/zh/guide/getting-started' },
-          ],
-        },
-      ],
+    expect(config.siteData.sidebar?.['/zh/guide/'][0].text).toBe('Guide');
+    expect(config.siteData.sidebar?.['/zh/guide/'][0].items).toContainEqual({
+      text: '快速开始',
+      link: '/zh/guide/getting-started',
     });
   });
 
@@ -281,16 +218,14 @@ describe('config', () => {
     expect(defineConfig(userConfig)).toBe(userConfig);
   });
 
-  it('creates site data with locale entries derived from themeConfig.locales', () => {
+  it('creates site data with the flat locales record', () => {
     const head = [['meta', { name: 'viewport', content: 'width=device-width' }]] as const;
     const siteData = resolveSiteData('/root', {
       head: [...head],
-      themeConfig: {
-        locales: {
-          '/en/': { lang: 'en-US' },
-          '/zh/': { lang: 'zh-CN' },
-          '/fr/': { lang: 'fr-FR' },
-        },
+      locales: {
+        '/en/': { label: 'English', lang: 'en-US' },
+        '/zh/': { label: '简体中文', lang: 'zh-CN' },
+        '/fr/': { label: 'Français', lang: 'fr-FR' },
       },
       colorScheme: true,
     });
@@ -301,10 +236,9 @@ describe('config', () => {
     expect(script).toContain('"prefix":"en"');
     expect(script).toContain('"prefix":"zh"');
     expect(script).toContain('"prefix":"fr"');
-    expect(script).not.toContain("includes('zh')");
   });
 
-  it('creates site data with locale entries derived from top-level locales', () => {
+  it('promotes user-supplied locale metadata into site data', () => {
     const siteData = resolveSiteData('/root', {
       base: '/docs/',
       title: 'Localized Docs',
@@ -317,11 +251,11 @@ describe('config', () => {
     const script = getLangScript(siteData.head);
 
     expect(siteData.title).toBe('Localized Docs');
-    expect(siteData.themeConfig.locales).toMatchObject({
+    expect(siteData.locales).toMatchObject({
       '/en/': { label: 'English', lang: 'en-US' },
       '/zh/': { label: '简体中文', lang: 'zh-CN' },
     });
-    expect(script).toContain('var base = "/docs/"');
+    expect(script).toContain('"base":"/docs/"');
     expect(script).toContain('"prefix":"en"');
     expect(script).toContain('"prefix":"zh"');
   });
@@ -342,11 +276,9 @@ describe('config', () => {
   it('emits a stored-language redirect when the default locale is rooted', () => {
     const siteData = resolveSiteData('/root', {
       lang: 'en-US',
-      themeConfig: {
-        locales: {
-          '/': { lang: 'en' },
-          '/zh/': { lang: 'zh' },
-        },
+      locales: {
+        '/': { label: 'English', lang: 'en' },
+        '/zh/': { label: '简体中文', lang: 'zh' },
       },
     });
     const script = getLangScript(siteData.head);

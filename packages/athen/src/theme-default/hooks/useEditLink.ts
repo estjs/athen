@@ -1,6 +1,6 @@
-import type { DefaultTheme } from '@shared/types';
+import type { EditLink } from '@shared/types';
 
-export function useEditLink(editLink?: DefaultTheme.EditLink, relativePagePath?: string) {
+export function useEditLink(editLink?: EditLink, relativePagePath?: string) {
   if (!editLink) {
     return null;
   }

@@ -1,0 +1,21 @@
+{
+  "title": "指南",
+  "items": [
+    "getting-started",
+    "configure-site",
+    "conventional-route",
+    "use-mdx",
+    "static-assets",
+    "multi-instance",
+    "plugin-system",
+    "custom-styling",
+    "home-page",
+    "api-page",
+    "doc-page",
+    "i18n",
+    "head-and-seo",
+    "search",
+    "analytics",
+    "theme-package"
+  ]
+}

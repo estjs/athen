@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { transformSync } from '@babel/core';
 import BabelPluginEssor from 'babel-plugin-essor';
 import { MD_REGEX, SX_REGEX } from '@/node/constants';
-import { RouteService } from './router/routeService';
+import { routeFromFilePath } from '@/node/routes';
 import type { Plugin } from 'vite';
 import type { SiteConfig } from '@/shared/types/index';
 
@@ -11,20 +11,13 @@ export function pluginMdxHMR(config: SiteConfig, isServer: boolean): Plugin {
     name: 'vite-plugin-mdx-hmr',
     apply: 'serve',
 
-    transform(code, id, opts) {
+    transform(code, id) {
       if (MD_REGEX.test(id) || SX_REGEX.test(id)) {
         const result = transformSync(code, {
           filename: `${id}`,
           sourceType: 'module',
           plugins: [
-            [
-              BabelPluginEssor,
-              {
-                ...opts,
-                hmr: false,
-                mode: !isServer ? 'server' : ('hydrate' as 'server' | 'hydrate'),
-              },
-            ],
+            [BabelPluginEssor, { hmr: false, mode: isServer ? 'hydrate' : 'server' }],
           ],
         });
         const selfAcceptCode = 'import.meta.hot.accept();';
@@ -32,14 +25,14 @@ export function pluginMdxHMR(config: SiteConfig, isServer: boolean): Plugin {
           result!.code += selfAcceptCode;
         }
         return {
-          code: result?.code,
-          map: result?.map,
+          code: result?.code ?? code,
+          map: result?.map ?? undefined,
         };
       }
     },
     handleHotUpdate(ctx) {
       if (/\.mdx?/.test(ctx.file)) {
-        const routePath = RouteService.getRoutePathFromFile(
+        const routePath = routeFromFilePath(
           ctx.file,
           join(config.root, config.route?.root || config.srcDir || ''),
           config.siteData.base || '/',

@@ -1,5 +1,5 @@
 import { computed } from 'essor';
-import './style.scss';
+import './style.css';
 import { EXTERNAL_URL_RE, withBase } from '@shared/utils';
 import { useRouter } from 'essor-router';
 

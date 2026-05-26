@@ -1,3 +1,5 @@
+import { normalizeLocalePrefix } from '@/shared/locale';
+import type { HeadConfig, LocaleConfig, SiteData } from '@/shared/types';
 export const queryRE = /\?.*$/s;
 export const hashRE = /#.*$/s;
 export const EXTERNAL_URL_RE = /^(https?:)?\/\//;
@@ -130,4 +132,122 @@ export const getRelativePagePath = (routePath: string, filePath: string, base: s
 
 export function normalizeRoutePath(routePath: string) {
   return routePath.replace(/\.html$/, '').replace(/\/index$/, '/');
+}
+
+const HTML_ESCAPE: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+function escapeHtml(value: string) {
+  return value.replaceAll(/[&<>"']/g, (char) => HTML_ESCAPE[char] || char);
+}
+
+function getNestedValue(source: unknown, path: string): unknown {
+  return path.split('.').reduce<unknown>((acc, segment) => {
+    if (acc && typeof acc === 'object' && segment in (acc as Record<string, unknown>)) {
+      return (acc as Record<string, unknown>)[segment];
+    }
+    return undefined;
+  }, source);
+}
+
+/**
+ * Substitute `{{ name }}` style placeholders in an HTML template. Values are
+ * HTML-escaped so user-supplied site metadata can't break out of attributes;
+ * pass raw HTML through `rawKeys` to skip escaping for fields like injected
+ * head tags or SSR content.
+ *
+ * Unknown placeholders are replaced with the empty string so a missing field
+ * doesn't surface as literal `{{ foo }}` text in the served page.
+ */
+export function renderTemplateVars(html: string, vars: object, rawKeys: string[] = []): string {
+  const rawSet = new Set(rawKeys);
+  return html.replaceAll(/\{\{\s*([\w.]+)\s*\}\}/g, (_, key: string) => {
+    const value = getNestedValue(vars, key);
+    if (value == null) return '';
+    const str = String(value);
+    return rawSet.has(key) ? str : escapeHtml(str);
+  });
+}
+
+/**
+ * Subset of locale data we read for per-page template substitution. Unhead
+ * owns title/description/lang now; this is just a typed view onto the locale
+ * config for callers that still need site-level fallbacks.
+ */
+export interface LocaleTemplateContext {
+  lang?: string;
+  title?: string;
+  description?: string;
+  head?: HeadConfig[];
+}
+
+export interface TemplateVars {
+  icon: string;
+  base: string;
+  siteTitle: string;
+  logo: string;
+  favicon: string;
+}
+
+function firstString(...values: Array<unknown>): string | undefined {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Pick the locale entry whose URL prefix matches `localePrefix` from
+ * `siteData.locales`. Returns `undefined` for the root locale (or when no
+ * locales are configured) so callers can short-circuit to site-level fields.
+ */
+export function getLocaleSiteData(
+  siteData: SiteData,
+  localePrefix?: string,
+): LocaleTemplateContext | undefined {
+  const locales = siteData.locales;
+  if (!locales) return undefined;
+
+  const target = normalizeLocalePrefix(localePrefix);
+  const entry =
+    Object.entries(locales).find(([key]) => normalizeLocalePrefix(key) === target) ??
+    Object.entries(locales).find(([key]) => normalizeLocalePrefix(key) === '');
+  if (!entry) return undefined;
+
+  const [, locale] = entry as [string, LocaleConfig];
+  return {
+    lang: locale.lang,
+    title: locale.title,
+    description: locale.description,
+    head: locale.head,
+  };
+}
+
+/**
+ * Build site-level template variables for `<root>/index.html` placeholders.
+ * Per-page meta (`title`/`description`/`<html lang>`) is no longer rendered
+ * here — Unhead injects those at render time. This function just produces the
+ * static, site-level vars: favicon paths, base URL, site title.
+ */
+export function buildTemplateVars(
+  siteData: SiteData,
+  locale?: LocaleTemplateContext,
+): TemplateVars {
+  const icon = siteData.icon || siteData.favicon || '';
+  const siteTitle = firstString(locale?.title, siteData.title) || 'Athen';
+
+  return {
+    icon,
+    base: siteData.base || '/',
+    siteTitle,
+    logo: icon,
+    favicon: icon,
+  };
 }

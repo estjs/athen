@@ -1,5 +1,5 @@
-import { resolve } from 'node:path';
 import process from 'node:process';
+import { resolve } from 'node:path';
 import { createServer, mergeConfig } from 'vite';
 import { resolveConfig } from './config';
 import { createVitePlugins } from './plugins';
@@ -13,30 +13,32 @@ export async function createDevServer(
 ) {
   const config = await resolveConfig(root, 'serve', 'development');
 
-  const defaultConfig = {
-    configFile: false,
-    root,
-    base: config.siteData.base || '/',
-    resolve: {
-      alias: {
-        '@': resolve(PACKAGE_ROOT, 'src'),
+  const devConfig = mergeConfig(
+    {
+      root,
+      resolve: {
+        alias: {
+          '@': resolve(PACKAGE_ROOT, 'src'),
+        },
+      },
+      esbuild: {
+        jsx: 'preserve',
+      },
+      build: {
+        target: 'baseline-widely-available',
       },
     },
-    esbuild: {
-      jsx: 'preserve',
-    },
-    plugins: await createVitePlugins(config, true, restartServer),
-    server: {
-      port: port || 8730,
-      host,
-      fs: {
-        allow: [PACKAGE_ROOT],
+    {
+      configFile: false,
+      base: config.siteData.base || '/',
+      plugins: await createVitePlugins(config, true, restartServer),
+      server: {
+        port: port || 8730,
+        host,
+        fs: { allow: [PACKAGE_ROOT] },
       },
     },
-    build: {
-      target: 'baseline-widely-available',
-    },
-  };
+  );
 
-  return createServer(mergeConfig(config.vite || {}, defaultConfig));
+  return createServer(mergeConfig(config.vite || {}, devConfig));
 }

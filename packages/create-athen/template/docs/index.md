@@ -1,7 +1,6 @@
 ---
 layout: home
 title: My Athen Site
-titleTemplate: Documentation Made Simple
 
 hero:
   name: My Athen Site

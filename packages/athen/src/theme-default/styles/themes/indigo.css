@@ -1,0 +1,12 @@
+/** Indigo brand preset (VitePress-style). */
+
+:root {
+  --at-c-brand: #5672cd;
+  --at-c-brand-light: #6e85d4;
+  --at-c-brand-lighter: #8a9cdb;
+  --at-c-brand-dark: #4658a9;
+  --at-c-brand-darker: #344281;
+  --at-c-brand-dimm-1: rgba(86, 114, 205, 0.5);
+  --at-c-brand-dimm-2: rgba(86, 114, 205, 0.25);
+  --at-c-brand-dimm-3: rgba(86, 114, 205, 0.05);
+}

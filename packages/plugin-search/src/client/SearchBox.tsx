@@ -4,7 +4,7 @@ import { AlgoliaSearcher } from './AlgoliaSearcher';
 import { Suggestion } from './Suggestion';
 import { debounce } from './utils';
 import type { SearchResult } from '../types';
-import './SearchBox.scss';
+import './SearchBox.css';
 
 export interface SearchBoxProps {
   provider?: 'flex' | 'algolia';

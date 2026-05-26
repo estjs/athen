@@ -2,7 +2,7 @@ import { computed, onDestroy, onMount, signal } from 'essor';
 import { scrollToTarget, useActiveToc } from '@theme-default/hooks';
 import { usePageData } from '@/runtime';
 import type { Header } from '@shared/types/index';
-import './style.scss';
+import './style.css';
 export function Aside(props: { pagePath: string; outlineTitle: string }) {
   const pageData = usePageData()!;
 

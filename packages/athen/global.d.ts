@@ -1,8 +1,9 @@
 declare module 'athen:site-data' {
-  import type { DefaultTheme, SiteData } from '@shared/types';
-  const siteData: SiteData<DefaultTheme.Config>;
+  import type { SiteData } from '@shared/types';
+  const siteData: SiteData;
   export default siteData;
 }
+
 declare module 'athen:routes' {
   import type { RouteRecordRaw } from 'essor-router';
   import type { PageModule } from '@/shared/types';
@@ -19,12 +20,4 @@ declare module 'athen:routes' {
 declare module 'athen:base' {
   const baseUrl: string;
   export default baseUrl;
-}
-
-declare module 'athen:ssg-essor-server' {
-  export * from 'essor/server';
-}
-
-declare module 'athen:ssg-essor-router' {
-  export * from 'essor-router';
 }

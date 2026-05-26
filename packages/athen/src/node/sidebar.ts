@@ -1,156 +1,250 @@
-import { normalizePublicRoute } from '../shared/utils';
-import type { DefaultTheme } from '../shared/types';
-import type { RouteMeta } from './plugins/router/routeService';
+import { dirname, join } from 'node:path';
+import fs from 'fs-extra';
+import { humanize } from '../shared/title';
+import type { Sidebar, SidebarConfig, SidebarGroup, SidebarItem } from '../shared/types';
+import type { RouteMeta } from './routes';
 
-export type AutoSidebarConfig =
-  | DefaultTheme.Sidebar
-  | 'auto'
-  | Record<string, DefaultTheme.SidebarGroup[] | 'auto'>;
-
-function isAutoSidebarConfig(sidebar: unknown): sidebar is 'auto' {
-  return sidebar === 'auto';
+/**
+ * Per-folder metadata file. Drop next to your pages as `_meta.json` to
+ * customise sidebar grouping without writing a sidebar config block.
+ *
+ * - `title`     — Group label shown in the sidebar. Defaults to a humanised
+ *                 folder name.
+ * - `order`     — Numeric sort key when grouping is sorted (lower first).
+ * - `items`     — Ordered list of immediate children: either file basenames
+ *                 (without extension) or subfolder names. Anything omitted is
+ *                 dropped from the sidebar; anything not listed falls through
+ *                 to alphabetical / frontmatter `order`.
+ * - `collapsed` — Default-collapse this group in the UI.
+ * - `hidden`    — Hide this folder (and its children) from the sidebar
+ *                 entirely (still routable).
+ */
+export interface FolderMeta {
+  title?: string;
+  order?: number;
+  items?: string[];
+  collapsed?: boolean;
+  hidden?: boolean;
 }
 
-export function hasAutoSidebar(sidebar: unknown): boolean {
-  if (isAutoSidebarConfig(sidebar)) return true;
-  if (!sidebar || typeof sidebar !== 'object') return false;
-  return Object.values(sidebar).includes('auto');
+interface FolderNode {
+  type: 'folder';
+  name: string;
+  absolutePath: string;
+  meta?: FolderMeta;
+  children: Node[];
 }
 
-function formatSegment(segment: string) {
-  return segment.replaceAll(/[-_]+/g, ' ').replaceAll(/\b\w/g, (char) => char.toUpperCase());
+interface PageNode {
+  type: 'page';
+  name: string;
+  route: RouteMeta;
 }
 
-function splitRouteSegments(routePath: string) {
-  return normalizePublicRoute(routePath).split('/').filter(Boolean);
-}
+type Node = FolderNode | PageNode;
 
-function normalizeSidebarPrefix(prefix?: string) {
-  return prefix ? normalizePublicRoute(prefix, { trailingSlash: true }) : undefined;
-}
+const META_FILE = '_meta.json';
 
-function isLocaleLikePrefix(prefix: string) {
-  const segments = splitRouteSegments(prefix);
-  return segments.length === 1 && /^[a-z]{2}(?:-[a-z]{2})?$/i.test(segments[0]);
-}
-
-function getSidebarKey(routePath: string, prefix?: string) {
-  const normalizedPrefix = normalizeSidebarPrefix(prefix);
-  const routeSegments = splitRouteSegments(routePath);
-
-  if (!normalizedPrefix) {
-    const [firstSegment] = routeSegments;
-    return firstSegment ? `/${firstSegment}/` : '/';
+function readFolderMeta(folderPath: string): FolderMeta | undefined {
+  const metaPath = join(folderPath, META_FILE);
+  if (!fs.existsSync(metaPath)) return undefined;
+  try {
+    return fs.readJSONSync(metaPath) as FolderMeta;
+  } catch (error) {
+    console.warn(`[athen] Failed to parse ${metaPath}:`, error);
+    return undefined;
   }
-
-  if (normalizedPrefix === '/') {
-    const [firstSegment] = routeSegments;
-    return firstSegment ? `/${firstSegment}/` : '/';
-  }
-
-  if (!isLocaleLikePrefix(normalizedPrefix)) {
-    return normalizedPrefix;
-  }
-
-  const prefixSegments = splitRouteSegments(normalizedPrefix);
-  const section = routeSegments[prefixSegments.length];
-  return section ? `/${[...prefixSegments, section].join('/')}/` : normalizedPrefix;
 }
 
-function isRouteUnderPrefix(routePath: string, prefix?: string, excludePrefixes: string[] = []) {
-  const normalizedRoute = normalizePublicRoute(routePath, { trailingSlash: true });
-  const normalizedPrefix = normalizeSidebarPrefix(prefix);
-  const normalizedExcludePrefixes = excludePrefixes.map((excludePrefix) =>
-    normalizePublicRoute(excludePrefix, { trailingSlash: true }),
-  );
-
-  if (
-    normalizedExcludePrefixes.some(
-      (excludePrefix) =>
-        excludePrefix !== '/' &&
-        (normalizedRoute === excludePrefix || normalizedRoute.startsWith(excludePrefix)),
-    )
-  ) {
-    return false;
+function getNodeOrder(node: Node): number {
+  if (node.type === 'folder') {
+    const value = node.meta?.order;
+    return typeof value === 'number' && Number.isFinite(value) ? value : Number.POSITIVE_INFINITY;
   }
-
-  if (!normalizedPrefix || normalizedPrefix === '/') {
-    return true;
-  }
-
-  return normalizedRoute === normalizedPrefix || normalizedRoute.startsWith(normalizedPrefix);
-}
-
-function isHiddenFromSidebar(route: RouteMeta) {
-  return route.frontmatter?.sidebar === false;
-}
-
-function toSidebarItem(route: RouteMeta): DefaultTheme.SidebarItem {
-  return {
-    text: route.title || route.name || route.routePath,
-    link: route.routePath,
-  };
-}
-
-function getRouteOrder(route: RouteMeta) {
-  const value = route.frontmatter?.order ?? route.frontmatter?.sidebarOrder;
+  const value = node.route.frontmatter?.order ?? node.route.frontmatter?.sidebarOrder;
   const order = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(order) ? order : Number.POSITIVE_INFINITY;
 }
 
-function compareRoutes(a: RouteMeta, b: RouteMeta) {
-  const orderDiff = getRouteOrder(a) - getRouteOrder(b);
-  return orderDiff || a.routePath.localeCompare(b.routePath);
+function isHiddenPage(route: RouteMeta): boolean {
+  return route.frontmatter?.sidebar === false;
 }
 
-function createGroup(key: string, routes: RouteMeta[]): DefaultTheme.SidebarGroup {
-  const groupText = key === '/' ? 'Docs' : splitRouteSegments(key).map(formatSegment).join(' ');
+/** Build a folder/page tree under `scanRoot` from a flat list of routes. */
+function buildTree(scanRoot: string, routes: RouteMeta[]): FolderNode {
+  const root: FolderNode = {
+    type: 'folder',
+    name: '',
+    absolutePath: scanRoot,
+    children: [],
+  };
+
+  const folderCache = new Map<string, FolderNode>();
+  folderCache.set(scanRoot, root);
+
+  function getFolder(absolutePath: string): FolderNode {
+    const existing = folderCache.get(absolutePath);
+    if (existing) return existing;
+    const parent = getFolder(dirname(absolutePath));
+    const node: FolderNode = {
+      type: 'folder',
+      name: absolutePath.slice(dirname(absolutePath).length + 1),
+      absolutePath,
+      meta: readFolderMeta(absolutePath),
+      children: [],
+    };
+    parent.children.push(node);
+    folderCache.set(absolutePath, node);
+    return node;
+  }
+
+  for (const route of routes) {
+    if (isHiddenPage(route)) continue;
+    const absoluteFilePath = route.absolutePath;
+    const folder = getFolder(dirname(absoluteFilePath));
+    const baseName = route.name || '';
+    folder.children.push({ type: 'page', name: baseName, route });
+  }
+
+  // Read meta for the root too — used by single-section sidebars.
+  if (!root.meta) {
+    root.meta = readFolderMeta(scanRoot);
+  }
+  return root;
+}
+
+function sortChildren(folder: FolderNode): Node[] {
+  const items = folder.meta?.items;
+  const byName = new Map<string, Node>();
+  for (const child of folder.children) {
+    if (child.type === 'folder' && child.meta?.hidden) continue;
+    byName.set(child.name, child);
+  }
+
+  // 1) Items pinned in `_meta.json#items` come first, in declared order.
+  const ordered: Node[] = [];
+  const pinned = new Set<string>();
+  if (Array.isArray(items)) {
+    for (const name of items) {
+      const node = byName.get(name);
+      if (node) {
+        ordered.push(node);
+        pinned.add(name);
+      }
+    }
+  }
+
+  // 2) Remaining items fall back to frontmatter `order` (pages) or
+  //    `_meta.json#order` (folders), then alphabetical.
+  const remaining = [...byName.values()].filter((n) => !pinned.has(n.name));
+  remaining.sort((a, b) => {
+    const orderDelta = getNodeOrder(a) - getNodeOrder(b);
+    if (orderDelta !== 0) return orderDelta;
+    return a.name.localeCompare(b.name);
+  });
+
+  return [...ordered, ...remaining];
+}
+
+function buildSidebarItem(node: Node): SidebarItem | undefined {
+  if (node.type === 'page') {
+    return {
+      text: node.route.title || humanize(node.name),
+      link: node.route.routePath,
+    };
+  }
+  // Folder → group-as-item (collapsible item with children)
+  const children = sortChildren(node).map(buildSidebarItem).filter(Boolean) as SidebarItem[];
+  if (children.length === 0) return undefined;
   return {
-    text: groupText,
-    items: routes.map(toSidebarItem),
+    text: node.meta?.title || humanize(node.name),
+    items: children,
   };
 }
 
-export function createAutoSidebar(
-  routes: RouteMeta[],
-  prefix?: string,
-  excludePrefixes: string[] = [],
-): DefaultTheme.Sidebar {
-  const groups = new Map<string, RouteMeta[]>();
-
-  for (const route of routes) {
-    if (isHiddenFromSidebar(route)) {
-      continue;
-    }
-    if (!isRouteUnderPrefix(route.routePath, prefix, excludePrefixes)) {
-      continue;
-    }
-
-    const key = getSidebarKey(route.routePath, prefix);
-    const groupRoutes = groups.get(key) || [];
-    groupRoutes.push(route);
-    groups.set(key, groupRoutes);
-  }
-
-  return Object.fromEntries(
-    [...groups.entries()]
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, groupRoutes]) => [key, [createGroup(key, groupRoutes.sort(compareRoutes))]]),
-  );
+function buildSidebarGroup(folder: FolderNode): SidebarGroup | undefined {
+  const items = sortChildren(folder).map(buildSidebarItem).filter(Boolean) as SidebarItem[];
+  if (items.length === 0) return undefined;
+  return {
+    text: folder.meta?.title || (folder.name ? humanize(folder.name) : undefined),
+    items,
+    collapsed: folder.meta?.collapsed,
+  };
 }
 
-export function resolveSidebar(routes: RouteMeta[], sidebar: AutoSidebarConfig) {
-  if (isAutoSidebarConfig(sidebar)) {
-    return createAutoSidebar(routes);
+/**
+ * Produce sidebar groups keyed by their top-level section (e.g. `/guide/`).
+ *
+ * - Each immediate subfolder of `scanRoot` becomes a sidebar section.
+ * - Pages directly under `scanRoot` (e.g. `index.md`) are skipped — they're
+ *   typically landing pages and rarely belong in a sidebar.
+ * - For i18n sites with `localePrefix` (e.g. `zh`), the locale folder is
+ *   transparent: groups are keyed under `/zh/<section>/`.
+ */
+export function buildSidebar(scanRoot: string, routes: RouteMeta[], localePrefix = ''): Sidebar {
+  // Only include routes that live under this locale (or the root locale).
+  const localeRoutes = routes.filter((route) => (route.localePrefix || '') === localePrefix);
+  if (localeRoutes.length === 0) return {};
+
+  const tree = buildTree(scanRoot, localeRoutes);
+  const sidebar: Sidebar = {};
+
+  // First-level folders below the locale folder become sections. For the root
+  // locale, the locale folder doesn't exist — first-level folders of scanRoot
+  // ARE the sections.
+  const sectionRoot = localePrefix
+    ? ((tree.children.find((c) => c.type === 'folder' && c.name === localePrefix) as
+        | FolderNode
+        | undefined) ?? tree)
+    : tree;
+
+  for (const child of sortChildren(sectionRoot)) {
+    if (child.type !== 'folder') continue;
+    const group = buildSidebarGroup(child);
+    if (!group) continue;
+    const key = localePrefix ? `/${localePrefix}/${child.name}/` : `/${child.name}/`;
+    sidebar[key] = [group];
   }
 
-  const resolvedSidebar: DefaultTheme.Sidebar = {};
-  for (const [prefix, value] of Object.entries(sidebar)) {
+  return sidebar;
+}
+
+// -----------------------------------------------------------------------
+// Explicit sidebar config support (escape hatch)
+// -----------------------------------------------------------------------
+
+function isAutoMarker(value: unknown): value is 'auto' {
+  return value === 'auto';
+}
+
+/** True when any part of the user's sidebar config asks for auto-generation. */
+export function hasAutoSidebar(sidebar: unknown): boolean {
+  if (isAutoMarker(sidebar)) return true;
+  if (!sidebar || typeof sidebar !== 'object') return false;
+  return Object.values(sidebar as Record<string, unknown>).includes('auto');
+}
+
+/**
+ * Merge an explicit user sidebar config with an auto-generated one. For each
+ * key:
+ *   - `'auto'`        → use the auto sidebar entry for that prefix
+ *   - explicit groups → keep as-is
+ */
+export function resolveSidebarConfig(
+  userSidebar: SidebarConfig | undefined,
+  autoSidebar: Sidebar,
+): Sidebar {
+  if (!userSidebar || userSidebar === 'auto') {
+    return autoSidebar;
+  }
+
+  const result: Sidebar = { ...autoSidebar };
+  for (const [prefix, value] of Object.entries(userSidebar)) {
     if (value === 'auto') {
-      Object.assign(resolvedSidebar, createAutoSidebar(routes, prefix));
+      if (autoSidebar[prefix]) result[prefix] = autoSidebar[prefix];
     } else {
-      resolvedSidebar[prefix] = value;
+      result[prefix] = value;
     }
   }
-  return resolvedSidebar;
+  return result;
 }

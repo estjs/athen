@@ -8,7 +8,7 @@ import {
   normalizeRouteTarget,
 } from '../shared/utils';
 import type { BrokenLinksBehavior } from '../shared/types';
-import type { RouteMeta } from './plugins/router/routeService';
+import type { RouteMeta } from './routes';
 
 export interface BrokenLinkIssue {
   file: string;
@@ -27,11 +27,11 @@ export interface CheckBrokenLinksOptions {
 const LINK_RE = /(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+["'][^"']*["'])?\)/g;
 const SPECIAL_PROTOCOL_RE = /^(https?:)?\/\/|^(mailto|tel):/i;
 
-function stripMarkdownExtension(filePath: string) {
+function removeMdExtension(filePath: string) {
   return filePath.replace(/\.(mdx?|html)$/, '');
 }
 
-function splitLink(link: string) {
+function parseLink(link: string) {
   const [withoutHash, ...hashParts] = link.split('#');
   return {
     path: withoutHash,
@@ -46,7 +46,7 @@ function createRouteMaps(routes: RouteMeta[], urlPolicy?: UrlPolicy) {
   for (const route of routes) {
     routeMap.set(normalizePublicRoute(route.routePath, urlPolicy), route);
 
-    const fileKey = stripMarkdownExtension(route.filePath);
+    const fileKey = removeMdExtension(route.filePath);
     fileMap.set(fileKey, route);
     if (fileKey.endsWith('/index')) {
       fileMap.set(fileKey.replace(/\/index$/, ''), route);
@@ -56,10 +56,6 @@ function createRouteMaps(routes: RouteMeta[], urlPolicy?: UrlPolicy) {
   return { routeMap, fileMap };
 }
 
-function extractLinks(content: string) {
-  return [...content.matchAll(LINK_RE)].map((match) => match[1]).filter(Boolean);
-}
-
 function resolveRelativeFileRoute(
   source: RouteMeta,
   linkPath: string,
@@ -67,7 +63,7 @@ function resolveRelativeFileRoute(
 ) {
   const sourceDir = path.posix.dirname(source.filePath);
   const targetFile = path.posix.normalize(path.posix.join(sourceDir, cleanUrl(linkPath)));
-  return fileMap.get(stripMarkdownExtension(targetFile));
+  return fileMap.get(removeMdExtension(targetFile));
 }
 
 function resolveRoute(
@@ -77,7 +73,7 @@ function resolveRoute(
   fileMap: Map<string, RouteMeta>,
   urlPolicy?: UrlPolicy,
 ) {
-  const { path: linkPath, hash } = splitLink(link);
+  const { path: linkPath, hash } = parseLink(link);
 
   if (!linkPath) {
     return {
@@ -110,7 +106,7 @@ function resolveRoute(
     normalizeRouteTarget(`${routeTarget}${hash ? `#${hash}` : ''}`, urlPolicy),
     urlPolicy,
   );
-  const route = routeMap.get(splitLink(resolved).path);
+  const route = routeMap.get(parseLink(resolved).path);
 
   return {
     route,
@@ -157,7 +153,8 @@ export async function checkBrokenLinks(options: CheckBrokenLinksOptions) {
     }
 
     const content = await fs.readFile(route.absolutePath, 'utf-8');
-    for (const link of extractLinks(content)) {
+    const links = [...content.matchAll(LINK_RE)].map((match) => match[1]).filter(Boolean);
+    for (const link of links) {
       if (SPECIAL_PROTOCOL_RE.test(link)) {
         continue;
       }

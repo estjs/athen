@@ -1,10 +1,10 @@
 import { computed } from 'essor';
 import { withBase } from '@shared/utils';
-import { LOCALE_PREFERENCE_KEY } from '@shared/constants';
+import { LOCALE_PREFERENCE_KEY } from '@shared/locale';
 import Link from '../Link';
-import type { DefaultTheme } from '@/shared/types';
+import type { NavItemWithLink } from '@/shared/types';
 
-export type NavMenuLinkItem = DefaultTheme.NavItemWithLink & {
+export type NavMenuLinkItem = NavItemWithLink & {
   getLink?: () => string;
   localePrefix?: string;
 };
