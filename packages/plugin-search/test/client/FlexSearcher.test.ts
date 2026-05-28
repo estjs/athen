@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FlexSearcher } from '../src/client/FlexSearcher';
-import type { SearchIndexData } from '../src/types';
+import { FlexSearcher } from '../../src/client/FlexSearcher';
+import type { SearchIndexData } from '../../src/types';
 
 const cache = vi.hoisted(() => ({
   get: vi.fn(),
@@ -8,7 +8,7 @@ const cache = vi.hoisted(() => ({
   clear: vi.fn(),
 }));
 
-vi.mock('../src/client/SearchIndexCache', () => ({
+vi.mock('../../src/client/SearchIndexCache', () => ({
   SearchIndexCache: vi.fn(function () {
     return cache;
   }),

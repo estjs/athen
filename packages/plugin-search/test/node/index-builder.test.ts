@@ -2,8 +2,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { SearchIndexBuilder } from '../src/index-builder';
-import { createSearchIndexes, searchDocuments } from '../src/search-core';
+import { SearchIndexBuilder } from '../../src/index-builder';
+import { createSearchIndexes, searchDocuments } from '../../src/search-core';
 
 describe('searchIndexBuilder', () => {
   let builder: SearchIndexBuilder;

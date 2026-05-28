@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import searchPlugin from '../src/index';
+import searchPlugin from '../../src/index';
 
 // Mock fs and path
 vi.mock('node:fs', () => ({

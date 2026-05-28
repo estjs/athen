@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { type Header, backTrackHeaders, debounce, highlightText } from '../src/client/utils';
+import { type Header, backTrackHeaders, debounce, highlightText } from '../../src/client/utils';
 
 describe('debounce', () => {
   beforeEach(() => {
