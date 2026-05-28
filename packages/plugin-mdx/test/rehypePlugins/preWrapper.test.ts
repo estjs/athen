@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
 import rehypeStringify from 'rehype-stringify';
-import { rehypePluginPreWrapper } from '../src/rehypePlugins/preWrapper';
+import { rehypePluginPreWrapper } from '../../src/rehypePlugins/preWrapper';
 
 describe('rehypePluginPreWrapper', () => {
   const processHtml = async (

@@ -145,7 +145,7 @@ describe('isReg', () => {
   });
 });
 
-describe('mD_REGEX', () => {
+describe('MD_REGEX', () => {
   it('should match .md files', () => {
     expect(MD_REGEX.test('file.md')).toBe(true);
     expect(MD_REGEX.test('path/to/file.md')).toBe(true);
@@ -174,7 +174,7 @@ describe('mD_REGEX', () => {
   });
 });
 
-describe('dIRECTIVE_TYPES', () => {
+describe('DIRECTIVE_TYPES', () => {
   it('should contain expected directive types', () => {
     expect(DIRECTIVE_TYPES).toContain('tip');
     expect(DIRECTIVE_TYPES).toContain('warning');
@@ -187,7 +187,7 @@ describe('dIRECTIVE_TYPES', () => {
   });
 });
 
-describe('tARGET_BLANK_WHITE_LIST', () => {
+describe('TARGET_BLANK_WHITE_LIST', () => {
   it('should contain essor related URLs', () => {
     expect(TARGET_BLANK_WHITE_LIST).toContain('https://essor.netlify.app/');
     expect(TARGET_BLANK_WHITE_LIST).toContain('https://essor-playground.netlify.app/');
