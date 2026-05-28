@@ -1,10 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
-/**
- * utility switching to zh and back to en routes
- */
-async function switchLocale(page, locale: 'en' | 'zh') {
-  // Translation dropdown is rendered only when multi-lang enabled
+async function switchLocale(page: Page, locale: 'en' | 'zh') {
   await page.locator('button:has(.i-carbon-translate)').hover();
   await page.getByText(locale === 'en' ? 'English' : '简体中文', { exact: true }).click();
   if (locale === 'zh') {
@@ -14,33 +10,30 @@ async function switchLocale(page, locale: 'en' | 'zh') {
   }
 }
 
-test.describe('Athen docs E2E', () => {
-  test('search box returns result and navigates', async ({ page }) => {
+test.describe('nav / search / dark mode', () => {
+  test('search box returns a result and navigates to it', async ({ page }) => {
     await page.goto('/');
-    await page.keyboard.press('/'); // Focus search input via shortcut
+    await page.keyboard.press('/');
     await page.getByPlaceholder('Search...').fill('Quick Start');
 
-    // Expect suggestion list to appear
     const firstResult = page.locator('.search-results .result-item').first();
     await expect(firstResult).toBeVisible();
     await firstResult.click();
 
-    // Should navigate to getting-started page
     await expect(page).toHaveURL(/getting-started/);
     await expect(page.locator('h1')).toContainText('Quick Start');
   });
 
-  test('sidebar navigation changes article', async ({ page }) => {
+  test('sidebar navigation changes the active article', async ({ page }) => {
     await page.goto('/guide/getting-started');
 
-    const sidebarLink = page.locator('.sidebar').locator('text=Assets handle');
-    await sidebarLink.click();
+    await page.locator('.sidebar').locator('text=Assets handle').click();
 
     await expect(page).toHaveURL(/static-assets/);
     await expect(page.locator('h1')).toContainText(/Assets handle|静态资源/);
   });
 
-  test('doc footer updates after sidebar navigation', async ({ page }) => {
+  test('doc footer prev/next update after sidebar navigation', async ({ page }) => {
     await page.goto('/guide/getting-started');
 
     await page.locator('.sidebar').getByRole('link', { name: 'Assets handle' }).click();
@@ -83,18 +76,14 @@ test.describe('Athen docs E2E', () => {
     const html = page.locator('html');
     const toggle = page.locator('button[role="switch"]');
 
-    // ensure initial state is light
     await expect(html).not.toHaveClass(/dark/);
 
-    // toggle to dark mode
     await toggle.click();
     await expect(html).toHaveClass(/dark/);
 
-    // reload the page; preference should persist via localStorage
     await page.reload();
     await expect(html).toHaveClass(/dark/);
 
-    // toggle back to light and verify persistence again
     await toggle.click();
     await expect(html).not.toHaveClass(/dark/);
     await page.reload();
@@ -111,9 +100,8 @@ test.describe('Athen docs E2E', () => {
     await expect(page.getByRole('link', { name: '快速开始' })).toBeVisible();
   });
 
-  test('language switch navigation', async ({ page }) => {
+  test('language switch round-trips between English and Chinese', async ({ page }) => {
     await page.goto('/');
-    // Ensure we are on english homepage
     await expect(page.locator('h1')).toContainText('athen');
     await expect(page.getByRole('link', { name: 'Get Started' })).toBeVisible();
 
