@@ -6,10 +6,10 @@ export function pluginMdxEssor(): Plugin {
     name: 'vite-plugin-mdx-essor',
     transform(code, id) {
       id = cleanUrl(id);
-      if (!MD_REGEX.test(id)) return code;
+      if (!MD_REGEX.test(id)) return;
 
       code = code.replaceAll('<_components.', '<').replaceAll('</_components.', '</');
-      return code;
+      return { code, moduleType: 'js' };
     },
   };
 }

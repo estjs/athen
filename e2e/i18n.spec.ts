@@ -41,7 +41,7 @@ test.describe('i18n synchronization', () => {
     await expect(page.getByRole('heading', { name: 'Quick Start', level: 1 })).toBeVisible();
     await expect(page.locator('.nav').getByRole('link', { name: 'Guide' })).toBeVisible();
     await expect(
-      page.locator('.sidebar').getByRole('link', { name: 'Getting Started' }),
+      page.locator('.sidebar').getByRole('link', { name: 'Quick Start' }),
     ).toBeVisible();
     await expect(page.locator('.aside')).toContainText('Why Choose Athen?');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');

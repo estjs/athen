@@ -1,4 +1,5 @@
-import pluginMdx from '@mdx-js/rollup';
+import { compile } from '@mdx-js/mdx';
+import { SourceMapGenerator } from 'source-map';
 import remarkPluginGFM from 'remark-gfm';
 import remarkPluginFrontMatter from 'remark-frontmatter';
 import remarkDirective from 'remark-directive';
@@ -13,85 +14,122 @@ import { remarkPluginTip } from './remarkPlugins/tip';
 import { rehypePluginShiki } from './rehypePlugins/shiki';
 import { remarkPluginNormalizeLink } from './remarkPlugins/link';
 import { rehypePluginPreWrapper } from './rehypePlugins/preWrapper';
-import { TARGET_BLANK_WHITE_LIST, isReg } from './utils';
+import { TARGET_BLANK_WHITE_LIST, cleanUrl, isReg } from './utils';
 import type { options } from './types';
 import type { Plugin } from 'vite';
 import type { PluggableList } from 'unified';
 
+const MD_EXTENSIONS = ['md', 'markdown', 'mdown', 'mkdn', 'mkd', 'mdwn', 'mkdown', 'ron'] as const;
+const MD_FILTER = new RegExp(`\\.(?:${MD_EXTENSIONS.join('|')})(?:$|\\?)`);
+const MDX_FILTER = new RegExp(`\\.(?:${MD_EXTENSIONS.join('|')}|mdx)(?:$|\\?)`);
+const ESCAPE_PLACEHOLDER = '__HTMLESC';
+
 const highlighterPromises = new Map<string, ReturnType<typeof createHighlighter>>();
 
-function getShikiThemes(config: options) {
-  const themes = [...(config.shiki?.themes || [])];
-  const activeTheme = config.shiki?.theme;
-  if (activeTheme && !themes.includes(activeTheme)) {
-    themes.unshift(activeTheme);
-  }
-  return themes.length ? themes : ['dark-plus'];
-}
-
-function getActiveShikiTheme(config: options, themes: string[]) {
-  const activeTheme = config.shiki?.theme;
-  return activeTheme && themes.includes(activeTheme) ? activeTheme : themes[0];
+function resolveShikiThemes(config: options): { themes: string[]; active: string } {
+  const configured = [...(config.shiki?.themes || [])];
+  const requested = config.shiki?.theme;
+  if (requested && !configured.includes(requested)) configured.unshift(requested);
+  const themes = configured.length ? configured : ['dark-plus'];
+  return { themes, active: requested && themes.includes(requested) ? requested : themes[0] };
 }
 
 function getShikiHighlighter(themes: string[]) {
-  const cacheKey = themes.join('\0');
-  let highlighterPromise = highlighterPromises.get(cacheKey);
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
-      themes,
-      langs: Object.keys(bundledLanguages),
-    });
-    highlighterPromises.set(cacheKey, highlighterPromise);
+  const key = themes.join('\0');
+  let promise = highlighterPromises.get(key);
+  if (!promise) {
+    promise = createHighlighter({ themes, langs: Object.keys(bundledLanguages) });
+    highlighterPromises.set(key, promise);
   }
-  return highlighterPromise;
+  return promise;
 }
 
 function createExternalLinksPlugin(config: options) {
-  if (config.externalLinks === false) {
-    return null;
-  }
-
-  const externalLinks = config.externalLinks || {};
+  if (config.externalLinks === false) return null;
+  const { target, rel } = config.externalLinks || {};
+  const fallback = target ?? '_blank';
   return [
     rehypePluginExternalLinks,
     {
       target: (node: any) => {
         const href = node.properties?.href;
-        const whiteList = [...TARGET_BLANK_WHITE_LIST];
-        if (typeof href === 'string') {
-          const inWhiteList = whiteList.some((item) => {
-            if (isReg(item)) return item.test(href);
-            return href.startsWith(item);
-          });
-          if (inWhiteList) return '_self';
-        }
-        return externalLinks.target ?? '_blank';
+        if (typeof href !== 'string') return fallback;
+        const matched = TARGET_BLANK_WHITE_LIST.some((item) =>
+          isReg(item) ? item.test(href) : href.startsWith(item),
+        );
+        return matched ? '_self' : fallback;
       },
-      rel: externalLinks.rel,
+      rel,
     },
   ];
 }
 
 function createTocPlugin(config: options) {
-  if (config.toc === false) {
-    return [remarkPluginToc, { enabled: false }];
-  }
-  if (config.toc && typeof config.toc === 'object') {
-    return [remarkPluginToc, config.toc];
-  }
+  if (config.toc === false) return [remarkPluginToc, { enabled: false }];
+  if (config.toc && typeof config.toc === 'object') return [remarkPluginToc, config.toc];
   return remarkPluginToc;
 }
 
-export async function pluginMdxRollup(config: options): Promise<Plugin> {
-  config = config || {};
-  const shikiThemes = getShikiThemes(config);
-  const shikiTheme = getActiveShikiTheme(config, shikiThemes);
+function stash(placeholders: string[], value: string) {
+  placeholders.push(value);
+  return `${ESCAPE_PLACEHOLDER}${placeholders.length - 1}__`;
+}
+
+function protectFencedCodeBlocks(source: string, placeholders: string[]) {
+  const out: string[] = [];
+  let fence: { marker: '`' | '~'; length: number; indent: string; lines: string[] } | null = null;
+
+  for (const line of source.split('\n')) {
+    if (fence) {
+      fence.lines.push(line);
+      if (new RegExp(`^${fence.indent}${fence.marker}{${fence.length},}\\s*$`).test(line)) {
+        out.push(stash(placeholders, fence.lines.join('\n')));
+        fence = null;
+      }
+      continue;
+    }
+    const open = line.match(/^( {0,3})(`{3,}|~{3,})/);
+    if (!open) {
+      out.push(line);
+      continue;
+    }
+    fence = {
+      marker: open[2][0] as '`' | '~',
+      length: open[2].length,
+      indent: open[1],
+      lines: [line],
+    };
+  }
+
+  if (fence) out.push(...fence.lines);
+  return out.join('\n');
+}
+
+// Escape `<` that starts an HTML/JSX tag in Markdown prose, so MDX does not
+// interpret it as a JSX element. Inline code spans AND fenced code blocks are
+// passed through untouched — MDX/Shiki produce JSX text nodes for their
+// contents, and Essor's SSR renderer HTML-escapes those at render time.
+export function escapeHtmlTags(source: string, id?: string): string {
+  if (id && !MD_FILTER.test(cleanUrl(id))) return source;
+
+  const placeholders: string[] = [];
+  let result = protectFencedCodeBlocks(source, placeholders);
+  result = result.replaceAll(/(`+)([^`]+)\1/g, (match) => stash(placeholders, match));
+  result = result.replaceAll(/<(\/?)([a-z])/g, '&lt;$1$2');
+  result = result.replaceAll(
+    /__HTMLESC(\d+)__/g,
+    (_m, idx) => placeholders[Number.parseInt(idx, 10)],
+  );
+  return result;
+}
+
+export async function pluginMdxRollup(config?: options): Promise<Plugin[]> {
+  config = config || ({} as options);
+  const { themes, active } = resolveShikiThemes(config);
   const externalLinksPlugin = createExternalLinksPlugin(config);
 
   const remarkPlugins: PluggableList = [
     remarkPluginGFM,
-    // The following two plugin for frontmatter
     remarkPluginFrontMatter,
     [remarkPluginMDXFrontMatter, { name: 'frontmatter' }],
     remarkGemoji,
@@ -107,37 +145,51 @@ export async function pluginMdxRollup(config: options): Promise<Plugin> {
     [
       rehypePluginAutolinkHeadings,
       {
-        properties: {
-          class: 'header-anchor',
-          ariaHidden: 'true',
-        },
-        content: {
-          type: 'text',
-          value: '#',
-        },
+        properties: { class: 'header-anchor', ariaHidden: 'true' },
+        content: { type: 'text', value: '#' },
       },
     ],
+    ...(externalLinksPlugin ? [externalLinksPlugin as never] : []),
+    [rehypePluginPreWrapper, { lineNumbers: config.lineNumbers }],
+    [rehypePluginShiki, { highlighter: await getShikiHighlighter(themes), theme: active }],
+    ...(config.rehypePlugins || []),
   ];
 
-  if (externalLinksPlugin) {
-    rehypePlugins.push(externalLinksPlugin as never);
-  }
-  rehypePlugins.push(
-    [rehypePluginPreWrapper, { lineNumbers: config.lineNumbers }],
-    [
-      rehypePluginShiki,
-      {
-        highlighter: await getShikiHighlighter(shikiThemes),
-        theme: shikiTheme,
-      },
-    ],
-    ...(config.rehypePlugins || []),
-  );
-
-  return pluginMdx({
-    elementAttributeNameCase: 'html',
+  const mdxOptions = {
+    SourceMapGenerator,
+    elementAttributeNameCase: 'html' as const,
     jsx: true,
+    mdExtensions: MD_EXTENSIONS.map((ext) => `.${ext}`),
+    mdxExtensions: ['.mdx'],
     remarkPlugins,
     rehypePlugins,
-  }) as unknown as Plugin;
+    development: false,
+  };
+
+  return [
+    {
+      name: 'athen:mdx-escape-html',
+      enforce: 'pre',
+      transform: {
+        filter: { id: MD_FILTER },
+        handler(code, id) {
+          return { code: escapeHtmlTags(code, id), map: null };
+        },
+      },
+    },
+    {
+      name: 'athen:mdx-rolldown',
+      config(_config, env) {
+        mdxOptions.development = env.mode === 'development';
+      },
+      transform: {
+        filter: { id: MDX_FILTER },
+        async handler(code, id) {
+          const [path] = id.split('?');
+          const compiled = await compile({ path, value: code }, mdxOptions);
+          return { code: String(compiled.value), map: compiled.map, moduleType: 'js' };
+        },
+      },
+    },
+  ];
 }

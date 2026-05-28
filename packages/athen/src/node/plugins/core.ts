@@ -13,7 +13,6 @@ import {
   CLIENT_ENTRY_PATH,
   CLIENT_EXPORTS_PATH,
   DEFAULT_EXTERNALS,
-  DEFAULT_MDX_COMPONENTS_PATH,
   DEFAULT_THEME_PATH,
   MD_REGEX,
   PACKAGE_ROOT,
@@ -22,7 +21,7 @@ import {
   isProduction,
 } from '../constants';
 import { injectIntoHtml, resolveBaseTemplate } from '../html';
-import { type RouteMeta, buildRoutesModule, findRoute } from '../routes';
+import { buildRoutesModule, findRoute } from '../routes';
 import type { SiteConfig } from '@/shared/types';
 
 const require = createRequire(import.meta.url);
@@ -67,7 +66,7 @@ export function pluginRoute(config: SiteConfig): Plugin {
     },
     load(id) {
       if (id === `\0${CONVENTIONAL_ROUTE_ID}`) {
-        return buildRoutesModule((config._routes as RouteMeta[]) || [], config.siteData);
+        return buildRoutesModule(config._routes ?? [], config.siteData);
       }
     },
   };
@@ -110,7 +109,6 @@ function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): 
             { find: '@runtime', replacement: CLIENT_EXPORTS_PATH },
             { find: '@shared', replacement: SHARED_PATH },
             { find: '@theme-default', replacement: DEFAULT_THEME_PATH },
-            { find: /^athen\/mdx$/, replacement: DEFAULT_MDX_COMPONENTS_PATH },
           ],
         },
         build: { target: 'baseline-widely-available' },
@@ -134,7 +132,7 @@ function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): 
 // ---------------------------------------------------------------------------
 
 function pluginIndexHtml(config: SiteConfig): Plugin {
-  const routes = (config._routes as RouteMeta[]) || [];
+  const routes = config._routes ?? [];
 
   return {
     name: 'athen:index-html',
@@ -241,7 +239,7 @@ function pluginTransform(isServer: boolean): Plugin {
         sourceType: 'module',
         plugins: babelPlugins,
       });
-      return { code: result?.code ?? code, map: result?.map ?? undefined };
+      return { code: result?.code ?? code, map: result?.map ?? undefined, moduleType: 'js' };
     },
   };
 }

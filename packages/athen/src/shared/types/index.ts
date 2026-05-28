@@ -103,6 +103,25 @@ export interface Router {
   localePrefix?: string;
 }
 
+/**
+ * Pre-scanned route record produced by `collectRoutes`. Shared by the
+ * build-time route table, sidebar generation, broken-link checking, and the
+ * `athen:routes` virtual module codegen.
+ */
+export interface RouteMeta {
+  routePath: string;
+  absolutePath: string;
+  filePath: string;
+  name?: string;
+  title?: string;
+  description?: string;
+  frontmatter?: Record<string, unknown>;
+  headings?: Array<{ id: string; text: string; depth: number }>;
+  /** Normalized URL prefix of the locale this route belongs to (`''` for root). */
+  localePrefix?: string;
+  lang?: string;
+}
+
 export interface PluginOptions {
   root: string;
 }
@@ -218,7 +237,7 @@ export interface SiteConfig {
   onBrokenLinks?: BrokenLinksBehavior;
   srcDir?: string;
   /** Internal: pre-scanned route table shared across plugins and build steps. */
-  _routes?: unknown[];
+  _routes?: RouteMeta[];
 }
 
 /**
@@ -272,6 +291,7 @@ export interface PageData {
   pageType: PageType;
   frontmatter?: FrontMatterMeta;
   description?: string;
+  lang?: string;
   toc?: Header[];
   content?: string;
   routePath: string;

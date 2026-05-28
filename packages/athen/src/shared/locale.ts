@@ -83,6 +83,31 @@ export function getDefaultLocaleSourcePrefix(config?: LocaleAwareConfig): string
   return sourcePrefix ? `/${sourcePrefix}/` : undefined;
 }
 
+/**
+ * Find the locale that owns `routePath`. Longest normalized prefix wins; the
+ * root locale (`prefix === ''`) only matches as the final fallback. Returns
+ * `undefined` when no locales are configured.
+ */
+export function findLocaleByRoutePath(
+  config: LocaleAwareConfig | undefined,
+  routePath = '/',
+): { prefix: string; key: string; config: LocaleConfig } | undefined {
+  const locales = getLocaleConfigs(config);
+  if (!locales) return undefined;
+
+  const entries = Object.entries(locales)
+    .map(([key, cfg]) => ({ key, prefix: normalizeLocalePrefix(key), config: cfg }))
+    .sort((a, b) => b.prefix.length - a.prefix.length);
+
+  const lower = routePath.toLowerCase();
+  for (const entry of entries) {
+    if (!entry.prefix) continue;
+    const slash = `/${entry.prefix}`;
+    if (lower === slash || lower.startsWith(`${slash}/`)) return entry;
+  }
+  return entries.find((entry) => entry.prefix === '');
+}
+
 export function stripLocalePrefix(path: string, localePrefix?: string): string {
   const normalizedLocale = normalizeLocalePrefix(localePrefix);
   if (!normalizedLocale) return path;

@@ -77,7 +77,7 @@ function dedupeByName(builtIn: PluginOption[], userPlugins: PluginOption[]): Plu
 
 export async function createVitePlugins(
   config: SiteConfig,
-  isServer = true,
+  isServer = false,
   restartServer?: () => Promise<void>,
 ) {
   const mdxOptions = {

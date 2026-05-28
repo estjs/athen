@@ -60,4 +60,40 @@ describe('runtime resolveHeadInput', () => {
     expect(resolveHeadInput(page({ lang: 'zh' })).htmlAttrs.lang).toBe('zh');
     expect(resolveHeadInput(page({})).htmlAttrs.lang).toBe('en');
   });
+
+  it('uses locale lang over siteData.lang when route matches a locale prefix', () => {
+    const i18nSiteData: SiteData = {
+      ...siteData,
+      lang: 'en-US',
+      locales: {
+        '/': { label: 'English', lang: 'en' },
+        '/zh/': { label: '简体中文', lang: 'zh' },
+      },
+    };
+    const zhPage = page({
+      routePath: '/zh/guide/getting-started',
+      siteData: i18nSiteData,
+    });
+    expect(resolveHeadInput(zhPage).htmlAttrs.lang).toBe('zh');
+
+    const enPage = page({
+      routePath: '/guide/getting-started',
+      siteData: i18nSiteData,
+    });
+    expect(resolveHeadInput(enPage).htmlAttrs.lang).toBe('en');
+  });
+
+  it('falls back through locale description chain', () => {
+    const i18nSiteData: SiteData = {
+      ...siteData,
+      locales: {
+        '/zh/': { label: '简体中文', lang: 'zh', description: 'Locale desc' },
+      },
+    };
+    const zhPage = page({
+      routePath: '/zh/guide/getting-started',
+      siteData: i18nSiteData,
+    });
+    expect(resolveHeadInput(zhPage).meta[0].content).toBe('Locale desc');
+  });
 });

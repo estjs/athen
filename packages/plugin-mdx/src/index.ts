@@ -9,7 +9,7 @@ import type { Plugin } from 'vite';
 export async function pluginMdx(config: options): Promise<Plugin<any>[]> {
   config = { ...defaultConfig, ...config };
   return [
-    await pluginMdxRollup(config),
+    ...(await pluginMdxRollup(config)),
     config.essor && pluginMdxEssor(),
     pluginMdxGit(),
     pluginMdxRawContent(),

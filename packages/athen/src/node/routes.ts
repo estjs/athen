@@ -4,34 +4,16 @@ import { globSync } from 'glob';
 import { normalizePath } from 'vite';
 import {
   type LocaleAwareConfig,
+  findLocaleByRoutePath,
   getDefaultLocaleSourcePrefix,
-  getLocaleConfigs,
   normalizeLanguageTag,
-  normalizeLocalePrefix,
   stripLocalePrefix,
 } from '../shared/locale';
 import { humanize } from '../shared/title';
 import { addLeadingSlash, normalizePublicRoute, withBase } from '../shared/utils';
-import type { RouteOptions } from '../shared/types';
+import type { RouteMeta, RouteOptions } from '../shared/types';
 
-export interface RouteMeta {
-  routePath: string;
-  absolutePath: string;
-  filePath: string;
-  name?: string;
-  title?: string;
-  description?: string;
-  frontmatter?: Record<string, unknown>;
-  headings?: Array<{ id: string; text: string; depth: number }>;
-  /**
-   * Normalized URL prefix of the locale this route belongs to (`''` for the
-   * root locale, `'zh'` for `/zh/`, etc.). Resolved at codegen time so
-   * per-page `<title>` / `<html lang>` can be computed without re-running
-   * locale match logic in dev middleware or build.
-   */
-  localePrefix?: string;
-  lang?: string;
-}
+export type { RouteMeta };
 
 type LocaleAwareSiteData = LocaleAwareConfig & { title?: string };
 
@@ -42,7 +24,7 @@ const DEFAULT_IGNORE = [
   '**/.temp/**',
   'athen.config.*',
 ];
-const DEFAULT_INCLUDE = '**/*.{ts,tsx,jsx,md,mdx}';
+const DEFAULT_INCLUDE = '**/*.{tsx,jsx,md,mdx}';
 const FRONTMATTER_LINE = /^([\w-]+):\s*(.+)$/;
 const HEADING_LINE = /^(#{1,6})\s+(.+)$/;
 
@@ -130,29 +112,15 @@ function readPageMeta(filePath: string, routePath: string) {
 }
 
 function resolveLocaleForRoute(routePath: string, siteData?: LocaleAwareSiteData) {
-  const locales = getLocaleConfigs(siteData);
-  if (!locales) {
+  const match = findLocaleByRoutePath(siteData, routePath);
+  if (!match) {
     return { localePrefix: '', lang: normalizeLanguageTag(siteData?.lang) || undefined };
   }
-  // Longest prefix first so `/zh-cn/...` beats `/zh/...`.
-  const entries = Object.entries(locales)
-    .map(([key, cfg]) => ({ key, normalized: normalizeLocalePrefix(key), cfg }))
-    .sort((a, b) => b.normalized.length - a.normalized.length);
-
-  const lower = routePath.toLowerCase();
-  for (const { normalized, cfg } of entries) {
-    if (!normalized) continue;
-    const slash = `/${normalized}`;
-    if (lower === slash || lower.startsWith(`${slash}/`)) {
-      return { localePrefix: normalized, lang: normalizeLanguageTag(cfg?.lang) || normalized };
-    }
+  const lang = normalizeLanguageTag(match.config?.lang);
+  if (match.prefix) {
+    return { localePrefix: match.prefix, lang: lang || match.prefix };
   }
-  const root = entries.find((e) => e.normalized === '');
-  return {
-    localePrefix: '',
-    lang:
-      normalizeLanguageTag(root?.cfg?.lang) || normalizeLanguageTag(siteData?.lang) || undefined,
-  };
+  return { localePrefix: '', lang: lang || normalizeLanguageTag(siteData?.lang) || undefined };
 }
 
 function resolveRoutePath(

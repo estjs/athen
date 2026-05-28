@@ -1,7 +1,9 @@
 import { effect } from 'essor';
 import { createHead } from 'unhead/client';
 import { useHead } from 'unhead';
-import { composeHeadInput, type HeadInput } from '@shared/title';
+import { type HeadInput, composeHeadInput } from '@shared/title';
+import { findLocaleByRoutePath } from '@shared/locale';
+import { getLocaleSiteData } from '@shared/utils';
 import type { PageData } from '@shared/types';
 
 /**
@@ -25,14 +27,18 @@ export function syncPageHead(pageData: PageData) {
 export function resolveHeadInput(pageData: PageData): HeadInput {
   const siteData = pageData.siteData;
   const fm = (pageData.frontmatter ?? {}) as Record<string, unknown>;
+  const match = findLocaleByRoutePath(siteData, pageData.routePath);
+  const locale = match ? getLocaleSiteData(siteData, match.prefix) : undefined;
 
   return composeHeadInput({
     pageTitle: typeof fm.title === 'string' ? fm.title : pageData.title,
     pageDescription: typeof fm.description === 'string' ? fm.description : pageData.description,
-    pageLang: (pageData as { lang?: string }).lang,
+    pageLang: pageData.lang,
+    localeTitle: locale?.title,
+    localeDescription: locale?.description,
+    localeLang: locale?.lang,
     siteTitle: siteData?.title,
     siteDescription: siteData?.description,
     siteLang: siteData?.lang,
   });
 }
-

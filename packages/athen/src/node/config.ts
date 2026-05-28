@@ -74,7 +74,7 @@ const LOCALE_REDIRECT_SCRIPT_BODY = `cfg => {
   const norm = t => (t||'').replace(/_/g,'-').trim().toLowerCase();
   const cur = (location.pathname||'/').replace(/\\/+$/,'') || '/';
   const go = p => { location.href = cfg.base + '/' + p + '/'; };
-  if (cfg.entries.some(e => { const p = cfg.base+'/'+strip(e.prefix); return cur===p||cur.startsWith(p+'/'); })) return;
+  if (cfg.entries.some(e => { const sp = strip(e.prefix); if(!sp) return false; const p = cfg.base+'/'+sp; return cur===p||cur.startsWith(p+'/'); })) return;
   let stored=''; try { stored = strip(localStorage.getItem(cfg.key)||''); } catch {}
   if (stored && cfg.entries.some(e => strip(e.prefix)===stored)) return go(stored);
   if (cfg.hasRoot) return;
@@ -176,17 +176,15 @@ export function resolveLocaleRedirectTarget(
 }
 
 function resolveRoute(userConfig: UserConfig): RouteOptions | undefined {
-  const route: RouteOptions = {
-    ...(userConfig.route || {}),
-    ...(userConfig.srcDir && { root: userConfig.srcDir }),
-    ...(userConfig.routeBasePath && { prefix: userConfig.routeBasePath }),
-    ...(userConfig.include && { include: userConfig.include }),
-    ...(userConfig.exclude && { exclude: userConfig.exclude }),
-    ...(userConfig.extensions && { extensions: userConfig.extensions }),
-    ...(userConfig.cleanUrls !== undefined && { cleanUrls: userConfig.cleanUrls }),
-    ...(userConfig.trailingSlash !== undefined && { trailingSlash: userConfig.trailingSlash }),
-    ...(userConfig.rewrites && { rewrites: userConfig.rewrites }),
-  };
+  const route: RouteOptions = { ...(userConfig.route || {}) };
+  if (userConfig.srcDir) route.root = userConfig.srcDir;
+  if (userConfig.routeBasePath) route.prefix = userConfig.routeBasePath;
+  if (userConfig.include) route.include = userConfig.include;
+  if (userConfig.exclude) route.exclude = userConfig.exclude;
+  if (userConfig.extensions) route.extensions = userConfig.extensions;
+  if (userConfig.cleanUrls !== undefined) route.cleanUrls = userConfig.cleanUrls;
+  if (userConfig.trailingSlash !== undefined) route.trailingSlash = userConfig.trailingSlash;
+  if (userConfig.rewrites) route.rewrites = userConfig.rewrites;
   return Object.keys(route).length ? route : undefined;
 }
 

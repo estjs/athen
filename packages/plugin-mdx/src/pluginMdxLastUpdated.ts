@@ -36,7 +36,7 @@ export function pluginMdxGit(): Plugin {
     name: 'vite-plugin-mdx-last-update',
     async transform(code, id) {
       id = cleanUrl(id);
-      if (!MD_REGEX.test(id)) return code;
+      if (!MD_REGEX.test(id)) return;
 
       let lastUpdatedTime = '';
       if (cache.has(id)) {
@@ -48,7 +48,10 @@ export function pluginMdxGit(): Plugin {
         cache.set(id, lastUpdatedTime);
       }
 
-      return appendNamedExport(code, 'lastUpdatedTime', lastUpdatedTime);
+      return {
+        code: appendNamedExport(code, 'lastUpdatedTime', lastUpdatedTime),
+        moduleType: 'js',
+      };
     },
   };
 }

@@ -41,7 +41,7 @@ function stopProcess(child: ChildProcess) {
         } else if (child.pid) {
           process.kill(-child.pid, 'SIGKILL');
         }
-      } catch { }
+      } catch {}
       resolveStop();
     }, 5000);
 
@@ -144,10 +144,9 @@ test('custom theme example renders its theme layout in dev', async ({ page }) =>
 
   await expect(page.locator('.example-theme-shell')).toBeVisible();
   await expect(page.locator('.example-theme-brand')).toHaveText('Custom Theme Example');
-  await expect(page.locator('.example-theme-nav').getByRole('link', { name: 'Guide', exact: true })).toHaveAttribute(
-    'href',
-    '/guide/getting-started',
-  );
+  await expect(
+    page.locator('.example-theme-nav').getByRole('link', { name: 'Guide', exact: true }),
+  ).toHaveAttribute('href', '/guide/getting-started');
   await expect(page.getByRole('heading', { name: 'Custom Theme Example', level: 1 })).toBeVisible();
 
   await server.stop();
@@ -192,7 +191,9 @@ test('docs-site example covers custom home, auto sidebar, and i18n', async ({ pa
   await page.goto(server.baseURL);
 
   await expect(page.locator('.custom-home')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Build a custom docs home', level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Build a custom docs home', level: 1 }),
+  ).toBeVisible();
   await expect(page.getByText('Update content in home.data.ts')).toBeVisible();
   await expect(page.getByText('Edit the visual system in home.css')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Metrics', level: 2 })).toBeVisible();
@@ -215,7 +216,7 @@ test('docs-site example covers custom home, auto sidebar, and i18n', async ({ pa
   await expect(page.getByRole('heading', { name: 'Athen 国际化示例', level: 1 })).toBeVisible();
 
   await page.goto(`${server.baseURL}/zh/guide/install`);
-  await expect(page.locator('.sidebar')).toContainText('Zh Guide');
+  await expect(page.locator('.sidebar')).toContainText('Guide概览安装用法');
   await expect(page.locator('.sidebar a')).toHaveText(['概览', '安装', '用法']);
 
   await page.goto(`${server.baseURL}/fr/`);
@@ -252,9 +253,9 @@ test('integrations example covers search, analytics, plugin, and presets', async
   await expect(page.locator('script[src*="googletagmanager.com"]').first()).toHaveCount(1);
   await expect(page.locator('script[data-domain="docs.example.com"]').first()).toHaveCount(1);
   await expect(page.locator('script[data-website-id="umami-example-id"]').first()).toHaveCount(1);
-  await expect(
-    page.evaluate(() => (window as any).__CUSTOM_ANALYTICS_EXAMPLE__),
-  ).resolves.toBe('custom analytics example');
+  await expect(page.evaluate(() => (window as any).__CUSTOM_ANALYTICS_EXAMPLE__)).resolves.toBe(
+    'custom analytics example',
+  );
 
   await page.goto(`${integrations.baseURL}/guide/plugin`);
   await expect(page.getByRole('heading', { name: 'Plugin Example', level: 1 })).toBeVisible();
@@ -270,7 +271,9 @@ test('integrations example covers search, analytics, plugin, and presets', async
 
   const algolia = await startExampleServer('preview', 'integrations/algolia', 9221);
   await page.goto(algolia.baseURL);
-  await expect(page.getByRole('heading', { name: 'Algolia Search Preset', level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Algolia Search Preset', level: 1 }),
+  ).toBeVisible();
   await expect(
     page.evaluate(() => (window as any).__ATHEN_SEARCH_CONFIG__?.provider),
   ).resolves.toBe('algolia');
@@ -279,7 +282,9 @@ test('integrations example covers search, analytics, plugin, and presets', async
 
   const disabled = await startExampleServer('preview', 'integrations/analytics-disabled', 9222);
   await page.goto(disabled.baseURL);
-  await expect(page.getByRole('heading', { name: 'Analytics Disabled Preset', level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Analytics Disabled Preset', level: 1 }),
+  ).toBeVisible();
   await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0);
   await disabled.stop();
 });

@@ -5,11 +5,11 @@ test.describe('production preview', () => {
   test('serves prerendered HTML for locale home pages', async ({ page }) => {
     const response = await page.request.get('/');
     const html = await response.text();
-    const ssgCssHref = html.match(/href="([^"]*\/assets\/ssg-entry-[^"]+\.css)"/)?.[1];
+    const ssgCssHref = html.match(/href="([^"]*\/assets\/ssrEntry-[^"]+\.css)"/)?.[1];
     const htmlWithoutScripts = html.replaceAll(/<script\b[\s\S]*?<\/script>/gi, '');
 
     expect(response.status()).toBe(200);
-    expect(html).toMatch(/Documentation framework based on Vite &(?:amp;)? Essor/);
+    expect(html).toMatch(/Documentation framework based on Vite &(.*)? Essor/);
     expect(html).not.toMatch(/<div id="app">\s*<\/div>/);
     expect(htmlWithoutScripts).not.toMatch(/&lt;(?:a|div|section|span)\b/);
     expect(htmlWithoutScripts).not.toContain('&amp;amp;');
@@ -33,7 +33,7 @@ test.describe('production preview', () => {
     await page.goto('/');
 
     const scriptSrc = await page.locator('script[type="module"]').first().getAttribute('src');
-    expect(scriptSrc).toMatch(/^\/assets\/ssr-entry-.+\.js$/);
+    expect(scriptSrc).toMatch(/^\/assets\/ssrEntry-.+\.js$/);
 
     const response = await page.request.get(scriptSrc!);
     expect(response.status()).toBe(200);

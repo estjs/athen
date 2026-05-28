@@ -10,6 +10,7 @@ import { expect, test } from '@playwright/test';
 test.describe('runtime head sync on SPA navigation', () => {
   test('updates <title>, <html lang>, and meta description without reloading', async ({ page }) => {
     await page.goto('/');
+    await expect(page.getByRole('link', { name: 'Get Started' })).toBeVisible();
     const initialTitle = await page.title();
     expect(initialTitle.length).toBeGreaterThan(0);
 

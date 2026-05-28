@@ -62,7 +62,7 @@ const HTML_ATTR_ESCAPE: Record<string, string> = {
   '>': '&gt;',
 };
 
-function serializeAttrs(attrs?: Record<string, unknown>) {
+function serializeAttrs(attrs?: Record<string, unknown> | null) {
   if (!attrs) return '';
   const parts: string[] = [];
   for (const [key, value] of Object.entries(attrs)) {
@@ -75,7 +75,7 @@ function serializeAttrs(attrs?: Record<string, unknown>) {
 
 /** Render a Vite `HtmlTagDescriptor` (used by `applyHtmlTransforms`). */
 export function renderHtmlTag(tag: HtmlTagDescriptor): string {
-  const open = `<${tag.tag}${serializeAttrs(tag.attrs as Record<string, unknown>)}>`;
+  const open = `<${tag.tag}${serializeAttrs(tag.attrs)}>`;
   if (tag.children == null) return open;
   const children = Array.isArray(tag.children)
     ? tag.children.map(renderHtmlTag).join('')
@@ -90,7 +90,7 @@ export function renderHtmlTag(tag: HtmlTagDescriptor): string {
 export function renderHeadTags(head: HeadConfig[] = []) {
   return head
     .map(([tag, attrs, children]) => {
-      const open = `<${tag}${serializeAttrs(attrs as Record<string, unknown>)}>`;
+      const open = `<${tag}${serializeAttrs(attrs)}>`;
       return children == null ? open : `${open}${children}</${tag}>`;
     })
     .join('\n');

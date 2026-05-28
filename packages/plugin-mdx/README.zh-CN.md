@@ -315,7 +315,7 @@ MDX 插件由几个子插件组成：
 
 ### 核心插件
 
-1. **pluginMdxRollup**: 使用 @mdx-js/rollup 的主要 MDX 转换
+1. **pluginMdxRollup**: 使用 @mdx-js/mdx 直接编译，输出兼容 Rolldown
 2. **pluginMdxEssor**: Essor 框架兼容性
 3. **pluginMdxGit**: 基于 Git 的最后更新时间戳
 4. **pluginMdxRawContent**: 用于搜索索引的原始内容提取

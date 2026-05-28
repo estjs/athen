@@ -315,7 +315,7 @@ The MDX plugin consists of several sub-plugins:
 
 ### Core Plugins
 
-1. **pluginMdxRollup**: Main MDX transformation using @mdx-js/rollup
+1. **pluginMdxRollup**: Direct MDX compilation using @mdx-js/mdx with Rolldown-compatible output
 2. **pluginMdxEssor**: Essor framework compatibility
 3. **pluginMdxGit**: Git-based last updated timestamps
 4. **pluginMdxRawContent**: Raw content extraction for search indexing

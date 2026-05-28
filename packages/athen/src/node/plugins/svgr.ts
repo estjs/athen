@@ -6,16 +6,16 @@ interface SvgrOptions {
   defaultExport?: 'url' | 'component';
 }
 
-export function pluginSvgr(options: SvgrOptions = {}, isServer): Plugin {
+export function pluginSvgr(options: SvgrOptions = {}, isServer: boolean): Plugin {
   const { defaultExport = 'component' } = options;
 
   return {
     name: 'athen:vite-plugin-svgr',
     async transform(code, id) {
       if (!id.endsWith('.svg')) {
-        return code;
+        return;
       }
-      const svgrTransform = await (await import('@svgr/core')).transform;
+      const { transform: svgrTransform } = await import('@svgr/core');
       const svg = await fs.promises.readFile(id, 'utf8');
       const svgrResult = await svgrTransform(
         svg,
@@ -34,13 +34,12 @@ export function pluginSvgr(options: SvgrOptions = {}, isServer): Plugin {
       const result = transformSync(componentCode, {
         filename: `${id}`,
         sourceType: 'module',
-        plugins: [
-          [BabelPluginEssor, { mode: !isServer ? 'server' : ('hydrate' as 'server' | 'hydrate') }],
-        ],
+        plugins: [[BabelPluginEssor, { mode: isServer ? 'hydrate' : 'server' }]],
       });
       return {
         code: result?.code ?? code,
         map: result?.map ?? undefined,
+        moduleType: 'js',
       };
     },
   };

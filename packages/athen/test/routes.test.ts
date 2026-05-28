@@ -37,12 +37,14 @@ describe('route service', () => {
     const code = renderRouteCode({
       'index.md': '# Index',
       'foo.tsx': 'export default () => <div/>',
+      'helper.ts': 'export const value = 1',
       'ignore-me.txt': 'hello',
       'node_modules/bad.md': '# Bad',
     });
 
     expect(code).toContain('index.md');
     expect(code).toContain('foo.tsx');
+    expect(code).not.toContain('helper.ts');
     expect(code).not.toContain('ignore-me.txt');
     expect(code).not.toContain('node_modules');
   });

@@ -14,7 +14,7 @@ export default defineConfig({
   minify: true,
   external: [
     '@mdx-js/mdx',
-    '@mdx-js/rollup',
+    'source-map',
     'acorn',
     'fs-extra',
     'github-slugger',

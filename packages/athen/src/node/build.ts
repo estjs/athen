@@ -32,21 +32,13 @@ import {
 import { createVitePlugins } from './plugins';
 import type { SSRHeadPayload, Unhead } from 'unhead/types';
 import type { Router, SiteConfig } from '@/shared/types';
-import type { RouteMeta } from './routes';
 
-type RenderResult = { html: string; head: Unhead<any, SSRHeadPayload> };
+type RenderResult = { html: string; head: Unhead<Record<string, unknown>, SSRHeadPayload> };
 type RenderFunction = (routePath: string) => Promise<RenderResult>;
 type BundleItem =
   | { type: 'asset'; fileName: string }
   | { type: 'chunk'; fileName: string; isEntry: boolean };
 type BuildBundle = { output: BundleItem[] };
-
-type RouteWithMeta = Required<Router> & {
-  title?: string;
-  description?: string;
-  lang?: string;
-  localePrefix?: string;
-};
 
 interface PageAssets {
   cssLinks: string;
@@ -110,7 +102,7 @@ async function prepareAssets(
 }
 
 async function renderRouteHtml(
-  route: RouteWithMeta,
+  route: Router,
   render: RenderFunction,
   config: SiteConfig,
   assets: PageAssets,
@@ -149,11 +141,11 @@ export async function renderPage(
   clientBundle: BuildBundle,
   ssgBundle: BuildBundle,
   config: SiteConfig,
-  routers: Required<Router>[],
+  routers: Router[],
   htmlPlugins: Plugin[] = [],
 ) {
   const assets = await prepareAssets(clientBundle, ssgBundle, root, config);
-  for (const route of routers as RouteWithMeta[]) {
+  for (const route of routers) {
     const { html, fileName } = await renderRouteHtml(route, render, config, assets, htmlPlugins);
     await fs.ensureDir(join(assets.distPath, dirname(fileName)));
     await fs.outputFile(join(assets.distPath, fileName), html);
@@ -218,7 +210,7 @@ export async function build(root: string = process.cwd()) {
 
   if (config.onBrokenLinks && config.onBrokenLinks !== 'ignore') {
     await checkBrokenLinks({
-      routes: (config._routes as RouteMeta[]) || [],
+      routes: config._routes ?? [],
       onBrokenLinks: config.onBrokenLinks,
       urlPolicy: config,
     });

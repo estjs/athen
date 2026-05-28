@@ -33,7 +33,7 @@ test.describe('Athen docs E2E', () => {
   test('sidebar navigation changes article', async ({ page }) => {
     await page.goto('/guide/getting-started');
 
-    const sidebarLink = page.locator('.sidebar').locator('text=Static Assets');
+    const sidebarLink = page.locator('.sidebar').locator('text=Assets handle');
     await sidebarLink.click();
 
     await expect(page).toHaveURL(/static-assets/);
@@ -43,7 +43,7 @@ test.describe('Athen docs E2E', () => {
   test('doc footer updates after sidebar navigation', async ({ page }) => {
     await page.goto('/guide/getting-started');
 
-    await page.locator('.sidebar').getByRole('link', { name: 'Static Assets' }).click();
+    await page.locator('.sidebar').getByRole('link', { name: 'Assets handle' }).click();
 
     await expect(page).toHaveURL(/\/guide\/static-assets$/);
     await expect(page.locator('.pager .prev')).toContainText('Using MDX');
@@ -59,9 +59,7 @@ test.describe('Athen docs E2E', () => {
     await page.getByRole('link', { name: 'Get Started' }).click();
 
     await expect(page).toHaveURL(/\/guide\/getting-started/);
-    await expect(
-      page.locator('.sidebar').getByRole('link', { name: 'Getting Started' }),
-    ).toBeVisible();
+    await expect(page.locator('.sidebar').getByRole('link', { name: 'Quick Start' })).toBeVisible();
     await expect(page.locator('.aside .toc-item').first()).toBeVisible();
     await expect(page.locator('.aside')).toContainText('Why Choose Athen?');
   });

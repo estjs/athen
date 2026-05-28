@@ -4,7 +4,6 @@ import { dirname } from 'node:path';
 
 export const isProduction = () => process.env.NODE_ENV === 'production';
 
-export const TS_REGEX = /(c|m)?tsx?$/;
 export const SX_REGEX = /(j|t)sx$/;
 export const MD_REGEX = /\.mdx?$/;
 
@@ -22,7 +21,6 @@ export const CLIENT_ENTRY_PATH = resolvePath('src/runtime/clientEntry.tsx');
 export const SHARED_PATH = resolvePath('src/shared');
 export const CLIENT_EXPORTS_PATH = resolvePath('src/runtime/index.ts');
 export const DEFAULT_THEME_PATH = resolvePath('src/theme-default');
-export const DEFAULT_MDX_COMPONENTS_PATH = resolvePath('src/theme-default/mdx/index.ts');
 
 export const DEFAULT_EXTERNALS = ['essor'];
 
