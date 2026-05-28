@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { resolveLocaleSiteData } from '../src/theme-default/hooks/localeSiteData';
-import type { EditLink, SiteData } from '../src/shared/types';
+import { resolveLocaleSiteData } from '../../../src/theme-default/hooks/localeSiteData';
+import type { EditLink, SiteData } from '../../../src/shared/types';
 
 const baseSite = (extras?: Partial<SiteData>): SiteData => ({
   root: '/tmp',

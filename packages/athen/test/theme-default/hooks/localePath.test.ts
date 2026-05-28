@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getLocalePath } from '../src/theme-default/hooks/localePath';
+import { getLocalePath } from '../../../src/theme-default/hooks/localePath';
 
 describe('getLocalePath', () => {
   it('keeps root locale links normalized to a single slash', () => {

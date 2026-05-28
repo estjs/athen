@@ -1,10 +1,8 @@
-import { createRequire } from 'node:module';
 import { cwd } from 'node:process';
 import { describe, expect, it, vi } from 'vitest';
 import type { Plugin } from 'vite';
-import type { SiteConfig } from '../src/shared/types';
+import type { SiteConfig } from '../../src/shared/types';
 
-const require = createRequire(import.meta.url);
 const pluginMdxMock = vi.fn(() => ({ name: 'plugins-mdx' }));
 
 vi.mock('@estjs/athen-plugin-mdx', () => ({ pluginMdx: pluginMdxMock }));
@@ -13,12 +11,14 @@ vi.mock('@estjs/athen-plugin-analytics', () => ({ default: () => ({ name: 'athen
 vi.mock('unocss/vite', () => ({ default: () => ({ name: 'unocss' }) }));
 vi.mock('vite-plugin-environment', () => ({ default: () => ({ name: 'env' }) }));
 vi.mock('vite-plugin-inspect', () => ({ default: () => ({ name: 'inspect' }) }));
-vi.mock('../src/node/plugins/core', () => ({
+vi.mock('../../src/node/plugins/core', () => ({
   pluginAthen: () => ({ name: 'athen:config' }),
   pluginRoute: () => ({ name: 'athen:routes' }),
 }));
-vi.mock('../src/node/plugins/svgr', () => ({ pluginSvgr: () => ({ name: 'athen:svgr' }) }));
-vi.mock('../src/node/plugins/mdxHmr', () => ({ pluginMdxHMR: () => ({ name: 'athen:mdx-hmr' }) }));
+vi.mock('../../src/node/plugins/svgr', () => ({ pluginSvgr: () => ({ name: 'athen:svgr' }) }));
+vi.mock('../../src/node/plugins/mdxHmr', () => ({
+  pluginMdxHMR: () => ({ name: 'athen:mdx-hmr' }),
+}));
 
 function config(plugins?: Plugin[]): SiteConfig {
   return {
@@ -47,7 +47,7 @@ const pluginNames = (plugins: unknown[]) =>
 
 describe('plugins', () => {
   it('passes site markdown configuration to the built-in MDX plugin', async () => {
-    const { createVitePlugins } = await import('../src/node/plugins');
+    const { createVitePlugins } = await import('../../src/node/plugins');
 
     await createVitePlugins(
       {
@@ -76,7 +76,7 @@ describe('plugins', () => {
   });
 
   it('keeps user plugins first, supports built-in replacement, and only adds inspect on server', async () => {
-    const { createVitePlugins } = await import('../src/node/plugins');
+    const { createVitePlugins } = await import('../../src/node/plugins');
     const userRoute: Plugin = { name: 'athen:routes' };
 
     const server = await createVitePlugins(config([userRoute]), true);

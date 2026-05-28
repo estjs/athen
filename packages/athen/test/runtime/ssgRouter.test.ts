@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { preloadSsgRoute } from '../src/runtime/ssgRouter';
+import { preloadSsgRoute } from '../../src/runtime/ssgRouter';
 
 describe('preloadSsgRoute', () => {
   it('resolves async route modules without invoking resolved component functions', async () => {

@@ -4,8 +4,8 @@ import {
   formatPageTitle,
   humanize,
   resolveServerPageHead,
-} from '../src/shared/title';
-import type { SiteData } from '../src/shared/types';
+} from '../../src/shared/title';
+import type { SiteData } from '../../src/shared/types';
 
 const siteData: SiteData = {
   root: '/',

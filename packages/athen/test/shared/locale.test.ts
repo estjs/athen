@@ -5,7 +5,7 @@ import {
   normalizeLanguageTag,
   normalizeLocalePrefix,
   stripLocalePrefix,
-} from '../src/shared/locale';
+} from '../../src/shared/locale';
 
 describe('locale helpers', () => {
   it('normalizes locale prefixes and language tags consistently', () => {

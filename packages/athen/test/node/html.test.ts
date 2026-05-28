@@ -5,7 +5,7 @@ import {
   injectIntoHtml,
   renderHeadTags,
   renderHtmlTag,
-} from '../src/node/html';
+} from '../../src/node/html';
 import type { Plugin } from 'vite';
 
 describe('base template', () => {

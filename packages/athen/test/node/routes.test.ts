@@ -2,9 +2,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
-import { collectRoutes, buildRoutesModule } from '../src/node/routes';
-import type { LocaleAwareConfig } from '../src/shared/locale';
-import type { RouteOptions } from '../src/shared/types';
+import { collectRoutes, buildRoutesModule } from '../../src/node/routes';
+import type { LocaleAwareConfig } from '../../src/shared/locale';
+import type { RouteOptions } from '../../src/shared/types';
 
 let root = '';
 

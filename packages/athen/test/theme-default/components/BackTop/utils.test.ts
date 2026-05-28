@@ -3,7 +3,7 @@ import {
   getBackTopScrollTarget,
   getPageScrollTop,
   isBackTopVisible,
-} from '../src/theme-default/components/BackTop/utils';
+} from '../../../../src/theme-default/components/BackTop/utils';
 
 describe('backTop', () => {
   afterEach(() => {

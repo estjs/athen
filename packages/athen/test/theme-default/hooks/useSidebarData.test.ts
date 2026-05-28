@@ -1,7 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { vi } from 'vitest';
-import { resolveSidebarData } from '../src/theme-default/hooks/useSidebarData';
-import type { Sidebar } from '../src/shared/types';
+import { describe, expect, it, vi } from 'vitest';
+import { resolveSidebarData } from '../../../src/theme-default/hooks/useSidebarData';
+import type { Sidebar } from '../../../src/shared/types';
 
 vi.mock('@/runtime', () => ({
   normalizeHref: (url?: string) => url || '/',

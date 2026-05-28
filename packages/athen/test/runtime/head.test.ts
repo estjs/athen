@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { resolveHeadInput } from '../src/runtime/head';
-import type { FrontMatterMeta, PageData, SiteData } from '../src/shared/types';
+import { resolveHeadInput } from '../../src/runtime/head';
+import type { FrontMatterMeta, PageData, SiteData } from '../../src/shared/types';
 
 const siteData: SiteData = {
   root: '/',

@@ -7,8 +7,8 @@ import {
   resolveConfig,
   resolveLocaleRedirectTarget,
   resolveSiteData,
-} from '../src/node/config';
-import { DEFAULT_THEME_PATH } from '../src/node/constants';
+} from '../../src/node/config';
+import { DEFAULT_THEME_PATH } from '../../src/node/constants';
 
 const writeProject = (files: Record<string, string>) => {
   const root = mkdtempSync(join(tmpdir(), 'athen-config-'));

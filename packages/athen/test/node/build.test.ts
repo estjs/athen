@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createHead } from 'unhead/server';
-import type { SiteConfig } from '../src/shared/types';
+import type { SiteConfig } from '../../src/shared/types';
 
 const viteBuild = vi.fn();
 const createVitePlugins = vi.fn(async () => []);
@@ -12,7 +12,7 @@ vi.mock('vite', async (importOriginal) => ({
   ...(await importOriginal<typeof import('vite')>()),
   build: viteBuild,
 }));
-vi.mock('../src/node/plugins', () => ({ createVitePlugins }));
+vi.mock('../../src/node/plugins', () => ({ createVitePlugins }));
 vi.mock('@/runtime', () => ({
   withBase: (file: string, base = '/') =>
     `${base === '/' ? '' : base.replace(/\/$/, '')}/${file.replace(/^\//, '')}`,
@@ -49,9 +49,9 @@ describe('build', () => {
   });
 
   it('builds SSG and browser bundles with the right entries', async () => {
-    const { bundle } = await import('../src/node/build');
+    const { bundle } = await import('../../src/node/build');
     const { DEFAULT_OUT_DIR, DEFAULT_TEMP_DIR, SSG_ENTRY_PATH, SSR_ENTRY_PATH } = await import(
-      '../src/node/constants'
+      '../../src/node/constants'
     );
     const root = '/project/docs';
     viteBuild.mockResolvedValue({ output: [] });
@@ -74,8 +74,8 @@ describe('build', () => {
   });
 
   it('honors a custom config.outDir for both the SSR build and the final dist path', async () => {
-    const { bundle } = await import('../src/node/build');
-    const { SSG_ENTRY_PATH, SSR_ENTRY_PATH } = await import('../src/node/constants');
+    const { bundle } = await import('../../src/node/build');
+    const { SSG_ENTRY_PATH, SSR_ENTRY_PATH } = await import('../../src/node/constants');
     const root = '/project/docs';
     viteBuild.mockResolvedValue({ output: [] });
 
@@ -96,7 +96,7 @@ describe('build', () => {
   });
 
   it('renders HTML with configured head, base assets, and copied CSS', async () => {
-    const { renderPage } = await import('../src/node/build');
+    const { renderPage } = await import('../../src/node/build');
     const root = await mkdtemp(join(tmpdir(), 'athen-render-'));
     try {
       await mkdir(join(root, '.temp/assets'), { recursive: true });
@@ -127,7 +127,7 @@ describe('build', () => {
   });
 
   it('writes per-route title, description, and html lang into each page', async () => {
-    const { renderPage } = await import('../src/node/build');
+    const { renderPage } = await import('../../src/node/build');
     const root = await mkdtemp(join(tmpdir(), 'athen-meta-'));
     try {
       await mkdir(join(root, '.temp/assets'), { recursive: true });

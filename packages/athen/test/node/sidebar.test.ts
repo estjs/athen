@@ -2,8 +2,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it } from 'vitest';
-import { collectRoutes } from '../src/node/routes';
-import { buildSidebar, resolveSidebarConfig } from '../src/node/sidebar';
+import { collectRoutes } from '../../src/node/routes';
+import { buildSidebar, resolveSidebarConfig } from '../../src/node/sidebar';
 
 let root = '';
 
@@ -38,7 +38,10 @@ describe('filesystem sidebar', () => {
       { text: 'Api', items: [{ text: 'Config', link: '/api/config' }], collapsed: undefined },
     ]);
     expect(sidebar['/guide/'][0].text).toBe('Guide');
-    expect(sidebar['/guide/'][0].items).toContainEqual({ text: 'Getting Started', link: '/guide/getting-started' });
+    expect(sidebar['/guide/'][0].items).toContainEqual({
+      text: 'Getting Started',
+      link: '/guide/getting-started',
+    });
     expect(sidebar['/guide/'][0].items).toContainEqual({ text: 'Guide', link: '/guide/' });
   });
 

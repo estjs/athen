@@ -2,8 +2,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs-extra';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { checkBrokenLinks } from '../src/node/brokenLinks';
-import { collectRoutes } from '../src/node/routes';
+import { checkBrokenLinks } from '../../src/node/brokenLinks';
+import { collectRoutes } from '../../src/node/routes';
 
 let root = '';
 
