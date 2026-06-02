@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AlgoliaSearcher } from '../../src/client/AlgoliaSearcher';
 
-const indexSearch = vi.hoisted(() => vi.fn());
+const searchSingleIndex = vi.hoisted(() => vi.fn());
 const algoliasearch = vi.hoisted(() =>
   vi.fn(() => ({
-    initIndex: vi.fn(() => ({ search: indexSearch })),
+    searchSingleIndex,
   })),
 );
 
@@ -16,7 +16,7 @@ describe('AlgoliaSearcher', () => {
   let consoleError: any;
 
   beforeEach(() => {
-    indexSearch.mockReset();
+    searchSingleIndex.mockReset();
     algoliasearch.mockClear();
     consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -26,7 +26,7 @@ describe('AlgoliaSearcher', () => {
   });
 
   it('lazy-imports algoliasearch on first search', async () => {
-    indexSearch.mockResolvedValueOnce({ hits: [] });
+    searchSingleIndex.mockResolvedValueOnce({ hits: [] });
     const searcher = new AlgoliaSearcher({
       appId: 'app',
       apiKey: 'key',
@@ -40,14 +40,14 @@ describe('AlgoliaSearcher', () => {
 
   it('returns an empty array for empty / whitespace queries', async () => {
     const searcher = new AlgoliaSearcher({ appId: 'a', apiKey: 'k', indexName: 'i' });
-    indexSearch.mockResolvedValue({ hits: [] });
+    searchSingleIndex.mockResolvedValue({ hits: [] });
 
     expect(await searcher.search('')).toEqual([]);
     expect(await searcher.search('   ')).toEqual([]);
   });
 
   it('maps Algolia hits to the SearchResult shape', async () => {
-    indexSearch.mockResolvedValueOnce({
+    searchSingleIndex.mockResolvedValueOnce({
       hits: [
         {
           url: '/guide/install',
@@ -73,7 +73,7 @@ describe('AlgoliaSearcher', () => {
   });
 
   it('passes algoliaOptions through to index.search', async () => {
-    indexSearch.mockResolvedValueOnce({ hits: [] });
+    searchSingleIndex.mockResolvedValueOnce({ hits: [] });
     const searcher = new AlgoliaSearcher({
       appId: 'a',
       apiKey: 'k',
@@ -82,14 +82,20 @@ describe('AlgoliaSearcher', () => {
     });
 
     await searcher.search('hello');
-    expect(indexSearch).toHaveBeenCalledWith(
-      'hello',
-      expect.objectContaining({ hitsPerPage: 7, facetFilters: ['lang:en'] }),
+    expect(searchSingleIndex).toHaveBeenCalledWith(
+      expect.objectContaining({
+        indexName: 'i',
+        searchParams: expect.objectContaining({
+          query: 'hello',
+          hitsPerPage: 7,
+          facetFilters: ['lang:en'],
+        }),
+      }),
     );
   });
 
   it('returns an empty array and logs when the index throws', async () => {
-    indexSearch.mockRejectedValueOnce(new Error('upstream 500'));
+    searchSingleIndex.mockRejectedValueOnce(new Error('upstream 500'));
     const searcher = new AlgoliaSearcher({ appId: 'a', apiKey: 'k', indexName: 'i' });
 
     expect(await searcher.search('boom')).toEqual([]);

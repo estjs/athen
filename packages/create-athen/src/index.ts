@@ -33,6 +33,14 @@ const renameFiles: Record<string, string | undefined> = {
 const skipPrompts = argv.y || argv.yes;
 const autoInstall = argv.i || argv.install;
 
+/** Detect the package manager that invoked this CLI, from npm's env hints. */
+function detectPackageManager(): 'pnpm' | 'yarn' | 'npm' {
+  const hint = `${process.env.npm_execpath ?? ''} ${process.env.npm_config_user_agent ?? ''}`;
+  if (/pnpm/.test(hint)) return 'pnpm';
+  if (/yarn/.test(hint)) return 'yarn';
+  return 'npm';
+}
+
 async function init() {
   console.log(`  ${cyan('●') + blue('■') + yellow('▲')}`);
   console.log(`${bold('  athen') + dim(' Creator')}  ${blue(`v${version}`)}`);
@@ -98,13 +106,7 @@ async function init() {
 
   write('package.json', JSON.stringify(pkg, null, 2));
 
-  const pkgManager =
-    /pnpm/.test(process.env.npm_execpath as string) ||
-    /pnpm/.test(process.env.npm_config_user_agent as string)
-      ? 'pnpm'
-      : /yarn/.test(process.env.npm_execpath as string)
-        ? 'yarn'
-        : 'npm';
+  const pkgManager = detectPackageManager();
 
   const related = path.relative(cwd, root);
 
@@ -122,18 +124,10 @@ async function init() {
   }
 
   if (installNow) {
-    const agent =
-      /pnpm/.test(process.env.npm_execpath as string) ||
-      /pnpm/.test(process.env.npm_config_user_agent as string)
-        ? 'pnpm'
-        : /yarn/.test(process.env.npm_execpath as string)
-          ? 'yarn'
-          : 'npm';
-
-    await execa(agent, ['install'], { stdio: 'inherit', cwd: root });
+    await execa(pkgManager, ['install'], { stdio: 'inherit', cwd: root });
     // do not auto run dev in CI mode
     if (!skipPrompts) {
-      await execa(agent, agent === 'yarn' ? ['dev'] : ['run', 'dev'], {
+      await execa(pkgManager, pkgManager === 'yarn' ? ['dev'] : ['run', 'dev'], {
         stdio: 'inherit',
         cwd: root,
       });

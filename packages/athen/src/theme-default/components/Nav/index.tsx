@@ -110,7 +110,7 @@ const NavHeader = () => {
         <div class="flex items-center">
           <div class="nav-desktop-links">
             {(localeData.value?.nav || []).map((item) => (
-              <div class="mx-3 text-sm font-medium">
+              <div key={item.text} class="mx-3 text-sm font-medium">
                 {isNavGroup(item) ? (
                   <NavMenuGroup {...item} />
                 ) : (

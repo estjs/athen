@@ -1,7 +1,7 @@
-import type { Plugin } from 'vite';
+import type { HtmlTagDescriptor, Plugin } from 'vite';
 import type { AnalyticsOptions } from './types';
 
-function gaSnippets(id: string) {
+function gaSnippets(id: string): HtmlTagDescriptor[] {
   return [
     {
       tag: 'script',
@@ -20,7 +20,7 @@ function gaSnippets(id: string) {
   ];
 }
 
-function baiduSnippet(id: string) {
+function baiduSnippet(id: string): HtmlTagDescriptor {
   return {
     tag: 'script',
     children: `(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?${id}";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s);})();`,
@@ -28,7 +28,7 @@ function baiduSnippet(id: string) {
   };
 }
 
-function tencentSnippet(sid: string, cid?: string) {
+function tencentSnippet(sid: string, cid?: string): HtmlTagDescriptor {
   const attrs = [`sid='${sid}'`];
   if (cid) attrs.push(`cid='${cid}'`);
   return {
@@ -42,7 +42,7 @@ function tencentSnippet(sid: string, cid?: string) {
   };
 }
 
-function aliSnippet(id: string) {
+function aliSnippet(id: string): HtmlTagDescriptor {
   return {
     tag: 'script',
     children: `var cnzz_protocol = (('https:' == document.location.protocol) ? ' https://' : ' http://');document.write(unescape("%3Cspan id='cnzz_stat_icon_${id}'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D${id}%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));`,
@@ -50,7 +50,7 @@ function aliSnippet(id: string) {
   };
 }
 
-function plausibleSnippet(domain: string, apiHost?: string) {
+function plausibleSnippet(domain: string, apiHost?: string): HtmlTagDescriptor {
   return {
     tag: 'script',
     attrs: {
@@ -63,7 +63,7 @@ function plausibleSnippet(domain: string, apiHost?: string) {
   };
 }
 
-function umamiSnippet(id: string, src: string) {
+function umamiSnippet(id: string, src: string): HtmlTagDescriptor {
   return {
     tag: 'script',
     attrs: {
@@ -76,7 +76,7 @@ function umamiSnippet(id: string, src: string) {
   };
 }
 
-function ackeeSnippet(server: string, domainId: string) {
+function ackeeSnippet(server: string, domainId: string): HtmlTagDescriptor {
   return {
     tag: 'script',
     attrs: {
@@ -90,7 +90,7 @@ function ackeeSnippet(server: string, domainId: string) {
   };
 }
 
-function vercelSnippet(id: string) {
+function vercelSnippet(id: string): HtmlTagDescriptor {
   return {
     tag: 'script',
     attrs: {
@@ -103,7 +103,7 @@ function vercelSnippet(id: string) {
   };
 }
 
-function customSnippet(snippet: string) {
+function customSnippet(snippet: string): HtmlTagDescriptor {
   return {
     tag: 'script',
     children: snippet,
@@ -118,7 +118,7 @@ export default function analyticsPlugin(options: AnalyticsOptions = {}): Plugin 
   return {
     name: 'athen-plugin-analytics',
     transformIndexHtml() {
-      const tags: any[] = [];
+      const tags: HtmlTagDescriptor[] = [];
       if (options.google) tags.push(...gaSnippets(options.google.id));
       if (options.baidu) tags.push(baiduSnippet(options.baidu.id));
       if (options.tencent) tags.push(tencentSnippet(options.tencent.sid, options.tencent.cid));

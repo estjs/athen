@@ -9,7 +9,6 @@ export function HomeCTA({ cta }: { cta?: CTA }) {
       {cta.text && <p class="pt-4 text-xl text-gray-500">{cta.text}</p>}
       {cta.link && (
         <div class="pt-6">
-          {/* @ts-ignore props typing */}
           <PageLink className={'at-button large brand'} href={cta.link}>
             <span>{cta.buttonText || 'Get Started'}</span>
           </PageLink>

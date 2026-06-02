@@ -27,7 +27,7 @@ const PageLink = ({
   });
 
   const router = useRouter();
-  const handleNavigate = (e) => {
+  const handleNavigate = (e: MouseEvent) => {
     if (!href || EXTERNAL_URL_RE.test(href)) {
       return;
     }

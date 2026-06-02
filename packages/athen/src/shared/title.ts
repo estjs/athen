@@ -1,3 +1,4 @@
+import { firstString } from '@/shared/utils';
 import type { LocaleTemplateContext } from '@/shared/utils';
 import type { SiteData } from '@/shared/types';
 
@@ -38,13 +39,6 @@ export interface HeadInput {
   meta: Array<{ name: string; content: string }>;
 }
 
-function pickString(...values: Array<unknown>): string | undefined {
-  for (const value of values) {
-    if (typeof value === 'string' && value.trim().length > 0) return value;
-  }
-  return undefined;
-}
-
 /**
  * Build the Unhead `useHead` input from a page → locale → site fallback chain.
  * Shared between the runtime (`runtime/head.ts`) and Node-side renderers
@@ -62,10 +56,14 @@ export function composeHeadInput(opts: {
   siteDescription?: string;
   siteLang?: string;
 }): HeadInput {
-  const siteTitle = pickString(opts.localeTitle, opts.siteTitle) || 'Athen';
-  const title = formatPageTitle(pickString(opts.pageTitle), siteTitle);
-  const lang = pickString(opts.pageLang, opts.localeLang, opts.siteLang) || 'en';
-  const description = pickString(opts.pageDescription, opts.localeDescription, opts.siteDescription);
+  const siteTitle = firstString(opts.localeTitle, opts.siteTitle) || 'Athen';
+  const title = formatPageTitle(firstString(opts.pageTitle), siteTitle);
+  const lang = firstString(opts.pageLang, opts.localeLang, opts.siteLang) || 'en';
+  const description = firstString(
+    opts.pageDescription,
+    opts.localeDescription,
+    opts.siteDescription,
+  );
   return {
     title,
     htmlAttrs: { lang },

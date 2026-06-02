@@ -7,9 +7,24 @@ export interface AlgoliaConfig {
   algoliaOptions?: Record<string, unknown>;
 }
 
+interface AlgoliaHit {
+  url?: string;
+  path?: string;
+  title?: string;
+  hierarchy?: { lvl0?: string; lvl1?: string; lvl2?: string };
+  content?: string;
+  _snippetResult?: { content?: { value?: string } };
+}
+
+interface AlgoliaSearchClient {
+  searchSingleIndex<T>(params: {
+    indexName: string;
+    searchParams?: Record<string, unknown>;
+  }): Promise<{ hits: T[] }>;
+}
+
 export class AlgoliaSearcher {
-  private client: any;
-  private index: any;
+  private client: AlgoliaSearchClient | undefined;
   private config: AlgoliaConfig;
   private initialized = false;
 
@@ -21,8 +36,13 @@ export class AlgoliaSearcher {
     if (this.initialized) return;
     try {
       const { algoliasearch } = await import('algoliasearch');
-      this.client = algoliasearch(this.config.appId, this.config.apiKey);
-      this.index = this.client.initIndex(this.config.indexName);
+      // The full SearchClient surface is large; cast at the library boundary to
+      // the minimal `searchSingleIndex` shape this searcher uses (algoliasearch
+      // v5 API — the legacy `initIndex` was removed).
+      this.client = algoliasearch(
+        this.config.appId,
+        this.config.apiKey,
+      ) as unknown as AlgoliaSearchClient;
       this.initialized = true;
     } catch (error) {
       console.error('Failed to initialize AlgoliaSearcher:', error);
@@ -32,13 +52,13 @@ export class AlgoliaSearcher {
 
   async search(query: string): Promise<SearchResult[]> {
     if (!this.initialized) await this.init();
-    if (!query.trim()) return [];
+    if (!query.trim() || !this.client) return [];
     try {
-      const response = await this.index.search(query, {
-        hitsPerPage: 7,
-        ...this.config.algoliaOptions,
+      const response = await this.client.searchSingleIndex<AlgoliaHit>({
+        indexName: this.config.indexName,
+        searchParams: { query, hitsPerPage: 7, ...this.config.algoliaOptions },
       });
-      return response.hits.map((hit: any) => ({
+      return response.hits.map((hit) => ({
         path: hit.url || hit.path || '',
         title: hit.title || hit.hierarchy?.lvl0 || '',
         heading: hit.hierarchy?.lvl1 || hit.hierarchy?.lvl2 || '',
