@@ -1,5 +1,4 @@
 ---
-title: Hidden Draft
 sidebar: false
 ---
 

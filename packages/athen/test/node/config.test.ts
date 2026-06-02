@@ -170,7 +170,7 @@ describe('config', () => {
     root = writeProject({
       'athen.config.ts': `export default () => ({})`,
       'guide/index.md': '# Guide',
-      'guide/getting-started.md': '---\ntitle: Getting Started\n---\n# Start',
+      'guide/getting-started.md': '# Getting Started',
     });
 
     const config = await resolveConfig(root, 'serve', 'development');

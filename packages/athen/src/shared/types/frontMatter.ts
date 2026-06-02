@@ -44,7 +44,6 @@ export interface Sponsor {
 }
 
 export interface FrontMatterMeta {
-  title?: string;
   description?: string;
   /**
    * The layout to use when rendering the page. `'home'` selects the built-in
@@ -53,8 +52,17 @@ export interface FrontMatterMeta {
    * doc layout.
    */
   layout?: string;
-  /** Override the resolved sidebar entry order. Lower values appear first. */
-  order?: number;
+  /**
+   * Sidebar sort key (Docusaurus-style). Lower values appear first. For a
+   * folder, set it in that folder's `index.md` to order the whole section.
+   */
+  sidebar_position?: number;
+  /** Override the sidebar display text (page title is unchanged). */
+  sidebar_label?: string;
+  /** Extra CSS class applied to this entry's sidebar item. */
+  sidebar_class_name?: string;
+  /** Stable unique key for this sidebar item (used as the render key). */
+  sidebar_key?: string;
   /** Hide the page from the auto-generated sidebar. */
   sidebar?: boolean;
   /** Hide the right-side "On this page" outline. */

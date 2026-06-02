@@ -1,16 +1,6 @@
 # Front Matter 配置
 
-## title
-
-- Type: `string`
-
-页面的标题。默认情况下，页面的 h1 标题将用作 HTML 文档的标题。但是如果你想使用不同的标题，你可以使用 Front Matter 来指定页面的标题。例如：
-
-```md
----
-title: 我的主页
----
-```
+> 页面标题取自页面的第一个 `# 一级标题`（无标题时回退到文件名的人性化形式）。不再提供 `title` Front Matter 字段。
 
 ## description
 

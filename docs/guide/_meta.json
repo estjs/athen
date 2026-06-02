@@ -3,7 +3,7 @@
   "items": [
     "getting-started",
     "configure-site",
-    "sidebar-meta",
+    "sidebar",
     "conventional-route",
     "use-mdx",
     "mdx-components",

@@ -6,9 +6,8 @@ Athen drives `<title>`, `<html lang>`, and `<meta name="description">` through [
 
 `{page title} | {site title}` is the only template Athen ships. The fallback chain for the page-title slot, in order:
 
-1. `frontmatter.title` of the current page
-2. The matched route's resolved title (heading from MDX or filename humanization)
-3. `siteData.title` (used alone when no page title exists)
+1. The matched route's resolved title — the page's `# h1` heading, or a humanized file name when there is no heading
+2. `siteData.title` (used alone when no page title exists)
 
 If page and site titles are identical, the `|` join collapses so you never see `"Athen | Athen"`.
 
@@ -18,7 +17,6 @@ Set per-page meta in front matter:
 
 ```md
 ---
-title: Quick Start
 description: Get up and running with Athen in five minutes.
 ---
 
@@ -27,7 +25,7 @@ description: Get up and running with Athen in five minutes.
 …
 ```
 
-`frontmatter.title` wins over the MDX `<h1>` and over `siteData.title`. `frontmatter.description` wins over the locale or site description for the `<meta name="description">` tag.
+The page title comes from the `# h1` heading (`Quick Start` above); there is no `title` front matter field. `frontmatter.description` wins over the locale or site description for the `<meta name="description">` tag.
 
 ## Per-locale
 

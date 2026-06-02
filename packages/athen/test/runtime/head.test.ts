@@ -25,14 +25,14 @@ function page(partial: Partial<PageData> & { lang?: string }): PageData {
 }
 
 describe('runtime resolveHeadInput', () => {
-  it('uses frontmatter.title with priority over pageData.title', () => {
+  it('uses pageData.title (frontmatter.title is no longer supported)', () => {
     const out = resolveHeadInput(
-      page({ title: 'PageDataTitle', frontmatter: { title: 'FmTitle' } as FrontMatterMeta }),
+      page({ title: 'PageDataTitle', frontmatter: { description: 'x' } as FrontMatterMeta }),
     );
-    expect(out.title).toBe('FmTitle | Athen');
+    expect(out.title).toBe('PageDataTitle | Athen');
   });
 
-  it('falls back to pageData.title when frontmatter.title is missing', () => {
+  it('derives the title from pageData.title (resolved from the page h1)', () => {
     const out = resolveHeadInput(page({ title: 'PageDataTitle' }));
     expect(out.title).toBe('PageDataTitle | Athen');
   });

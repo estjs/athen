@@ -31,7 +31,7 @@ export function resolveHeadInput(pageData: PageData): HeadInput {
   const locale = match ? getLocaleSiteData(siteData, match.prefix) : undefined;
 
   return composeHeadInput({
-    pageTitle: typeof fm.title === 'string' ? fm.title : pageData.title,
+    pageTitle: pageData.title,
     pageDescription: typeof fm.description === 'string' ? fm.description : pageData.description,
     pageLang: pageData.lang,
     localeTitle: locale?.title,
