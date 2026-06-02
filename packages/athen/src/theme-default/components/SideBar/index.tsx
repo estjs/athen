@@ -18,7 +18,9 @@ export function SideBar() {
       <aside class={`sidebar ${sidebarOpen.value ? 'open' : ''}`}>
         <nav>
           {sidebarData.value.items.map((item) => (
-            <section class="mt-4 border-t b-border-default first:mt-4">
+            <section
+              key={item.key || item.text}
+              class={`mt-4 border-t b-border-default first:mt-4 ${item.className || ''}`}>
               <div class="flex items-center justify-between">
                 <h2 class="mb-2 mt-3 text-16px font-bold">
                   <span>{item.text}</span>
@@ -26,11 +28,13 @@ export function SideBar() {
               </div>
               <div class="mb-1">
                 {item.items.map((i) => (
-                  <div class="ml-5">
+                  <div
+                    key={('key' in i && i.key) || ('link' in i && i.link) || i.text}
+                    class="ml-5">
                     <div
                       class={`p-1 font-medium ${
                         'link' in i && i.link === pathname.value ? 'text-brand' : 'text-gray-500'
-                      }`}
+                      } ${'className' in i && i.className ? i.className : ''}`}
                       onClick={closeSidebar}>
                       {'link' in i && i.link ? <PageLink href={i.link}>{i.text}</PageLink> : i.text}
                     </div>

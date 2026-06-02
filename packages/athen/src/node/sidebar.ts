@@ -56,14 +56,43 @@ function readFolderMeta(folderPath: string): FolderMeta | undefined {
   }
 }
 
+/** Docusaurus-style sidebar fields read from a page's frontmatter. */
+interface SidebarFmFields {
+  position?: number;
+  label?: string;
+  className?: string;
+  key?: string;
+}
+
+function readSidebarFm(fm?: Record<string, unknown>): SidebarFmFields {
+  const out: SidebarFmFields = {};
+  if (!fm) return out;
+  const pos =
+    typeof fm.sidebar_position === 'number' ? fm.sidebar_position : Number(fm.sidebar_position);
+  if (Number.isFinite(pos)) out.position = pos;
+  if (typeof fm.sidebar_label === 'string' && fm.sidebar_label) out.label = fm.sidebar_label;
+  if (typeof fm.sidebar_class_name === 'string' && fm.sidebar_class_name) {
+    out.className = fm.sidebar_class_name;
+  }
+  if (typeof fm.sidebar_key === 'string' && fm.sidebar_key) out.key = fm.sidebar_key;
+  return out;
+}
+
+/** A folder's `index.md` route, used as the source of folder-level sidebar fields. */
+function getFolderIndexRoute(folder: FolderNode): RouteMeta | undefined {
+  const index = folder.children.find((c): c is PageNode => c.type === 'page' && c.name === 'index');
+  return index?.route;
+}
+
 function getNodeOrder(node: Node): number {
   if (node.type === 'folder') {
+    const fmPos = readSidebarFm(getFolderIndexRoute(node)?.frontmatter).position;
+    if (fmPos !== undefined) return fmPos;
     const value = node.meta?.order;
     return typeof value === 'number' && Number.isFinite(value) ? value : Number.POSITIVE_INFINITY;
   }
-  const value = node.route.frontmatter?.order;
-  const order = typeof value === 'number' ? value : Number(value);
-  return Number.isFinite(order) ? order : Number.POSITIVE_INFINITY;
+  const pos = readSidebarFm(node.route.frontmatter).position;
+  return pos ?? Number.POSITIVE_INFINITY;
 }
 
 function isHiddenPage(route: RouteMeta): boolean {
@@ -148,27 +177,36 @@ function sortChildren(folder: FolderNode): Node[] {
 
 function buildSidebarItem(node: Node): SidebarItem | undefined {
   if (node.type === 'page') {
+    const fm = readSidebarFm(node.route.frontmatter);
     return {
-      text: node.route.title || humanize(node.name),
+      text: fm.label || node.route.title || humanize(node.name),
       link: node.route.routePath,
+      ...(fm.className ? { className: fm.className } : {}),
+      ...(fm.key ? { key: fm.key } : {}),
     };
   }
   // Folder → group-as-item (collapsible item with children)
   const children = sortChildren(node).map(buildSidebarItem).filter(Boolean) as SidebarItem[];
   if (children.length === 0) return undefined;
+  const fm = readSidebarFm(getFolderIndexRoute(node)?.frontmatter);
   return {
-    text: node.meta?.title || humanize(node.name),
+    text: fm.label || node.meta?.title || humanize(node.name),
     items: children,
+    ...(fm.className ? { className: fm.className } : {}),
+    ...(fm.key ? { key: fm.key } : {}),
   };
 }
 
 function buildSidebarGroup(folder: FolderNode): SidebarGroup | undefined {
   const items = sortChildren(folder).map(buildSidebarItem).filter(Boolean) as SidebarItem[];
   if (items.length === 0) return undefined;
+  const fm = readSidebarFm(getFolderIndexRoute(folder)?.frontmatter);
   return {
-    text: folder.meta?.title || (folder.name ? humanize(folder.name) : undefined),
+    text: fm.label || folder.meta?.title || (folder.name ? humanize(folder.name) : undefined),
     items,
     collapsed: folder.meta?.collapsed,
+    ...(fm.className ? { className: fm.className } : {}),
+    ...(fm.key ? { key: fm.key } : {}),
   };
 }
 

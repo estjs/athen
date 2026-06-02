@@ -33,6 +33,12 @@ export async function createEntry(mode: Mode) {
     Object.assign(pageData, await initPageData(to.path));
     next();
   });
+  // Reset scroll to the top on real page navigations. Skip same-page changes and
+  // hash links so in-page anchor scrolling (handled in theme `sideEffects`) wins.
+  router.afterEach((to, from) => {
+    if (typeof window === 'undefined' || to.hash || to.path === from.path) return;
+    window.scrollTo({ top: 0, left: 0 });
+  });
   await router.replace(path);
   await router.isReady();
 

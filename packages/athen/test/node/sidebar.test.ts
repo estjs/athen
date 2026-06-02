@@ -25,7 +25,7 @@ describe('filesystem sidebar', () => {
   it('generates sidebar groups from the filesystem', () => {
     root = writeProject({
       'guide/index.md': '# Guide',
-      'guide/getting-started.md': '---\ntitle: Getting Started\n---\n# Start',
+      'guide/getting-started.md': '# Getting Started',
       'guide/hidden.md': '---\nsidebar: false\n---\n# Hidden',
       'api/config.md': '# Config',
     });
@@ -45,12 +45,12 @@ describe('filesystem sidebar', () => {
     expect(sidebar['/guide/'][0].items).toContainEqual({ text: 'Guide', link: '/guide/' });
   });
 
-  it('orders sidebar items by frontmatter order before falling back to name', () => {
+  it('orders sidebar items by frontmatter sidebar_position before falling back to name', () => {
     root = writeProject({
-      'guide/intro.md': '---\norder: 1\n---\n# Intro',
-      'guide/install.md': '---\norder: 2\n---\n# Install',
+      'guide/intro.md': '---\nsidebar_position: 1\n---\n# Intro',
+      'guide/install.md': '---\nsidebar_position: 2\n---\n# Install',
       'guide/reference.md': '# Reference',
-      'guide/advanced.md': '---\norder: 10\n---\n# Advanced',
+      'guide/advanced.md': '---\nsidebar_position: 10\n---\n# Advanced',
     });
 
     const meta = collectRoutes(root);
@@ -86,8 +86,8 @@ describe('filesystem sidebar', () => {
 
   it('groups locale-prefixed sidebars under the locale prefix', () => {
     root = writeProject({
-      'zh/guide/intro.md': '---\norder: 1\n---\n# 介绍',
-      'zh/guide/install.md': '---\norder: 2\n---\n# 安装',
+      'zh/guide/intro.md': '---\nsidebar_position: 1\n---\n# 介绍',
+      'zh/guide/install.md': '---\nsidebar_position: 2\n---\n# 安装',
       'zh/api/config.md': '# 配置',
       'fr/guide/intro.md': '# Introduction',
     });
@@ -107,6 +107,56 @@ describe('filesystem sidebar', () => {
       { text: '介绍', link: '/zh/guide/intro' },
       { text: '安装', link: '/zh/guide/install' },
     ]);
+  });
+
+  it('reads sidebar_label, sidebar_class_name and sidebar_key from page frontmatter', () => {
+    root = writeProject({
+      'guide/install.md':
+        '---\nsidebar_label: Easy\nsidebar_class_name: green\nsidebar_key: guide-install\n---\n# Install',
+    });
+
+    const meta = collectRoutes(root);
+    const sidebar = buildSidebar(root, meta);
+
+    expect(sidebar['/guide/'][0].items).toEqual([
+      {
+        text: 'Easy',
+        link: '/guide/install',
+        className: 'green',
+        key: 'guide-install',
+      },
+    ]);
+  });
+
+  it('omits sidebar extras when not set in frontmatter', () => {
+    root = writeProject({ 'guide/install.md': '# Install' });
+
+    const meta = collectRoutes(root);
+    const sidebar = buildSidebar(root, meta);
+
+    expect(sidebar['/guide/'][0].items).toEqual([{ text: 'Install', link: '/guide/install' }]);
+  });
+
+  it('orders and labels a section from its folder index.md frontmatter', () => {
+    root = writeProject({
+      'guide/index.md':
+        '---\nsidebar_position: 1\nsidebar_label: Guidebook\nsidebar_class_name: hl\nsidebar_key: guide-section\n---\n# Guide',
+      'guide/install.md': '# Install',
+      'api/index.md': '---\nsidebar_position: 2\n---\n# API',
+      'api/config.md': '# Config',
+    });
+
+    const meta = collectRoutes(root);
+
+    // Section folder index.md drives the group label + extras.
+    const guideGroup = buildSidebar(root, meta)['/guide/'][0];
+    expect(guideGroup.text).toBe('Guidebook');
+    expect(guideGroup.className).toBe('hl');
+    expect(guideGroup.key).toBe('guide-section');
+
+    // index.md sidebar_position orders sections: guide (1) before api (2).
+    const keys = Object.keys(buildSidebar(root, meta));
+    expect(keys.indexOf('/guide/')).toBeLessThan(keys.indexOf('/api/'));
   });
 
   it('supports mixed auto and manual sidebar config via resolveSidebarConfig', () => {
