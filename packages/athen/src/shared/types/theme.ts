@@ -38,11 +38,15 @@ export interface SidebarGroup {
   items: SidebarItem[];
   collapsed?: boolean;
   collapsable?: boolean;
+  /** Extra CSS class applied to the group (from a folder's `index.md`). */
+  className?: string;
+  /** Stable unique key for the group (from a folder's `index.md`). */
+  key?: string;
 }
 
 export type SidebarItem =
-  | { text: string; link: string }
-  | { text: string; link?: string; items: SidebarItem[] };
+  | { text: string; link: string; className?: string; key?: string }
+  | { text: string; link?: string; items: SidebarItem[]; className?: string; key?: string };
 
 // -----------------------------------------------------------------------
 // Edit link

@@ -6,9 +6,8 @@ Athen 通过 [Unhead](https://unhead.unjs.io) 来驱动 `<title>`、`<html lang>
 
 唯一的模板是 `{页面标题} | {站点标题}`,无可配置。页面标题的回退链:
 
-1. 当前页面的 `frontmatter.title`
-2. 路由 resolve 后的 title(MDX 中的 `<h1>` 或文件名 humanize)
-3. `siteData.title`(没有页面标题时单独作为整个 title)
+1. 路由 resolve 后的 title——页面的 `# 一级标题`,没有标题时回退到文件名的 humanize
+2. `siteData.title`(没有页面标题时单独作为整个 title)
 
 如果页面标题等于站点标题,`|` 拼接会自动塌缩,不会出现 `Athen | Athen` 这种情况。
 
@@ -18,7 +17,6 @@ Athen 通过 [Unhead](https://unhead.unjs.io) 来驱动 `<title>`、`<html lang>
 
 ```md
 ---
-title: 快速开始
 description: 五分钟跑通 Athen。
 ---
 
@@ -27,7 +25,7 @@ description: 五分钟跑通 Athen。
 …
 ```
 
-`frontmatter.title` 优先于 MDX `<h1>` 和 `siteData.title`。`frontmatter.description` 优先于 locale 描述和站点描述。
+页面标题取自 `# 一级标题`(上例的 `快速开始`),不再提供 `title` frontmatter 字段。`frontmatter.description` 优先于 locale 描述和站点描述。
 
 ## 按 locale 配置
 

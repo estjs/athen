@@ -29,26 +29,26 @@ You can use [Front Matter](https://jekyllrb.com/docs/front-matter/) to add metad
 
 ```mdx
 ---
-title: Hello World
+author: Jane
 ---
 ```
 
-> Note: by default, Athen use h1 title as the title of html.
+> Note: Athen uses the page's `# h1` heading as the HTML document title; there is no `title` front matter field.
 
-You can also access the property defined in front matter, for example:
+You can also access any property defined in front matter, for example:
 
 ```mdx
 ---
-title: Hello World
+author: Jane
 ---
 
-# {frontmatter.title}
+# Written by {frontmatter.author}
 ```
 
-The properties defined in front matter will be passed to the component as `meta` property. So the final output will be:
+The properties defined in front matter are passed to the component as the `meta` property. So the final output will be:
 
 ```html
-<h1>Hello World</h1>
+<h1>Written by Jane</h1>
 ```
 
 You can see more front matter config detail in [config-front-matter](/api/config-front-matter).

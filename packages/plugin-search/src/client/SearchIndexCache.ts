@@ -51,14 +51,16 @@ export class SearchIndexCache {
     return this.initPromise;
   }
 
+  private getStore(mode: IDBTransactionMode): IDBObjectStore {
+    return this.db!.transaction([this.storeName], mode).objectStore(this.storeName);
+  }
+
   async get<T>(key: string): Promise<T | null> {
     try {
       if (!this.db) await this.init();
       if (!this.db) return null;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readonly').objectStore(
-          this.storeName,
-        );
+        const store = this.getStore('readonly');
         const request = store.get(key);
         request.addEventListener('error', () => reject(request.error));
         request.addEventListener('success', () => {
@@ -81,14 +83,14 @@ export class SearchIndexCache {
       if (!this.db) await this.init();
       if (!this.db) return;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(
-          this.storeName,
-        );
+        const store = this.getStore('readwrite');
         const request = store.put({ key, data, timestamp: Date.now() });
         request.addEventListener('error', () => reject(request.error));
         request.addEventListener('success', () => resolve());
       });
-    } catch {}
+    } catch (error) {
+      console.warn('[athen-search] failed to write cache entry', error);
+    }
   }
 
   async delete(key: string): Promise<void> {
@@ -96,14 +98,14 @@ export class SearchIndexCache {
       if (!this.db) await this.init();
       if (!this.db) return;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(
-          this.storeName,
-        );
+        const store = this.getStore('readwrite');
         const request = store.delete(key);
         request.addEventListener('error', () => reject(request.error));
         request.addEventListener('success', () => resolve());
       });
-    } catch {}
+    } catch (error) {
+      console.warn('[athen-search] failed to delete cache entry', error);
+    }
   }
 
   async clear(): Promise<void> {
@@ -111,13 +113,13 @@ export class SearchIndexCache {
       if (!this.db) await this.init();
       if (!this.db) return;
       return new Promise((resolve, reject) => {
-        const store = this.db!.transaction([this.storeName], 'readwrite').objectStore(
-          this.storeName,
-        );
+        const store = this.getStore('readwrite');
         const request = store.clear();
         request.addEventListener('error', () => reject(request.error));
         request.addEventListener('success', () => resolve());
       });
-    } catch {}
+    } catch (error) {
+      console.warn('[athen-search] failed to clear cache', error);
+    }
   }
 }

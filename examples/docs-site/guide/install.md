@@ -1,8 +1,7 @@
 ---
-title: Install
-order: 2
+sidebar_position: 2
 ---
 
 # Installation
 
-The sidebar text comes from frontmatter `title`, and the position comes from `order: 2`.
+The sidebar text comes from the page heading, and the position comes from `sidebar_position: 2`.

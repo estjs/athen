@@ -153,9 +153,10 @@ export async function searchDocuments(
   ]);
   const unique = new Map<number, SearchDocument>();
   const seenPaths = new Set<string>();
+  const docById = new Map(documents.map((doc) => [doc.id, doc]));
 
   for (const id of [...normalizeSearchIds(latin), ...normalizeSearchIds(cjk)]) {
-    const doc = documents.find((item) => item.id === id);
+    const doc = docById.get(id);
     if (
       !doc ||
       !isResultPathAvailable(doc.path, options.langRoutePrefix) ||

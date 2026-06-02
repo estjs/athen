@@ -1,6 +1,5 @@
 ---
-title: 用法
-order: 3
+sidebar_position: 3
 ---
 
 # 用法

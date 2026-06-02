@@ -88,10 +88,8 @@ function collectHeadings(content: string) {
 function resolveTitle(
   filePath: string,
   routePath: string,
-  frontmatter: Record<string, unknown>,
   headings: ReturnType<typeof collectHeadings>,
 ) {
-  if (typeof frontmatter.title === 'string') return frontmatter.title;
   const h1 = headings.find((h) => h.depth === 1);
   if (h1) return h1.text;
   const base = routePath.endsWith('/') ? basename(path.dirname(filePath)) : basename(filePath);
@@ -104,7 +102,7 @@ function readPageMeta(filePath: string, routePath: string) {
   const frontmatter = parseFrontmatter(content);
   const headings = collectHeadings(content);
   return {
-    title: resolveTitle(filePath, routePath, frontmatter, headings),
+    title: resolveTitle(filePath, routePath, headings),
     description: typeof frontmatter.description === 'string' ? frontmatter.description : undefined,
     frontmatter,
     headings,

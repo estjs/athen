@@ -192,7 +192,8 @@ export interface TemplateVars {
   siteTitle: string;
 }
 
-function firstString(...values: Array<unknown>): string | undefined {
+/** Return the first argument that is a non-empty (trimmed) string, else undefined. */
+export function firstString(...values: Array<unknown>): string | undefined {
   for (const value of values) {
     if (typeof value === 'string' && value.trim().length > 0) {
       return value;

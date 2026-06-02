@@ -1,16 +1,6 @@
 # Front Matter Config
 
-## title
-
-- Type: `string`
-
-The title of the page. By default, the h1 title of the page will be used as the title of the HTML document. But if you want to use a different title, you can use the `title` front matter to specify the title of the page. For example:
-
-```md
----
-title: My Page
----
-```
+> The page title is taken from the page's first `# h1` heading (falling back to a humanized file name). There is no `title` front matter field.
 
 ## description
 
