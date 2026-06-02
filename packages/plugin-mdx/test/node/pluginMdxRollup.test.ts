@@ -1,5 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { escapeHtmlTags, pluginMdxRollup } from '../../src/pluginMdxRollup';
+import { escapeHtmlTags, pluginMdxRollup, rewriteContainerTitles } from '../../src/pluginMdxRollup';
+
+describe('rewriteContainerTitles', () => {
+  it('rewrites a space-separated title into a directive label', () => {
+    const input = [':::tip 自定义标题', '自定义标题的 `block`', ':::'].join('\n');
+    expect(rewriteContainerTitles(input)).toBe(
+      [':::tip[自定义标题]', '自定义标题的 `block`', ':::'].join('\n'),
+    );
+  });
+
+  it('leaves plain directives and label/attribute forms untouched', () => {
+    const input = [':::tip', 'plain', ':::', '', ':::warning[Already]', ':::'].join('\n');
+    expect(rewriteContainerTitles(input)).toBe(input);
+  });
+
+  it('does not rewrite directive samples inside fenced code blocks', () => {
+    const input = ['```md', ':::tip Custom Title', ':::', '```'].join('\n');
+    expect(rewriteContainerTitles(input)).toBe(input);
+  });
+});
 
 describe('escapeHtmlTags', () => {
   it('escapes lowercase HTML tags in markdown prose', () => {
@@ -12,14 +31,9 @@ describe('escapeHtmlTags', () => {
   });
 
   it('leaves code spans, fenced blocks, and operators alone', () => {
-    const input = [
-      'Use `<title>` and keep a < b.',
-      '',
-      '```html',
-      '<head>',
-      '</head>',
-      '```',
-    ].join('\n');
+    const input = ['Use `<title>` and keep a < b.', '', '```html', '<head>', '</head>', '```'].join(
+      '\n',
+    );
 
     expect(escapeHtmlTags(input, '/docs/guide.md')).toBe(input);
   });
@@ -52,7 +66,11 @@ describe('pluginMdxRollup', () => {
   });
 
   it('keeps JSX components in MDX files', { timeout: 30000 }, async () => {
-    const plugins = await pluginMdxRollup({ root: '/', base: '/', essor: true });
+    const plugins = await pluginMdxRollup({
+      root: '/',
+      base: '/',
+      essor: true,
+    });
     const mdxPlugin = plugins.find((plugin) => plugin.name === 'athen:mdx-rolldown')!;
     const transform = mdxPlugin.transform as {
       handler: (code: string, id: string) => Promise<{ code: string; moduleType?: string }>;

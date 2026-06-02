@@ -1,7 +1,13 @@
 import { visit } from 'unist-util-visit';
 import { DIRECTIVE_TYPES } from '../utils';
-import type { Node, Root } from 'hast';
+import type { Node, Root } from 'mdast';
 import type { Plugin } from 'unified';
+
+interface DirectiveChild {
+  type: string;
+  data?: { directiveLabel?: boolean };
+  children?: Node[];
+}
 
 interface DirectiveNode {
   type: string;
@@ -10,7 +16,7 @@ interface DirectiveNode {
     title?: string;
   };
   data?: unknown;
-  children?: Node[];
+  children?: DirectiveChild[];
 }
 
 interface InitialData {
@@ -26,33 +32,32 @@ export const remarkPluginTip: Plugin<[], Root> = () => {
         return;
       }
       const name = DIRECTIVE_TYPES.includes(node.name) ? node.name : DIRECTIVE_TYPES[0];
-      const customTitle = node.attributes?.title;
-      const data: InitialData = node.data || (node.data = {});
-      const children = node.children;
+      const children = node.children || [];
+      const label = children.find((child) => child.data?.directiveLabel);
 
+      // Title: a directive label (`:::tip[Title]` / `:::tip Title`) keeps its
+      // inline formatting; otherwise the `{title="..."}` attribute, then the name.
+      const title = label?.children ?? [
+        { type: 'text', value: node.attributes?.title ?? name.toLocaleUpperCase() },
+      ];
+      const content = label ? children.filter((child) => child !== label) : children;
+
+      const data: InitialData = node.data ?? (node.data = {});
       data.hName = 'div';
-      data.hProperties = {
-        class: `at-directive ${name}`,
-      };
+      data.hProperties = { class: `at-directive ${name}` };
 
       node.children = [
         {
           type: 'paragraph',
-          data: {
-            hProperties: {
-              class: 'at-directive-title',
-            },
-          },
-          children: [{ type: 'text', value: customTitle ?? name.toLocaleUpperCase() }],
+          data: { hProperties: { class: 'at-directive-title' } },
+          children: title,
         },
         {
           type: 'element',
-          data: {
-            hProperties: { class: 'at-directive-content' },
-          },
-          children,
+          data: { hProperties: { class: 'at-directive-content' } },
+          children: content,
         },
-      ] as unknown as Node[];
+      ] as unknown as DirectiveChild[];
     });
   };
 };

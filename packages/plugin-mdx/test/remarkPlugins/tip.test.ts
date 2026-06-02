@@ -3,10 +3,13 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkDirective from 'remark-directive';
 import { remarkPluginTip } from '../../src/remarkPlugins/tip';
+import { rewriteContainerTitles } from '../../src/pluginMdxRollup';
 
-const processMarkdown = async (markdown: string) => {
+// Mirror the production pipeline: the `:::tip Title` shorthand is rewritten to a
+// directive label before remark-directive parses it.
+const processMarkdown = (markdown: string): Promise<any> => {
   const processor = unified().use(remarkParse).use(remarkDirective).use(remarkPluginTip);
-  return await processor.run(processor.parse(markdown));
+  return processor.run(processor.parse(rewriteContainerTitles(markdown)));
 };
 
 describe('remarkPluginTip', () => {
@@ -57,15 +60,45 @@ This is info
     expect(directiveNode.data.hProperties.class).toContain('info');
   });
 
-  it('should use custom title when provided', async () => {
-    const markdown = `:::tip{title="Custom Title"}
+  it('should use the directive label as a custom title', async () => {
+    const markdown = `:::tip Custom Title 
 This is a tip with custom title
 :::`;
     const result = await processMarkdown(markdown);
 
     const directiveNode = result.children.find((node: any) => node.type === 'containerDirective');
 
+    expect(directiveNode.children[0].data.hProperties.class).toBe('at-directive-title');
     expect(directiveNode.children[0].children[0].value).toBe('Custom Title');
+    // The label must not leak into the rendered content.
+    expect(directiveNode.children[1].children[0].children[0].value).toBe(
+      'This is a tip with custom title',
+    );
+  });
+
+  it('should preserve inline formatting in a custom title', async () => {
+    const markdown = `:::tip 自定义 \`标题\`
+content
+:::`;
+    const result = await processMarkdown(markdown);
+
+    const directiveNode = result.children.find((node: any) => node.type === 'containerDirective');
+    const titleChildren = directiveNode.children[0].children;
+
+    expect(titleChildren[0].value).toBe('自定义 ');
+    expect(titleChildren[1].type).toBe('inlineCode');
+    expect(titleChildren[1].value).toBe('标题');
+  });
+
+  it('should still honor the legacy title attribute', async () => {
+    const markdown = `:::tip{title="Legacy Title"}
+This is a tip with a legacy title
+:::`;
+    const result = await processMarkdown(markdown);
+
+    const directiveNode = result.children.find((node: any) => node.type === 'containerDirective');
+
+    expect(directiveNode.children[0].children[0].value).toBe('Legacy Title');
   });
 
   it('should use default title when not provided', async () => {

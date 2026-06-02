@@ -26,19 +26,28 @@ const ESCAPE_PLACEHOLDER = '__HTMLESC';
 
 const highlighterPromises = new Map<string, ReturnType<typeof createHighlighter>>();
 
-function resolveShikiThemes(config: options): { themes: string[]; active: string } {
+function resolveShikiThemes(config: options): {
+  themes: string[];
+  active: string;
+} {
   const configured = [...(config.shiki?.themes || [])];
   const requested = config.shiki?.theme;
   if (requested && !configured.includes(requested)) configured.unshift(requested);
   const themes = configured.length ? configured : ['dark-plus'];
-  return { themes, active: requested && themes.includes(requested) ? requested : themes[0] };
+  return {
+    themes,
+    active: requested && themes.includes(requested) ? requested : themes[0],
+  };
 }
 
 function getShikiHighlighter(themes: string[]) {
   const key = themes.join('\0');
   let promise = highlighterPromises.get(key);
   if (!promise) {
-    promise = createHighlighter({ themes, langs: Object.keys(bundledLanguages) });
+    promise = createHighlighter({
+      themes,
+      langs: Object.keys(bundledLanguages),
+    });
     highlighterPromises.set(key, promise);
   }
   return promise;
@@ -75,9 +84,21 @@ function stash(placeholders: string[], value: string) {
   return `${ESCAPE_PLACEHOLDER}${placeholders.length - 1}__`;
 }
 
+function restore(source: string, placeholders: string[]) {
+  return source.replaceAll(
+    /__HTMLESC(\d+)__/g,
+    (_m, idx) => placeholders[Number.parseInt(idx, 10)],
+  );
+}
+
 function protectFencedCodeBlocks(source: string, placeholders: string[]) {
   const out: string[] = [];
-  let fence: { marker: '`' | '~'; length: number; indent: string; lines: string[] } | null = null;
+  let fence: {
+    marker: '`' | '~';
+    length: number;
+    indent: string;
+    lines: string[];
+  } | null = null;
 
   for (const line of source.split('\n')) {
     if (fence) {
@@ -105,6 +126,19 @@ function protectFencedCodeBlocks(source: string, placeholders: string[]) {
   return out.join('\n');
 }
 
+// Rewrite the `:::tip Custom Title` shorthand into the directive label syntax
+// remark-directive understands (`:::tip[Custom Title]`); without it the trailing
+// text makes the whole block fail to parse. Fenced code blocks are protected so
+// example snippets render literally.
+export function rewriteContainerTitles(source: string): string {
+  const placeholders: string[] = [];
+  const result = protectFencedCodeBlocks(source, placeholders).replaceAll(
+    /^( {0,3}:{3,}[a-z][\w-]*)[ \t]+(?!\[)(\S.*)$/gim,
+    (_m, head, title) => `${head}[${title.trimEnd()}]`,
+  );
+  return restore(result, placeholders);
+}
+
 // Escape `<` that starts an HTML/JSX tag in Markdown prose, so MDX does not
 // interpret it as a JSX element. Inline code spans AND fenced code blocks are
 // passed through untouched — MDX/Shiki produce JSX text nodes for their
@@ -116,11 +150,7 @@ export function escapeHtmlTags(source: string, id?: string): string {
   let result = protectFencedCodeBlocks(source, placeholders);
   result = result.replaceAll(/(`+)([^`]+)\1/g, (match) => stash(placeholders, match));
   result = result.replaceAll(/<(\/?)([a-z])/g, '&lt;$1$2');
-  result = result.replaceAll(
-    /__HTMLESC(\d+)__/g,
-    (_m, idx) => placeholders[Number.parseInt(idx, 10)],
-  );
-  return result;
+  return restore(result, placeholders);
 }
 
 export async function pluginMdxRollup(config?: options): Promise<Plugin[]> {
@@ -186,8 +216,12 @@ export async function pluginMdxRollup(config?: options): Promise<Plugin[]> {
         filter: { id: MDX_FILTER },
         async handler(code, id) {
           const [path] = id.split('?');
-          const compiled = await compile({ path, value: code }, mdxOptions);
-          return { code: String(compiled.value), map: compiled.map, moduleType: 'js' };
+          const compiled = await compile({ path, value: rewriteContainerTitles(code) }, mdxOptions);
+          return {
+            code: String(compiled.value),
+            map: compiled.map,
+            moduleType: 'js',
+          };
         },
       },
     },
