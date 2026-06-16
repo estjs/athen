@@ -6,3 +6,10 @@ allowBuilds:
   esbuild: true
   simple-git-hooks: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@estjs/server@0.0.17-beta.4'
+  - '@estjs/shared@0.0.17-beta.4'
+  - '@estjs/signals@0.0.17-beta.4'
+  - '@estjs/template@0.0.17-beta.4'
+  - babel-plugin-essor@0.0.17-beta.4
+  - essor@0.0.17-beta.4

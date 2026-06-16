@@ -56,9 +56,20 @@ function updateChangeLog() {
     writeStream.end();
     console.log('generate changelog done.');
 
-    await execPromise('git add CHANGELOG.md');
-    await execPromise(`git commit -m "chore: update changelog"`);
-    await execPromise('git push');
+    // Commit the regenerated changelog. The push is opt-in (set CHANGELOG_PUSH=1)
+    // so running this locally doesn't unexpectedly push, and any git failure is
+    // surfaced as a warning rather than leaving the release in a half-done state.
+    try {
+      await execPromise('git add CHANGELOG.md .gitlogmap');
+      await execPromise('git commit -m "chore: update changelog"');
+      if (process.env.CHANGELOG_PUSH === '1') {
+        await execPromise('git push');
+      } else {
+        console.log('Skipping git push (set CHANGELOG_PUSH=1 to push).');
+      }
+    } catch (error) {
+      console.warn('changelog git step failed:', error);
+    }
   });
 }
 updateChangeLog();

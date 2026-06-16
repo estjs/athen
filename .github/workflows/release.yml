@@ -34,6 +34,12 @@ jobs:
       - name: PNPM build
         run: pnpm run build
 
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Unit Tests
+        run: pnpm run test -- --run
+
       - name: Publish to NPM
         run: pnpm --filter "./packages/**" -r publish --access public --no-git-checks
         env:

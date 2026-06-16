@@ -4,7 +4,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*", "!**/dist/**", "!**/.temp/**"],
-      "outputs": ["dist/**", ".temp/**", "docs/dist/**", "docs/.temp/**"]
+      "outputs": ["dist/**", ".temp/**"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"],

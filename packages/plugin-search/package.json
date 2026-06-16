@@ -38,21 +38,21 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "essor": "^0.0.16-beta.7"
+    "essor": "^0.0.17-beta.4"
   },
   "optionalDependencies": {
-    "algoliasearch": "^5.52.1",
+    "algoliasearch": "^5.54.0",
     "flexsearch": "^0.8.212",
     "glob-to-regexp": "^0.4.1",
     "markdown-it": "^14.2.0"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^25.9.1",
-    "essor": "^0.0.16-beta.8",
+    "@types/node": "^25.9.3",
+    "essor": "^0.0.17-beta.4",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.14",
-    "vitest": "^4.1.7"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.9"
   }
 }

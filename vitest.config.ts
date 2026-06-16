@@ -24,6 +24,12 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      // Measure every source module, not just those imported by a test, so
+      // untested files can't silently inflate the reported percentage. Scoped
+      // to `.ts` logic — `.tsx` Essor components are exercised by the Playwright
+      // e2e suite, not unit tests, and can't be remapped here without a runtime.
+      all: true,
+      include: ['packages/*/src/**/*.ts'],
       exclude: [
         '**/scripts/**',
         '**/unplugin/**',
@@ -32,6 +38,12 @@ export default defineConfig({
         '**/*.d.ts',
         '**/dist/**',
       ],
+      thresholds: {
+        statements: 55,
+        branches: 55,
+        functions: 55,
+        lines: 55,
+      },
     },
     globals: true,
     watch: false,
