@@ -34,11 +34,24 @@ const skipPrompts = argv.y || argv.yes;
 const autoInstall = argv.i || argv.install;
 
 /** Detect the package manager that invoked this CLI, from npm's env hints. */
-function detectPackageManager(): 'pnpm' | 'yarn' | 'npm' {
+export function detectPackageManager(): 'pnpm' | 'yarn' | 'npm' {
   const hint = `${process.env.npm_execpath ?? ''} ${process.env.npm_config_user_agent ?? ''}`;
   if (/pnpm/.test(hint)) return 'pnpm';
   if (/yarn/.test(hint)) return 'yarn';
   return 'npm';
+}
+
+/** A valid npm package name (optionally scoped). */
+export const PACKAGE_NAME_REGEXP = /^(?:@[\d*a-z~-][\d*._a-z~-]*\/)?[\da-z~-][\d._a-z~-]*$/;
+
+/** Slugify an arbitrary project name into a valid npm package name. */
+export function toValidPackageName(projectName: string): string {
+  return projectName
+    .trim()
+    .toLowerCase()
+    .replaceAll(/\s+/g, '-')
+    .replace(/^[._]/, '')
+    .replaceAll(/[^\da-z~-]+/g, '-');
 }
 
 async function init() {
@@ -59,7 +72,7 @@ async function init() {
     targetDir = 'athen';
   }
   const packageName = skipPrompts
-    ? targetDir.replaceAll(/\s+/g, '-')
+    ? toValidPackageName(path.basename(targetDir))
     : await getValidPackageName(targetDir);
   const root = path.join(cwd, targetDir);
 
@@ -152,16 +165,10 @@ function copy(src: string, dest: string) {
 
 async function getValidPackageName(projectName: string) {
   projectName = path.basename(projectName);
-  const packageNameRegExp = /^(?:@[\d*a-z~-][\d*._a-z~-]*\/)?[\da-z~-][\d._a-z~-]*$/;
-  if (packageNameRegExp.test(projectName)) {
+  if (PACKAGE_NAME_REGEXP.test(projectName)) {
     return projectName;
   } else {
-    const suggestedPackageName = projectName
-      .trim()
-      .toLowerCase()
-      .replaceAll(/\s+/g, '-')
-      .replace(/^[._]/, '')
-      .replaceAll(/[^\da-z~-]+/g, '-');
+    const suggestedPackageName = toValidPackageName(projectName);
 
     /**
      * @type {{ inputPackageName: string }}
@@ -171,7 +178,7 @@ async function getValidPackageName(projectName: string) {
       name: 'inputPackageName',
       message: 'Package name:',
       initial: suggestedPackageName,
-      validate: (input) => (packageNameRegExp.test(input) ? true : 'Invalid package.json name'),
+      validate: (input) => (PACKAGE_NAME_REGEXP.test(input) ? true : 'Invalid package.json name'),
     });
     return inputPackageName;
   }
@@ -201,8 +208,12 @@ function emptyDir(dir: string) {
   }
 }
 
-(() => {
-  init().catch((error) => {
-    console.error(error);
-  });
-})();
+// Skip the auto-run under Vitest so the module's pure helpers can be imported
+// and unit-tested without launching the interactive CLI.
+if (!process.env.VITEST) {
+  (() => {
+    init().catch((error) => {
+      console.error(error);
+    });
+  })();
+}
