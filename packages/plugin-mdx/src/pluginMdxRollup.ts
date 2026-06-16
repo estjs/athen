@@ -14,12 +14,11 @@ import { remarkPluginTip } from './remarkPlugins/tip';
 import { rehypePluginShiki } from './rehypePlugins/shiki';
 import { remarkPluginNormalizeLink } from './remarkPlugins/link';
 import { rehypePluginPreWrapper } from './rehypePlugins/preWrapper';
-import { TARGET_BLANK_WHITE_LIST, cleanUrl, isReg } from './utils';
+import { MD_EXTENSIONS, TARGET_BLANK_WHITE_LIST, cleanUrl, isReg } from './utils';
 import type { options } from './types';
 import type { Plugin } from 'vite';
 import type { PluggableList } from 'unified';
 
-const MD_EXTENSIONS = ['md', 'markdown', 'mdown', 'mkdn', 'mkd', 'mdwn', 'mkdown', 'ron'] as const;
 const MD_FILTER = new RegExp(`\\.(?:${MD_EXTENSIONS.join('|')})(?:$|\\?)`);
 const MDX_FILTER = new RegExp(`\\.(?:${MD_EXTENSIONS.join('|')}|mdx)(?:$|\\?)`);
 const ESCAPE_PLACEHOLDER = '__HTMLESC';

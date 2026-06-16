@@ -32,6 +32,30 @@ interface Heading {
 
 type MdxProgram = NonNullable<NonNullable<MdxjsEsm['data']>['estree']>;
 
+/** Flatten a heading's inline children into plain text (mirrors rehype-slug input). */
+function headingText(children: ChildNode[]): string {
+  return children
+    .map((child: ChildNode) => {
+      switch (child.type) {
+        // child with value
+        case 'text':
+        case 'inlineCode':
+          return child.value;
+
+        // child without value, but can get value from children property
+        case 'emphasis':
+        case 'strong':
+        case 'link':
+          return child.children?.map((c) => c.value).join('') || '';
+
+        // child without value and can not get value from children property
+        default:
+          return '';
+      }
+    })
+    .join('');
+}
+
 export const remarkPluginToc: Plugin<[TocOptions?], Root> = (options = {}) => {
   return (tree: Root) => {
     const toc: TocItem[] = [];
@@ -44,30 +68,11 @@ export const remarkPluginToc: Plugin<[TocOptions?], Root> = (options = {}) => {
       }
       // Collect h2 ~ h5
       if (node.depth === 1) {
-        title = node.children[0].value;
+        title = headingText(node.children);
       }
 
       if (options.enabled !== false && node.depth >= minLevel && node.depth <= maxLevel) {
-        const originText = node.children
-          .map((child: ChildNode) => {
-            switch (child.type) {
-              // child with value
-              case 'text':
-              case 'inlineCode':
-                return child.value;
-
-              // child without value, but can get value from children property
-              case 'emphasis':
-              case 'strong':
-              case 'link':
-                return child.children?.map((c) => c.value).join('') || '';
-
-              // child without value and can not get value from children property
-              default:
-                return '';
-            }
-          })
-          .join('');
+        const originText = headingText(node.children);
         const id = slugger.slug(originText);
         const depth = node.depth;
         toc.push({ id, text: originText, depth });

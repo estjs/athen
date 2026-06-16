@@ -1,4 +1,4 @@
-import { MD_REGEX, cleanUrl } from './utils';
+import { MD_CONTENT_REGEX, cleanUrl } from './utils';
 import type { Plugin } from 'vite';
 
 export function pluginMdxEssor(): Plugin {
@@ -6,7 +6,7 @@ export function pluginMdxEssor(): Plugin {
     name: 'vite-plugin-mdx-essor',
     transform(code, id) {
       id = cleanUrl(id);
-      if (!MD_REGEX.test(id)) return;
+      if (!MD_CONTENT_REGEX.test(id)) return;
 
       code = code.replaceAll('<_components.', '<').replaceAll('</_components.', '</');
       return { code, moduleType: 'js' };

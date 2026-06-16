@@ -6,6 +6,30 @@ export const isProduction = () => process.env.NODE_ENV === 'production';
 export const DIRECTIVE_TYPES: string[] = ['tip', 'warning', 'danger', 'info'];
 export const MD_REGEX = /\.mdx?$/;
 
+/**
+ * Every extension the MDX rollup plugin compiles. Kept here (rather than in the
+ * rollup module) so the content/last-updated/essor transforms share one source
+ * of truth and don't drift from what actually gets compiled.
+ */
+export const MD_EXTENSIONS = [
+  'md',
+  'markdown',
+  'mdown',
+  'mkdn',
+  'mkd',
+  'mdwn',
+  'mkdown',
+  'ron',
+] as const;
+
+/**
+ * Matches any compiled markdown/MDX file by extension. Use after `cleanUrl`
+ * (query/hash already stripped), hence the `$` anchor. Prefer this over the
+ * narrower `MD_REGEX` when gating transforms that append named exports, so
+ * `.markdown`/`.mdown`/… pages keep their `content`/`lastUpdatedTime` exports.
+ */
+export const MD_CONTENT_REGEX = new RegExp(`\\.(?:${[...MD_EXTENSIONS, 'mdx'].join('|')})$`);
+
 export const queryRE = /\?.*$/s;
 export const hashRE = /#.*$/s;
 

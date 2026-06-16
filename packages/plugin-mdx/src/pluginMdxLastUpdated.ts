@@ -1,6 +1,6 @@
 import { simpleGit } from 'simple-git';
 
-import { MD_REGEX, appendNamedExport, cleanUrl } from './utils';
+import { MD_CONTENT_REGEX, appendNamedExport, cleanUrl } from './utils';
 import type { Plugin } from 'vite';
 
 export function pluginMdxGit(): Plugin {
@@ -36,7 +36,7 @@ export function pluginMdxGit(): Plugin {
     name: 'vite-plugin-mdx-last-update',
     async transform(code, id) {
       id = cleanUrl(id);
-      if (!MD_REGEX.test(id)) return;
+      if (!MD_CONTENT_REGEX.test(id)) return;
 
       let lastUpdatedTime = '';
       if (cache.has(id)) {

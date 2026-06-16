@@ -35,11 +35,16 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({
       ) {
         const codeNode = node.children[0];
 
-        const codeContent = (node.children[0].children[0] as Text).value;
+        // An empty fenced block (``` with no body) has no text child; default
+        // to an empty string instead of dereferencing `undefined`.
+        const codeContent = (codeNode.children[0] as Text | undefined)?.value ?? '';
 
         const codeClassName = codeNode.properties?.className?.toString() || '';
 
-        const highlightLinesReg = /language-([a-z]*)\s*(\{[\d,-]*\})?/i;
+        // Capture the full language token (everything up to whitespace or the
+        // `{1,3}` line-highlight marker) so names like `c++`, `objective-c` and
+        // `c#` aren't truncated.
+        const highlightLinesReg = /language-([^\s{]+)\s*(\{[\d,-]*\})?/i;
         const highlightRegExecResult = highlightLinesReg.exec(codeClassName);
 
         if (!highlightRegExecResult) {

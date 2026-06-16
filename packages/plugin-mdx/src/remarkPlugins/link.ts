@@ -19,7 +19,15 @@ export const remarkPluginNormalizeLink: Plugin<[{ base: string; enableSpa: boole
       tree,
       (node: LinkNode) => node.type === 'link',
       (node: LinkNode) => {
-        if (!node.url || node.url.startsWith('http') || node.url.startsWith('#')) {
+        // Skip links we must not rewrite: in-page anchors, protocol-relative
+        // (`//host`) URLs, and anything with an explicit scheme
+        // (http:, https:, mailto:, tel:, …).
+        if (
+          !node.url ||
+          node.url.startsWith('#') ||
+          node.url.startsWith('//') ||
+          /^[a-z][a-z0-9+.-]*:/i.test(node.url)
+        ) {
           return;
         }
 
