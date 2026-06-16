@@ -29,15 +29,16 @@ function baiduSnippet(id: string): HtmlTagDescriptor {
 }
 
 function tencentSnippet(sid: string, cid?: string): HtmlTagDescriptor {
-  const attrs = [`sid='${sid}'`];
-  if (cid) attrs.push(`cid='${cid}'`);
+  // Build `mta.setAttribute("sid", "...")` calls with quoted attribute names
+  // and JSON-encoded values — emitting the bare name (`sid`) would reference an
+  // undefined identifier at runtime.
+  const setAttrs = [`mta.setAttribute("sid", ${JSON.stringify(sid)});`];
+  if (cid) setAttrs.push(`mta.setAttribute("cid", ${JSON.stringify(cid)});`);
   return {
     tag: 'script',
-    children: `var _mtac = {}; (function() { var mta = document.createElement("script"); mta.src = "//pingjs.qq.com/h5/stats.js?v2.0.4"; mta.setAttribute("name","MTAH5"); ${attrs
-      .map((a) => `mta.setAttribute(${a.split('=')[0]}, ${a.split('=')[1]});`) // naive
-      .join(
-        ' ',
-      )} var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(mta, s);})();`,
+    children: `var _mtac = {}; (function() { var mta = document.createElement("script"); mta.src = "//pingjs.qq.com/h5/stats.js?v2.0.4"; mta.setAttribute("name","MTAH5"); ${setAttrs.join(
+      ' ',
+    )} var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(mta, s);})();`,
     injectTo: 'head',
   };
 }
@@ -90,17 +91,29 @@ function ackeeSnippet(server: string, domainId: string): HtmlTagDescriptor {
   };
 }
 
-function vercelSnippet(id: string): HtmlTagDescriptor {
-  return {
-    tag: 'script',
-    attrs: {
-      'defer': true,
-      'src': `https://vercel.analytics.com/script.js`,
-      'data-id': id,
+// Vercel Web Analytics is served same-origin from `/_vercel/insights/script.js`
+// once enabled on the project, and requires the `window.va` queue stub to buffer
+// events until the deferred script loads. See
+// https://vercel.com/docs/analytics/quickstart (plain HTML).
+function vercelSnippets(id: string): HtmlTagDescriptor[] {
+  return [
+    {
+      tag: 'script',
+      children:
+        'window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };',
+      injectTo: 'head',
     },
-    children: '',
-    injectTo: 'head',
-  };
+    {
+      tag: 'script',
+      attrs: {
+        'defer': true,
+        'src': '/_vercel/insights/script.js',
+        'data-id': id,
+      },
+      children: '',
+      injectTo: 'head',
+    },
+  ];
 }
 
 function customSnippet(snippet: string): HtmlTagDescriptor {
@@ -127,7 +140,7 @@ export default function analyticsPlugin(options: AnalyticsOptions = {}): Plugin 
         tags.push(plausibleSnippet(options.plausible.domain, options.plausible.apiHost));
       if (options.umami) tags.push(umamiSnippet(options.umami.id, options.umami.src));
       if (options.ackee) tags.push(ackeeSnippet(options.ackee.server, options.ackee.domainId));
-      if (options.vercel) tags.push(vercelSnippet(options.vercel.id));
+      if (options.vercel) tags.push(...vercelSnippets(options.vercel.id));
       if (options.custom) tags.push(customSnippet(options.custom.snippet));
 
       return tags;
