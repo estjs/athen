@@ -3,7 +3,7 @@ import { routes } from 'athen:routes';
 import siteData from 'athen:site-data';
 import { cleanUrl } from '@shared/utils';
 import type { RouteRecordRaw, RouterHistory } from 'essor-router';
-import type { FrontMatterMeta, PageData, PageModule } from '@shared/types';
+import type { FrontMatterMeta, Header, PageData, PageModule } from '@shared/types';
 
 interface AthenRouteRecord {
   path: string;
@@ -37,8 +37,18 @@ export async function initPageData(routerPath: string): Promise<PageData> {
     routePath: routerPath,
     relativePagePath: mod ? cleanUrl(matched?.meta?.filePath ?? '') : '',
     pageType: inferPageType(mod),
-    frontmatter: mod?.frontmatter ?? ({} as FrontMatterMeta),
     ...mod,
+    // `toc`, `lastUpdatedTime`, `content` and friends are *conditional* MDX
+    // named exports. Force explicit defaults for every PageData field so that
+    // `Object.assign(pageData, ...)` on SPA navigation overwrites the previous
+    // page's values instead of leaving stale data behind.
+    frontmatter: mod?.frontmatter ?? ({} as FrontMatterMeta),
+    title: (mod?.title as string | undefined) ?? '',
+    description: (mod?.description as string | undefined) ?? '',
+    lang: (mod?.lang as string | undefined) ?? '',
+    toc: (mod?.toc as Header[] | undefined) ?? [],
+    lastUpdatedTime: (mod?.lastUpdatedTime as string | undefined) ?? '',
+    content: (mod?.content as string | undefined) ?? '',
   };
 }
 

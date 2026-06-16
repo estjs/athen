@@ -45,15 +45,22 @@ type Node = FolderNode | PageNode;
 
 const META_FILE = '_meta.json';
 
-function readFolderMeta(folderPath: string): FolderMeta | undefined {
+/** Cache of parsed `_meta.json` by absolute folder path, scoped to one build. */
+export type FolderMetaCache = Map<string, FolderMeta | undefined>;
+
+function readFolderMeta(folderPath: string, cache?: FolderMetaCache): FolderMeta | undefined {
+  if (cache?.has(folderPath)) return cache.get(folderPath);
   const metaPath = join(folderPath, META_FILE);
-  if (!fs.existsSync(metaPath)) return undefined;
-  try {
-    return fs.readJSONSync(metaPath) as FolderMeta;
-  } catch (error) {
-    console.warn(`[athen] Failed to parse ${metaPath}:`, error);
-    return undefined;
+  let meta: FolderMeta | undefined;
+  if (fs.existsSync(metaPath)) {
+    try {
+      meta = fs.readJSONSync(metaPath) as FolderMeta;
+    } catch (error) {
+      console.warn(`[athen] Failed to parse ${metaPath}:`, error);
+    }
   }
+  cache?.set(folderPath, meta);
+  return meta;
 }
 
 /** Docusaurus-style sidebar fields read from a page's frontmatter. */
@@ -100,7 +107,7 @@ function isHiddenPage(route: RouteMeta): boolean {
 }
 
 /** Build a folder/page tree under `scanRoot` from a flat list of routes. */
-function buildTree(scanRoot: string, routes: RouteMeta[]): FolderNode {
+function buildTree(scanRoot: string, routes: RouteMeta[], metaCache?: FolderMetaCache): FolderNode {
   const root: FolderNode = {
     type: 'folder',
     name: '',
@@ -119,7 +126,7 @@ function buildTree(scanRoot: string, routes: RouteMeta[]): FolderNode {
       type: 'folder',
       name: absolutePath.slice(dirname(absolutePath).length + 1),
       absolutePath,
-      meta: readFolderMeta(absolutePath),
+      meta: readFolderMeta(absolutePath, metaCache),
       children: [],
     };
     parent.children.push(node);
@@ -137,7 +144,7 @@ function buildTree(scanRoot: string, routes: RouteMeta[]): FolderNode {
 
   // Read meta for the root too — used by single-section sidebars.
   if (!root.meta) {
-    root.meta = readFolderMeta(scanRoot);
+    root.meta = readFolderMeta(scanRoot, metaCache);
   }
   return root;
 }
@@ -219,12 +226,17 @@ function buildSidebarGroup(folder: FolderNode): SidebarGroup | undefined {
  * - For i18n sites with `localePrefix` (e.g. `zh`), the locale folder is
  *   transparent: groups are keyed under `/zh/<section>/`.
  */
-export function buildSidebar(scanRoot: string, routes: RouteMeta[], localePrefix = ''): Sidebar {
+export function buildSidebar(
+  scanRoot: string,
+  routes: RouteMeta[],
+  localePrefix = '',
+  metaCache?: FolderMetaCache,
+): Sidebar {
   // Only include routes that live under this locale (or the root locale).
   const localeRoutes = routes.filter((route) => (route.localePrefix || '') === localePrefix);
   if (localeRoutes.length === 0) return {};
 
-  const tree = buildTree(scanRoot, localeRoutes);
+  const tree = buildTree(scanRoot, localeRoutes, metaCache);
   const sidebar: Sidebar = {};
 
   // First-level folders below the locale folder become sections. For the root

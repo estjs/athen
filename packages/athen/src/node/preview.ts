@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import process from 'node:process';
 import compression from '@polka/compression';
 import polka from 'polka';
 import sirv from 'sirv';
@@ -43,14 +44,14 @@ export async function serve(root: string, port = 4173, hostOption: string | bool
     app.use(`/${base}`, compress);
     app.use(`/${base}`, serveStatic);
     app.listen(port, () => {
-      console.log(`Built site served at http://${host}:${port}/${base}/\n`);
+      process.stdout.write(`Built site served at http://${host}:${port}/${base}/\n\n`);
     });
   } else {
     polka({ onNoMatch })
       .use(compress)
       .use(serveStatic)
       .listen(port, () => {
-        console.log(`Built site served at http://${host}:${port}/\n`);
+        process.stdout.write(`Built site served at http://${host}:${port}/\n\n`);
       });
   }
 }

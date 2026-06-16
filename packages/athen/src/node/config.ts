@@ -11,7 +11,12 @@ import {
 } from '../shared/locale';
 import { DEFAULT_THEME_PATH } from './constants';
 import { type RouteMeta, collectRoutes } from './routes';
-import { buildSidebar, hasAutoSidebar, resolveSidebarConfig } from './sidebar';
+import {
+  type FolderMetaCache,
+  buildSidebar,
+  hasAutoSidebar,
+  resolveSidebarConfig,
+} from './sidebar';
 import type { LocaleRedirectEntry } from '../shared/locale';
 import type {
   EditLink,
@@ -196,8 +201,11 @@ function resolveRoute(userConfig: UserConfig): RouteOptions | undefined {
 function resolveAutoSidebar(scanDir: string, siteData: SiteData, routes: RouteMeta[]): Sidebar {
   const prefixes = ['', ...Object.keys(siteData.locales || {}).map(normalizeLocalePrefix)];
   const merged: Sidebar = {};
+  // Share one `_meta.json` cache across every locale pass so each folder's
+  // metadata is read and parsed once per build instead of once per locale.
+  const metaCache: FolderMetaCache = new Map();
   for (const prefix of new Set(prefixes)) {
-    Object.assign(merged, buildSidebar(scanDir, routes, prefix));
+    Object.assign(merged, buildSidebar(scanDir, routes, prefix, metaCache));
   }
   return merged;
 }

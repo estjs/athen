@@ -25,7 +25,7 @@ export interface CheckBrokenLinksOptions {
 }
 
 const LINK_RE = /(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+["'][^"']*["'])?\)/g;
-const SPECIAL_PROTOCOL_RE = /^(https?:)?\/\/|^(mailto|tel):/i;
+const SPECIAL_PROTOCOL_RE = /^(?:https?:)?\/\/|^(?:mailto|tel):/i;
 
 function removeMdExtension(filePath: string) {
   return filePath.replace(/\.(mdx?|html)$/, '');
@@ -84,7 +84,7 @@ function resolveRoute(
   }
 
   const relativeFileRoute =
-    !linkPath.startsWith('/') && /\.(mdx?|html)$/.test(cleanUrl(linkPath))
+    !linkPath.startsWith('/') && /\.(?:mdx?|html)$/.test(cleanUrl(linkPath))
       ? resolveRelativeFileRoute(source, linkPath, fileMap)
       : undefined;
 

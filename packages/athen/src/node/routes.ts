@@ -2,6 +2,7 @@ import path, { basename, extname } from 'node:path';
 import fs from 'fs-extra';
 import { globSync } from 'glob';
 import { normalizePath } from 'vite';
+import Slugger from 'github-slugger';
 import {
   type LocaleAwareConfig,
   findLocaleByRoutePath,
@@ -25,8 +26,8 @@ const DEFAULT_IGNORE = [
   'athen.config.*',
 ];
 const DEFAULT_INCLUDE = '**/*.{tsx,jsx,md,mdx}';
-const FRONTMATTER_LINE = /^([\w-]+):\s*(.+)$/;
-const HEADING_LINE = /^(#{1,6})\s+(.+)$/;
+const FRONTMATTER_LINE = /^([\w-]+):\s*(\S.*)$/;
+const HEADING_LINE = /^(#{1,6})\s+(\S.*)$/;
 
 export function getDefaultLocalePrefix(siteData?: LocaleAwareSiteData) {
   return getDefaultLocaleSourcePrefix(siteData);
@@ -66,21 +67,18 @@ function parseFrontmatter(content: string): Record<string, unknown> {
   return out;
 }
 
-function slugifyHeading(text: string) {
-  return text
-    .trim()
-    .toLowerCase()
-    .replaceAll(/[^\w一-龥 -]/g, '')
-    .replaceAll(/\s+/g, '-');
-}
-
 function collectHeadings(content: string) {
   const out: Array<{ id: string; text: string; depth: number }> = [];
+  // Use github-slugger (the same slugger the MDX renderer + rehype-slug use)
+  // with a per-document reset so anchor IDs \u2014 including dedup suffixes for
+  // repeated headings (`#setup`, `#setup-1`) \u2014 match the rendered DOM. The
+  // broken-link checker compares against these IDs.
+  const slugger = new Slugger();
   for (const line of content.split('\n')) {
     const m = HEADING_LINE.exec(line.trim());
     if (!m) continue;
     const text = m[2].replace(/\s+#$/, '').trim();
-    out.push({ id: slugifyHeading(text), text, depth: m[1].length });
+    out.push({ id: slugger.slug(text), text, depth: m[1].length });
   }
   return out;
 }
