@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import MarkdownIt from 'markdown-it';
 import {
   type SearchIndexes,
   createSearchIndexes,
@@ -11,10 +10,44 @@ import {
 } from './search-core';
 import type { SearchDocument, SearchOptions, SearchResult } from './types';
 
+function stripMarkdown(content: string): string {
+  return (
+    content
+      // Remove frontmatter if present
+      .replace(/^---[\s\S]*?---/, '')
+      // Remove HTML comments
+      .replaceAll(/<!--[\s\S]*?-->/g, '')
+      // Remove JSX/TSX imports and exports
+      .replaceAll(/^\s*import\s[\s\S]*?from\s+['"].*?['"];?/gm, '')
+      .replaceAll(/^\s*export\s+[\s\S]*?;?/gm, '')
+      // Remove code blocks
+      .replaceAll(/```[\s\S]*?```/g, '')
+      // Remove inline code blocks
+      .replaceAll(/`([^`]+)`/g, '$1')
+      // Remove HTML tags
+      .replaceAll(/<[^>]*>/g, ' ')
+      // Remove markdown links: [text](link) -> text
+      .replaceAll(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      // Remove images: ![alt](img) -> alt
+      .replaceAll(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+      // Remove headings: # heading -> heading
+      .replaceAll(/^\s*#{1,6}\s+(.*)$/gm, '$1')
+      // Remove bold/italic: **bold**, *italic* -> bold, italic
+      .replaceAll(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1')
+      // Remove blockquotes: > quote -> quote
+      .replaceAll(/^\s*>\s+/gm, '')
+      // Remove list items: - item -> item
+      .replaceAll(/^\s*[-*+]\s+/gm, '')
+      .replaceAll(/^\s*\d+\.\s+/gm, '')
+      // Normalize spacing
+      .replaceAll(/\s+/g, ' ')
+      .trim()
+  );
+}
+
 export class SearchIndexBuilder {
   private documents: SearchDocument[] = [];
   private options: SearchOptions;
-  private md: MarkdownIt;
   private indexes: SearchIndexes;
 
   constructor(options: SearchOptions = {}) {
@@ -24,7 +57,6 @@ export class SearchIndexBuilder {
       searchOptions: { limit: 7, enrich: true, suggest: true },
       ...options,
     };
-    this.md = new MarkdownIt({ html: true, linkify: true, typographer: true });
     this.indexes = createSearchIndexes();
   }
 
@@ -91,11 +123,7 @@ export class SearchIndexBuilder {
       }
     }
 
-    const cleanContent = this.md
-      .render(body)
-      .replaceAll(/<[^>]*>/g, ' ')
-      .replaceAll(/\s+/g, ' ')
-      .trim();
+    const cleanContent = stripMarkdown(body);
     return { title, headings, content: cleanContent, rawHeaders };
   }
 

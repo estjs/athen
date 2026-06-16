@@ -145,11 +145,14 @@ export async function renderPage(
   htmlPlugins: Plugin[] = [],
 ) {
   const assets = await prepareAssets(clientBundle, ssgBundle, root, config);
-  for (const route of routers) {
-    const { html, fileName } = await renderRouteHtml(route, render, config, assets, htmlPlugins);
-    await fs.ensureDir(join(assets.distPath, dirname(fileName)));
-    await fs.outputFile(join(assets.distPath, fileName), html);
-  }
+  await Promise.all(
+    routers.map(async (route) => {
+      const { html, fileName } = await renderRouteHtml(route, render, config, assets, htmlPlugins);
+      const destPath = join(assets.distPath, fileName);
+      await fs.ensureDir(dirname(destPath));
+      await fs.outputFile(destPath, html);
+    }),
+  );
 }
 
 export async function bundle(root: string, config: SiteConfig) {

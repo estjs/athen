@@ -156,4 +156,17 @@ describe('route service', () => {
     expect(a).toBe(b);
     expect(a.match(/path: "\/"/g)).toHaveLength(1);
   });
+
+  it('keeps route titles aligned with runtime h1-derived page titles', () => {
+    const code = renderRouteCode({
+      'guide/start.md': `---
+title: Frontmatter Title
+---
+
+# Heading Title`,
+    });
+
+    expect(code).toContain('title: "Heading Title"');
+    expect(code).not.toContain('Frontmatter Title');
+  });
 });

@@ -112,4 +112,78 @@ describe('pluginAthen', () => {
     expect(essorServerAliasIndex).toBeGreaterThanOrEqual(0);
     expect(essorServerAliasIndex).toBeLessThan(essorAliasIndex);
   });
+
+  it('uses the latest route table when transforming dev HTML', async () => {
+    vi.doUnmock('../../src/node/plugins/core');
+    const { pluginAthen } = await import('../../src/node/plugins/core');
+    const siteConfig = config();
+    siteConfig.siteData.title = 'Docs';
+    siteConfig._routes = [
+      {
+        routePath: '/guide',
+        absolutePath: '/fake/old.md',
+        filePath: 'old.md',
+        title: 'Old Title',
+      },
+    ];
+    const indexHtmlPlugin = pluginAthen(siteConfig).find((plugin) => plugin.name === 'athen:index-html');
+    const transformIndexHtml = indexHtmlPlugin?.transformIndexHtml as {
+      handler: (html: string, ctx: { originalUrl?: string }) => { html: string };
+    };
+
+    siteConfig._routes = [
+      {
+        routePath: '/guide',
+        absolutePath: '/fake/new.md',
+        filePath: 'new.md',
+        title: 'New Title',
+      },
+    ];
+
+    const out = transformIndexHtml.handler('<html><head></head><body></body></html>', {
+      originalUrl: '/guide',
+    });
+
+    expect(out.html).toContain('<title>New Title | Docs</title>');
+    expect(out.html).not.toContain('Old Title');
+  });
+
+  it('invalidates both routes and site data virtual modules when route files are added', async () => {
+    vi.doUnmock('../../src/node/plugins/core');
+    const { pluginRoute } = await import('../../src/node/plugins/core');
+    const routePlugin = pluginRoute({
+      ...config(),
+      root: '/project/docs',
+      _routes: [],
+    });
+    const handlers: Record<string, (file: string) => void> = {};
+    const routeModule = { id: '\0athen:routes' };
+    const siteDataModule = { id: '\0athen:site-data' };
+    const invalidated: unknown[] = [];
+
+    routePlugin.configureServer?.({
+      watcher: {
+        on(event: string, cb: (file: string) => void) {
+          handlers[event] = cb;
+        },
+      },
+      moduleGraph: {
+        getModuleById(id: string) {
+          if (id === '\0athen:routes') return routeModule;
+          if (id === '\0athen:site-data') return siteDataModule;
+        },
+        invalidateModule(mod: unknown) {
+          invalidated.push(mod);
+        },
+      },
+      ws: {
+        send: vi.fn(),
+      },
+    } as any);
+
+    handlers.add('/project/docs/guide/new.md');
+
+    expect(invalidated).toContain(routeModule);
+    expect(invalidated).toContain(siteDataModule);
+  });
 });

@@ -68,7 +68,7 @@ function parseFrontmatter(content: string): Record<string, unknown> {
   return out;
 }
 
-function collectHeadings(content: string) {
+function collectHeadings(content: string, onlyH1 = false) {
   const out: Array<{ id: string; text: string; depth: number }> = [];
   // Use github-slugger (the same slugger the MDX renderer + rehype-slug use)
   // with a per-document reset so anchor IDs \u2014 including dedup suffixes for
@@ -78,8 +78,11 @@ function collectHeadings(content: string) {
   for (const line of content.split('\n')) {
     const m = HEADING_LINE.exec(line.trim());
     if (!m) continue;
+    const depth = m[1].length;
+    if (onlyH1 && depth !== 1) continue;
     const text = m[2].replace(/\s+#$/, '').trim();
-    out.push({ id: slugger.slug(text), text, depth: m[1].length });
+    out.push({ id: slugger.slug(text), text, depth });
+    if (onlyH1 && depth === 1) break;
   }
   return out;
 }
@@ -95,11 +98,14 @@ function resolveTitle(
   return humanize(base.replace(/\.[^.]+$/, ''));
 }
 
-function readPageMeta(filePath: string, routePath: string) {
+function readPageMeta(filePath: string, routePath: string, command: 'serve' | 'build' = 'build') {
   if (!isMarkdown(filePath)) return {};
   const content = fs.readFileSync(filePath, 'utf-8');
   const frontmatter = parseFrontmatter(content);
-  const headings = collectHeadings(content);
+
+  const onlyH1 = command === 'serve';
+  const headings = collectHeadings(content, onlyH1);
+
   return {
     title: resolveTitle(filePath, routePath, headings),
     description: typeof frontmatter.description === 'string' ? frontmatter.description : undefined,
@@ -144,16 +150,61 @@ function buildRouteMeta(
   root: string,
   siteData?: LocaleAwareSiteData,
   route?: RouteOptions,
+  command: 'serve' | 'build' = 'build',
 ): RouteMeta {
   const fileRelativePath = normalizePath(path.relative(root, filePath));
   const routePath = resolveRoutePath(fileRelativePath, siteData, route);
-  return {
+  const baseMeta = {
     routePath,
     absolutePath: normalizePath(filePath),
     filePath: fileRelativePath,
     name: basename(filePath, extname(filePath)),
     ...resolveLocaleForRoute(routePath, siteData),
-    ...readPageMeta(filePath, routePath),
+  };
+
+  if (command === 'serve') {
+    let parsed: any = null;
+    const getParsed = () => {
+      if (!parsed) {
+        parsed = readPageMeta(filePath, routePath, command);
+      }
+      return parsed;
+    };
+    return Object.defineProperties(baseMeta, {
+      title: {
+        get() {
+          return getParsed().title;
+        },
+        enumerable: true,
+        configurable: true,
+      },
+      description: {
+        get() {
+          return getParsed().description;
+        },
+        enumerable: true,
+        configurable: true,
+      },
+      frontmatter: {
+        get() {
+          return getParsed().frontmatter;
+        },
+        enumerable: true,
+        configurable: true,
+      },
+      headings: {
+        get() {
+          return getParsed().headings;
+        },
+        enumerable: true,
+        configurable: true,
+      },
+    }) as RouteMeta;
+  }
+
+  return {
+    ...baseMeta,
+    ...readPageMeta(filePath, routePath, command),
   };
 }
 
@@ -161,13 +212,14 @@ export function collectRoutes(
   scanDir: string,
   routeOptions?: RouteOptions,
   siteData?: LocaleAwareSiteData,
+  command: 'serve' | 'build' = 'build',
 ): RouteMeta[] {
   return globSync(includePattern(routeOptions), {
     cwd: scanDir,
     absolute: true,
     ignore: [...DEFAULT_IGNORE, ...(routeOptions?.exclude || [])],
   })
-    .map((filePath) => buildRouteMeta(filePath, scanDir, siteData, routeOptions))
+    .map((filePath) => buildRouteMeta(filePath, scanDir, siteData, routeOptions, command))
     .sort((a, b) => a.routePath.localeCompare(b.routePath));
 }
 
@@ -197,23 +249,29 @@ export function findRoute(routes: RouteMeta[], rawPath: string): RouteMeta | und
 }
 
 /** Build the source code of the `athen:routes` virtual module. */
-export function buildRoutesModule(routes: RouteMeta[], siteData?: LocaleAwareSiteData): string {
+export function buildRoutesModule(
+  routes: RouteMeta[],
+  siteData?: LocaleAwareSiteData,
+  isProduction = true,
+): string {
   const siteName = siteData?.title || 'title';
   const records = routes.map((r) => {
     const meta = {
       name: siteName,
       filePath: r.filePath,
-      headings: r.headings || [],
-      description: r.description || '',
+      headings: isProduction ? r.headings || [] : [],
+      description: isProduction ? r.description || '' : '',
       lang: r.lang || '',
       localePrefix: r.localePrefix || '',
     };
+    const title = isProduction ? r.title || r.name || 'title' : r.name ? humanize(r.name) : 'title';
+
     return `{
       path: ${JSON.stringify(r.routePath)},
       component: import(${JSON.stringify(r.absolutePath)}),
       preload: () => import(${JSON.stringify(r.absolutePath)}),
-      title: ${JSON.stringify(r.title || r.name || 'title')},
-      description: ${JSON.stringify(r.description || '')},
+      title: ${JSON.stringify(title)},
+      description: ${isProduction ? JSON.stringify(r.description || '') : '""'},
       lang: ${JSON.stringify(r.lang || '')},
       localePrefix: ${JSON.stringify(r.localePrefix || '')},
       absolutePath: ${JSON.stringify(r.absolutePath)},

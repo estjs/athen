@@ -25,7 +25,15 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({
   highlighter,
   theme = 'dark-plus',
 }) => {
-  return (tree) => {
+  return async (tree) => {
+    const codeBlocks: Array<{
+      node: any;
+      parent: any;
+      codeContent: string;
+      lang: string;
+      highlightLines: number[];
+    }> = [];
+
     visit(tree, 'element', (node, index, parent) => {
       // <pre><code>...</code></pre>
       if (
@@ -81,19 +89,52 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({
             }
           });
 
-        const highlightedCode = highlighter.codeToHtml(codeContent, {
+        codeBlocks.push({
+          node,
+          parent,
+          codeContent,
           lang,
-          theme,
+          highlightLines,
         });
-
-        const fragmentAst = fromHtml(highlightedCode, { fragment: true });
-
-        // @ts-expect-error
-        fragmentAst.children[0].children[0].properties.className = `language-${lang}`;
-
-        highlightLines.forEach((line) => highlightSingleLine(line, fragmentAst));
-        parent?.children.splice(index!, 1, ...fragmentAst.children);
       }
     });
+
+    // Pre-load all unique languages in parallel
+    const langsToLoad = Array.from(new Set(codeBlocks.map((cb) => cb.lang))).filter(
+      (lang) => !highlighter.getLoadedLanguages().includes(lang),
+    );
+
+    if (langsToLoad.length > 0) {
+      await Promise.all(
+        langsToLoad.map(async (lang) => {
+          try {
+            await highlighter.loadLanguage(lang as any);
+          } catch (error) {
+            console.warn(`[shiki] Failed to load language: ${lang}`, error);
+          }
+        }),
+      );
+    }
+
+    for (const { node, parent, codeContent, lang, highlightLines } of codeBlocks) {
+      const highlightedCode = highlighter.codeToHtml(codeContent, {
+        lang,
+        theme,
+      });
+
+      const fragmentAst = fromHtml(highlightedCode, { fragment: true });
+
+      // @ts-expect-error
+      fragmentAst.children[0].children[0].properties.className = `language-${lang}`;
+
+      highlightLines.forEach((line) => highlightSingleLine(line, fragmentAst));
+
+      if (parent) {
+        const idx = parent.children.indexOf(node);
+        if (idx !== -1) {
+          parent.children.splice(idx, 1, ...fragmentAst.children);
+        }
+      }
+    }
   };
 };

@@ -8,7 +8,7 @@ import remarkGemoji from 'remark-gemoji';
 import rehypePluginAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePluginSlug from 'rehype-slug';
 import rehypePluginExternalLinks from 'rehype-external-links';
-import { bundledLanguages, createHighlighter } from 'shiki';
+import { createHighlighter } from 'shiki';
 import { remarkPluginToc } from './remarkPlugins/toc';
 import { remarkPluginTip } from './remarkPlugins/tip';
 import { rehypePluginShiki } from './rehypePlugins/shiki';
@@ -45,7 +45,20 @@ function getShikiHighlighter(themes: string[]) {
   if (!promise) {
     promise = createHighlighter({
       themes,
-      langs: Object.keys(bundledLanguages),
+      langs: [
+        'javascript',
+        'typescript',
+        'jsx',
+        'tsx',
+        'css',
+        'html',
+        'json',
+        'markdown',
+        'bash',
+        'yaml',
+        'shell',
+        'sh',
+      ],
     });
     highlighterPromises.set(key, promise);
   }

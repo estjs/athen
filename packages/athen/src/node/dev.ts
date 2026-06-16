@@ -13,6 +13,8 @@ export async function createDevServer(
 ) {
   const config = await resolveConfig(root, 'serve', 'development');
 
+  const vitePlugins = await createVitePlugins(config, true, restartServer);
+
   const devConfig = mergeConfig(
     {
       root,
@@ -31,7 +33,7 @@ export async function createDevServer(
     {
       configFile: false,
       base: config.siteData.base || '/',
-      plugins: await createVitePlugins(config, true, restartServer),
+      plugins: vitePlugins,
       server: {
         port: port || 8730,
         host,

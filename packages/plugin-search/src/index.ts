@@ -41,6 +41,50 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
   let indexBuilder: SearchIndexBuilder | undefined;
   let rootDir: string;
   let searchIndexJson = '';
+  let initialized = false;
+
+  const getSearchIndex = () => {
+    if (initialized) return searchIndexJson;
+    initialized = true;
+
+    if (provider === 'flex' && indexBuilder) {
+      // rootDir is already the docs directory (e.g., when running `athen dev docs`)
+      // Check if rootDir itself contains markdown files, otherwise try rootDir/docs
+      const hasMarkdown = (dir: string): boolean => {
+        if (!fs.existsSync(dir)) return false;
+        try {
+          const files = fs.readdirSync(dir);
+          for (const file of files) {
+            if (['node_modules', '.git', '.temp', 'dist', 'build'].includes(file)) continue;
+            const fullPath = path.join(dir, file);
+            const stat = fs.statSync(fullPath);
+            if (stat.isDirectory()) {
+              if (hasMarkdown(fullPath)) return true;
+            } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
+              return true;
+            }
+          }
+        } catch {}
+        return false;
+      };
+      const hasMarkdownFiles = hasMarkdown(rootDir);
+
+      let docsDir = rootDir;
+      if (!hasMarkdownFiles) {
+        // Fallback: check if there's a docs subdirectory
+        const subDocsDir = path.resolve(rootDir, 'docs');
+        if (fs.existsSync(subDocsDir)) {
+          docsDir = subDocsDir;
+        }
+      }
+
+      if (fs.existsSync(docsDir)) {
+        indexBuilder.addDocumentsFromDirectory(docsDir, docsDir);
+        searchIndexJson = indexBuilder.generateSearchIndex();
+      }
+    }
+    return searchIndexJson;
+  };
 
   return {
     name: 'athen-plugin-search',
@@ -51,40 +95,6 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
 
       if (provider === 'flex') {
         indexBuilder = new SearchIndexBuilder(options);
-        // rootDir is already the docs directory (e.g., when running `athen dev docs`)
-        // Check if rootDir itself contains markdown files, otherwise try rootDir/docs
-        const hasMarkdown = (dir: string): boolean => {
-          if (!fs.existsSync(dir)) return false;
-          try {
-            const files = fs.readdirSync(dir);
-            for (const file of files) {
-              if (['node_modules', '.git', '.temp', 'dist', 'build'].includes(file)) continue;
-              const fullPath = path.join(dir, file);
-              const stat = fs.statSync(fullPath);
-              if (stat.isDirectory()) {
-                if (hasMarkdown(fullPath)) return true;
-              } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
-                return true;
-              }
-            }
-          } catch {}
-          return false;
-        };
-        const hasMarkdownFiles = hasMarkdown(rootDir);
-
-        let docsDir = rootDir;
-        if (!hasMarkdownFiles) {
-          // Fallback: check if there's a docs subdirectory
-          const subDocsDir = path.resolve(rootDir, 'docs');
-          if (fs.existsSync(subDocsDir)) {
-            docsDir = subDocsDir;
-          }
-        }
-
-        if (fs.existsSync(docsDir)) {
-          indexBuilder.addDocumentsFromDirectory(docsDir, docsDir);
-          searchIndexJson = indexBuilder.generateSearchIndex();
-        }
       }
     },
 
@@ -116,7 +126,7 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
       return [
         {
           tag: 'script',
-          children: `window.__ATHEN_SEARCH_CONFIG__=${escapeJsonForScript(JSON.stringify({ provider: 'flex', cache: { enabled: cacheConfig.enabled !== false, maxAge: cacheConfig.maxAge || DEFAULT_CACHE_MAX_AGE } }))};window.__ATHEN_SEARCH_INDEX__=${escapeJsonForScript(searchIndexJson)};`,
+          children: `window.__ATHEN_SEARCH_CONFIG__=${escapeJsonForScript(JSON.stringify({ provider: 'flex', cache: { enabled: cacheConfig.enabled !== false, maxAge: cacheConfig.maxAge || DEFAULT_CACHE_MAX_AGE } }))};window.__ATHEN_SEARCH_INDEX__=${escapeJsonForScript(getSearchIndex())};`,
           injectTo: 'head',
         },
       ];

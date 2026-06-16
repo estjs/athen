@@ -270,18 +270,9 @@ export async function resolveConfig(
   // Scan routes once; downstream (sidebar, brokenLinks, router plugin, dev
   // middleware, mdx HMR) reads from `config._routes` instead of re-walking.
   const scanDir = join(root, route?.root || userConfig.srcDir || '');
-  const routes = collectRoutes(scanDir, route, siteData);
+  const routes = collectRoutes(scanDir, route, siteData, command);
 
-  const userSidebar = userConfig.sidebar ?? 'auto';
-  const autoSidebar = hasAutoSidebar(userSidebar)
-    ? resolveAutoSidebar(scanDir, siteData, routes)
-    : {};
-  siteData.sidebar = resolveSidebarConfig(
-    userSidebar === 'auto' ? undefined : userSidebar,
-    autoSidebar,
-  );
-
-  return {
+  const configInstance: SiteConfig = {
     root,
     configPath,
     themeDir,
@@ -302,6 +293,42 @@ export async function resolveConfig(
     srcDir: userConfig.srcDir,
     _routes: routes,
   };
+
+  const userSidebar = userConfig.sidebar ?? 'auto';
+  if (command === 'serve') {
+    let resolvedSidebar: any = null;
+    let lastRoutesRef: any = null;
+    Object.defineProperty(siteData, 'sidebar', {
+      get() {
+        if (configInstance._routes !== lastRoutesRef) {
+          resolvedSidebar = null;
+          lastRoutesRef = configInstance._routes;
+        }
+        if (!resolvedSidebar) {
+          const autoSidebar = hasAutoSidebar(userSidebar)
+            ? resolveAutoSidebar(scanDir, siteData, configInstance._routes || [])
+            : {};
+          resolvedSidebar = resolveSidebarConfig(
+            userSidebar === 'auto' ? undefined : userSidebar,
+            autoSidebar,
+          );
+        }
+        return resolvedSidebar;
+      },
+      enumerable: true,
+      configurable: true,
+    });
+  } else {
+    const autoSidebar = hasAutoSidebar(userSidebar)
+      ? resolveAutoSidebar(scanDir, siteData, routes)
+      : {};
+    siteData.sidebar = resolveSidebarConfig(
+      userSidebar === 'auto' ? undefined : userSidebar,
+      autoSidebar,
+    );
+  }
+
+  return configInstance;
 }
 
 export function defineConfig(config: UserConfig): UserConfig {

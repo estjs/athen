@@ -14,5 +14,10 @@ export default defineConfig({
   skipNodeModulesBundle: true,
   outDir: 'dist',
   clean: true,
+  external: [
+    '@estjs/athen-plugin-mdx',
+    '@estjs/athen-plugin-search',
+    '@estjs/athen-plugin-analytics',
+  ],
   tsconfig: './tsconfig.json',
 });

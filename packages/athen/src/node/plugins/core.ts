@@ -21,7 +21,7 @@ import {
   isProduction,
 } from '../constants';
 import { injectIntoHtml, resolveBaseTemplate } from '../html';
-import { buildRoutesModule, findRoute } from '../routes';
+import { buildRoutesModule, collectRoutes, findRoute } from '../routes';
 import type { SiteConfig } from '@/shared/types';
 
 const require = createRequire(import.meta.url);
@@ -31,10 +31,11 @@ const require = createRequire(import.meta.url);
 // ---------------------------------------------------------------------------
 
 const VIRTUAL_PREFIX = '\0';
+const SITE_DATA_ID = 'athen:site-data';
 
 function pluginVirtualModules(config: SiteConfig): Plugin {
   const modules: Record<string, () => string> = {
-    'athen:site-data': () => `export default ${JSON.stringify(config.siteData)}`,
+    [SITE_DATA_ID]: () => `export default ${JSON.stringify(config.siteData)}`,
     'athen:base': () => `export default ${JSON.stringify(config.siteData.base || '/')}`,
   };
   return {
@@ -66,8 +67,38 @@ export function pluginRoute(config: SiteConfig): Plugin {
     },
     load(id) {
       if (id === `\0${CONVENTIONAL_ROUTE_ID}`) {
-        return buildRoutesModule(config._routes ?? [], config.siteData);
+        return buildRoutesModule(config._routes ?? [], config.siteData, isProduction());
       }
+    },
+    configureServer(server) {
+      const scanDir = join(config.root, config.route?.root || config.srcDir || '');
+
+      const invalidateVirtualModule = (id: string) => {
+        const mod = server.moduleGraph.getModuleById(`\0${id}`);
+        if (mod) server.moduleGraph.invalidateModule(mod);
+      };
+
+      const handleRouteUpdate = () => {
+        config._routes = collectRoutes(scanDir, config.route, config.siteData, 'serve');
+
+        invalidateVirtualModule(CONVENTIONAL_ROUTE_ID);
+        invalidateVirtualModule(SITE_DATA_ID);
+
+        server.ws.send({
+          type: 'full-reload',
+        });
+      };
+
+      server.watcher.on('add', (file) => {
+        if (/\.(mdx?|tsx?|jsx?)$/.test(file) && file.startsWith(scanDir)) {
+          handleRouteUpdate();
+        }
+      });
+      server.watcher.on('unlink', (file) => {
+        if (/\.(mdx?|tsx?|jsx?)$/.test(file) && file.startsWith(scanDir)) {
+          handleRouteUpdate();
+        }
+      });
     },
   };
 }
@@ -132,14 +163,12 @@ function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): 
 // ---------------------------------------------------------------------------
 
 function pluginIndexHtml(config: SiteConfig): Plugin {
-  const routes = config._routes ?? [];
-
   return {
     name: 'athen:index-html',
     transformIndexHtml: {
       handler(html, ctx) {
         const url = ctx.originalUrl || ctx.path || ctx.filename || '/';
-        const matched = findRoute(routes, url);
+        const matched = findRoute(config._routes ?? [], url);
         const locale = getLocaleSiteData(config.siteData, matched?.localePrefix);
 
         // Static (site-level) template vars — `{{ favicon }}` only after the
@@ -228,6 +257,7 @@ function pluginTransform(isServer: boolean): Plugin {
     name: 'athen:transform',
     apply: 'build',
     async transform(code, id) {
+      if (id.includes('node_modules')) return;
       if (!SX_REGEX.test(id) && !MD_REGEX.test(id)) return;
       const stripped = await transformWithOxc(code, id, { jsx: 'preserve', lang: 'tsx' });
       const babelPlugins: PluginItem[] = [
