@@ -23,6 +23,7 @@ export const CLIENT_EXPORTS_PATH = resolvePath('src/runtime/index.ts');
 export const DEFAULT_THEME_PATH = resolvePath('src/theme-default');
 
 export const DEFAULT_EXTERNALS = ['essor'];
+export const BROWSER_BUILD_TARGET = 'baseline-widely-available';
 
 export const DEFAULT_OUT_DIR = 'dist';
 export const DEFAULT_TEMP_DIR = '.temp';

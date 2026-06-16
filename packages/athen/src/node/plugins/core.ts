@@ -10,6 +10,7 @@ import { createHead, transformHtmlTemplate } from 'unhead/server';
 import { buildTemplateVars, getLocaleSiteData, renderTemplateVars } from '@/shared/utils';
 import { resolveServerPageHead } from '@/shared/title';
 import {
+  BROWSER_BUILD_TARGET,
   CLIENT_ENTRY_PATH,
   CLIENT_EXPORTS_PATH,
   DEFAULT_EXTERNALS,
@@ -132,6 +133,7 @@ function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): 
         optimizeDeps: {
           include: ['essor', 'essor-router', 'lodash-es', 'copy-to-clipboard', 'fs-extra', 'vite'],
           exclude: ['fsevents'],
+          esbuildOptions: { target: BROWSER_BUILD_TARGET },
         },
         resolve: {
           alias: [
@@ -142,7 +144,7 @@ function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): 
             { find: '@theme-default', replacement: DEFAULT_THEME_PATH },
           ],
         },
-        build: { target: 'baseline-widely-available' },
+        build: { target: BROWSER_BUILD_TARGET },
       };
     },
     async handleHotUpdate(ctx) {

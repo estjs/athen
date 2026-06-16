@@ -16,6 +16,7 @@ import { resolveServerPageHead } from '@/shared/title';
 import { checkBrokenLinks } from './brokenLinks';
 import { resolveConfig } from './config';
 import {
+  BROWSER_BUILD_TARGET,
   CLIENT_ENTRY_PATH,
   PACKAGE_ROOT,
   SSG_ENTRY_PATH,
@@ -171,7 +172,7 @@ export async function bundle(root: string, config: SiteConfig) {
           jsx: 'preserve',
         },
         build: {
-          target: 'baseline-widely-available',
+          target: BROWSER_BUILD_TARGET,
         },
       },
       {

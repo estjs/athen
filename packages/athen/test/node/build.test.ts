@@ -50,8 +50,13 @@ describe('build', () => {
 
   it('builds SSG and browser bundles with the right entries', async () => {
     const { bundle } = await import('../../src/node/build');
-    const { CLIENT_ENTRY_PATH, DEFAULT_OUT_DIR, DEFAULT_TEMP_DIR, SSG_ENTRY_PATH } =
-      await import('../../src/node/constants');
+    const {
+      BROWSER_BUILD_TARGET,
+      CLIENT_ENTRY_PATH,
+      DEFAULT_OUT_DIR,
+      DEFAULT_TEMP_DIR,
+      SSG_ENTRY_PATH,
+    } = await import('../../src/node/constants');
     const root = '/project/docs';
     viteBuild.mockResolvedValue({ output: [] });
 
@@ -70,6 +75,10 @@ describe('build', () => {
       },
     ]);
     expect(createVitePlugins.mock.calls.map(([, isClient]) => isClient)).toEqual([false, true]);
+    expect(viteBuild.mock.calls.map(([item]) => item.build.target)).toEqual([
+      BROWSER_BUILD_TARGET,
+      BROWSER_BUILD_TARGET,
+    ]);
   });
 
   it('honors a custom config.outDir for both the SSR build and the final dist path', async () => {

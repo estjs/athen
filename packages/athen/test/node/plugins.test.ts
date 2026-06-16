@@ -98,7 +98,10 @@ describe('pluginAthen', () => {
     const plugins = pluginAthen(config());
     const pluginConfig = plugins.find((plugin) => plugin.name === 'athen:config');
     const viteConfig = (pluginConfig?.config as () => any)();
-    const aliases = viteConfig.resolve.alias as Array<{ find: string | RegExp; replacement: string }>;
+    const aliases = viteConfig.resolve.alias as Array<{
+      find: string | RegExp;
+      replacement: string;
+    }>;
     const essorServerAlias = aliases.find((alias) => alias.find === 'essor/server');
     const essorAliasIndex = aliases.findIndex((alias) => alias.find === 'essor');
     const essorServerAliasIndex = aliases.findIndex((alias) => alias.find === 'essor/server');
@@ -111,6 +114,17 @@ describe('pluginAthen', () => {
     expect(essorServerAlias?.replacement).toBe(join(essorPackageRoot, 'server/index.js'));
     expect(essorServerAliasIndex).toBeGreaterThanOrEqual(0);
     expect(essorServerAliasIndex).toBeLessThan(essorAliasIndex);
+  });
+
+  it('transpiles optimized dependencies to a syntax target old webviews can parse', async () => {
+    vi.doUnmock('../../src/node/plugins/core');
+    const { pluginAthen } = await import('../../src/node/plugins/core');
+    const { BROWSER_BUILD_TARGET } = await import('../../src/node/constants');
+    const plugins = pluginAthen(config());
+    const pluginConfig = plugins.find((plugin) => plugin.name === 'athen:config');
+    const viteConfig = (pluginConfig?.config as () => any)();
+
+    expect(viteConfig.optimizeDeps.esbuildOptions.target).toBe(BROWSER_BUILD_TARGET);
   });
 
   it('uses the latest route table when transforming dev HTML', async () => {
@@ -126,7 +140,9 @@ describe('pluginAthen', () => {
         title: 'Old Title',
       },
     ];
-    const indexHtmlPlugin = pluginAthen(siteConfig).find((plugin) => plugin.name === 'athen:index-html');
+    const indexHtmlPlugin = pluginAthen(siteConfig).find(
+      (plugin) => plugin.name === 'athen:index-html',
+    );
     const transformIndexHtml = indexHtmlPlugin?.transformIndexHtml as {
       handler: (html: string, ctx: { originalUrl?: string }) => { html: string };
     };
