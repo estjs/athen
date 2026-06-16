@@ -117,6 +117,10 @@ export class SearchIndexBuilder {
 
   addDocumentsFromDirectory(dir: string, baseDir: string = ''): void {
     if (!fs.existsSync(dir)) return;
+    const baseName = path.basename(dir);
+    if (['node_modules', '.git', '.temp', 'dist', 'build'].includes(baseName)) {
+      return;
+    }
     for (const file of fs.readdirSync(dir)) {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);

@@ -4,8 +4,8 @@ import { dirname } from 'node:path';
 
 export const isProduction = () => process.env.NODE_ENV === 'production';
 
-export const SX_REGEX = /(j|t)sx$/;
-export const MD_REGEX = /\.mdx?$/;
+export const SX_REGEX = /\.(?:j|t)sx?(?:$|\?)/;
+export const MD_REGEX = /\.mdx?(?:$|\?)/;
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const root =

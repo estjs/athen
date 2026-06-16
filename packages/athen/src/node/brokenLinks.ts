@@ -153,7 +153,11 @@ export async function checkBrokenLinks(options: CheckBrokenLinksOptions) {
     }
 
     const content = await fs.readFile(route.absolutePath, 'utf-8');
-    const links = [...content.matchAll(LINK_RE)].map((match) => match[1]);
+    const cleanedContent = content
+      .replaceAll(/<!--[\s\S]*?-->/g, '')
+      .replaceAll(/```[\s\S]*?```/g, '')
+      .replaceAll(/`[^`\n]+`/g, '');
+    const links = [...cleanedContent.matchAll(LINK_RE)].map((match) => match[1]);
     for (const link of links) {
       if (SPECIAL_PROTOCOL_RE.test(link)) {
         continue;

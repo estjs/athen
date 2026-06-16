@@ -56,11 +56,12 @@ function parseFrontmatterValue(value: string): unknown {
 }
 
 function parseFrontmatter(content: string): Record<string, unknown> {
-  if (!content.startsWith('---')) return {};
-  const end = content.indexOf('\n---', 3);
+  const cleanContent = content.startsWith('\uFEFF') ? content.slice(1) : content;
+  if (!cleanContent.startsWith('---')) return {};
+  const end = cleanContent.indexOf('\n---', 3);
   if (end < 0) return {};
   const out: Record<string, unknown> = {};
-  for (const line of content.slice(3, end).split('\n')) {
+  for (const line of cleanContent.slice(3, end).split('\n')) {
     const m = FRONTMATTER_LINE.exec(line.trim());
     if (m) out[m[1]] = parseFrontmatterValue(m[2]);
   }

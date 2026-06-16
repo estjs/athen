@@ -32,7 +32,7 @@ export const remarkPluginNormalizeLink: Plugin<[{ base: string; enableSpa: boole
         }
 
         let { url, hash } = parseUrl(node.url);
-        const extname = path.extname(url);
+        const extname = path.posix.extname(url);
 
         if (extname === '.md' || extname === '.mdx') {
           url = url.replace(extname, '');
@@ -44,7 +44,7 @@ export const remarkPluginNormalizeLink: Plugin<[{ base: string; enableSpa: boole
         if (hash) {
           url += `#${hash}`;
         }
-        node.url = path.join(base, url);
+        node.url = path.posix.join(base, url);
       },
     );
   };

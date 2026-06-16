@@ -53,13 +53,24 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
         indexBuilder = new SearchIndexBuilder(options);
         // rootDir is already the docs directory (e.g., when running `athen dev docs`)
         // Check if rootDir itself contains markdown files, otherwise try rootDir/docs
-        let hasMarkdownFiles = false;
-        if (fs.existsSync(rootDir)) {
-          const files = fs.readdirSync(rootDir, { recursive: true, encoding: 'utf-8' });
-          hasMarkdownFiles = files.some(
-            (fileName) => fileName.endsWith('.md') || fileName.endsWith('.mdx'),
-          );
-        }
+        const hasMarkdown = (dir: string): boolean => {
+          if (!fs.existsSync(dir)) return false;
+          try {
+            const files = fs.readdirSync(dir);
+            for (const file of files) {
+              if (['node_modules', '.git', '.temp', 'dist', 'build'].includes(file)) continue;
+              const fullPath = path.join(dir, file);
+              const stat = fs.statSync(fullPath);
+              if (stat.isDirectory()) {
+                if (hasMarkdown(fullPath)) return true;
+              } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
+                return true;
+              }
+            }
+          } catch {}
+          return false;
+        };
+        const hasMarkdownFiles = hasMarkdown(rootDir);
 
         let docsDir = rootDir;
         if (!hasMarkdownFiles) {

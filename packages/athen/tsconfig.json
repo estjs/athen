@@ -8,6 +8,9 @@
       "@shared/*": ["./src/shared/*"],
       "@theme": ["./src/theme-default/index.ts"],
       "@theme-default/*": ["./src/theme-default/*"],
+      "@estjs/athen-plugin-mdx": ["../plugin-mdx/src/index.ts"],
+      "@estjs/athen-plugin-search": ["../plugin-search/src/index.ts"],
+      "@estjs/athen-plugin-analytics": ["../plugin-analytics/src/index.ts"],
       "@estjs/athen-plugin-search/client": ["../plugin-search/src/client/index.ts"]
     },
     "types": ["vite/client", "./global.d.ts"]

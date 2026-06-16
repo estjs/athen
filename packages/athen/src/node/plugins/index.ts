@@ -99,14 +99,11 @@ export async function createVitePlugins(
   ];
 
   if (config?.search) {
-    const searchOptions =
-      typeof config.search === 'boolean'
-        ? { root: config.root, defaultLocaleSourcePrefix: getDefaultLocalePrefix(config.siteData) }
-        : {
-            ...config.search,
-            root: config.root,
-            defaultLocaleSourcePrefix: getDefaultLocalePrefix(config.siteData),
-          };
+    const searchOptions = {
+      ...(typeof config.search === 'object' ? config.search : {}),
+      root: config.root,
+      defaultLocaleSourcePrefix: getDefaultLocalePrefix(config.siteData),
+    };
     builtIn.push(searchPlugin(searchOptions));
   }
 

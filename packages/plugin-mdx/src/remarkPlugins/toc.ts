@@ -33,27 +33,17 @@ interface Heading {
 type MdxProgram = NonNullable<NonNullable<MdxjsEsm['data']>['estree']>;
 
 /** Flatten a heading's inline children into plain text (mirrors rehype-slug input). */
-function headingText(children: ChildNode[]): string {
-  return children
-    .map((child: ChildNode) => {
-      switch (child.type) {
-        // child with value
-        case 'text':
-        case 'inlineCode':
-          return child.value;
-
-        // child without value, but can get value from children property
-        case 'emphasis':
-        case 'strong':
-        case 'link':
-          return child.children?.map((c) => c.value).join('') || '';
-
-        // child without value and can not get value from children property
-        default:
-          return '';
-      }
-    })
-    .join('');
+function headingText(node: ChildNode | ChildNode[]): string {
+  if (Array.isArray(node)) {
+    return node.map(headingText).join('');
+  }
+  if ('value' in node && typeof node.value === 'string') {
+    return node.value;
+  }
+  if (node.children) {
+    return headingText(node.children);
+  }
+  return '';
 }
 
 export const remarkPluginToc: Plugin<[TocOptions?], Root> = (options = {}) => {

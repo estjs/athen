@@ -55,25 +55,33 @@ export function toValidPackageName(projectName: string): string {
 }
 
 async function init() {
+  const onCancel = () => {
+    console.log(yellow('\n  Operation cancelled.'));
+    process.exit(0);
+  };
+
   console.log(`  ${cyan('●') + blue('■') + yellow('▲')}`);
   console.log(`${bold('  athen') + dim(' Creator')}  ${blue(`v${version}`)}`);
   console.log();
   let targetDir = argv._[0];
   if (!targetDir && !skipPrompts) {
-    const { projectName } = await prompts({
-      type: 'text',
-      name: 'projectName',
-      message: 'Project name:',
-      initial: 'athen',
-    });
-    targetDir = projectName.trim();
+    const response = await prompts(
+      {
+        type: 'text',
+        name: 'projectName',
+        message: 'Project name:',
+        initial: 'athen',
+      },
+      { onCancel },
+    );
+    targetDir = response.projectName.trim();
   }
   if (!targetDir) {
     targetDir = 'athen';
   }
   const packageName = skipPrompts
     ? toValidPackageName(path.basename(targetDir))
-    : await getValidPackageName(targetDir);
+    : await getValidPackageName(targetDir, onCancel);
   const root = path.join(cwd, targetDir);
 
   if (!fs.existsSync(root)) {
@@ -85,15 +93,15 @@ async function init() {
       if (skipPrompts) {
         emptyDir(root);
       } else {
-        /**
-         * @type {{ yes: boolean }}
-         */
-        const { yes } = await prompts({
-          type: 'confirm',
-          name: 'yes',
-          initial: 'Y',
-          message: 'Remove existing files and continue?',
-        });
+        const { yes } = await prompts(
+          {
+            type: 'confirm',
+            name: 'yes',
+            initial: 'Y',
+            message: 'Remove existing files and continue?',
+          },
+          { onCancel },
+        );
         if (yes) emptyDir(root);
         else return;
       }
@@ -127,12 +135,15 @@ async function init() {
 
   let installNow = autoInstall;
   if (!skipPrompts && !autoInstall) {
-    const { yes } = await prompts({
-      type: 'confirm',
-      name: 'yes',
-      initial: 'Y',
-      message: 'Install and start it now?',
-    });
+    const { yes } = await prompts(
+      {
+        type: 'confirm',
+        name: 'yes',
+        initial: 'Y',
+        message: 'Install and start it now?',
+      },
+      { onCancel },
+    );
     installNow = yes;
   }
 
@@ -163,23 +174,23 @@ function copy(src: string, dest: string) {
   else fs.copyFileSync(src, dest);
 }
 
-async function getValidPackageName(projectName: string) {
+async function getValidPackageName(projectName: string, onCancel?: () => void) {
   projectName = path.basename(projectName);
   if (PACKAGE_NAME_REGEXP.test(projectName)) {
     return projectName;
   } else {
     const suggestedPackageName = toValidPackageName(projectName);
 
-    /**
-     * @type {{ inputPackageName: string }}
-     */
-    const { inputPackageName } = await prompts({
-      type: 'text',
-      name: 'inputPackageName',
-      message: 'Package name:',
-      initial: suggestedPackageName,
-      validate: (input) => (PACKAGE_NAME_REGEXP.test(input) ? true : 'Invalid package.json name'),
-    });
+    const { inputPackageName } = await prompts(
+      {
+        type: 'text',
+        name: 'inputPackageName',
+        message: 'Package name:',
+        initial: suggestedPackageName,
+        validate: (input) => (PACKAGE_NAME_REGEXP.test(input) ? true : 'Invalid package.json name'),
+      },
+      { onCancel },
+    );
     return inputPackageName;
   }
 }

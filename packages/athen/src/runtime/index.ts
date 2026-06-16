@@ -5,7 +5,7 @@ import type { PageData } from '@shared/types';
 type RouteRecord = (typeof routes)[number]['children'][number];
 
 export const PageDataKey = Symbol(
-  import.meta.env.DEV ? 'page date key' : '',
+  import.meta.env.DEV ? 'page data key' : '',
 ) as InjectionKey<PageData>;
 
 export const usePageData = () => inject(PageDataKey)!;

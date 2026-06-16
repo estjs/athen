@@ -74,9 +74,11 @@ interface SidebarFmFields {
 function readSidebarFm(fm?: Record<string, unknown>): SidebarFmFields {
   const out: SidebarFmFields = {};
   if (!fm) return out;
-  const pos =
-    typeof fm.sidebar_position === 'number' ? fm.sidebar_position : Number(fm.sidebar_position);
-  if (Number.isFinite(pos)) out.position = pos;
+  const rawPos = fm.sidebar_position;
+  if (rawPos !== undefined && rawPos !== null && rawPos !== '') {
+    const pos = typeof rawPos === 'number' ? rawPos : Number(rawPos);
+    if (Number.isFinite(pos)) out.position = pos;
+  }
   if (typeof fm.sidebar_label === 'string' && fm.sidebar_label) out.label = fm.sidebar_label;
   if (typeof fm.sidebar_class_name === 'string' && fm.sidebar_class_name) {
     out.className = fm.sidebar_class_name;

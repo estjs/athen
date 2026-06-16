@@ -12,11 +12,12 @@ export function pluginSvgr(options: SvgrOptions = {}, isServer: boolean): Plugin
   return {
     name: 'athen:vite-plugin-svgr',
     async transform(code, id) {
-      if (!id.endsWith('.svg')) {
+      const cleanId = id.split('?')[0].split('#')[0];
+      if (!cleanId.endsWith('.svg')) {
         return;
       }
       const { transform: svgrTransform } = await import('@svgr/core');
-      const svg = await fs.promises.readFile(id, 'utf8');
+      const svg = await fs.promises.readFile(cleanId, 'utf8');
       const svgrResult = await svgrTransform(
         svg,
         {

@@ -197,9 +197,10 @@ export function matchesGlob(pattern: string, value: string): boolean {
 
   const regexPattern = pattern
     .replaceAll('.', '\\.')
-    .replaceAll('**', '.*')
+    .replaceAll('?', '.')
+    .replaceAll('**', '___GLOBSTAR___')
     .replaceAll('*', '[^/]*')
-    .replaceAll('?', '.');
+    .replaceAll('___GLOBSTAR___', '.*');
   return new RegExp(`^${regexPattern}$`).test(value);
 }
 

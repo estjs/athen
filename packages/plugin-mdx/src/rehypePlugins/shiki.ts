@@ -62,16 +62,22 @@ export const rehypePluginShiki: Plugin<[Options], import('hast').Root> = ({
           ?.slice(1, -1)
           ?.split(',')
           .forEach((str) => {
-            if (str.includes('-')) {
-              const [start, end] = str.split('-');
-              // 3,5 -> [3, 4, 5]
-              highlightLines.push(
-                ...Array.from({ length: Number(end) - Number(start) + 1 })
-                  .fill(0)
-                  .map((_, i) => Number(start) + i),
-              );
+            const trimmed = str.trim();
+            if (!trimmed) return;
+            if (trimmed.includes('-')) {
+              const [start, end] = trimmed.split('-');
+              const startNum = Number(start);
+              const endNum = Number(end);
+              if (Number.isInteger(startNum) && Number.isInteger(endNum)) {
+                for (let i = startNum; i <= endNum; i++) {
+                  highlightLines.push(i);
+                }
+              }
             } else {
-              highlightLines.push(Number(str));
+              const num = Number(trimmed);
+              if (Number.isInteger(num)) {
+                highlightLines.push(num);
+              }
             }
           });
 

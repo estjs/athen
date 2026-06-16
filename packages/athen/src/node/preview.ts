@@ -11,7 +11,8 @@ type PolkaRequest = IncomingMessage & { path: string };
 type PolkaResponse = ServerResponse;
 
 export async function serve(root: string, port = 4173, hostOption: string | boolean = 'localhost') {
-  const host = hostOption === true ? '0.0.0.0' : hostOption;
+  const host =
+    hostOption === true ? '0.0.0.0' : typeof hostOption === 'string' ? hostOption : 'localhost';
   const config = await resolveConfig(root, 'serve', 'production');
   const base = (config.siteData.base || '').replace(/^\//, '').replace(/\/$/, '');
   const distPath = join(root, resolveOutDir(config));
@@ -43,14 +44,14 @@ export async function serve(root: string, port = 4173, hostOption: string | bool
     const app = polka({ onNoMatch });
     app.use(`/${base}`, compress);
     app.use(`/${base}`, serveStatic);
-    app.listen(port, () => {
+    app.listen(port, host, () => {
       process.stdout.write(`Built site served at http://${host}:${port}/${base}/\n\n`);
     });
   } else {
     polka({ onNoMatch })
       .use(compress)
       .use(serveStatic)
-      .listen(port, () => {
+      .listen(port, host, () => {
         process.stdout.write(`Built site served at http://${host}:${port}/\n\n`);
       });
   }

@@ -15,7 +15,9 @@ export interface UrlPolicy {
 export const inBrowser = () => typeof window !== 'undefined';
 
 export function addLeadingSlash(url: string) {
-  const prefix = url.charAt(0) === '/' || url.startsWith('https') ? '' : '/';
+  if (!url) return '/';
+  const prefix =
+    url.charAt(0) === '/' || EXTERNAL_URL_RE.test(url) || /^(?:mailto|tel):/i.test(url) ? '' : '/';
   return prefix + url;
 }
 
@@ -92,11 +94,12 @@ export function htmlFilePathFromRoute(routePath: string, policy: UrlPolicy = {})
 }
 
 export function withBase(url = '/', base = '/'): string {
-  if (EXTERNAL_URL_RE.test(url)) {
-    return url;
+  const targetUrl = url || '/';
+  if (EXTERNAL_URL_RE.test(targetUrl)) {
+    return targetUrl;
   }
   const normalizedBase = normalizeSlash(base);
-  const normalizedUrl = addLeadingSlash(url);
+  const normalizedUrl = addLeadingSlash(targetUrl);
   return normalizedBase === '/' ? normalizedUrl : `${normalizedBase}${normalizedUrl}`;
 }
 
