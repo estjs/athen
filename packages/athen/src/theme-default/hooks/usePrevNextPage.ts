@@ -1,7 +1,8 @@
 import { computed } from 'essor';
+import { withBase } from '@/runtime';
 import { useLocaleSiteData } from './useLocaleSiteData';
 import { usePathname } from './usePathname';
-import { useSidebarData } from './useSidebarData';
+import { isEqualPath, useSidebarData } from './useSidebarData';
 import type { SidebarItem } from '@shared/types';
 
 type SidebarLink = Extract<SidebarItem, { link: string }>;
@@ -20,7 +21,11 @@ export function usePrevNextPage() {
       flattenSidebarItems(sidebarGroup.items),
     );
 
-    const pageIndex = pages.findIndex((item) => item.link === pathname.value);
+    // Sidebar links are `withBase`-prefixed (see useSidebarData) while
+    // `pathname` is the un-based routePath; normalize both before comparing so
+    // prev/next still match under a non-default `base`.
+    const currentHref = withBase(pathname.value);
+    const pageIndex = pages.findIndex((item) => isEqualPath(item.link, currentHref));
 
     const prevPage = pages[pageIndex - 1] || null;
     const nextPage = pages[pageIndex + 1] || null;

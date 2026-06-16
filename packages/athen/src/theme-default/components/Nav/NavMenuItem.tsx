@@ -16,9 +16,7 @@ interface NavMenuItemProps {
 }
 
 /**
- * 导航菜单项组件
- * @param item 当前菜单项数据
- * @param isActive 是否为当前激活项
+ * 导航菜单项组件。渲染单个导航链接,支持激活态高亮与本地化偏好记忆。
  */
 const NavMenuItem = ({ item, isActive, reload }: NavMenuItemProps) => {
   const href = computed(() => item.getLink?.() ?? item.link);

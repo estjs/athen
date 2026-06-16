@@ -13,18 +13,20 @@ export function Aside(props: { pagePath: string; outlineTitle: string }) {
   const hasOutline = computed(() => headers.value.length > 0);
   const markerRef = signal<HTMLDivElement | null>(null);
 
-  let scrollHandler: ReturnType<typeof useActiveToc> | undefined;
+  let toc: ReturnType<typeof useActiveToc> | undefined;
   onMount(() => {
     // The page's heading anchors are server-rendered (SSG), so they already
     // exist in the DOM at mount time — attach immediately and run once to set
     // the initial highlight instead of guessing with a fixed setTimeout.
-    scrollHandler = useActiveToc();
-    window.addEventListener('scroll', scrollHandler);
-    scrollHandler();
+    toc = useActiveToc();
+    window.addEventListener('scroll', toc.scrollHandler);
+    toc.scrollHandler();
   });
 
   onDestroy(() => {
-    if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
+    if (!toc) return;
+    window.removeEventListener('scroll', toc.scrollHandler);
+    toc.dispose();
   });
 
   const renderHeader = (header: Header) => {

@@ -10,11 +10,8 @@ export interface NavMenuGroupItem {
 }
 
 /**
- * 导航菜单组组件
- * @param activeIndex 当前激活的菜单项索引
- * @param isTranslation 是否为翻译菜单
- * @param items 菜单项数组
- * @param text 菜单组显示的文本
+ * 导航菜单组组件。鼠标悬停时展开下拉,包含一组导航菜单项;
+ * 可用作普通菜单组或语言切换菜单。
  */
 export function NavMenuGroup({ activeIndex, isTranslation, items, text }: NavMenuGroupItem) {
   const isOpen = signal(false);

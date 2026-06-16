@@ -12,18 +12,28 @@ function highlight(id: string) {
   document.querySelector(`.toc-item[href="#${id}"]`)?.classList.add('highlight');
 }
 
-export function useActiveToc() {
+export interface ActiveToc {
+  /** Debounced scroll handler to attach to the window `scroll` event. */
+  scrollHandler: ReturnType<typeof debounce>;
+  /** Remove all click listeners and cancel the pending debounce. */
+  dispose: () => void;
+}
+
+export function useActiveToc(): ActiveToc {
   const activeId = signal('');
 
   const links = Array.from(document.querySelectorAll(`.toc-item`)) as HTMLLinkElement[];
   const headers: Element[] = [];
   const topRange = 500;
+  const cleanups: Array<() => void> = [];
 
   for (const link of links) {
-    link.addEventListener('click', () => {
+    const onClick = () => {
       activeId.value = link.getAttribute('href') || '';
       highlight(activeId.value);
-    });
+    };
+    link.addEventListener('click', onClick);
+    cleanups.push(() => link.removeEventListener('click', onClick));
 
     const url = new URL(link.href);
     const hash = decodeURIComponent(url.hash);
@@ -54,5 +64,10 @@ export function useActiveToc() {
     }
   }, 100);
 
-  return scrollHandler;
+  const dispose = () => {
+    scrollHandler.cancel();
+    cleanups.forEach((fn) => fn());
+  };
+
+  return { scrollHandler, dispose };
 }

@@ -1,11 +1,19 @@
-import { signal } from 'essor';
-import { toggle } from './toggleColorScheme';
+import { onDestroy, onMount, signal } from 'essor';
+import { toggle, watchColorScheme } from './toggleColorScheme';
+
 export function Switch() {
   const isDark = signal(false);
+  let dispose: (() => void) | undefined;
+
+  onMount(() => {
+    dispose = watchColorScheme();
+    isDark.value = document.documentElement.classList.contains('dark');
+  });
+
+  onDestroy(() => dispose?.());
 
   const handleClick = () => {
-    toggle();
-    isDark.value = !isDark.value;
+    isDark.value = toggle();
   };
 
   return (
