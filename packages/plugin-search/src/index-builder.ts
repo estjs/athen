@@ -124,11 +124,10 @@ export class SearchIndexBuilder {
         this.addDocumentsFromDirectory(filePath, baseDir);
       } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
         const relativePath = path.relative(baseDir, filePath).replaceAll('\\', '/');
-        if (this.shouldIncludeFile(relativePath)) {
-          try {
-            this.addDocument(relativePath, fs.readFileSync(filePath, 'utf-8'));
-          } catch {}
-        }
+        // `addDocument` already applies `shouldIncludeFile`, so don't glob twice.
+        try {
+          this.addDocument(relativePath, fs.readFileSync(filePath, 'utf-8'));
+        } catch {}
       }
     }
   }

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import fs from 'node:fs';
 import searchPlugin from '../../src/index';
 
 // Mock fs and path
@@ -97,6 +98,30 @@ describe('searchPlugin', () => {
       const result = (plugin as any).transformIndexHtml();
       // Default is 24 hours = 86400000ms
       expect(result[0].children).toContain('86400000');
+    });
+
+    it('escapes inline search JSON so document content cannot close the script tag', () => {
+      const mockedFs = vi.mocked(fs);
+      mockedFs.existsSync.mockReturnValue(true);
+      mockedFs.readdirSync.mockReturnValue(['guide.md'] as never);
+      mockedFs.statSync.mockReturnValue({ isDirectory: () => false } as never);
+      mockedFs.readFileSync.mockReturnValue(`---
+title: "</script><script>alert(1)</script>&"
+---
+
+Body
+`);
+
+      const plugin = searchPlugin({ root: '/docs' });
+      (plugin as any).configResolved({ root: '/docs' });
+
+      const result = (plugin as any).transformIndexHtml();
+      const script = result[0].children;
+
+      expect(script).not.toContain('</script>');
+      expect(script).not.toContain('<script>');
+      expect(script).toContain('\\u003c/script\\u003e');
+      expect(script).toContain('\\u0026');
     });
   });
 });

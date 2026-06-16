@@ -18,6 +18,21 @@ export { SearchIndexBuilder } from './index-builder';
 const DEFAULT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
 
 /**
+ * Escape a JSON string for safe embedding inside an inline `<script>` body.
+ * `JSON.stringify` does not escape `<`, so a document containing the literal
+ * `</script>` would otherwise close the tag early (breaking search and opening
+ * an HTML-injection vector). Also neutralizes the JS line/paragraph separators.
+ */
+function escapeJsonForScript(json: string): string {
+  return json
+    .replaceAll('<', '\\u003c')
+    .replaceAll('>', '\\u003e')
+    .replaceAll('&', '\\u0026')
+    .replaceAll('\u2028', '\\u2028')
+    .replaceAll('\u2029', '\\u2029');
+}
+
+/**
  * Athen 搜索插件
  * 搜索索引内联到 HTML，客户端使用 IndexedDB 缓存
  */
@@ -81,7 +96,7 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
           },
           {
             tag: 'script',
-            children: `window.__ATHEN_SEARCH_CONFIG__=${JSON.stringify({ provider: 'algolia', algolia: { appId, apiKey, indexName, ...algoliaOptions } })};`,
+            children: `window.__ATHEN_SEARCH_CONFIG__=${escapeJsonForScript(JSON.stringify({ provider: 'algolia', algolia: { appId, apiKey, indexName, ...algoliaOptions } }))};`,
             injectTo: 'head',
           },
         ];
@@ -90,7 +105,7 @@ export default function searchPlugin(options: SearchOptions = {}): Plugin {
       return [
         {
           tag: 'script',
-          children: `window.__ATHEN_SEARCH_CONFIG__=${JSON.stringify({ provider: 'flex', cache: { enabled: cacheConfig.enabled !== false, maxAge: cacheConfig.maxAge || DEFAULT_CACHE_MAX_AGE } })};window.__ATHEN_SEARCH_INDEX__=${searchIndexJson};`,
+          children: `window.__ATHEN_SEARCH_CONFIG__=${escapeJsonForScript(JSON.stringify({ provider: 'flex', cache: { enabled: cacheConfig.enabled !== false, maxAge: cacheConfig.maxAge || DEFAULT_CACHE_MAX_AGE } }))};window.__ATHEN_SEARCH_INDEX__=${escapeJsonForScript(searchIndexJson)};`,
           injectTo: 'head',
         },
       ];

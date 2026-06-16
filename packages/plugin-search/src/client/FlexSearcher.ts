@@ -21,7 +21,9 @@ declare global {
 }
 
 export class FlexSearcher {
-  private indexes: SearchIndexes = createSearchIndexes(true);
+  // Assigned in `init()` (both the success and catch paths), which every
+  // `search()` awaits before use — so no construction-time index build needed.
+  private indexes!: SearchIndexes;
   private documents: SearchIndexData['documents'] = [];
   private initialized = false;
   private cache: SearchIndexCache | null = null;
@@ -69,7 +71,7 @@ export class FlexSearcher {
   async search(query: string): Promise<SearchResult[]> {
     if (!this.initialized) await this.init();
     try {
-      return searchDocuments(this.indexes, this.documents, query, {
+      return await searchDocuments(this.indexes, this.documents, query, {
         limit: this.options.maxResults ?? DEFAULT_SEARCH_LIMIT,
         langRoutePrefix: this.options.langRoutePrefix,
       });
