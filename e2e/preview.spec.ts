@@ -8,7 +8,7 @@ test.describe('production preview', () => {
   test.fail('serves prerendered HTML for locale home pages', async ({ page }) => {
     const response = await page.request.get('/');
     const html = await response.text();
-    const ssgCssHref = html.match(/href="([^"]*\/assets\/ssrEntry-[^"]+\.css)"/)?.[1];
+    const ssgCssHref = html.match(/href="([^"]*\/assets\/clientEntry-[^"]+\.css)"/)?.[1];
     const htmlWithoutScripts = html.replaceAll(/<script\b[\s\S]*?<\/script>/gi, '');
 
     expect(response.status()).toBe(200);
@@ -32,11 +32,11 @@ test.describe('production preview', () => {
     await expect(page.getByRole('heading', { name: /athen/i, level: 1 })).toBeVisible();
   });
 
-  test('uses the ssr-entry production bundle', async ({ page }) => {
+  test('uses the client-entry production bundle', async ({ page }) => {
     await page.goto('/');
 
     const scriptSrc = await page.locator('script[type="module"]').first().getAttribute('src');
-    expect(scriptSrc).toMatch(/^\/assets\/ssrEntry-.+\.js$/);
+    expect(scriptSrc).toMatch(/^\/assets\/clientEntry-.+\.js$/);
 
     const response = await page.request.get(scriptSrc!);
     expect(response.status()).toBe(200);

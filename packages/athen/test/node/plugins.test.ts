@@ -1,3 +1,5 @@
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 import { cwd } from 'node:process';
 import { describe, expect, it, vi } from 'vitest';
 import type { Plugin } from 'vite';
@@ -86,5 +88,28 @@ describe('plugins', () => {
     expect(pluginNames(server).filter((name) => name === 'athen:routes')).toHaveLength(1);
     expect(pluginNames(server)).toContain('inspect');
     expect(pluginNames(client)).not.toContain('inspect');
+  });
+});
+
+describe('pluginAthen', () => {
+  it('aliases essor/server to the server entry at the package root', async () => {
+    vi.doUnmock('../../src/node/plugins/core');
+    const { pluginAthen } = await import('../../src/node/plugins/core');
+    const plugins = pluginAthen(config());
+    const pluginConfig = plugins.find((plugin) => plugin.name === 'athen:config');
+    const viteConfig = (pluginConfig?.config as () => any)();
+    const aliases = viteConfig.resolve.alias as Array<{ find: string | RegExp; replacement: string }>;
+    const essorServerAlias = aliases.find((alias) => alias.find === 'essor/server');
+    const essorAliasIndex = aliases.findIndex((alias) => alias.find === 'essor');
+    const essorServerAliasIndex = aliases.findIndex((alias) => alias.find === 'essor/server');
+
+    const require = createRequire(import.meta.url);
+    const essorPackageRoot = dirname(
+      require.resolve('essor/package.json', { paths: [cwd(), join(cwd(), 'packages/athen')] }),
+    );
+
+    expect(essorServerAlias?.replacement).toBe(join(essorPackageRoot, 'server/index.js'));
+    expect(essorServerAliasIndex).toBeGreaterThanOrEqual(0);
+    expect(essorServerAliasIndex).toBeLessThan(essorAliasIndex);
   });
 });

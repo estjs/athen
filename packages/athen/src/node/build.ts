@@ -16,9 +16,9 @@ import { resolveServerPageHead } from '@/shared/title';
 import { checkBrokenLinks } from './brokenLinks';
 import { resolveConfig } from './config';
 import {
+  CLIENT_ENTRY_PATH,
   PACKAGE_ROOT,
   SSG_ENTRY_PATH,
-  SSR_ENTRY_PATH,
   resolveOutDir,
   resolveTempDir,
 } from './constants';
@@ -181,7 +181,7 @@ export async function bundle(root: string, config: SiteConfig) {
           ssr: isSsrBuild,
           ssrEmitAssets: isSsrBuild,
           outDir: isClient ? join(root, resolveOutDir(config)) : join(root, resolveTempDir(config)),
-          rollupOptions: { input: isClient ? SSR_ENTRY_PATH : SSG_ENTRY_PATH },
+          rollupOptions: { input: isClient ? CLIENT_ENTRY_PATH : SSG_ENTRY_PATH },
         },
       },
     );

@@ -6,7 +6,7 @@ import { createHead } from 'unhead/server';
 import type { SiteConfig } from '../../src/shared/types';
 
 const viteBuild = vi.fn();
-const createVitePlugins = vi.fn(async () => []);
+const createVitePlugins = vi.fn(() => Promise.resolve([]));
 
 vi.mock('vite', async (importOriginal) => ({
   ...(await importOriginal<typeof import('vite')>()),
@@ -40,7 +40,7 @@ const config = (root: string, siteData: Partial<SiteConfig['siteData']> = {}): S
 // In tests we want full control over what gets injected, so the test render
 // returns a fresh server-side Unhead instance (the build's `useHead` call then
 // layers route metadata on top of that empty entry).
-const stubRender = (html: string) => async () => ({ html, head: createHead() });
+const stubRender = (html: string) => () => Promise.resolve({ html, head: createHead() });
 
 describe('build', () => {
   beforeEach(() => {
@@ -50,9 +50,8 @@ describe('build', () => {
 
   it('builds SSG and browser bundles with the right entries', async () => {
     const { bundle } = await import('../../src/node/build');
-    const { DEFAULT_OUT_DIR, DEFAULT_TEMP_DIR, SSG_ENTRY_PATH, SSR_ENTRY_PATH } = await import(
-      '../../src/node/constants'
-    );
+    const { CLIENT_ENTRY_PATH, DEFAULT_OUT_DIR, DEFAULT_TEMP_DIR, SSG_ENTRY_PATH } =
+      await import('../../src/node/constants');
     const root = '/project/docs';
     viteBuild.mockResolvedValue({ output: [] });
 
@@ -67,7 +66,7 @@ describe('build', () => {
       {
         ssr: false,
         outDir: join(root, DEFAULT_OUT_DIR),
-        rollupOptions: { input: SSR_ENTRY_PATH },
+        rollupOptions: { input: CLIENT_ENTRY_PATH },
       },
     ]);
     expect(createVitePlugins.mock.calls.map(([, isClient]) => isClient)).toEqual([false, true]);
@@ -75,7 +74,7 @@ describe('build', () => {
 
   it('honors a custom config.outDir for both the SSR build and the final dist path', async () => {
     const { bundle } = await import('../../src/node/build');
-    const { SSG_ENTRY_PATH, SSR_ENTRY_PATH } = await import('../../src/node/constants');
+    const { CLIENT_ENTRY_PATH, SSG_ENTRY_PATH } = await import('../../src/node/constants');
     const root = '/project/docs';
     viteBuild.mockResolvedValue({ output: [] });
 
@@ -90,7 +89,7 @@ describe('build', () => {
       {
         ssr: false,
         outDir: join(root, 'build'),
-        rollupOptions: { input: SSR_ENTRY_PATH },
+        rollupOptions: { input: CLIENT_ENTRY_PATH },
       },
     ]);
   });
@@ -112,7 +111,7 @@ describe('build', () => {
           description: 'Readable docs',
           head: [['meta', { name: 'theme-color', content: '#fff' }]],
         }),
-        [{ path: '/guide/', component: {}, meta: {}, preload: async () => ({}) }],
+        [{ path: '/guide/', component: {}, meta: {}, preload: () => Promise.resolve({}) }],
       );
 
       const html = await readFile(join(root, 'dist/guide/index.html'), 'utf8');
@@ -141,7 +140,7 @@ describe('build', () => {
           description: 'Default desc',
           locales: {
             '': { label: 'English', lang: 'en' },
-            zh: { label: '简体中文', lang: 'zh', description: '中文站点描述' },
+            'zh': { label: '简体中文', lang: 'zh', description: '中文站点描述' },
           },
         }),
         [
@@ -149,7 +148,7 @@ describe('build', () => {
             path: '/guide/',
             component: {},
             meta: {},
-            preload: async () => ({}),
+            preload: () => Promise.resolve({}),
             title: 'Quick Start',
             description: 'Page-specific description',
             lang: 'en',
@@ -159,7 +158,7 @@ describe('build', () => {
             path: '/zh/guide/',
             component: {},
             meta: {},
-            preload: async () => ({}),
+            preload: () => Promise.resolve({}),
             title: '快速开始',
             lang: 'zh',
             localePrefix: 'zh',

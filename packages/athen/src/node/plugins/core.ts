@@ -77,18 +77,18 @@ export function pluginRoute(config: SiteConfig): Plugin {
 // ---------------------------------------------------------------------------
 
 function runtimeAliases() {
-  const essorDist = dirname(require.resolve('essor', { paths: [PACKAGE_ROOT] }));
-  const essorClient = join(essorDist, 'essor.esm.js');
-  const essorServer = join(essorDist, 'server.esm.js');
+  const essorRoot = dirname(require.resolve('essor/package.json', { paths: [PACKAGE_ROOT] }));
+  const essorClient = join(essorRoot, 'dist/essor.js');
+  const essorServer = join(essorRoot, 'server/index.js');
   const essorRouter = join(
     dirname(require.resolve('essor-router', { paths: [PACKAGE_ROOT] })),
     'index.mjs',
   );
 
   return [
-    { find: /^essor$/, replacement: essorClient },
-    { find: /^essor\/server$/, replacement: essorServer },
-    { find: /^essor-router$/, replacement: essorRouter },
+    { find: 'essor/server', replacement: essorServer },
+    { find: 'essor-router', replacement: essorRouter },
+    { find: 'essor', replacement: essorClient },
   ];
 }
 
