@@ -1,9 +1,10 @@
 import { resolve } from 'node:path';
 import process from 'node:process';
 import cac from 'cac';
+import pc from 'picocolors';
 import pkg from '../../package.json';
 import { build } from './build';
-import { createDevServer, formatDevStartupInfo } from './dev';
+import { createDevServer } from './dev';
 import { serve } from './preview';
 
 const resolveRoot = (root?: string) => (root ? resolve(root) : process.cwd());
@@ -22,18 +23,10 @@ cli
         await createServer();
       });
       await server.listen();
-      if (server.resolvedUrls) {
-        console.log(
-          formatDevStartupInfo({
-            root: resolvedRoot,
-            command: ['athen', 'dev', root].filter(Boolean).join(' '),
-            urls: server.resolvedUrls,
-            siteTitle: server.config.appTitle,
-          }),
-        );
-      } else {
-        server.printUrls();
-      }
+      server.config.logger.info(`\n  ${pc.green(`${pc.bold('athen')} v${pkg.version}`)}\n`, {
+        clear: !server.config.logger.hasWarned,
+      });
+      server.printUrls();
     };
     await createServer();
   });
