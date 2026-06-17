@@ -1,5 +1,5 @@
-import { debounce } from 'lodash-es';
 import { signal } from 'essor';
+import { debounce } from '../../shared/utils';
 
 function highlight(id: string) {
   document.querySelectorAll('.toc-item').forEach((item) => {

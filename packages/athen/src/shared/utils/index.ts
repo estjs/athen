@@ -248,3 +248,107 @@ export function buildTemplateVars(
     siteTitle: firstString(locale?.title, siteData.title) || 'Athen',
   };
 }
+
+type Timer = ReturnType<typeof setTimeout>;
+type Fn = (this: unknown, ...args: any[]) => unknown;
+
+export type Debounced<T extends Fn> = ((
+  this: ThisParameterType<T>,
+  ...args: Parameters<T>
+) => void) & {
+  cancel: () => void;
+};
+
+export type Throttled<T extends Fn> = ((
+  this: ThisParameterType<T>,
+  ...args: Parameters<T>
+) => void) & {
+  cancel: () => void;
+};
+
+export function debounce<T extends Fn>(fn: T, wait = 0): Debounced<T> {
+  let timer: Timer | undefined;
+
+  const debounced = function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(() => {
+      timer = undefined;
+      fn.apply(this, args);
+    }, wait);
+  } as Debounced<T>;
+
+  debounced.cancel = () => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = undefined;
+    }
+  };
+
+  return debounced;
+}
+
+export function throttle<T extends Fn>(fn: T, wait = 0): Throttled<T> {
+  let lastInvokeTime = 0;
+  let hasInvoked = false;
+  let timer: Timer | undefined;
+  let lastArgs: Parameters<T> | undefined;
+  let lastThis: ThisParameterType<T> | undefined;
+
+  const invoke = (time: number) => {
+    hasInvoked = true;
+    lastInvokeTime = time;
+    const args = lastArgs;
+    const context = lastThis;
+    lastArgs = undefined;
+    lastThis = undefined;
+    if (args) {
+      fn.apply(context, args);
+    }
+  };
+
+  const startTimer = (remaining: number) => {
+    timer = setTimeout(() => {
+      timer = undefined;
+      if (lastArgs) {
+        invoke(Date.now());
+      }
+    }, remaining);
+  };
+
+  const throttled = function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    const now = Date.now();
+    const remaining = wait - (now - lastInvokeTime);
+    lastArgs = args;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias -- trailing calls need the original call context.
+    lastThis = this;
+
+    if (!hasInvoked || remaining <= 0 || remaining > wait) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = undefined;
+      }
+      invoke(now);
+      return;
+    }
+
+    if (!timer) {
+      startTimer(remaining);
+    }
+  } as Throttled<T>;
+
+  throttled.cancel = () => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = undefined;
+    }
+    lastInvokeTime = 0;
+    hasInvoked = false;
+    lastArgs = undefined;
+    lastThis = undefined;
+  };
+
+  return throttled;
+}

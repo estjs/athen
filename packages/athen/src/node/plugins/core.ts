@@ -131,7 +131,7 @@ function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): 
       return {
         root: PACKAGE_ROOT,
         optimizeDeps: {
-          include: ['essor', 'essor-router', 'lodash-es', 'copy-to-clipboard', 'fs-extra', 'vite'],
+          include: ['essor', 'essor-router', 'copy-to-clipboard', 'fs-extra', 'vite'],
           exclude: ['fsevents'],
           esbuildOptions: { target: BROWSER_BUILD_TARGET },
         },

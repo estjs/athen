@@ -1,6 +1,6 @@
 import { onDestroy, onMount, signal } from 'essor';
 import BTween from 'b-tween';
-import { throttle } from 'lodash-es';
+import { throttle } from '../../../shared/utils';
 import { getBackTopScrollTarget, getPageScrollTop, isBackTopVisible } from './utils';
 
 export function BackTop() {

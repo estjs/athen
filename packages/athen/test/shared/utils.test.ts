@@ -1,12 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   applyRewrite,
+  debounce,
   getRelativePagePath,
   htmlFilePathFromRoute,
   normalizePublicRoute,
   normalizeRoutePath,
   normalizeRouteTarget,
   removeBase,
+  throttle,
   withBase,
 } from '../../src/shared/utils';
 
@@ -77,5 +79,78 @@ describe('url policy', () => {
       'guide/start/index.html',
     );
     expect(htmlFilePathFromRoute('/', { cleanUrls: true })).toBe('index.html');
+  });
+});
+
+describe('timing utils', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('debounces calls and preserves the latest context and args', () => {
+    const calls: Array<[unknown, string]> = [];
+    const debounced = debounce(function (this: unknown, value: string) {
+      calls.push([this, value]);
+    }, 100);
+    const firstContext = { id: 'first' };
+    const secondContext = { id: 'second' };
+
+    debounced.call(firstContext, 'a');
+    vi.advanceTimersByTime(50);
+    debounced.call(secondContext, 'b');
+    vi.advanceTimersByTime(99);
+
+    expect(calls).toEqual([]);
+
+    vi.advanceTimersByTime(1);
+
+    expect(calls).toEqual([[secondContext, 'b']]);
+  });
+
+  it('cancels pending debounced calls', () => {
+    const fn = vi.fn();
+    const debounced = debounce(fn, 100);
+
+    debounced();
+    debounced.cancel();
+    vi.advanceTimersByTime(100);
+
+    expect(fn).not.toHaveBeenCalled();
+  });
+
+  it('throttles calls and runs the trailing call with the latest args', () => {
+    const calls: string[] = [];
+    const throttled = throttle((value: string) => {
+      calls.push(value);
+    }, 100);
+
+    throttled('a');
+    throttled('b');
+    throttled('c');
+
+    expect(calls).toEqual(['a']);
+
+    vi.advanceTimersByTime(99);
+    expect(calls).toEqual(['a']);
+
+    vi.advanceTimersByTime(1);
+    expect(calls).toEqual(['a', 'c']);
+  });
+
+  it('cancels pending throttled trailing calls', () => {
+    const fn = vi.fn();
+    const throttled = throttle(fn, 100);
+
+    throttled('a');
+    throttled('b');
+    throttled.cancel();
+    vi.advanceTimersByTime(100);
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('a');
   });
 });

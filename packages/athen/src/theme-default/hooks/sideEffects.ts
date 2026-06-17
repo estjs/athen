@@ -1,5 +1,4 @@
-import { throttle } from 'lodash-es';
-import { inBrowser } from '../../shared/utils';
+import { inBrowser, throttle } from '../../shared/utils';
 import { setupCopyCodeButton } from './copyCode';
 
 const DEFAULT_NAV_HEIGHT = 56;
