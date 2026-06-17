@@ -12,6 +12,7 @@ export function pluginMdxHMR(config: SiteConfig, isServer: boolean): Plugin {
     apply: 'serve',
 
     transform(code, id) {
+      if (id.includes('node_modules')) return;
       if (MD_REGEX.test(id) || SX_REGEX.test(id)) {
         const result = transformSync(code, {
           filename: `${id}`,
