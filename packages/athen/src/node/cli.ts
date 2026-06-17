@@ -3,7 +3,7 @@ import process from 'node:process';
 import cac from 'cac';
 import pkg from '../../package.json';
 import { build } from './build';
-import { createDevServer } from './dev';
+import { createDevServer, formatDevStartupInfo } from './dev';
 import { serve } from './preview';
 
 const resolveRoot = (root?: string) => (root ? resolve(root) : process.cwd());
@@ -22,7 +22,18 @@ cli
         await createServer();
       });
       await server.listen();
-      server.printUrls();
+      if (server.resolvedUrls) {
+        console.log(
+          formatDevStartupInfo({
+            root: resolvedRoot,
+            command: ['athen', 'dev', root].filter(Boolean).join(' '),
+            urls: server.resolvedUrls,
+            siteTitle: server.config.appTitle,
+          }),
+        );
+      } else {
+        server.printUrls();
+      }
     };
     await createServer();
   });

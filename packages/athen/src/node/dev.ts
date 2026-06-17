@@ -3,7 +3,25 @@ import { resolve } from 'node:path';
 import { createServer, mergeConfig } from 'vite';
 import { resolveConfig } from './config';
 import { createVitePlugins } from './plugins';
-import { PACKAGE_ROOT } from './constants';
+import { BROWSER_BUILD_TARGET, PACKAGE_ROOT } from './constants';
+
+interface DevStartupInfo {
+  root: string;
+  command: string;
+  urls: { local: string[]; network: string[] };
+  siteTitle?: string;
+}
+
+export function formatDevStartupInfo({ root, command, urls, siteTitle }: DevStartupInfo) {
+  const lines = ['✨ Athen dev server ready'];
+
+  if (siteTitle) lines.push(`Site    ${siteTitle}`);
+  lines.push(`Root    ${root}`, `Command ${command}`);
+  if (urls.local.length > 0) lines.push(`Local   ${urls.local.join(', ')}`);
+  if (urls.network.length > 0) lines.push(`Network ${urls.network.join(', ')}`);
+
+  return lines.join('\n');
+}
 
 export async function createDevServer(
   root: string = process.cwd(),
@@ -27,7 +45,7 @@ export async function createDevServer(
         jsx: 'preserve',
       },
       build: {
-        target: 'baseline-widely-available',
+        target: BROWSER_BUILD_TARGET,
       },
     },
     {

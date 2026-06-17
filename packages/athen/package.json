@@ -67,6 +67,7 @@
     "fs-extra": "^11.3.5",
     "github-slugger": "^2.0.0",
     "glob": "^13.0.6",
+    "picocolors": "^1.1.1",
     "polka": "^1.0.0-next.28",
     "sirv": "^3.0.2",
     "unhead": "^3.1.4",
