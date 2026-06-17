@@ -133,7 +133,11 @@ function pluginConfig(config: SiteConfig, restartServer?: () => Promise<void>): 
         optimizeDeps: {
           include: ['essor', 'essor-router', 'copy-to-clipboard', 'fs-extra', 'vite'],
           exclude: ['fsevents'],
-          esbuildOptions: { target: BROWSER_BUILD_TARGET },
+          rolldownOptions: {
+            transform: {
+              target: BROWSER_BUILD_TARGET,
+            },
+          },
         },
         resolve: {
           alias: [

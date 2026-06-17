@@ -23,5 +23,15 @@ export default defineConfig({
     '@estjs/athen-plugin-search',
     '@estjs/athen-plugin-analytics',
   ],
+  esbuildPlugins: [
+    {
+      name: 'external-athen-plugins',
+      setup(build) {
+        build.onResolve({ filter: /^@estjs\/athen-plugin-/ }, (args) => {
+          return { path: args.path, external: true };
+        });
+      },
+    },
+  ],
   tsconfig: './tsconfig.json',
 });

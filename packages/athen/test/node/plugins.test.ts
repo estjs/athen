@@ -124,7 +124,7 @@ describe('pluginAthen', () => {
     const pluginConfig = plugins.find((plugin) => plugin.name === 'athen:config');
     const viteConfig = (pluginConfig?.config as () => any)();
 
-    expect(viteConfig.optimizeDeps.esbuildOptions.target).toBe(BROWSER_BUILD_TARGET);
+    expect(viteConfig.optimizeDeps.rolldownOptions.transform.target).toBe(BROWSER_BUILD_TARGET);
   });
 
   it('uses the latest route table when transforming dev HTML', async () => {
