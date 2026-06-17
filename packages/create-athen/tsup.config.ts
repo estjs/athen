@@ -5,7 +5,11 @@ export default defineConfig([
     entry: ['src/index.ts'],
     minifyIdentifiers: false,
     bundle: true,
-    dts: true,
+    dts: {
+      compilerOptions: {
+        ignoreDeprecations: '6.0',
+      },
+    },
     sourcemap: true,
     splitting: true,
     format: ['cjs', 'esm'],

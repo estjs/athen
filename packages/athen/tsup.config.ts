@@ -8,7 +8,11 @@ export default defineConfig({
   },
   minifyIdentifiers: false,
   bundle: true,
-  dts: true,
+  dts: {
+    compilerOptions: {
+      ignoreDeprecations: '6.0',
+    },
+  },
   format: ['cjs', 'esm'],
   splitting: true,
   skipNodeModulesBundle: true,
