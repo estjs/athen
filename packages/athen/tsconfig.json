@@ -3,15 +3,44 @@
   "compilerOptions": {
     "jsx": "preserve",
     "paths": {
-      "@/*": ["./src/*"],
-      "@runtime": ["./src/runtime/index.ts"],
-      "@shared/*": ["./src/shared/*"],
-      "@theme": ["./src/theme-default/index.ts"],
-      "@theme-default/*": ["./src/theme-default/*"],
-      "@estjs/athen-plugin-search/client": ["../plugin-search/src/client/index.ts"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@runtime": [
+        "./src/runtime/index.ts"
+      ],
+      "@shared/*": [
+        "./src/shared/*"
+      ],
+      "@theme": [
+        "./src/theme-default/index.ts"
+      ],
+      "@theme-default/*": [
+        "./src/theme-default/*"
+      ],
+      "@estjs/athen-plugin-mdx": [
+        "../plugin-mdx/src/index.ts"
+      ],
+      "@estjs/athen-plugin-search": [
+        "../plugin-search/src/index.ts"
+      ],
+      "@estjs/athen-plugin-search/client": [
+        "../plugin-search/src/client/index.ts"
+      ],
+      "@estjs/athen-plugin-analytics": [
+        "../plugin-analytics/src/index.ts"
+      ]
     },
-    "types": ["vite/client", "./global.d.ts"]
+    "types": [
+      "vite/client",
+      "./global.d.ts"
+    ]
   },
-  "include": ["src", "./global.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src",
+    "./global.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

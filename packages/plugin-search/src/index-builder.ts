@@ -31,7 +31,7 @@ function stripMarkdown(content: string): string {
       // Remove images: ![alt](img) -> alt
       .replaceAll(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
       // Remove headings: # heading -> heading
-      .replaceAll(/^\s*#{1,6}\s+(.*)$/gm, '$1')
+      .replaceAll(/^\s*#{1,6}\s+/gm, '')
       // Remove bold/italic: **bold**, *italic* -> bold, italic
       .replaceAll(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1')
       // Remove blockquotes: > quote -> quote
