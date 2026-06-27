@@ -97,10 +97,10 @@ importers:
         version: 1.11.21
       essor:
         specifier: ^0.0.17-beta.4
-        version: 0.0.17-beta.4
+        version: 0.0.17-beta.7
       essor-router:
         specifier: ^0.0.18-beta.1
-        version: 0.0.18-beta.1(essor@0.0.17-beta.4)
+        version: 0.0.18-beta.1(essor@0.0.17-beta.7)
       fs-extra:
         specifier: ^11.3.5
         version: 11.3.5
@@ -313,7 +313,7 @@ importers:
         version: 25.9.3
       essor:
         specifier: ^0.0.17-beta.4
-        version: 0.0.17-beta.4
+        version: 0.0.17-beta.7
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
@@ -992,8 +992,8 @@ packages:
       eslint: '>=9'
       prettier: '>=3'
 
-  '@estjs/server@0.0.17-beta.4':
-    resolution: {integrity: sha512-d3WoC4yqKkLzaejXmdeztKUtrgpz+9XeDwPVNq0MDj0MZmM+2Q3b0FIPq9bz4en+8vdLHotD04dFKe0hE1TurQ==}
+  '@estjs/server@0.0.17-beta.7':
+    resolution: {integrity: sha512-nHkYuhDxsmSegH+glG/MbD3Y96oSppSFSMhHCizyqXt9/YuemSMYWsVZFkDIG02UVfnaTr9dQBXCVeZ9htdbhQ==}
 
   '@estjs/shared@0.0.17-beta.3':
     resolution: {integrity: sha512-6pvsFif9Wn/LNmAGLe6U9aHM34HevO/NaMN2lZ/zhSmfUnZZGLWKGFnDMfulrYEx9l8DXz3frPO58R7rcNzTIQ==}
@@ -1001,11 +1001,14 @@ packages:
   '@estjs/shared@0.0.17-beta.4':
     resolution: {integrity: sha512-QszsYJ8ivA6snItz6cm4o6fVj+wVZTLBoA2kNrF7PirxmroKKSa/o0ttUxkI3nM1+AfYFDI3SnvsooE2mBzuig==}
 
-  '@estjs/signals@0.0.17-beta.4':
-    resolution: {integrity: sha512-2FId2DPhP7KIoMtobEtodgIPOQRpDiG1Y1eQuI0h4CBMAWo3pSD3grqvZERSiCxMelRoFj75/wGdm5epBEs4Dw==}
+  '@estjs/shared@0.0.17-beta.7':
+    resolution: {integrity: sha512-4OrNpzkEmarHoKcGfPBJ7qL0O2v6oEUsbaQScW9Pi9irRoE0LrQo2LqoHXbNNlXkTgfZ4GZvzJHx/lrUR1lfQA==}
 
-  '@estjs/template@0.0.17-beta.4':
-    resolution: {integrity: sha512-BhuEv8uSBANjL2CWMUghJtsZ1yW8WHLAhp4ECaxcc8oLd5HGMRMWF/57Nr62gt28C07MtLmyeHi2kG94virlgQ==}
+  '@estjs/signals@0.0.17-beta.7':
+    resolution: {integrity: sha512-vc6Vc/NFfkL1rqSccS2fLUvf9nxeESLPxVtpaoE3uy9wiJvUjZG88QNcPRwSlGSZZ+sJ702+QBNi3GVsloD4yg==}
+
+  '@estjs/template@0.0.17-beta.7':
+    resolution: {integrity: sha512-fLVvtXU9q8wuwM1y0oBW1J7qy+j1YnmNlhg1WZQ0odhdTrk8CiNg3/JJLLx93NwEIve0+SMF1Te14+xP75QNww==}
 
   '@estjs/tools@0.2.0':
     resolution: {integrity: sha512-NdQfdC3Pd748sW04Jce7rkJssbWeM7kX7NKS8XGVIvvQ7j5pR/5408/LFbfIAQxGdbjwdx5Oyvr0TP06+3KjYw==}
@@ -1073,6 +1076,12 @@ packages:
 
   '@napi-rs/wasm-runtime@1.1.4':
     resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
+    peerDependencies:
+      '@emnapi/core': ^1.7.1
+      '@emnapi/runtime': ^1.7.1
+
+  '@napi-rs/wasm-runtime@1.1.6':
+    resolution: {integrity: sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg==}
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
@@ -1760,6 +1769,9 @@ packages:
   '@tybys/wasm-util@0.10.2':
     resolution: {integrity: sha512-RoBvJ2X0wuKlWFIjrwffGw1IqZHKQqzIchKaadZZfnNpsAYp2mM0h36JtPCjNDAHGgYez/15uMBpfGwchhiMgg==}
 
+  '@tybys/wasm-util@0.10.3':
+    resolution: {integrity: sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg==}
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -2393,6 +2405,7 @@ packages:
   conventional-changelog-core@8.0.0:
     resolution: {integrity: sha512-EATUx5y9xewpEe10UEGNpbSHRC6cVZgO+hXQjofMqpy+gFIrcGvH3Fl6yk2VFKh7m+ffenup2N7SZJYpyD9evw==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Please use conventional-changelog instead.
 
   conventional-changelog-writer@8.4.0:
     resolution: {integrity: sha512-HHBFkk1EECxxmCi4CTu091iuDpQv5/OavuCUAuZmrkWpmYfyD816nom1CvtfXJ/uYfAAjavgHvXHX291tSLK8g==}
@@ -2795,8 +2808,8 @@ packages:
     peerDependencies:
       essor: ^0.0.17-beta.1
 
-  essor@0.0.17-beta.4:
-    resolution: {integrity: sha512-XvWXu1XfsxPU3AiAm0qVseZcGwAXFzZJVGEYDWKA3cCkVHPL/61MNHGGIEtQbcgQ5hIrOiXiZBAscDuygi7hcA==}
+  essor@0.0.17-beta.7:
+    resolution: {integrity: sha512-WqmUfYcg9dhfa6RXXL5lfVDOubHyXJTbfi5z4Z8+ObSucjJkC32OcrtIYUeYcTdmS4JekkAQOyprxGXOyv5Y/w==}
 
   estraverse@5.3.0:
     resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
@@ -2939,11 +2952,13 @@ packages:
   git-raw-commits@5.0.1:
     resolution: {integrity: sha512-Y+csSm2GD/PCSh6Isd/WiMjNAydu0VBiG9J7EdQsNA5P9uXvLayqjmTsNlK5Gs9IhblFZqOU0yid5Il5JPoLiQ==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   git-semver-tags@8.0.1:
     resolution: {integrity: sha512-zMbamckSNdlT4U48IMFa2Cn6FTzM+2yF6/gEmStPJI8PiLxd/bT6dw10+mc6u5Qe4fhrc/y9nU290FWjQhAV7g==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   github-slugger@2.0.0:
@@ -3591,8 +3606,8 @@ packages:
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
-  nanoid@3.3.12:
-    resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
+  nanoid@3.3.15:
+    resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -4000,6 +4015,11 @@ packages:
 
   semver@7.8.0:
     resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  semver@7.8.5:
+    resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -5273,24 +5293,26 @@ snapshots:
       - typescript
       - vitest
 
-  '@estjs/server@0.0.17-beta.4':
+  '@estjs/server@0.0.17-beta.7':
     dependencies:
-      '@estjs/shared': 0.0.17-beta.4
-      '@estjs/signals': 0.0.17-beta.4
-      '@estjs/template': 0.0.17-beta.4
+      '@estjs/shared': 0.0.17-beta.7
+      '@estjs/signals': 0.0.17-beta.7
+      '@estjs/template': 0.0.17-beta.7
 
   '@estjs/shared@0.0.17-beta.3': {}
 
   '@estjs/shared@0.0.17-beta.4': {}
 
-  '@estjs/signals@0.0.17-beta.4':
-    dependencies:
-      '@estjs/shared': 0.0.17-beta.4
+  '@estjs/shared@0.0.17-beta.7': {}
 
-  '@estjs/template@0.0.17-beta.4':
+  '@estjs/signals@0.0.17-beta.7':
     dependencies:
-      '@estjs/shared': 0.0.17-beta.4
-      '@estjs/signals': 0.0.17-beta.4
+      '@estjs/shared': 0.0.17-beta.7
+
+  '@estjs/template@0.0.17-beta.7':
+    dependencies:
+      '@estjs/shared': 0.0.17-beta.7
+      '@estjs/signals': 0.0.17-beta.7
 
   '@estjs/tools@0.2.0': {}
 
@@ -5400,6 +5422,13 @@ snapshots:
       '@emnapi/core': 1.9.2
       '@emnapi/runtime': 1.9.2
       '@tybys/wasm-util': 0.10.2
+    optional: true
+
+  '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
+    dependencies:
+      '@emnapi/core': 1.10.0
+      '@emnapi/runtime': 1.10.0
+      '@tybys/wasm-util': 0.10.3
     optional: true
 
   '@ota-meshi/ast-token-store@0.3.0': {}
@@ -5598,7 +5627,7 @@ snapshots:
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
-      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      '@napi-rs/wasm-runtime': 1.1.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.3':
@@ -5831,6 +5860,11 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@tybys/wasm-util@0.10.3':
+    dependencies:
+      tslib: 2.8.1
+    optional: true
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.29.3
@@ -5974,7 +6008,7 @@ snapshots:
       eslint: 10.5.0(jiti@2.7.0)
       json-stable-stringify-without-jsonify: 1.0.1
       lodash.merge: 4.6.2
-      semver: 7.8.0
+      semver: 7.8.5
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -6010,7 +6044,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.59.3
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.0
+      semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -7090,16 +7124,16 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  essor-router@0.0.18-beta.1(essor@0.0.17-beta.4):
+  essor-router@0.0.18-beta.1(essor@0.0.17-beta.7):
     dependencies:
       '@estjs/shared': 0.0.17-beta.3
-      essor: 0.0.17-beta.4
+      essor: 0.0.17-beta.7
 
-  essor@0.0.17-beta.4:
+  essor@0.0.17-beta.7:
     dependencies:
-      '@estjs/server': 0.0.17-beta.4
-      '@estjs/signals': 0.0.17-beta.4
-      '@estjs/template': 0.0.17-beta.4
+      '@estjs/server': 0.0.17-beta.7
+      '@estjs/signals': 0.0.17-beta.7
+      '@estjs/template': 0.0.17-beta.7
       csstype: 3.2.3
 
   estraverse@5.3.0: {}
@@ -8229,7 +8263,7 @@ snapshots:
       object-assign: 4.1.1
       thenify-all: 1.6.0
 
-  nanoid@3.3.12: {}
+  nanoid@3.3.15: {}
 
   napi-postinstall@0.3.4: {}
 
@@ -8481,7 +8515,7 @@ snapshots:
 
   postcss@8.5.15:
     dependencies:
-      nanoid: 3.3.12
+      nanoid: 3.3.15
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -8787,6 +8821,8 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.8.0: {}
+
+  semver@7.8.5: {}
 
   shebang-command@2.0.0:
     dependencies:
